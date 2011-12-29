@@ -14,6 +14,7 @@ class CreateBookTables < ActiveRecord::Migration
       t.string :amazon_url
       t.text :short_description
       t.string :accession_id
+      t.string :cover_image
       t.timestamps
     end
     add_index :products, :title, :unique => true

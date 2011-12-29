@@ -127,6 +127,7 @@ ActiveRecord::Schema.define(:version => 20111227180411) do
     t.string   "amazon_url"
     t.text     "short_description"
     t.string   "accession_id"
+    t.string   "cover_image"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
