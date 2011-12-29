@@ -15,6 +15,6 @@ gem 'yaml_db'
 gem 'kaminari'
 gem 'carrierwave'
 gem 'rmagick'
-gem 'devise'
+gem 'cancan'
 
 gem 'capistrano'
