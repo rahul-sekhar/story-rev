@@ -10,11 +10,8 @@ group :assets do
 end
 
 gem 'jquery-rails'
-gem 'cancan'
 gem 'sanitize'
-gem 'squeel'
 gem 'yaml_db'
-gem 'valid_email', :require => 'valid_email/email_validator'
 gem 'kaminari'
 gem 'carrierwave'
 gem 'rmagick'
