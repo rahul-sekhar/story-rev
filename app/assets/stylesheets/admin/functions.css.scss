@@ -1,0 +1,157 @@
+// Site specific mixins
+
+@mixin caps-spaced ($letter: 1px, $word: 1px) {
+    text-transform: uppercase;
+    letter-spacing: $letter;
+    word-spacing:  $word;
+    word-spacing: 1px;
+}
+
+
+// General functions
+
+@function e($target-px, $context: (16px * $body-font-size / 100%)) {
+    @return ($target-px / $context) * 1em;
+}
+
+@mixin transition ($properties) {
+    transition: $properties;
+    -moz-transition: $properties;
+    -webkit-transition: $properties;
+    -o-transition: $properties;
+    -ms-transition: $properties;
+}
+
+@mixin image-replacement($image-name, $image-width, $image-height) {
+    height: $image-height;
+    width: $image-width;
+    padding:0;
+    margin:0;
+    display:block;
+    overflow:hidden;
+    
+    &:before {
+        content: image-url($image-name);
+        display: inline-block;
+        font-size: 0;
+        line-height: 0;
+    }
+}
+
+@mixin clearfix {
+    &:before,
+    &:after {
+        content:"";
+        display:table;
+    }
+    &:after {
+        clear:both;
+    }
+    zoom:1;
+}
+
+@mixin scale-image-ie($image) {
+    background: none;
+    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(
+        src="#{image_url($image, true, false)}",
+        sizingMethod="scale"
+    );
+}
+
+@mixin debug($color: blue) {
+    border:1px solid $color;
+}
+
+@mixin rounded-corners($radius) {
+    -moz-border-radius: $radius;
+    -webkit-border-radius: $radius;
+    border-radius: $radius;
+}
+
+@mixin link($link-color, $hover-color, $underline: none) {
+    text-decoration: $underline;
+    &:link, &:visited {
+        color: $link-color;
+    }
+    &:hover {
+        color: $hover-color;
+    }
+}
+
+@mixin inner-link($link-color, $hover-color, $underline: none) {
+    color: $link-color;
+    a:link, a:visited {
+        text-decoration: $underline;
+        color: $link-color;
+    }
+    a:hover {
+        color: $hover-color;
+    }
+}
+
+@mixin link-or-not($link-color, $hover-color, $underline: none) {
+    color: $link-color;
+    text-decoration: $underline;
+    a:link, a:visited {
+        text-decoration: $underline;
+        color: $link-color;
+    }
+    a:hover {
+        color: $hover-color;
+    }
+}
+
+@mixin button ($width, $height: $button-height, $font-size: $button-size, $border-radius: $button-radius) {
+    width: e($width, $font-size);
+    height: e($height, $font-size);
+    font-size: e($font-size);
+    border:none;
+    cursor:pointer;
+    @include rounded-corners(e($border-radius, $font-size));
+}
+
+@mixin button-defaults ($background-color: $button-background-color, $background-color-h: $button-background-color-h,
+                        $text-color: $button-text-color, $text-color-h: $button-text-color-h) {
+    color: $text-color;
+    background-color: $background-color;
+    @include caps-spaced (0, 2px);
+    &:hover {
+        color: $text-color-h;
+        background-color: $background-color-h;
+    }
+}
+
+@mixin text-field ($font-size: $text-field-font-size, $border-color: $text-field-border-color, $field-height: $text-field-height) {
+    border:1px solid $border-color;
+    font-family: $sans-serif;
+    font-size: e($font-size);
+    line-height: e($field-height, $font-size);
+    height: e($field-height, $font-size);
+    padding-left:2px;
+}
+
+@mixin text-area ($vert-padding: $text-area-vert-padding, $hor-padding: $text-area-hor-padding, $font-size: $text-field-font-size, $border-color: $text-field-border-color) {
+    border:1px solid $border-color;
+    font-family: $sans-serif;
+    font-size: e($font-size);
+    overflow:auto;
+    padding:e($vert-padding, $font-size) e($hor-padding, $font-size);
+}
+
+@mixin word-wrap {
+    white-space: pre;
+    white-space: pre-wrap; 
+    white-space: pre-line;
+    white-space: -pre-wrap;
+    white-space: -o-pre-wrap;
+    white-space: -moz-pre-wrap;
+    white-space: -hp-pre-wrap;
+    word-wrap: break-word;
+}
+
+@mixin reset-list {
+    margin: 0;
+    padding: 0;
+    list-style-type:none;
+    font-size: 1em;
+}

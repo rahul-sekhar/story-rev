@@ -2,11 +2,18 @@
 <html>
 <head>
   <title>StoryRev</title>
-  <%= stylesheet_link_tag    "application" %>
-  <%= javascript_include_tag "application" %>
+  <%= stylesheet_link_tag    "admin/admin" %>
+  <%= javascript_include_tag "admin/admin" %>
   <%= csrf_meta_tags %>
 </head>
-<body>
+<body<%=raw @class ? " class=\"#{@class}\"" : nil %>>
+  
+<% if notice %>
+  <p class="notice"><%= notice %></p>
+<% end %>
+<% if alert %>
+  <p class="alert"><%= alert %></p>
+<% end %>
 
 <%= yield %>
 

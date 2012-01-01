@@ -1,0 +1,25 @@
+<li>
+  <% award_list = (f.object.award) ? (Award.where(:award_type_id => f.object.award.award_type_id)) : [] %>
+  <% selected = f.object.award ? f.object.award.award_type_id : nil %>
+  
+  <%= collection_select :product_award,
+                        :award_type_id,
+                        AwardType.all,
+                        :id,
+                        :name,
+                        { :include_blank => "None", :selected => selected },
+                        { :class => "award_type", :id => nil } %>
+  
+  <%= f.input_field :award_id,
+                    :as => :select,
+                    :index => nil,
+                    :required => false,
+                    :collection => award_list,
+                    :include_blank => false,
+                    :id => nil,
+                    :class => "award_name" %>
+  
+  <%= f.input_field :year, :id => nil, :index => nil, :class => 'award_year' %>
+  <%= f.hidden_field :id, :index => nil, :value => f.object.id %>
+  <%= link_to "Remove", "#", :class => "remove-link" %>
+</li>

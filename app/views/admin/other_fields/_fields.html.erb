@@ -1,0 +1,5 @@
+<div class="other-fields" id="other-fields-<%= index %>">
+  <%= f.input_field :title, :required => false, :index => nil, :input_html => { :id => nil } %><br />
+  <%= f.input_field :content, :required => false, :index => nil, :input_html => { :id => nil } %>
+  <%= f.hidden_field :id, :value => f.object.id, :index => nil %>
+</div>

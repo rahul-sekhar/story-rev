@@ -144,6 +144,8 @@ class CreateBookTables < ActiveRecord::Migration
       t.integer :product_id
       t.integer :award_id
       t.integer :year
+      
+      t.timestamps
     end
     add_index :products_awards, [:product_id, :award_id]
     add_index :products_awards, :product_id
@@ -153,6 +155,8 @@ class CreateBookTables < ActiveRecord::Migration
       t.integer :product_id
       t.string :title
       t.text :content
+      
+      t.timestamps
     end
     add_index :other_fields, :product_id
     

@@ -5,6 +5,12 @@ StoryRev::Application.routes.draw do
     get "login" => "sessions#new", :as => "login"
     post "login" => "sessions#create"
     
-    root :to => "products#new"
+    root :to => "products#index"
+    
+    resources :products
+    
+    resources :award_types do
+      resources :awards
+    end
   end
 end

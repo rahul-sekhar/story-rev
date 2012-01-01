@@ -111,6 +111,8 @@ ActiveRecord::Schema.define(:version => 20111229093957) do
     t.integer "product_id"
     t.string  "title"
     t.text    "content"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "other_fields", ["product_id"], :name => "index_other_fields_on_product_id"
@@ -135,7 +137,6 @@ ActiveRecord::Schema.define(:version => 20111229093957) do
     t.string   "amazon_url"
     t.text     "short_description"
     t.string   "accession_id"
-    t.string   "cover_image"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -151,6 +152,8 @@ ActiveRecord::Schema.define(:version => 20111229093957) do
     t.integer "product_id"
     t.integer "award_id"
     t.integer "year"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "products_awards", ["product_id", "award_id"], :name => "index_products_awards_on_product_id_and_award_id"

@@ -15,6 +15,7 @@ gem 'yaml_db'
 gem 'kaminari'
 gem 'carrierwave'
 gem 'rmagick'
+gem 'simple_form'
 
 gem 'capistrano'
 gem 'bcrypt-ruby', '~> 3.0.0', :require => "bcrypt"

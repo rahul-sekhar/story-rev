@@ -1,0 +1,50 @@
+<%= simple_form_for [:admin, @product] do |f| %>
+  
+  <ul>
+  <% f.object.errors.full_messages.each do |e| %>
+    <li><%= e %></li>
+  <% end %>
+  </ul>
+  
+  <%= f.input :accession_id, :required => false, :label => "Accession Number", :disabled => true %>
+  <%= f.input :title, :required => false %>
+  <%= f.input :author_name %>
+  <%= f.input :illustrator_name %>
+  <%= f.input :publisher_name %>
+  <%= f.input :year, :label => "Year of Publication" %>
+  <div class="input">
+    <%= f.label :age_from, "Age level" %>
+    <%= f.input_field :age_from %>
+    <%= f.label :age_to, "to" %>
+    <%= f.input_field :age_to %>
+  </div>
+  <%= f.input :genre_list %>
+  <%= f.input :keyword_list %>
+  
+  <div class="input">
+    <label>Awards</label>
+    <ul id="award-field-list">
+      <% for product_award in @product.product_awards %>
+        <%= f.simple_fields_for "award_attributes[]", product_award do |product_award_form| %>
+          <%= render "admin/awards/fields", :f => product_award_form %>
+        <% end %>
+      <% end %>
+    </ul>
+    <a href="#" id="add-award-link">Add an award</a>
+  </div>
+  
+  <%= f.input :flipkart_id %>
+  <%= f.input :amazon_url %>
+  <%= f.input :short_description %>
+  
+  <div class="field" id="other-fields">
+    <% f.object.other_fields.each.with_index do |other_field,index| %>
+      <%= f.simple_fields_for "other_field_attributes[]", other_field do |other_field_form| %>
+        <%= render "admin/other_fields/fields", :f => other_field_form, :index => index %>
+      <% end %>
+    <% end %>
+  </div>
+  <%= link_to "Add another field", "#", :id => "add-field-link" %>
+  
+  <%= f.submit "Save" %>
+<% end %>
