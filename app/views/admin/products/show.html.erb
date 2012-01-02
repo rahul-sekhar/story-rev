@@ -1,0 +1,37 @@
+<ul class="top-nav">
+  <li>
+    Books
+    <ol>
+      <li>
+        Search
+      </li>
+      <li>
+        Edit
+      </li>
+      <li>
+        Book Information
+      </li>
+      <li>
+        Copies
+      </li>
+    </ol>
+  <li>
+    Stock-taking
+  </li>
+</ul>
+
+<p>Title: <%= @product.title %></p>
+
+<p>Author: <%= @product.author_name %></p>
+
+<p>Edition</p>
+
+<table id="edition-table">
+  <% @product.editions.each do |e| %>
+    <tr data-id="<%= e.id %>">
+      <td data-val="<%= e.isbn %>"><%= e.isbn %></td>
+      <td data-val="<%= e.format_name %>"><%= e.format_name %></td>
+      <td data-val="<%= e.base_price %>"><%= e.formatted_base_price %></td>
+    </tr>
+  <% end %>
+</table>

@@ -42,6 +42,7 @@ var DEFAULT_SETTINGS = {
     prePopulate: null,
     processPrePopulate: false,
     dataPrePopulate: false,
+    textPrePopulate: false, 	// create a token from the text pre-entered in the input
 
 	// Manipulation settings
     idPrefix: "token-input-",
@@ -148,6 +149,9 @@ $.TokenList = function (input, url_or_data, settings) {
     // If prepopulate from data attribute is selected, populate from data("pre")
     if (settings.dataPrePopulate) {
         settings.prePopulate = $(input).data("pre");
+    }
+    else if (settings.textPrePopulate && $(input).val()) {
+	settings.prePopulate = [{name: $(input).val()}];
     }
     
     // Configure the data source

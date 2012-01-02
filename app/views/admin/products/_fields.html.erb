@@ -6,6 +6,14 @@
   <% end %>
   </ul>
   
+  <ul>
+  <% f.object.product_awards.each do |p| %>
+    <% p.errors.full_messages.each do |e| %>
+      <li><%= e %></li>
+    <% end %>
+  <% end %>
+  </ul>
+  
   <%= f.input :accession_id, :required => false, :label => "Accession Number", :disabled => true %>
   <%= f.input :title, :required => false %>
   <%= f.input :author_name %>
@@ -15,11 +23,12 @@
   <div class="input">
     <%= f.label :age_from, "Age level" %>
     <%= f.input_field :age_from %>
-    <%= f.label :age_to, "to" %>
+    <%= f.label :age_to, "to", :class => "inline" %>
     <%= f.input_field :age_to %>
   </div>
-  <%= f.input :genre_list %>
-  <%= f.input :keyword_list %>
+  <%= f.input :genre_list, :input_html => { "data-pre" => @product.genres_json } %>
+  <%= f.input :keyword_list, :input_html => { "data-pre" => @product.keywords_json } %>
+  <%= f.input :product_tag_list, :input_html => { "data-pre" => @product.product_tags_json } %>
   
   <div class="input">
     <label>Awards</label>
@@ -37,6 +46,7 @@
   <%= f.input :amazon_url %>
   <%= f.input :short_description %>
   
+  <p>Other Fields:</p>
   <div class="field" id="other-fields">
     <% f.object.other_fields.each.with_index do |other_field,index| %>
       <%= f.simple_fields_for "other_field_attributes[]", other_field do |other_field_form| %>

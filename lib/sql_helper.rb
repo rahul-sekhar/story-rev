@@ -1,5 +1,5 @@
 module SqlHelper
-  def self.escapeWildcards (data, reverse = false)
+  def self.escapeWildcards(data, reverse = false)
     if reverse
       data.gsub('\\\\', '\\').gsub('\\%', '%').gsub('\\_', '_')
     else

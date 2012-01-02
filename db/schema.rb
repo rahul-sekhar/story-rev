@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111229093957) do
+ActiveRecord::Schema.define(:version => 20120102084123) do
 
   create_table "admin_roles", :force => true do |t|
     t.string   "name"
@@ -63,11 +63,12 @@ ActiveRecord::Schema.define(:version => 20111229093957) do
 
   create_table "editions", :force => true do |t|
     t.integer  "product_id"
-    t.integer  "isbn",       :limit => 8
+    t.string   "isbn"
     t.integer  "base_price"
     t.integer  "format_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "raw_isbn"
   end
 
   add_index "editions", ["format_id"], :name => "index_editions_on_format_id"
@@ -108,9 +109,9 @@ ActiveRecord::Schema.define(:version => 20111229093957) do
   add_index "keywords", ["name"], :name => "index_keywords_on_name", :unique => true
 
   create_table "other_fields", :force => true do |t|
-    t.integer "product_id"
-    t.string  "title"
-    t.text    "content"
+    t.integer  "product_id"
+    t.string   "title"
+    t.text     "content"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -137,6 +138,7 @@ ActiveRecord::Schema.define(:version => 20111229093957) do
     t.string   "amazon_url"
     t.text     "short_description"
     t.string   "accession_id"
+    t.string   "cover_image"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -149,9 +151,9 @@ ActiveRecord::Schema.define(:version => 20111229093957) do
   add_index "products", ["title"], :name => "index_products_on_title", :unique => true
 
   create_table "products_awards", :force => true do |t|
-    t.integer "product_id"
-    t.integer "award_id"
-    t.integer "year"
+    t.integer  "product_id"
+    t.integer  "award_id"
+    t.integer  "year"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

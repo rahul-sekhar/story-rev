@@ -1,7 +1,7 @@
 class CreateBookTables < ActiveRecord::Migration
   def change
     
-    # Books
+    # Products
     create_table :products do |t|
       t.string :title
       t.integer :author_id

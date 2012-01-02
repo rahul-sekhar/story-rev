@@ -1,0 +1,39 @@
+label {
+    float:left;
+    text-align:right;
+    margin-right:10px;
+    margin-left:10px;
+    width:170px;
+    
+    &.inline {
+        width:auto;
+    }
+}
+
+div.input {
+    clear:left;
+    margin-bottom:20px;
+    @include clearfix;
+    
+    ul input {
+        float:none;
+    }
+    
+    input,textarea,ul {
+        float:left;
+        clear:none;
+    }
+}
+
+table {    
+    border-collapse:collapse;
+    width:100%;
+}
+
+td {
+    border:1px solid grey;
+}
+
+td.alt {
+    background-color: #eee;
+}
