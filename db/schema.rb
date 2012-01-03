@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120102084123) do
+ActiveRecord::Schema.define(:version => 20120103102333) do
 
   create_table "admin_roles", :force => true do |t|
     t.string   "name"
@@ -51,10 +51,11 @@ ActiveRecord::Schema.define(:version => 20120102084123) do
   create_table "copies", :force => true do |t|
     t.integer  "edition_id"
     t.string   "accession_id"
-    t.text     "condition_description"
+    t.string   "condition_description"
     t.integer  "condition_rating",      :limit => 2
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "price"
   end
 
   add_index "copies", ["accession_id"], :name => "index_copies_on_accession_id", :unique => true

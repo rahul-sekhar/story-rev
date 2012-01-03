@@ -24,9 +24,9 @@
 
 <p>Author: <%= @product.author_name %></p>
 
-<p>Edition</p>
+<p>Editions</p>
 
-<table id="edition-table">
+<table id="edition-table" data-url="<%= admin_product_editions_path(@product) %>">
   <% @product.editions.each do |e| %>
     <tr data-id="<%= e.id %>">
       <td data-val="<%= e.isbn %>"><%= e.isbn %></td>
@@ -34,4 +34,9 @@
       <td data-val="<%= e.base_price %>"><%= e.formatted_base_price %></td>
     </tr>
   <% end %>
+</table>
+
+<p>Copies</p>
+
+<table id="copy-table">
 </table>

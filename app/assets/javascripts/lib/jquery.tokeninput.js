@@ -21,6 +21,7 @@ var DEFAULT_SETTINGS = {
     propertyToSearch: "name",
     tokenProperty: null,
     jsonContainer: null,
+    searchOnFocus: false,
 
 	// Display settings
     overlayHintText: null,
@@ -127,7 +128,11 @@ var methods = {
     },
     get: function() {
     	return this.data("tokenInputObject").getTokens();
-   	}
+   	},
+    reset: function() {
+	this.data("tokenInputObject").reset();
+	return this;
+    }
 }
 
 // Expose the .tokenInput function to jQuery as a plugin
@@ -209,7 +214,11 @@ $.TokenList = function (input, url_or_data, settings) {
         })
         .attr("id", settings.idPrefix + input.id)
         .focus(function () {
-            if (settings.tokenLimit === null || settings.tokenLimit !== token_count) {
+	    if (!token_count && settings.searchOnFocus) {
+		show_dropdown_searching();
+		run_search("", "");
+	    }
+            else if (settings.tokenLimit === null || settings.tokenLimit !== token_count) {
                 show_dropdown_hint();
             }
         })
@@ -444,8 +453,18 @@ $.TokenList = function (input, url_or_data, settings) {
     }
     
     this.getTokens = function() {
-   		return saved_tokens;
-   	}
+	return saved_tokens;
+    }
+    
+    this.reset = function() {
+	token_list.children("li").each(function() {
+            if ($(this).children("input").length === 0) {
+                delete_token($(this), true);
+            }
+        });
+	cache.clear();
+	hide_dropdown();
+    }
 
     //
     // Private functions
@@ -607,7 +626,7 @@ $.TokenList = function (input, url_or_data, settings) {
     }
 
     // Delete a token from the token list
-    function delete_token (token) {
+    function delete_token (token, noFocus) {
         // Remove the id from the saved list
         var token_data = $.data(token.get(0), "tokeninput");
         var callback = settings.onDelete;
@@ -620,7 +639,8 @@ $.TokenList = function (input, url_or_data, settings) {
         selected_token = null;
 
         // Show the input box and give it focus again
-        input_box.focus();
+	if (!noFocus)
+	    input_box.focus();
 
         // Remove this token from the saved list
         saved_tokens = saved_tokens.slice(0,index).concat(saved_tokens.slice(index+1));
@@ -635,7 +655,9 @@ $.TokenList = function (input, url_or_data, settings) {
             input_box
                 .show()
                 .val("")
-                .focus();
+	    
+	    if (!noFocus)
+                input_box.focus();
         }
 
         // Execute the onDelete callback if defined
@@ -745,7 +767,7 @@ $.TokenList = function (input, url_or_data, settings) {
                 $.data(this_li.get(0), "tokeninput", value);
             });
 	    
-	    if (settings.allowCustom && !exact_match_found) {
+	    if (settings.allowCustom && !exact_match_found && query) {
 		var checkedQuery = originalQuery.replace(/,/g, "-");
 		var this_li = settings.addFormatter(checkedQuery);
 		
@@ -926,6 +948,10 @@ $.TokenList.Cache = function (options) {
     this.get = function (query) {
         return data[query];
     };
+    
+    this.clear = function() {
+	flush();
+    }
 };
 }(jQuery));
 

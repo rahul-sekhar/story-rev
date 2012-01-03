@@ -15,7 +15,7 @@ class Edition < ActiveRecord::Base
   
   def format_name=(name)
     self.format = name.present? ? (Format.name_is(name).first || Format.new({ :name => name })) : nil
-  end
+  end 
   
   def formatted_base_price
     RupeeHelper::to_rupee(base_price)
@@ -23,5 +23,15 @@ class Edition < ActiveRecord::Base
   
   def convert_raw_isbn
     self.raw_isbn = isbn.gsub("-", "")
+  end
+  
+  def get_hash
+    {
+      :id => id,
+      :format_name => format_name,
+      :base_price => base_price,
+      :formatted_base_price => formatted_base_price,
+      :isbn => isbn
+    }
   end
 end

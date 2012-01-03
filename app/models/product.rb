@@ -41,7 +41,7 @@ class Product < ActiveRecord::Base
                             .where("UPPER(title) LIKE ?", "%#{escaped}%")
                             .map { |x| {:id => x.id, :name => x.title }}
       
-      if (escaped =~ /^[A-Z][0-9]+/)
+      if (escaped =~ /^[A-Z]-[0-9]/)
         product_array |= self.select("id, title, accession_id")
                               .where('accession_id LIKE ?', "#{escaped}%")
                               .map { |x| {:id => x.id, :name => "#{x.title} - #{x.accession_id}" }}
@@ -70,8 +70,13 @@ class Product < ActiveRecord::Base
   def find_accession_id
     if title.present?
       letter = title[0].upcase
-      num = self.class.where('UPPER(LEFT(title,1)) = ? AND id <> ?', letter, id).count + 1
-      return "#{letter}#{"%03d" % num}"
+      last_product = self.class.where('UPPER(LEFT(title,1)) = ? AND id <> ?', letter, id || 0).order("accession_id DESC").first
+      if last_product.present?
+        new_acc = last_product.accession_id[2,4].to_i + 1
+        "#{letter}-#{"%03d" % new_acc}"
+      else
+        "#{letter}-001"
+      end
     end
   end
   

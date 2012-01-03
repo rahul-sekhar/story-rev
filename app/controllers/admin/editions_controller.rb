@@ -1,16 +1,33 @@
 class Admin::EditionsController < Admin::ApplicationController
   
+  def create
+    @product = Product.find(params[:product_id])
+    @edition = @product.editions.build(params[:edition])
+    respond_to do |format|
+      if @edition.save
+        format.json { render :json => @edition.get_hash }
+      else
+        format.json { render :json => @edition.errors.full_messages, :status => :unprocessable_entity }
+      end
+    end
+  end
+  
   def update
     @edition = Edition.find(params[:id])
     respond_to do |format|
       if @edition.update_attributes(params[:edition])
-        format.json do
-          render :json => @edition,
-            :only => [:id, :format_name, :base_price, :formatted_base_price, :isbn]
-        end
+        format.json { render :json => @edition.get_hash }
       else
         format.json { render :json => @edition.errors.full_messages, :status => :unprocessable_entity }
       end
+    end
+  end
+  
+  def destroy
+    @edition = Edition.find(params[:id])
+    @edition.destroy
+    respond_to do |format|
+      format.json { render :json => { :success => true }}
     end
   end
   

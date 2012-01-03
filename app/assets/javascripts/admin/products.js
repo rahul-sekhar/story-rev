@@ -30,23 +30,63 @@ $(document).ready(function() {
     // Handle the editions and copies page
     if ($body.hasClass('editions')) {
         // Convert the tables to editable ones
-        $('#edition-table').itemTable({
-            url: '/admin/editions',
+        var $editionTable = $('#edition-table')
+        $editionTable.itemTable({
             objectName: 'edition',
+            selectable: true,
             columns: [
-            {
-                name: 'ISBN',
-                field: 'isbn'
-            },
-            {
-                name: 'Format',
-                field: 'format_name'
-            },
-            {
-                name: 'Base Price',
-                field: 'formatted_base_price',
-                raw: 'base_price'
-            }]
+                {
+                    name: 'ISBN',
+                    field: 'isbn'
+                },
+                {
+                    name: 'Format',
+                    field: 'format_name',
+                    type: 'autocomplete',
+                    sourceURL: '/admin/formats',
+                    autocompleteSettings: { searchOnFocus: true }
+                },
+                {
+                    name: 'Base Price',
+                    field: 'formatted_base_price',
+                    raw: 'base_price'
+                }
+            ]
+        });
+        
+        // When the edition changes, construct a copies table
+        var $copyTable = $('#copy-table');
+        var editionURL = $editionTable.data("url")
+        $editionTable.on("selectionChange", function(e, id) {
+            $copyTable.empty();
+            if (!id) return;
+            
+            $copyTable.itemTable({
+                url: editionURL + '/' + id + '/copies',
+                objectName: 'copy',
+                initialLoad: true,
+                columns: [
+                    {
+                        name: 'Accession Number',
+                        field: 'accession_id',
+                        type: 'read_only'
+                    },
+                    {
+                        name: 'Condition Rating',
+                        field: 'condition_rating'
+                    },
+                    {
+                        name: 'Condition Description',
+                        field: 'condition_description'
+                    },
+                    {
+                        name: 'Price',
+                        field: 'formatted_price',
+                        raw: 'price',
+                        default_val: $editionTable.find('tr[data-id=' + id + '] td:eq(2)').data("val")
+                    }
+                ]
+            });
         });
     }
     
