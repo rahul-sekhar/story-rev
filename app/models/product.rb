@@ -3,7 +3,7 @@ class Product < ActiveRecord::Base
   
   attr_accessible :title, :author_name, :illustrator_name, :publisher_name, :year, :age_from, :age_to,
                   :genre_list, :keyword_list, :flipkart_id, :amazon_url, :short_description,
-                  :award_attributes, :other_field_attributes
+                  :award_attributes, :other_field_attributes, :cover_image_id
   
   before_validation :set_accession_id
   
@@ -17,6 +17,7 @@ class Product < ActiveRecord::Base
   has_many :editions, :dependent => :destroy
   has_many :copies, :through => :editions
   has_many :other_fields, :dependent => :destroy
+  has_one :cover_image, :dependent => :destroy
   
   validates :title, :presence => true, :length => { :maximum => 250 }, :uniqueness => true
   validates :author, :presence => true
@@ -175,6 +176,20 @@ class Product < ActiveRecord::Base
       else
         OtherField.find(a[:id]).destroy if a[:id].present?
       end
+    end
+  end
+  
+  def cover_image_id
+    cover_image.present? ? cover_image.id : nil
+  end
+  
+  def cover_image_id=(cover_id)
+    if (cover_image.present? && cover_id != cover_image.id)
+      cover_image.destroy
+    end
+    
+    if cover_id.present?
+      self.cover_image = CoverImage.find(cover_id)
     end
   end
 end

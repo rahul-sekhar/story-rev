@@ -254,9 +254,107 @@ $(document).ready(function() {
             .remove()
             .end();
     
-    // Handke the addition of other fields
+    // Handle the addition of other fields
     $('#add-field-link').click(function(e) {
         $otherFieldTemplate.clone().appendTo($otherFields);
+        e.preventDefault();
+    });
+    
+    
+    // Handle cover images
+    
+    var $imageDialog = $('<section id="image-dialog"></section>');
+    var $progressCont = $('<div id="progress-bar"></div>').hide().appendTo($imageDialog);
+    var $progressBar = $('<div></div>').appendTo($progressCont);
+    var $progressText = $('<span></span>').appendTo($progressCont);
+    var $errorMsg = $('<p class="error"></p>').hide().appendTo($imageDialog);
+    var $dialogInfo = $('<p>Choose a file to upload. The image can be up to 2 MB and must be a JPEG, GIF or PNG file</p>').appendTo($imageDialog);
+    var jqXHR = null;
+    var $cancel = $('<a href="#" class="cancel">Cancel</a>').click(function(e) {
+            e.preventDefault();
+            if (jqXHR) jqXHR.abort();
+            $imageDialog.trigger('exit');
+        }).appendTo($imageDialog);
+    
+    var initDialog = function(errMsg) {
+        $progressCont.hide();
+        $imageDialog.find('input').show();
+        if (errMsg) {
+            $errorMsg.text(errMsg).show()
+        }
+        else {
+            $errorMsg.hide();
+        }
+        $dialogInfo.show();
+        $cancel.show();
+    };
+    
+    // Set up the uploader in the dialog
+    $('<input type="file" id="image-uploader" name="image_file" />').fileupload({
+        dataType: 'json',
+        url: '/admin/cover_images',
+        singeFileUpload: true,
+        add: function(e, data) {
+            var file = data.files[0];
+            if (file.size > (4 * 1024 * 1024)) {
+               $errorMsg.text('The file cannot be more than 4 MB').show();
+            }
+            else if(!include(["jpg","png","gif"],file.name.slice(-3).toLowerCase()) && (file.name.slice(-4).toLowerCase() != 'jpeg')) {
+                 $errorMsg.text('The file is not a valid format').show();
+            }
+            else {
+                jqXHR = data.submit();
+                $imageDialog.find('input').hide();
+                $dialogInfo.hide();
+                $errorMsg.hide();
+                $progressBar.css('width', '0');
+                $progressText.text('0%');
+                $progressCont.fadeIn();
+            }
+        },
+        progress: function (e, data) {
+            var progress = parseInt(data.loaded / data.total * 100, 10);
+            $progressBar.css('width', progress + '%');
+            $progressText.text(progress + '%');
+        },
+        done: function (e, data) {
+            $progressBar.css('width', '100%');
+            $progressText.text('100%');
+            $imageDialog.find('input').hide();
+            $progressCont.fadeOut(function() {
+                var jsonData = $.parseJSON(data.jqXHR.responseText);
+                $imageDialog.trigger('exit', [jsonData.id, jsonData.url, jsonData.thumb]);
+            });
+        },
+        fail: function (e, data) {
+            if (data.errorThrown == "abort") {
+                 initDialog('Upload cancelled');
+            }
+            else {
+                initDialog($.parseJSON(data.jqXHR.responseText)[0]);
+            }
+        }
+    }).appendTo($imageDialog);
+    
+    // Handle the image links to add and clear the cover
+    var $cover = $('.cover:first');
+    var $coverId = $('#product_cover_image_id');
+    $('#upload-cover-link').click(function(e) {
+        initDialog();
+        $.blockUI({message: $imageDialog});
+        $imageDialog.one('exit', function(event, id, url, thumb) {
+            if (url) {
+                $cover.empty().append('<a href="' + url + '"><img alt="" src="' + thumb + '" /></a>');
+                $coverId.val(id);
+            }
+            $.unblockUI();
+        });
+        e.preventDefault();
+    });
+    
+    $('#clear-cover-link').click(function(e) {
+        $cover.empty();
+        $coverId.val(null);
         e.preventDefault();
     });
 });

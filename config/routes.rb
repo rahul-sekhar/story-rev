@@ -7,6 +7,8 @@ StoryRev::Application.routes.draw do
     
     root :to => "products#index"
     
+    get "clear_images" => "cron#image_cron"
+    
     resources :products do
       resources :editions do
         resources :copies
@@ -19,6 +21,7 @@ StoryRev::Application.routes.draw do
     resources :keywords
     resources :product_tags
     resources :formats
+    resources :cover_images
     
     resources :award_types do
       resources :awards

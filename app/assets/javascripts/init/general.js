@@ -15,6 +15,10 @@ $.fn.appendOption = function(value, text) {
     return $(this).append(makeOption(value, text));
 }
 
+function include(arr,obj) {
+    return (arr.indexOf(obj) != -1);
+}
+
 // BlockUI Settings
 $.blockUI.loadingMessage = '<img src="/images/loading.gif" />';
 $.blockUI.loadingCss =  { 

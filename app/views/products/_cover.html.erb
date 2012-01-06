@@ -1,0 +1,7 @@
+<div class="cover">
+  <% if product.cover_image.present? %>
+    <%= link_to (image_tag product.cover_image.thumb_url, :alt => product.title), product.cover_image.url %>
+  <% else %>
+    <%= product.title %>
+  <% end %>
+</div>

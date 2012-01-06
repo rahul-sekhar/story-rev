@@ -14,6 +14,11 @@
   <% end %>
   </ul>
   
+  <%= render "products/cover", :product => @product %>
+  <%= f.hidden_field :cover_image_id, :value => @product.cover_image_id %>
+  <%= link_to "Clear", "#", :id => "clear-cover-link" %>
+  <%= link_to "Upload", "#", :id => "upload-cover-link" %>
+  
   <%= f.input :accession_id, :required => false, :label => "Accession Number", :disabled => true %>
   <%= f.input :title, :required => false %>
   <%= f.input :author_name %>

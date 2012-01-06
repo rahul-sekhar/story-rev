@@ -31,4 +31,10 @@ class Admin::ApplicationController < ActionController::Base
       redirect_to admin_login_path, :alert => "You must sign in first"
     end
   end
+  
+  def require_admin
+    unless admin_role == 'admin'
+      redirect_to admin_root_url, :alert => "You cannot access that page"
+    end
+  end
 end

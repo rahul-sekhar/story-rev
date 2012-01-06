@@ -19,7 +19,7 @@ ul.token-input-list {
     cursor: text;
     font-size: e($token-font-size);
     min-height: 1px;
-    z-index: 2000;
+    z-index: 100;
     margin: 0;
     padding: 0;
     background-color: #fff;
@@ -140,7 +140,7 @@ div.token-input-dropdown {
     cursor: default;
     font-size: e($dropdown-font-size);
     
-    z-index: 2012;
+    z-index: 111;
     
     li, p {
         font-size:1em;
@@ -186,4 +186,14 @@ div.token-input-dropdown ul li em {
 div.token-input-dropdown ul li.token-input-selected-dropdown-item {
     background-color: $token-bg-color;
     color: #fff;
+}
+
+.blockUI {
+    ul.token-input-list {
+        z-index: 2000;
+    }
+    
+    div.token-input-dropdown {
+        z-index: 2012;
+    }
 }

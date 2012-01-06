@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120103102333) do
+ActiveRecord::Schema.define(:version => 20120105063348) do
 
   create_table "admin_roles", :force => true do |t|
     t.string   "name"
@@ -61,6 +61,13 @@ ActiveRecord::Schema.define(:version => 20120103102333) do
   add_index "copies", ["accession_id"], :name => "index_copies_on_accession_id", :unique => true
   add_index "copies", ["condition_rating"], :name => "index_copies_on_condition_rating"
   add_index "copies", ["edition_id"], :name => "index_copies_on_edition_id"
+
+  create_table "cover_images", :force => true do |t|
+    t.integer  "product_id"
+    t.string   "filename"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "editions", :force => true do |t|
     t.integer  "product_id"
@@ -139,7 +146,6 @@ ActiveRecord::Schema.define(:version => 20120103102333) do
     t.string   "amazon_url"
     t.text     "short_description"
     t.string   "accession_id"
-    t.string   "cover_image"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

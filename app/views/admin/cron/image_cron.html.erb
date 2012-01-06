@@ -1,0 +1,11 @@
+<ul>
+  <% @cover_images.each do |i| %>
+    <li>
+      <em>Image Id:</em> <%= i.id %><br />
+      <em>Name:</em> <%= link_to i.file_info[:name], i.file_info[:url] %> (<%= number_to_human_size(i.file_info[:size]) %>)<br />
+      <em>Created on:</em> <%= i.created_at %><br />
+      <em>Product:</em> <%= i.product_id.present? ? i.product.title : "No Product" %>
+      <% if i.destroyed? %><br /><strong>DELETED</strong><% end %>
+    </li>
+  <% end %>
+</ul>
