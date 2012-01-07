@@ -16,6 +16,8 @@ gem 'kaminari'
 gem 'carrierwave'
 gem 'rmagick'
 gem 'simple_form'
+gem 'nokogiri'
+gem 'amazon-ecs'
 
 gem 'capistrano'
 gem 'bcrypt-ruby', '~> 3.0.0', :require => "bcrypt"

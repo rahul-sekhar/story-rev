@@ -53,3 +53,29 @@ tr.selected {
         max-height:150px;
     }
 }
+
+#sidebar {
+    position:fixed;
+    top:0;
+    right:0;
+    width:30%;
+    height:100%;
+    background-color: #ddd;
+    border-left:1px solid #aaa;
+    display:none;
+    word-wrap:break-word;
+    overflow:auto;
+    
+    select {
+        width:100%;
+    }
+    
+    ul {
+        list-style-type:none;
+        padding:10px;
+    }
+    
+    li {
+        padding-bottom:5px;
+    }
+}

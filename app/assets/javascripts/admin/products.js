@@ -365,4 +365,64 @@ $(document).ready(function() {
             $coverId.attr("name", "product[cover_image_url]").val(url);
         }
     });
+    
+    
+    
+    // Handle amazon information
+    var $sidebar = $('#sidebar');
+    var $productList = $sidebar.find('.products');
+    var $productInfo = $sidebar.find('.product-info');
+    var productInfo = [];
+    
+    $sidebar.on('click', '.close', function(e) {
+        $sidebar.hide();
+        e.preventDefault();
+    });
+    
+    var $productTitle = $('#product_title');
+    
+    // Load amazon data
+    $productTitle.blur(function() {
+        var title = $(this).val();
+        
+        if (!$.trim(title)) {
+            $sidebar.hide();
+            return;
+        }
+        $sidebar.show()
+        if (title == $sidebar.data("title")) return;
+        $sidebar.block(blockUILoading);
+        $.get('/admin/products/amazon_info.json', {'title': title}, function(data) {
+            $productList.empty();
+            $productInfo.empty();
+            
+            if (!data.length) {
+                $productList.appendOption("none", "No amazon results found...");
+                $sidebar.unblock();
+                productInfo = []
+                return;
+            }
+            
+            $sidebar.data("title", title)
+            $.each(data, function(index, entry) {
+                $productList.appendOption(index, entry.title);
+            });
+            
+            productInfo = data;
+            
+            $sidebar.unblock();
+        });
+    });
+    
+    // Show book info on selection change
+    $productList.change(function() {
+        $productInfo.empty();
+        var currProduct = productInfo[$productList.val()];
+        $productInfo.append('<div class="cover"><img src="' + currProduct.image + '" alt="" /></div>');
+        $.each(currProduct, function(key, val) {
+            $productInfo.append('<li><strong>' + key + ': </strong><br />' + val + '</li>');
+        });
+    });
+    
+    $productTitle.blur();
 });

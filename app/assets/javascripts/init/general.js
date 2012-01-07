@@ -31,6 +31,8 @@ $.blockUI.loadingCss =  {
     backgroundColor:'#eee', 
     cursor:         'wait' 
 };
+var blockUILoading = { message: $.blockUI.loadingMessage, css: $.blockUI.loadingCss };
+
 $.blockUI.dialogCss = { 
     padding:        0, 
     margin:         0, 

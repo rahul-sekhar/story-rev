@@ -13,6 +13,9 @@ StoryRev::Application.routes.draw do
       resources :editions do
         resources :copies
       end
+      collection do
+        get 'amazon_info'
+      end
     end
     resources :authors
     resources :illustrators
