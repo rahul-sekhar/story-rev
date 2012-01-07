@@ -28,7 +28,7 @@ class Admin::ProductsController < Admin::ApplicationController
   def create
     @product = Product.new(params[:product])
     if @product.save
-      redirect_to admin_products_path, :notice => "Product created - its accession number is #{@product.accession_id}"
+      redirect_to product_path(@product), :notice => "Product created - its accession number is #{@product.accession_id}"
     else
       flash.now.alert = "Some fields are not valid"
       render "new"

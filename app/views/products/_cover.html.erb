@@ -1,7 +1,12 @@
-<div class="cover">
-  <% if product.cover_image.present? %>
-    <%= link_to (image_tag product.cover_image.thumb_url, :alt => product.title), product.cover_image.url %>
-  <% else %>
-    <%= product.title %>
-  <% end %>
-</div>
+<% link_to_image ||= false %>
+  <div class="cover">
+    <% if product.cover_image.present? %>
+      <%= link_to (image_tag product.cover_image.thumb_url, :alt => product.title), (link_to_image ? product.cover_image.url : product_path(product)) %>
+    <% else %>
+      <% if link_to_image || product.new_record? %>
+        <%= product.title %>
+      <% else %>
+        <%= link_to product.title, product_path(product) %>
+      <% end %>
+    <% end %>
+  </div>

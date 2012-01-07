@@ -1,5 +1,9 @@
 StoryRev::Application.routes.draw do
   
+  root :to => "pages#store"
+  resources :products
+  
+  # Admin routes  
   namespace :admin do
     get "logout" => "sessions#destroy", :as => "logout"
     get "login" => "sessions#new", :as => "login"

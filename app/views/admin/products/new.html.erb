@@ -3,15 +3,12 @@
     Books
     <ol>
       <li>
-        Search
+        <%= link_to "Search", admin_products_path %>
       </li>
       <li>
-        Add
+        <%= link_to "Add", new_admin_product_path %>
       </li>
     </ol>
-  <li>
-    Stock-taking
-  </li>
 </ul>
 
 <%= render "fields" %>

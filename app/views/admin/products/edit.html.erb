@@ -3,21 +3,18 @@
     Books
     <ol>
       <li>
-        Search
+        <%= link_to "Search", admin_products_path %>
       </li>
       <li>
-        Edit
+        <%= link_to "Edit", edit_admin_product_path(@product) %>
       </li>
       <li>
-        Book Information
+        <%= link_to "Book Information", edit_admin_product_path(@product) %>
       </li>
       <li>
-        Copies
+        <%= link_to "Copies", admin_product_path(@product) %>
       </li>
     </ol>
-  <li>
-    Stock-taking
-  </li>
 </ul>
 
 <%= render "fields" %>
