@@ -14,7 +14,7 @@
   <% end %>
   </ul>
   
-  <%= render "products/cover", :product => @product %>
+  <%= render "products/cover", :product => @product, :link_to_image => true %>
   <%= f.hidden_field :cover_image_id, :value => @product.cover_image_id %>
   <%= link_to "Clear", "#", :id => "clear-cover-link" %>
   <%= link_to "Upload", "#", :id => "upload-cover-link" %>
