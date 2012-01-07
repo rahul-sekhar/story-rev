@@ -47,4 +47,9 @@ tr.selected {
     height:150px;
     text-align:center;
     border:1px solid black;
+    
+    img {
+        max-width:100px;
+        max-height:150px;
+    }
 }

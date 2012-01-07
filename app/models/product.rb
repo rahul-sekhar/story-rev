@@ -3,7 +3,7 @@ class Product < ActiveRecord::Base
   
   attr_accessible :title, :author_name, :illustrator_name, :publisher_name, :year, :age_from, :age_to,
                   :genre_list, :keyword_list, :flipkart_id, :amazon_url, :short_description,
-                  :award_attributes, :other_field_attributes, :cover_image_id
+                  :award_attributes, :other_field_attributes, :cover_image_id, :cover_image_url
   
   before_validation :set_accession_id
   
@@ -191,5 +191,13 @@ class Product < ActiveRecord::Base
     if cover_id.present?
       self.cover_image = CoverImage.find(cover_id)
     end
+  end
+  
+  def cover_image_url=(url)
+    if (cover_image.present?)
+      cover_image.destroy
+    end
+    
+    self.cover_image = CoverImage.new(:remote_filename_url => url)
   end
 end

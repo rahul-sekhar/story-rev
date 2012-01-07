@@ -345,7 +345,7 @@ $(document).ready(function() {
         $imageDialog.one('exit', function(event, id, url, thumb) {
             if (url) {
                 $cover.empty().append('<a href="' + url + '"><img alt="" src="' + thumb + '" /></a>');
-                $coverId.val(id);
+                $coverId.attr("name", "product[cover_image_id]").val(id);
             }
             $.unblockUI();
         });
@@ -354,7 +354,15 @@ $(document).ready(function() {
     
     $('#clear-cover-link').click(function(e) {
         $cover.empty();
-        $coverId.val(null);
+        $coverId.attr("name", "product[cover_image_id]").val(null);
         e.preventDefault();
+    });
+    
+    $('#cover-url-link').click(function(e) {
+        var url = prompt("Enter the URL:");
+        if (url) {
+            $cover.empty().append('<a href="' + url + '"><img alt="" src="' + url + '" /></a>')
+            $coverId.attr("name", "product[cover_image_url]").val(url);
+        }
     });
 });

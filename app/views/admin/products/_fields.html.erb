@@ -18,6 +18,7 @@
   <%= f.hidden_field :cover_image_id, :value => @product.cover_image_id %>
   <%= link_to "Clear", "#", :id => "clear-cover-link" %>
   <%= link_to "Upload", "#", :id => "upload-cover-link" %>
+  <%= link_to "Use URL", "#", :id => "cover-url-link" %>
   
   <%= f.input :accession_id, :required => false, :label => "Accession Number", :disabled => true %>
   <%= f.input :title, :required => false %>
