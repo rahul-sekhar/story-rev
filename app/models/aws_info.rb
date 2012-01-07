@@ -14,6 +14,8 @@ class AWSInfo
       next if !filter(item_title)
       
       objects << {
+        :isbn => attrs.get('ISBN'),
+        :author => attrs.get('Author'),
         :title => item_title,
         :illustrator => get_illustrator(attrs),
         :publisher => attrs.get('Publisher'),

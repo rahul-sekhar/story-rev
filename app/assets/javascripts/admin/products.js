@@ -418,11 +418,34 @@ $(document).ready(function() {
     $productList.change(function() {
         $productInfo.empty();
         var currProduct = productInfo[$productList.val()];
-        $productInfo.append('<div class="cover"><img src="' + currProduct.image + '" alt="" /></div>');
-        $.each(currProduct, function(key, val) {
-            $productInfo.append('<li><strong>' + key + ': </strong><br />' + val + '</li>');
-        });
+        $productInfo
+            .append('<li><div class="cover"><img src="' + currProduct.image + '" alt="" /></div>')
+            .append('<a href="#" class="use-link">Use</a> (' + (currProduct.imageWidth || 0) + '&times;' + (currProduct.imageHeight || 0) + ')</li>')
+            .appendLi('Title', currProduct.title)
+            .appendLi('Author', currProduct.author)
+            .appendLi('Illustrator', currProduct.illustrator)
+            .appendLi('ISBN', currProduct.isbn)
+            .appendLi('Publisher', currProduct.publisher)
+            .appendLi('Publication Date', currProduct.publicationDate)
+            .appendLi('Age Level', currProduct.age)
+            .appendLi('Pages', currProduct.pages)
+            .appendLi('Amazon Page:', '<a href="' + currProduct.details + '">' + currProduct.details + '</a>');
     });
+    
+    // Handle using amazon images
+    $sidebar.on("click", "a.use-link", function(e) {
+        var url = $sidebar.find('.cover img').attr('src');
+        if (url) {
+            $cover.empty().append('<a href="' + url + '"><img alt="" src="' + url + '" /></a>')
+            $coverId.attr("name", "product[cover_image_url]").val(url);
+        }
+        e.preventDefault();
+    });
+    
+    $.fn.appendLi = function(title, value, br) {
+        br = br || false;
+        return $(this).append('<li><strong>' + title + ': </strong>' + (br ? '<br />' : '') + (value || '') + '</li>');
+    }
     
     $productTitle.blur();
 });
