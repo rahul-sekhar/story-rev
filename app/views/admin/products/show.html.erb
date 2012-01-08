@@ -15,11 +15,11 @@
   </ol>
 <% end %>
 
-<p>Title: <%= @product.title %></p>
+<p><strong>Title:</strong> <%= @product.title %></p>
 
-<p>Author: <%= @product.author_name %></p>
+<p><strong>Author:</strong> <%= @product.author_name %></p>
 
-<p>Editions</p>
+<p><strong>Editions</strong></p>
 
 <table id="edition-table" data-url="<%= admin_product_editions_path(@product) %>">
   <% @product.editions.each do |e| %>
@@ -31,7 +31,7 @@
   <% end %>
 </table>
 
-<p>Copies</p>
+<p><strong>Copies</strong></p>
 
 <table id="copy-table">
 </table>

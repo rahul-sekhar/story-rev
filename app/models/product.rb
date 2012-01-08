@@ -91,6 +91,18 @@ class Product < ActiveRecord::Base
     end
   end
   
+  def age_level
+    if (age_from && age_to)
+      "#{age_from}-#{age_to}"
+    elsif age_from
+      "#{age_from}+"
+    elsif age_to
+      "#{age_to}-"
+    else
+      ""
+    end
+  end
+  
   def author_name=(name)
     self.author = name.present? ? (Author.name_is(name) || Author.new({ :full_name => name })) : nil
   end
@@ -199,5 +211,19 @@ class Product < ActiveRecord::Base
     end
     
     self.cover_image = CoverImage.new(:remote_filename_url => url)
+  end
+  
+  def num_copies
+    copies.length
+  end
+  
+  def get_theme_hash
+    {
+      :id => id,
+      :title => title,
+      :author_name => author_name,
+      :age_level => age_level,
+      :num_copies => num_copies
+    }
   end
 end

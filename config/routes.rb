@@ -28,7 +28,10 @@ StoryRev::Application.routes.draw do
     resources :keywords
     resources :product_tags
     resources :formats
-    resources :themes
+    resources :themes do
+      resources :products, :controller => "theme_products"
+      put :update_products
+    end
     resources :theme_icons
     resources :award_types do
       resources :awards

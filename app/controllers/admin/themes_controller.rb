@@ -30,4 +30,15 @@ class Admin::ThemesController < Admin::ApplicationController
     render :json => { :success => true }
   end
   
+  def show
+    @theme = Theme.find(params[:id])
+    @products = Product.all
+  end
+  
+  def update_products
+    @theme = Theme.find(params[:theme_id])
+    @theme.product_ids = params[:products]
+    redirect_to admin_themes_path, :notice => "The product list for '#{@theme.name}' has been updated"
+  end
+  
 end

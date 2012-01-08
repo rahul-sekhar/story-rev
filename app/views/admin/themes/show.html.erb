@@ -1,0 +1,22 @@
+<h2>Update product list for</h2>
+
+<h3>
+  <%= @theme.theme_icon.present? ? image_tag(@theme.icon_url) : nil %>
+  <%= @theme.name %>
+</h3>
+<%= form_tag admin_theme_update_products_path(@theme), :method => :put do |f| %>
+<div class="table-container theme-products-list">
+  <table id="theme-product-list-table">
+    <% @products.each do |p| %>
+      <tr>
+        <td><%= check_box_tag "products[]", p.id, @theme.products.exists?(p) %></td>
+        <td><%= p.title %></td>
+        <td><%= p.author_name %></td>
+        <td><%= (p.num_copies > 0) ? "In Stock" : "" %></td>
+      </tr>
+    <% end %>
+  </table>
+</div>
+<%= submit_tag "Save" %>
+<%= link_to "Cancel", admin_themes_path %>
+<% end %>

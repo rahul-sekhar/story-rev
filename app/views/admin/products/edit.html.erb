@@ -18,4 +18,10 @@
 
 <%= render "fields" %>
 
+<% if admin? %>
+  <%= link_to "Delete Product", admin_product_path(@product),
+    :confirm => "Are you sure you want to delete this product? This cannot be undone.",
+    :method => :delete %>
+<% end %>
+
 <%= render "amazon_sidebar" %>

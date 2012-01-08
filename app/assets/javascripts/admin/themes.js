@@ -24,4 +24,44 @@ $(document).ready(function() {
             },
         ]
     });
+    
+    // When the theme table changes, construct a product table for that theme
+    var $themeLink = $('<a href="#">Select products from a list</a>');
+    var $productTable = $('#theme-product-table');
+    $themeTable.on("selectionChange", function(e, id) {
+        $productTable.empty();
+        if (!id) return;
+        
+        $productTable.itemTable({
+            url: '/admin/themes/' + id + '/products',
+            objectName: 'product',
+            initialLoad: true,
+            selectable: false,
+            numbered: true,
+            editable: false,
+            addable: false,
+            columns: [
+                {
+                    name: 'Title',
+                    field: 'title'
+                },
+                {
+                    name: 'Author Name',
+                    field: 'author_name'
+                },
+                {
+                    name:'Age Level',
+                    field: 'age_level'
+                },
+                {
+                    name:'In Stock',
+                    field: 'num_copies',
+                    displayCallback: function(data) {
+                        return (data > 0) ? "In Stock" : "";
+                    }
+                }
+            ]
+        });
+        $themeLink.attr('href', '/admin/themes/' + id).insertAfter($productTable);
+    });
 });

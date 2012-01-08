@@ -1,7 +1,7 @@
 class Admin::ApplicationController < ActionController::Base
   protect_from_forgery
   before_filter :require_login
-  helper_method :admin_role
+  helper_method :admin_role, :admin?
   
   def redirect_back_or(default)
     redirect_to(session[:return_to] || default)
@@ -24,6 +24,14 @@ class Admin::ApplicationController < ActionController::Base
   
   def admin_role
     @admin_role ||= session[:admin_role] if session[:admin_role]
+  end
+  
+  def admin?
+    (@admin_role == "admin")
+  end
+  
+  def team?
+    (@admin_role == "team")
   end
   
   def require_login

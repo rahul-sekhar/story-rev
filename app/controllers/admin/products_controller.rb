@@ -28,7 +28,7 @@ class Admin::ProductsController < Admin::ApplicationController
   def create
     @product = Product.new(params[:product])
     if @product.save
-      redirect_to product_path(@product), :notice => "Product created - its accession number is #{@product.accession_id}"
+      redirect_to admin_product_path(@product), :notice => "Product created - its accession number is #{@product.accession_id}"
     else
       flash.now.alert = "Some fields are not valid"
       render "new"
@@ -49,6 +49,12 @@ class Admin::ProductsController < Admin::ApplicationController
       flash.now.alert = "Some fields are not valid"
       render "edit"
     end
+  end
+  
+  def destroy
+    @product = Product.find(params[:id])
+    @product.destroy
+    redirect_to admin_products_path, :notice => "Product #{@product.accession_id} - #{@product.title} has been deleted"
   end
   
   def amazon_info

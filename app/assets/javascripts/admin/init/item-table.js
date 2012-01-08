@@ -5,6 +5,7 @@ var DEFAULTS = {
     url: null,                      // If the URL is left null, it is taken from
                                     // the tables data-url attribute
     objectName: "object",
+    numbered: false,
     selectable: false,
     addable: true,
     editable: true,
@@ -29,6 +30,8 @@ var DEFAULTS = {
         image_url: "",              // The URL to which the image should be uploaded
         
         default_val: null,          // The default value
+        
+        displayCallback: function(data) { return data; }
     }]
 }
 
@@ -173,6 +176,7 @@ $.ItemTable = function(table, settings) {
                 success: function(data) {
                     $tr.remove();
                     select_item(null);
+                    restripe();
                     $.unblockUI();
                 },
                 error: function(data) {
@@ -223,7 +227,9 @@ $.ItemTable = function(table, settings) {
     
     this.destroy = function() {
         $table.empty();
-        $addLink.remove();
+        if (settings.addable) {
+            $addLink.remove();
+        }
     }
     
     
@@ -231,6 +237,18 @@ $.ItemTable = function(table, settings) {
     
     function restripe() {
         $table.find('tr').removeClass('alt').filter(':odd').addClass('alt');
+        if (settings.numbered) {
+            renumber();
+        }
+    }
+    
+    function renumber() {
+        $table.find('tr').each(function(index, row) {
+            var $row = $(row);
+            var $number = $row.find('td.number');
+            if (!$number.length) $number = $('<td class="number"></td>').prependTo($row);
+            $number.text(index + 1)
+        });
     }
     
     function createRow(data) {
@@ -241,9 +259,12 @@ $.ItemTable = function(table, settings) {
                 $td.html('<img src="' + data[value.field] + '" alt="" />');
             }
             else {
-                $td.text(data[value.field] || "")
+                var text = value.displayCallback ? value.displayCallback(data[value.field]) : data[value.field];
+                $td.text(text || "")
             }
+            
             $td.data("val", data[value.raw || value.field] || "").appendTo($tr);
+            
         });
         return addManageLinks($tr, settings);
     }
