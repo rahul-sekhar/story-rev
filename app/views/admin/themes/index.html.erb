@@ -1,0 +1,10 @@
+<div class="table-container themes">
+  <table id="theme-table" data-url="<%= admin_themes_path %>">
+    <% @themes.each do |t| %>
+      <tr data-id="<%= t.id %>">
+        <td data-val="<%= t.icon_data_json %>"><%= t.theme_icon.present? ? image_tag(t.icon_url) : nil %></td>
+        <td data-val="<%= t.name %>"><%= t.name %></td>
+      </tr>
+    <% end %>
+  </table>
+</div>

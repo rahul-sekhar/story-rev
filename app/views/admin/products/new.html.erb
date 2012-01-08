@@ -1,15 +1,13 @@
-<ul class="top-nav">
-  <li>
-    Books
-    <ol>
-      <li>
-        <%= link_to "Search", admin_products_path %>
-      </li>
-      <li>
-        <%= link_to "Add", new_admin_product_path %>
-      </li>
-    </ol>
-</ul>
+<% content_for :book_nav do %>
+  <ol>
+    <li>
+      <%= link_to "Search", admin_products_path %>
+    </li>
+        <li>
+      <%= link_to "Add", new_admin_product_path %>
+    </li>
+  </ol>
+<% end %>
 
 <%= render "fields" %>
 

@@ -5,12 +5,11 @@ StoryRev::Application.routes.draw do
   
   # Admin routes  
   namespace :admin do
+    root :to => "products#index"
+    
     get "logout" => "sessions#destroy", :as => "logout"
     get "login" => "sessions#new", :as => "login"
     post "login" => "sessions#create"
-    
-    root :to => "products#index"
-    
     get "clear_images" => "cron#image_cron"
     
     resources :products do
@@ -21,6 +20,7 @@ StoryRev::Application.routes.draw do
         get 'amazon_info'
       end
     end
+    resources :cover_images
     resources :authors
     resources :illustrators
     resources :publishers
@@ -28,8 +28,8 @@ StoryRev::Application.routes.draw do
     resources :keywords
     resources :product_tags
     resources :formats
-    resources :cover_images
-    
+    resources :themes
+    resources :theme_icons
     resources :award_types do
       resources :awards
     end

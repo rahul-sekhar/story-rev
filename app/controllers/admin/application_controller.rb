@@ -1,6 +1,7 @@
 class Admin::ApplicationController < ActionController::Base
   protect_from_forgery
   before_filter :require_login
+  helper_method :admin_role
   
   def redirect_back_or(default)
     redirect_to(session[:return_to] || default)

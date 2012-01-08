@@ -1,12 +1,10 @@
-<ul class="top-nav">
-  <li>
-    Books
-    <ol>
-      <li>
-        <%= link_to "Search", admin_products_path %>
-      </li>
-    </ol>
-</ul>
+<% content_for :book_nav do %>
+  <ol>
+    <li>
+      <%= link_to "Search", admin_products_path %>
+    </li>
+  </ol>
+<% end %>
 
 <input name="product-search" id="product-search" />
 <%= link_to "Add a new product", new_admin_product_path, :class => "button" %>

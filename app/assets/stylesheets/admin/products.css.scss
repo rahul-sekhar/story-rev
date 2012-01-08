@@ -25,6 +25,17 @@ div.input {
     }
 }
 
+.table-container {
+    height: 200px;
+    overflow:auto;
+    border:1px solid #ccc;
+    
+    &.themes {
+        float:left;
+        width:400px;
+    }
+}
+
 table {    
     border-collapse:collapse;
     width:100%;

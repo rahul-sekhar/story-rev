@@ -74,6 +74,10 @@ ul.token-input-list {
     &.thin {
         width: e($thin-width, $token-font-size);
     }
+    
+    &.dialog {
+        z-index:2000;
+    }
 }
 
 ul.token-input-list li input {
@@ -149,6 +153,10 @@ div.token-input-dropdown {
     &.thin {
         width: e($thin-width, $dropdown-font-size);
     }
+    
+    &.dialog {
+        z-index:2000;
+    }
 }
 
 div.token-input-dropdown p {
@@ -186,14 +194,4 @@ div.token-input-dropdown ul li em {
 div.token-input-dropdown ul li.token-input-selected-dropdown-item {
     background-color: $token-bg-color;
     color: #fff;
-}
-
-.blockUI {
-    ul.token-input-list {
-        z-index: 2000;
-    }
-    
-    div.token-input-dropdown {
-        z-index: 2012;
-    }
 }

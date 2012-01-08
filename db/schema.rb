@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120105063348) do
+ActiveRecord::Schema.define(:version => 20120108053035) do
 
   create_table "admin_roles", :force => true do |t|
     t.string   "name"
@@ -192,6 +192,11 @@ ActiveRecord::Schema.define(:version => 20120105063348) do
   add_index "products_product_tags", ["product_id", "product_tag_id"], :name => "index_products_product_tags_on_product_id_and_product_tag_id", :unique => true
   add_index "products_product_tags", ["product_id"], :name => "index_products_product_tags_on_product_id"
 
+  create_table "products_themes", :id => false, :force => true do |t|
+    t.integer "product_id"
+    t.integer "theme_id"
+  end
+
   create_table "publishers", :force => true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -199,5 +204,18 @@ ActiveRecord::Schema.define(:version => 20120105063348) do
   end
 
   add_index "publishers", ["name"], :name => "index_publishers_on_name", :unique => true
+
+  create_table "theme_icons", :force => true do |t|
+    t.integer  "theme_id"
+    t.string   "filename"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "themes", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
 end

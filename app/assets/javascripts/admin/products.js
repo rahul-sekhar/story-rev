@@ -290,7 +290,7 @@ $(document).ready(function() {
     };
     
     // Set up the uploader in the dialog
-    $('<input type="file" id="image-uploader" name="image_file" />').fileupload({
+    $('<input type="file" class="image-uploader" name="image_file" />').fileupload({
         dataType: 'json',
         url: '/admin/cover_images',
         singeFileUpload: true,

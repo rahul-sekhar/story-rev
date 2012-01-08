@@ -1,21 +1,20 @@
-<ul class="top-nav">
-  <li>
-    Books
-    <ol>
-      <li>
-        <%= link_to "Search", admin_products_path %>
-      </li>
-      <li>
-        <%= link_to "Edit", edit_admin_product_path(@product) %>
-      </li>
-      <li>
-        <%= link_to "Book Information", edit_admin_product_path(@product) %>
-      </li>
-      <li>
-        <%= link_to "Copies", admin_product_path(@product) %>
-      </li>
-    </ol>
-</ul>
+<% content_for :book_nav do %>
+  <ol>
+    <li>
+      <%= link_to "Search", admin_products_path %>
+    </li>
+    <li>
+      <%= link_to "Edit", edit_admin_product_path(@product) %>
+    </li>
+    <li>
+      <%= link_to "Book Information", edit_admin_product_path(@product) %>
+    </li>
+    <li>
+      <%= link_to "Copies", admin_product_path(@product) %>
+    </li>
+  </ol>
+<% end %>
+
 <p>Title: <%= @product.title %></p>
 
 <p>Author: <%= @product.author_name %></p>

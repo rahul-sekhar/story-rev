@@ -7,7 +7,21 @@
   <%= csrf_meta_tags %>
 </head>
 <body<%=raw @class ? " class=\"#{@class}\"" : nil %>>
-  
+
+<% if admin_role %>
+  <ul class="top-nav">
+    <li>
+      <%= link_to "Books", admin_products_path %>
+      <%= yield :book_nav %>
+    <li>
+      <%= link_to "Themes", admin_themes_path %>
+    </li>
+    <li>
+      <%= link_to "Logout", admin_logout_path %>
+    </li>
+  </ul>
+<% end %>
+
 <% if notice %>
   <p class="notice"><%= notice %></p>
 <% end %>
