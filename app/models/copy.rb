@@ -1,5 +1,7 @@
 class Copy < ActiveRecord::Base
   before_validation :set_accession_id
+  after_save :check_product_stock
+  after_destroy :check_product_stock
   
   belongs_to :edition
   validates :accession_id, :presence => true, :uniqueness => true
@@ -34,5 +36,10 @@ class Copy < ActiveRecord::Base
     else
       "#{base_acc}-001"
     end
+  end
+  
+  def check_product_stock
+    p = edition.product
+    p.check_stock
   end
 end

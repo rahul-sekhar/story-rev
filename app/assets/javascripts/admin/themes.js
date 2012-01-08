@@ -55,9 +55,9 @@ $(document).ready(function() {
                 },
                 {
                     name:'In Stock',
-                    field: 'num_copies',
+                    field: 'in_stock',
                     displayCallback: function(data) {
-                        return (data > 0) ? "In Stock" : "";
+                        return (data ? "In Stock" : "");
                     }
                 }
             ]

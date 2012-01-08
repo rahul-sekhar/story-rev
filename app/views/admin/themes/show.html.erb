@@ -12,7 +12,7 @@
         <td><%= check_box_tag "products[]", p.id, @theme.products.exists?(p) %></td>
         <td><%= p.title %></td>
         <td><%= p.author_name %></td>
-        <td><%= (p.num_copies > 0) ? "In Stock" : "" %></td>
+        <td><%= p.in_stock ? "In Stock" : "" %></td>
       </tr>
     <% end %>
   </table>

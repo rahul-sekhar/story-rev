@@ -5,6 +5,7 @@ var DEFAULTS = {
     url: null,                      // If the URL is left null, it is taken from
                                     // the tables data-url attribute
     objectName: "object",
+    tooltips: true,
     numbered: false,
     selectable: false,
     addable: true,
@@ -188,16 +189,6 @@ $.ItemTable = function(table, settings) {
         });
     }
     
-    // Load initial items
-    if (settings.initialLoad) {
-        $.get(settings.url, function(data) {
-            $.each(data, function(index, value) {
-                $table.append(createRow(value));
-            });
-            restripe();
-        });
-    }
-    
     // Add edit and delete buttons to exisiting items
     addManageLinks($table.find('tr'), settings)
     
@@ -217,6 +208,26 @@ $.ItemTable = function(table, settings) {
                 $.blockUI({ message: $dialog });
                 e.preventDefault();
             }).insertAfter($tableContainer);
+    }
+    
+    // Initialize tooltips
+    if (settings.tooltips) {
+        $table.find('tr').each(function() {
+            var $tr = $(this);
+            $.each(settings.columns, function(index, value) {
+                $tr.find('td:eq(' + index + ')').attr("title", value.name);
+            });
+        });
+    }
+    
+    // Load initial items
+    if (settings.initialLoad) {
+        $.get(settings.url, function(data) {
+            $.each(data, function(index, value) {
+                $table.append(createRow(value));
+            });
+            restripe();
+        });
     }
     
     // Restripe the table
@@ -263,7 +274,9 @@ $.ItemTable = function(table, settings) {
                 $td.text(text || "")
             }
             
-            $td.data("val", data[value.raw || value.field] || "").appendTo($tr);
+            $td.data("val", data[value.raw || value.field] || "")
+                .attr("title", value.name)
+                .appendTo($tr);
             
         });
         return addManageLinks($tr, settings);

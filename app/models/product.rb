@@ -213,17 +213,20 @@ class Product < ActiveRecord::Base
     self.cover_image = CoverImage.new(:remote_filename_url => url)
   end
   
-  def num_copies
-    copies.length
-  end
-  
   def get_theme_hash
     {
       :id => id,
       :title => title,
       :author_name => author_name,
       :age_level => age_level,
-      :num_copies => num_copies
+      :in_stock => in_stock
     }
+  end
+  
+  def check_stock
+    if (in_stock != (copies.length > 0))
+        self.in_stock = (copies.length > 0)
+        save
+    end
   end
 end

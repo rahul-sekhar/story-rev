@@ -6,6 +6,7 @@ class Edition < ActiveRecord::Base
   
   before_validation :convert_raw_isbn
   
+  validates :isbn, :uniqueness => true
   validates :raw_isbn, :numericality => { :only_integer => true }
   validates :base_price, :numericality => { :only_integer => true }
   

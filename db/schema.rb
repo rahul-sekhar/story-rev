@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120108053035) do
+ActiveRecord::Schema.define(:version => 20120108084216) do
 
   create_table "admin_roles", :force => true do |t|
     t.string   "name"
@@ -148,6 +148,7 @@ ActiveRecord::Schema.define(:version => 20120108053035) do
     t.string   "accession_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "in_stock"
   end
 
   add_index "products", ["accession_id"], :name => "index_products_on_accession_id", :unique => true
