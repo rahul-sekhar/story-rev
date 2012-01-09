@@ -42,7 +42,7 @@ class Admin::ApplicationController < ActionController::Base
   end
   
   def require_admin
-    unless admin_role == 'admin'
+    unless admin?
       redirect_to admin_root_url, :alert => "You cannot access that page"
     end
   end
