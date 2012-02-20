@@ -71,7 +71,7 @@ class Product < ActiveRecord::Base
   def find_accession_id
     if title.present?
       letter = title[0].upcase
-      last_product = self.class.where('UPPER(LEFT(title,1)) = ? AND id <> ?', letter, id || 0).order("accession_id DESC").first
+      last_product = self.class.where('UPPER(SUBSTR(title,1,1)) = ? AND id <> ?', letter, id || 0).order("accession_id DESC").first
       if last_product.present?
         new_acc = last_product.accession_id[2,4].to_i + 1
         "#{letter}-#{"%03d" % new_acc}"
