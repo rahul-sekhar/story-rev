@@ -1,0 +1,18 @@
+h1, html, div, body, ul, ol, li, h4, h3, h2, p, header, nav, img, section, article, footer, blockquote, textarea {
+    margin:0;
+    padding:0;
+}
+
+article, aside, canvas, details,
+figcaption, figure, footer, header,
+hgroup, nav, section, summary, video {
+    display: block;
+}
+
+html {
+    height:100%;
+}
+
+body {
+    height:100%;
+}

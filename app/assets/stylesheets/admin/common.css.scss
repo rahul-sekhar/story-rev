@@ -1,0 +1,28 @@
+body {
+    font-size: $body-font-size;
+    font-family: Serif;
+}
+
+#side-nav {
+    float:left;
+    
+    ul {
+        @include reset-list;
+        margin: e(200px) e(20px) 0 e(20px);
+        width: e(120px);
+        background-color: $teal;
+        @include rounded-corners(10px);
+        padding: e(20px) e(20px);
+        
+        li {
+            @include inner-link($golden, lighten($golden, 10));
+            border-bottom:2px dotted $light-teal;
+            margin-bottom:e(15px);
+        }
+    }
+}
+
+#content {
+    float:left;
+    margin-left: e(20px);
+}
