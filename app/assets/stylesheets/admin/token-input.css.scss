@@ -38,7 +38,7 @@ ul.token-input-list {
         top:0;
         right: e(10px, $token-font-size);
         color: $token-hint-color;
-        line-height: e(27px, $token-font-size);
+        line-height: e(25px, $token-font-size);
     }
     
     &.fill {
@@ -81,11 +81,13 @@ ul.token-input-list {
 }
 
 ul.token-input-list li input {
+    font-size: e($content-text-size, $token-font-size);
     border: 0;
     width: 100px;
+    height: 17px;
     padding: 3px 8px;
     background-color: white;
-    margin: 2px 0;
+    margin: 1px 0;
     -webkit-appearance: caret;
 }
 
@@ -93,7 +95,7 @@ li.token-input-token {
     overflow: hidden; 
     height: auto !important; 
     height: 15px;
-    margin: 3px;
+    margin: 2px 3px;
     padding: 1px 3px;
     background-color:$token-bg-color;
     color: $token-font-color;

@@ -1,10 +1,23 @@
 <% content_for :top_nav do %>
-  <ol>
-    <li>
-      <%= link_to "Search", admin_products_path %>
-    </li>
-  </ol>
+  <li>
+    <%= link_to "Books", admin_products_path %>
+  </li>
+  
+  <li>></li>
+  <li class="current">
+    <%= link_to "Search", admin_products_path %>
+  </li>
+  
+  <li>></li>
+  <li>
+    <%= link_to "Add", new_admin_product_path %>
+  </li>
+  
+  <li class="right">
+    <%= link_to "Stock-Taking", "#" %>
+  </li>
 <% end %>
 
-<input name="product-search" id="product-search" />
-<%= link_to "Add a new product", new_admin_product_path, :class => "button" %>
+<div id="search-box">
+  <input name="product-search" id="product-search" />
+</div>

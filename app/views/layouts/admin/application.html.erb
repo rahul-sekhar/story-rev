@@ -2,43 +2,47 @@
 <html>
 <head>
   <title>StoryRev</title>
+  <link href='http://fonts.googleapis.com/css?family=Quicksand:700' rel='stylesheet' type='text/css'>
   <%= stylesheet_link_tag    "admin/admin" %>
   <%= javascript_include_tag "admin/admin" %>
   <%= csrf_meta_tags %>
 </head>
 <body<%=raw @class ? " class=\"#{@class}\"" : nil %>>
-
-<% if admin_role %>
   
-  <nav id="side-nav">
-    <ul>
-      <li><%= link_to "Books", admin_products_path %></li>
-      <li><%= link_to "Orders", "#" %></li>
-      <li><%= link_to "Customers", "#" %></li>
-      <li><%= link_to "Finances", "#" %></li>
-      <li><%= link_to "Blog", "#" %></li>
-      <li><%= link_to "Others", "#" %></li>
-      <li><%= link_to "Logout", admin_logout_path %></li>
-    </ul>
-  </nav>
-
-<% end %>
+  <div id="wrapper">
   
-  <div id="content">
-    <ul class="top-nav">
-      <%= yield :top_nav %>
-    </ul>
-
-    <% if notice %>
-      <p class="notice"><%= notice %></p>
-    <% end %>
-    <% if alert %>
-      <p class="alert"><%= alert %></p>
-    <% end %>
-
-    <%= yield %>
-
+  <% if admin_role %>
+    
+    <nav id="side-nav">
+      <ul>
+        <li><%= link_to "Books", admin_products_path %></li>
+        <li><%= link_to "Orders", "#" %></li>
+        <li><%= link_to "Customers", "#" %></li>
+        <li><%= link_to "Finances", "#" %></li>
+        <li><%= link_to "Blog", "#" %></li>
+        <li><%= link_to "Others", "#" %></li>
+        <li><%= link_to "Logout", admin_logout_path %></li>
+      </ul>
+    </nav>
+  
+  <% end %>
+    
+    <div id="content">
+      <ul id="top-nav">
+        <%= yield :top_nav %>
+      </ul>
+      
+      <% if notice %>
+        <p class="notice"><%= notice %></p>
+      <% end %>
+      <% if alert %>
+        <p class="alert"><%= alert %></p>
+      <% end %>
+      
+      <%= yield %>
+      
+    </div>
+  
   </div>
-
 </body>
 </html>

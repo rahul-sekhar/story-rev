@@ -1,3 +1,27 @@
+.product {
+    #search-box {
+        margin-top: e(20px);
+        margin-left: e(120px);
+    }
+    
+    label {
+        float:left;
+        text-align:right;
+        margin-right: e(10px, $content-text-size);
+        width: e(100px, $content-text-size);
+    }
+    
+    div.input {
+        @include clearfix;
+        margin-top: e(20px);
+        
+        .token-input-list {
+            float:left;
+            clear:none;
+        }
+    }
+}
+
 /*
 label {
     float:left;
@@ -89,24 +113,6 @@ tr.selected {
     
     li {
         padding-bottom:5px;
-    }
-}
-
-.top-nav {
-    @include clearfix;
-    li {
-        float:left;
-        margin-left: 20px;
-    }
-    ol {
-        padding: 0;
-        list-style-type:none;
-        li:before {
-            content: '>';
-        }
-        li:first-child:before {
-            content: none;
-        }
     }
 }
 */

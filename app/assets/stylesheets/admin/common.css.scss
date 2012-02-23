@@ -1,28 +1,104 @@
+/***************************
+ ********* Layout **********
+ ***************************/
+
 body {
     font-size: $body-font-size;
     font-family: Serif;
+    background-color: #f2f2f2;
 }
 
+
+
+$wrapper-width: 980px;
+#wrapper {
+    width: e($wrapper-width);
+    border-left:2px solid #eee;
+    border-right:2px solid #eee;
+    margin: 0 auto;
+    background-color: #fff;
+    @include clearfix;
+    min-height: 100%;
+}
+
+$side-nav-width: 210px;
 #side-nav {
     float:left;
+    width:e($side-nav-width);
     
     ul {
         @include reset-list;
-        margin: e(200px) e(20px) 0 e(20px);
-        width: e(120px);
+        margin: e(200px) e(30px) 0 e(20px);
+        
         background-color: $teal;
         @include rounded-corners(10px);
-        padding: e(20px) e(20px);
+        padding: e(20px) e(30px);
         
         li {
+            @include small-heading;
             @include inner-link($golden, lighten($golden, 10));
             border-bottom:2px dotted $light-teal;
-            margin-bottom:e(15px);
+            margin-bottom:e(20px);
+        }
+    }
+}
+
+#top-nav {
+    background-color: $light-purple;
+    @include reset-list;
+    @include clearfix;
+    padding:0 e(20px) 0 e(40px);
+    
+    li {
+        float:left;
+        @include small-heading;
+        @include inner-link(white, lighten($golden, 25));
+        line-height:e(50px);
+        margin-left:e(10px);
+        
+        &.descendant:before { content: '>'; }
+        &.current {
+            @include inner-link($golden, $golden);
+        }
+        &.right {
+            float:right;
+            margin-left:0;
+            margin-right:e(10px);
         }
     }
 }
 
 #content {
     float:left;
-    margin-left: e(20px);
+    width: e($wrapper-width - $side-nav-width - 30px);
+    margin-left: e(10px);
+    margin-top: e(50px);
+}
+
+
+/***************************
+ ********* Styles **********
+ ***************************/
+
+p {
+    @include content-text;
+}
+
+.token-input-list, input {
+    @include rounded-corners(3px);
+}
+
+label {
+    @include content-text;
+    line-height: e(25px, $content-text-size);
+}
+
+input {
+    border: 1px solid $text-field-border-color;
+    height: e(25px, $content-text-size);
+    padding: 0 e(5px, $content-text-size);
+    @include content-text;
+    &:disabled {
+        background-color: #eee;
+    }
 }
