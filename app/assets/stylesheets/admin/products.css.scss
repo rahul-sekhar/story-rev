@@ -164,6 +164,11 @@
             width: e(50px, $input-font-size);
         }
         
+        select {
+            font-size: e(10px);
+            height: e(20px, 10px);
+        }
+        
         .award-fields {
             float:left;
             clear:left;
