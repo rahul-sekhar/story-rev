@@ -84,20 +84,46 @@ p {
     @include content-text;
 }
 
+a {
+    @include link ($teal, $light-teal);
+}
+
 .token-input-list, input {
     @include rounded-corners(3px);
 }
 
+$label-font-size: $content-text-size;
 label {
     @include content-text;
-    line-height: e(25px, $content-text-size);
+    float:left;
+    text-align:right;
+    line-height: e(25px, $label-font-size);
+    margin-right: e(10px, $label-font-size);
+    
+    &.multi-line {
+        line-height: e(17px, $label-font-size);
+        
+        &.centered {
+            margin-top: e(-4px, $label-font-size);
+        }
+    }
+    
+    &.inline {
+        margin-left: e(10px, $label-font-size);
+        width:auto;
+    }
+}
+
+$input-font-size: $smaller-text-size;
+input, select, textarea {
+    @include smaller-text;
 }
 
 input {
     border: 1px solid $text-field-border-color;
-    height: e(25px, $content-text-size);
-    padding: 0 e(5px, $content-text-size);
-    @include content-text;
+    height: e(25px, $input-font-size);
+    padding: 0 e(5px, $input-font-size);
+    float:left;
     &:disabled {
         background-color: #eee;
     }

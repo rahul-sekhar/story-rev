@@ -16,10 +16,12 @@
     <nav id="side-nav">
       <ul>
         <li><%= link_to "Books", admin_products_path %></li>
-        <li><%= link_to "Orders", "#" %></li>
-        <li><%= link_to "Customers", "#" %></li>
-        <li><%= link_to "Finances", "#" %></li>
-        <li><%= link_to "Blog", "#" %></li>
+        <% if admin? %>
+          <li><%= link_to "Orders", "#" %></li>
+          <li><%= link_to "Customers", "#" %></li>
+          <li><%= link_to "Finances", "#" %></li>
+          <li><%= link_to "Blog", "#" %></li>
+        <% end %>
         <li><%= link_to "Others", "#" %></li>
         <li><%= link_to "Logout", admin_logout_path %></li>
       </ul>

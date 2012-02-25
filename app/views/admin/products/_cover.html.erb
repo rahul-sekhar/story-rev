@@ -1,4 +1,7 @@
 <% link_to_image ||= false %>
 <div class="cover">
   <%= render "products/inner_cover", :product => product, :link_to_image => link_to_image %>
+  
+  <%= form.hidden_field :cover_image_id, :value => @product.cover_image_id %>
+  <a href="#" id="change-cover-link"></a>
 </div>

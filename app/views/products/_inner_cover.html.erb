@@ -1,0 +1,12 @@
+<% link_to_image ||= false %>
+<% if product.cover_image.present? %>
+  <%= link_to (image_tag product.cover_image.thumb_url, :alt => product.title), (link_to_image ? product.cover_image.url : product_path(product)) %>
+<% else %>
+  <div class="blank-cover">
+  <% if link_to_image || product.new_record? %>
+    <%= product.title %>
+  <% else %>
+    <%= link_to product.title, product_path(product) %>
+  <% end %>
+  </div>
+<% end %>

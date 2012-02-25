@@ -21,6 +21,77 @@ $content-text-size: 13px;
     color: #605c5a;
 }
 
+$smaller-text-size: 12px;
+@mixin smaller-text {
+    @include content-text;
+    font-size: e($smaller-text-size);
+}
+
+@mixin button($height:22px) {
+    display:block;
+    min-width: 22px;
+    height: $height;
+    background: url('/images/icons.png') no-repeat;
+}
+
+$caption-font-size: 12px;
+@mixin caption-button($height:22px, $padding: 4px) {
+    display:inline-block;
+    line-height:$height;
+    font-size: e(12px, $content-text-size);
+    text-transform: lowercase;
+    background: url('/images/icons.png') no-repeat;
+    padding-left: 22px + $padding;
+}
+
+@mixin add-button($height:22px) {
+    @include button($height);
+    background-position: center (0px + $height - 22px);
+    &:hover {
+        background-position: center (-40px + $height - 22px);
+    }
+}
+
+@mixin add-caption-button($height:22px, $padding: 4px) {
+    @include caption-button($height, $padding);
+    background-position: left (0px + $height - 22px);
+    &:hover {
+        background-position: left (-40px + $height - 22px);
+    }
+}
+
+@mixin remove-button($height:22px) {
+    @include button($height);
+    background-position: center (-80px + $height - 22px);
+    &:hover {
+        background-position: center (-120px + $height - 22px);
+    }
+}
+
+@mixin remove-caption-button($height:22px, $padding: 4px) {
+    @include caption-button($height, $padding);
+    background-position: left (-80px + $height - 22px);
+    &:hover {
+        background-position: left (-120px + $height - 22px);
+    }
+}
+
+@mixin edit-button($height:22px) {
+    @include button($height);
+    background-position: center (-160px + $height - 22px);
+    &:hover {
+        background-position: center (-200px + $height - 22px);
+    }
+}
+
+@mixin edit-caption-button($height:22px, $padding: 4px) {
+    @include caption-button($height, $padding);
+    background-position: left (-160px + $height - 22px);
+    &:hover {
+        background-position: left (-200px + $height - 22px);
+    }
+}
+
 // Others
 $body-font-size:100%;
 $text-field-border-color: #ccc;

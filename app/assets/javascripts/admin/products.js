@@ -96,13 +96,14 @@ $(document).ready(function() {
     // Autocompletes
     var singleAutocompleteSettings = {
         tokenLimit: 1,
-        addClass: "fill",
+        addClass: "fill thin",
         allowCustom: true,
         tokenValue: "name",
         textPrePopulate: true
     }
     var tagAutocompleteSettings = {
         allowCustom: true,
+        addClass: "thin",
         tokenValue: "name",
         preventDuplicates: true,
         dataPrepopulate: true
@@ -114,7 +115,7 @@ $(document).ready(function() {
     $('#product_keyword_list').tokenInput("/admin/keywords.json", tagAutocompleteSettings);
     $('#product_product_tag_list').tokenInput("/admin/product_tags.json", tagAutocompleteSettings);
     
-    var $awardList = $('#award-field-list');
+    var $awardList = $('#award-field-list ul');
     
     // Check when a award type selector is changed
     $awardList.on("change", ".award_type", function() {
@@ -339,7 +340,7 @@ $(document).ready(function() {
     // Handle the image links to add and clear the cover
     var $cover = $('.cover:first');
     var $coverId = $('#product_cover_image_id');
-    $('#upload-cover-link').click(function(e) {
+    $('#change-cover-link').click(function(e) {
         initDialog();
         $.blockUI({message: $imageDialog});
         $imageDialog.one('exit', function(event, id, url, thumb) {
@@ -352,6 +353,7 @@ $(document).ready(function() {
         e.preventDefault();
     });
     
+    //
     $('#clear-cover-link').click(function(e) {
         $cover.empty();
         $coverId.attr("name", "product[cover_image_id]").val(null);
@@ -366,18 +368,13 @@ $(document).ready(function() {
         }
     });
     
-    
+    /*
     
     // Handle amazon information
     var $sidebar = $('#sidebar');
     var $productList = $sidebar.find('.products');
     var $productInfo = $sidebar.find('.product-info');
     var productInfo = [];
-    
-    $sidebar.on('click', '.close', function(e) {
-        $sidebar.hide();
-        e.preventDefault();
-    });
     
     var $productTitle = $('#product_title');
     
@@ -386,7 +383,7 @@ $(document).ready(function() {
         var title = $(this).val();
         
         if (!$.trim(title)) {
-            $sidebar.hide();
+            //$sidebar.hide();
             return;
         }
         $sidebar.show()
@@ -448,4 +445,5 @@ $(document).ready(function() {
     }
     
     $productTitle.blur();
+    */
 });

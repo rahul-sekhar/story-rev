@@ -5,14 +5,21 @@
     }
     
     label {
-        float:left;
-        text-align:right;
-        margin-right: e(10px, $content-text-size);
-        width: e(100px, $content-text-size);
+        margin-right: e(20px, $label-font-size);
+        width: e(80px, $label-font-size);
+        
+        &.inline {
+            margin-left: e(10px, $label-font-size);
+            margin-right: e(10px, $label-font-size);
+            width:auto;
+        }
     }
     
     div.input {
         @include clearfix;
+        &:after {
+            clear:left;
+        }
         margin-top: e(20px);
         
         .token-input-list {
@@ -20,99 +27,113 @@
             clear:none;
         }
     }
-}
-
-/*
-label {
-    float:left;
-    text-align:right;
-    margin-right:10px;
-    margin-left:10px;
-    width:170px;
     
-    &.inline {
-        width:auto;
-    }
-}
-
-div.input {
-    clear:left;
-    margin-bottom:20px;
-    @include clearfix;
-    
-    ul input {
-        float:none;
+    input {
+        width:e(190px, $input-font-size);
     }
     
-    input,textarea,ul {
-        float:left;
-        clear:none;
+    #product_accession_id {
+        width:e(100px, $input-font-size);
     }
-}
-
-.table-container {
-    height: 200px;
-    overflow:auto;
-    border:1px solid #ccc;
     
-    &.themes {
-        float:left;
-        width:400px;
+    #product_year {
+        width:e(50px, $input-font-size);
     }
-}
-
-table {    
-    border-collapse:collapse;
-    width:100%;
-}
-
-td {
-    border:1px solid grey;
-}
-
-tr.alt {
-    background-color: #f0f0f0;
-}
-
-tr.selected {
-    background-color: #aaa;
-}
-
-.cover {
-    width:100px;
-    height:150px;
-    text-align:center;
-    border:1px solid black;
     
-    img {
+    #product_age_from, #product_age_to {
+        width:e(30px, $input-font-size);
+    }
+    
+    #product_short_description {
+        width:e(370px, $input-font-size);
+        height:e(100px, $input-font-size);
+        resize:vertical;
+    }
+    
+    #product-fields {
+        margin: e(30px) 0;
+        position:relative;
+    }
+    
+    $sidebar-width: 200px;
+    $sidebar-hor-padding: 20px;
+    #sidebar {
+        position:absolute;
+        right:0;
+        top: 0;
+        height:100%;
+        background-color: #ccc;
+        width: e($sidebar-width);
+        padding: 0 e($sidebar-hor-padding);
+        
+        h2 {
+            @include small-heading;
+            font-size: e(16px);
+            color: white;
+            text-align:center;
+            margin: e(20px, 16px) 0;
+        }
+    }
+    
+    .blank-cover {
+        width:100px;
+        height:150px;
+    }
+    
+    .cover {
         max-width:100px;
         max-height:150px;
+        border:2px solid #ccc;
+        @include rounded-corners(5px);
+        float:right;
+        margin-right: e(40px + $sidebar-width + (2 * $sidebar-hor-padding));
+        position:relative;
+        
+        img {
+            max-width:100px;
+            max-height:150px;
+            display:block;
+        }
+    }
+    
+    #change-cover-link {
+        @include edit-button;
+        position:absolute;
+        bottom:-27px;
+        right:5px;
+    }
+    
+    #award-field-list {
+        float:left;
+        margin-top: e(-3px);
+        width: e(380px);
+        
+        input {
+            float:none;
+            width: e(50px, $input-font-size);
+        }
+        
+        .award-fields {
+            float:left;
+            clear:left;
+        }
+        
+        .remove-link {
+            @include remove-button(25px);
+            margin-left: e(10px, $content-text-size);
+            float:left;
+        }
+        
+        ul {
+            @include reset-list;
+            @include clearfix;
+            width:100%;
+        }
+    }
+    
+    #add-award-link {
+        @include add-caption-button;
+        margin-top: e(5px, $content-text-size);
     }
 }
 
-#sidebar {
-    position:fixed;
-    top:0;
-    right:0;
-    width:30%;
-    height:100%;
-    background-color: #ddd;
-    border-left:1px solid #aaa;
-    display:none;
-    word-wrap:break-word;
-    overflow:auto;
-    
-    select {
-        width:100%;
-    }
-    
-    ul {
-        list-style-type:none;
-        padding:10px;
-    }
-    
-    li {
-        padding-bottom:5px;
-    }
-}
-*/
