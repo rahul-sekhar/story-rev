@@ -156,12 +156,13 @@
     
     #award-field-list {
         float:left;
-        margin-top: e(-3px);
         width: e(380px);
         
         input {
             float:none;
-            width: e(50px, $input-font-size);
+            width: e(28px, 10px);
+            font-size: e(10px);
+            height: e(20px, 10px);
         }
         
         select {
@@ -175,15 +176,19 @@
         }
         
         .remove-link {
-            @include remove-button(25px);
-            margin-left: e(10px, $content-text-size);
+            @include remove-button;
+            margin-left: e(5px, $content-text-size);
             float:left;
         }
         
         ul {
             @include reset-list;
-            @include clearfix;
             width:100%;
+        }
+        
+        li {
+            margin-bottom: e(5px);
+            @include clearfix;
         }
     }
     
