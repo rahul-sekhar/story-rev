@@ -20,7 +20,7 @@
                     :id => nil,
                     :class => "award_name" %>
   
-  <%= f.input_field :year, :id => nil, :index => nil, :class => 'award_year', :maxlength => 4 %>
+  <%= f.input_field :year, :id => nil, :index => nil, :as => "string", :class => 'award_year', :maxlength => 4 %>
   <%= f.hidden_field :id, :index => nil, :value => f.object.id %>
   </div>
   <a class="remove-link" href="#"></a>

@@ -1,5 +1,25 @@
-<div class="other-fields" id="other-fields-<%= index %>">
-  <%= f.input_field :title, :required => false, :index => nil, :input_html => { :id => nil } %><br />
-  <%= f.input_field :content, :required => false, :index => nil, :input_html => { :id => nil } %>
-  <%= f.hidden_field :id, :value => f.object.id, :index => nil %>
+<% num_desc = product.other_fields.length %>
+<input type="text" name="description_title" id="description-title"
+       maxlength=200 placeholder="[title required]" value="<%= product.other_fields.first.title %>" />
+<div class="description-content-box">
+  <div class="buttons">
+    <% num_desc.times do |i| %>
+      <a href="#"<%=raw (i == 0) ? ' class="selected"' : nil %>><%= i + 1 %></a>
+    <% end %>
+    <a href="#" class="add">+</a>
+  </div>
+  <textarea name="description_content" id="description-content"
+    style="height: <%= (num_desc + 1) * 20 %>px"><%= product.other_fields.first.content %></textarea>
 </div>
+
+<% i = 1 %>
+<% for other_field in product.other_fields %>
+  <div id="stored-desc-<%= i %>">
+  <%= form.simple_fields_for "other_field_attributes[]", other_field do |desc_f| %>
+    <%= desc_f.hidden_field :id, :class => "id", :id => nil, :index => nil, :value => desc_f.object.id %>
+    <%= desc_f.hidden_field :title, :class => "title", :id => nil, :index => nil %>
+    <%= desc_f.hidden_field :content, :class => "content", :id => nil, :index => nil %>
+  <% end %>
+  <% i+=1 %>
+  </div>
+<% end %>

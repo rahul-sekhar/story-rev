@@ -196,7 +196,7 @@ class Product < ActiveRecord::Base
   end
   
   def cover_image_id=(cover_id)
-    if (cover_image.present? && cover_id != cover_image.id)
+    if (cover_image.present? && cover_id.to_i != cover_image.id)
       cover_image.destroy
     end
     

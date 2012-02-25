@@ -29,24 +29,24 @@
     }
     
     input {
-        width:e(190px, $input-font-size);
+        width:e(188px, $input-font-size);
     }
     
     #product_accession_id {
-        width:e(100px, $input-font-size);
+        width:e(98px, $input-font-size);
     }
     
     #product_year {
-        width:e(50px, $input-font-size);
+        width:e(48px, $input-font-size);
     }
     
     #product_age_from, #product_age_to {
-        width:e(30px, $input-font-size);
+        width:e(28px, $input-font-size);
     }
     
     #product_short_description {
-        width:e(370px, $input-font-size);
-        height:e(100px, $input-font-size);
+        width:e(358px, $input-font-size);
+        height:e(98px, $input-font-size);
         resize:vertical;
     }
     
@@ -57,7 +57,7 @@
     
     $sidebar-width: 200px;
     $sidebar-hor-padding: 20px;
-    #sidebar {
+    #info-sidebar {
         position:absolute;
         right:0;
         top: 0;
@@ -78,6 +78,13 @@
     .blank-cover {
         width:100px;
         height:150px;
+        
+        p {
+            text-align:center;
+            margin: 20% 6px;
+            line-height:e(16px, $content-text-size);
+            @include word-wrap;
+        }
     }
     
     .cover {
@@ -96,11 +103,55 @@
         }
     }
     
-    #change-cover-link {
-        @include edit-button;
+    #edit-cover-link {
+        @include edit-button(30px);
         position:absolute;
-        bottom:-27px;
+        bottom:-30px;
         right:5px;
+    }
+    
+    #edit-cover-list {
+        display:none;
+        position:absolute;
+        right:5px;
+        bottom:-30px - (21px * 3) - 4px;
+        @include reset-list;
+        border:1px solid #ddd;
+        text-align:right;
+        padding: 2px 2px;
+        width: e(90px);
+        background-color: #f6f6f6;
+        
+        li{
+            @include content-text;
+            text-transform:lowercase;
+            font-size:e(11px);
+            line-height: e(20px, 11px);
+            border-bottom:1px dotted #ccc;
+            
+            a {
+                @include link($teal, $teal);
+                display:block;
+                padding:0 4px;
+                &:hover {
+                    background-color:#ddd;
+                }
+            }
+            
+            &.disabled {
+                a {
+                    @include link(#ccc, #ccc);
+                    cursor:default;
+                    &:hover {
+                        background-color:transparent;
+                    }
+                }
+            }
+            
+            &.last {
+                border-bottom: none;
+            }
+        }
     }
     
     #award-field-list {
@@ -134,6 +185,81 @@
     #add-award-link {
         @include add-caption-button;
         margin-top: e(5px, $content-text-size);
+    }
+    
+    .descriptions label {
+        margin-top: e(6px, $label-font-size);
+    }
+    
+    #description-fields {
+        float:left;
+        max-width: 400px;
+        input {
+            background-color: #dedede;
+            font-weight:bold;
+            width: e(360px, $input-font-size);
+            height: e(40px, $input-font-size);
+            border:none;
+            @include rounded-corners(0);
+            @include placeholder-color(#999);
+        }
+        
+        textarea {
+            padding: e(5px, $input-font-size);
+            border:1px solid #dedede;
+            width:e(358px, $input-font-size);
+            min-height:100px;
+            height:100px;
+            @include rounded-corners(0);
+            resize: none;
+        }
+        
+        .description-content-box {
+            clear:left;
+            position:relative;
+        }
+        
+        .buttons {
+            float:left;
+            margin-left:-17px;
+            width:17px;
+            
+            a {
+                display:block;
+                @include small-heading;
+                text-align:center;
+                @include rounded-corners-left(9px);
+                padding-left:5px;
+                margin-bottom:2px;
+                height:18px;
+                color: white;
+                background-color: #ccc;
+                
+                &:hover {background-color:darken(#ccc, 5);}
+                &.selected {background-color:$brown;}
+                &.selected:hover {background-color:$brown;}
+                &.add {background-color:$teal;}
+                &.add:hover {background-color:darken($teal, 5);}
+            }
+        }
+        
+        
+    }
+    
+    input.submit {
+        float:right;
+        width: e(80px, $small-heading-size);
+        margin-right: e($sidebar-width + (2 * $sidebar-hor-padding) + 30px, $small-heading-size);
+        margin-bottom: e(30px, $small-heading-size);
+    }
+    
+    .delete-product {
+        float:right;
+        margin-right: 20px;
+    }
+    
+    #info-sidebar {
+       
     }
 }
 

@@ -24,14 +24,15 @@
     <%= f.input :illustrator_name, :label => "Illustrator" %>
     <%= f.input :publisher_name, :label => "Publisher" %>
     <%= f.input :year,
+      :as => :string,
       :label => "Year of Publication",
       :label_html => { :class => "multi-line centered" },
       :input_html => { :maxlength => 4 } %>
     <div class="input">
       <%= f.label :age_from, "Age level" %>
-      <%= f.input_field :age_from, :maxlength => 2 %>
+      <%= f.input_field :age_from, :maxlength => 2, :as => :string %>
       <%= f.label :age_to, "to", :class => "inline" %>
-      <%= f.input_field :age_to, :maxlength => 2 %>
+      <%= f.input_field :age_to, :maxlength => 2, :as => :string %>
     </div>
     <%= f.input :genre_list, :label => "Genres", :input_html => { "data-pre" => @product.genres_json } %>
     <%= f.input :keyword_list, :label => "Keywords", :input_html => { "data-pre" => @product.keywords_json } %>
@@ -57,18 +58,15 @@
     <%= f.input :amazon_url, :label => "Amazon URL" %>
     <%= f.input :short_description, :label_html => { :class => "multi-line" } %>
     
-    <label>Descriptions</label>
-    <div class="field" id="other-fields">
-      <% f.object.other_fields.each.with_index do |other_field,index| %>
-        <%= f.simple_fields_for "other_field_attributes[]", other_field do |other_field_form| %>
-          <%= render "admin/other_fields/fields", :f => other_field_form, :index => index %>
-        <% end %>
-      <% end %>
+    <div class="input descriptions">
+      <label for="description-title">Descriptions</label>
+      <div id="description-fields">
+        <%= render "admin/other_fields/fields", :form => f, :product => @product %>
+      </div>
     </div>
-    <%= link_to "Add another field", "#", :id => "add-field-link" %>
     
     <%= render "admin/products/amazon_sidebar" %>
   </div>
   
-  <%= f.submit "Save" %>
+  <%= f.submit "Save", :class => "submit" %>
 <% end %>

@@ -88,8 +88,27 @@ a {
     @include link ($teal, $light-teal);
 }
 
-.token-input-list, input {
+a.button, input.submit {
+    @include small-heading;
+    width: e(80px, $small-heading-size);
+    height: e(40px, $small-heading-size);
+    line-height: e(40px, $small-heading-size);
+    text-align:center;
+    @include rounded-corners(e(8px, $small-heading-size));
+    border:none;
+    cursor:pointer;
+    color:white;
+    background-color: $brown;
+    display:block;
+    
+    &:hover {
+        background-color: lighten($brown, 10);
+    }
+}
+
+.token-input-list, input, textarea {
     @include rounded-corners(3px);
+    border: 1px solid $text-field-border-color;
 }
 
 $label-font-size: $content-text-size;
@@ -119,10 +138,12 @@ input, select, textarea {
     @include smaller-text;
 }
 
-input {
-    border: 1px solid $text-field-border-color;
-    height: e(25px, $input-font-size);
+input, textarea {
     padding: 0 e(5px, $input-font-size);
+}
+
+input {
+    height: e(25px, $input-font-size);
     float:left;
     &:disabled {
         background-color: #eee;

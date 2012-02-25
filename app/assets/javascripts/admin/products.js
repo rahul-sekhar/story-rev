@@ -242,28 +242,104 @@ $(document).ready(function() {
         e.preventDefault();
     });
     
-    // Create a template of the other fields section
-    var $otherFields = $('#other-fields');
-    var $otherFieldTemplate = $otherFields.find('div:first').clone()
-        .find('input')
-            .val("")
-            .end()
-        .find('textarea')
-            .text("")
-            .end()
-        .find('input[type=hidden]')
-            .remove()
-            .end();
     
-    // Handle the addition of other fields
-    $('#add-field-link').click(function(e) {
-        $otherFieldTemplate.clone().appendTo($otherFields);
+    // Handle switching descriptions
+    var $descFields = $('#description-fields');
+    var $descButtons = $descFields.find('.buttons');
+    var $descTitle = $descFields.find("#description-title");
+    var $descContent = $descFields.find("#description-content");
+    
+    // Function to save the currently edited description
+    function saveCurrentDescription() {
+        var number = parseInt($descButtons.find(".selected").text(), 10);
+        var $storedDesc = $descFields.find("#stored-desc-" + number);
+        $storedDesc.find(".title").val($descTitle.val());
+        $storedDesc.find(".content").val($descContent.val());
+    }
+    
+    $descButtons.on("click", "a", function(e) {
+        e.preventDefault();
+        var $button = $(this);
+        
+        // Skip if we are already editing the clicked description
+        if ($button.hasClass("selected")) return;
+        
+        // Add a new description
+        if ($button.hasClass("add")) {
+            saveCurrentDescription();
+            
+            // Find the new description number
+            var number = (parseInt($button.prev("a").text(), 10) || 0) + 1;
+            
+            // Create new storage fields
+            $('<div id="stored-desc-' + number + '"></div>')
+                .append('<input class="title" type="hidden" value="" name="product[other_field_attributes][][title]" />')
+                .append('<input class="content" type="hidden" value="" name="product[other_field_attributes][][content]" />')
+                .appendTo($descFields);
+            
+            // Clear the current fields
+            $descTitle.val('');
+            $descContent.val('');
+            
+            // Add a new button and select it
+            $descButtons.find("a.selected").removeClass("selected");
+            $button.before('<a href="#" class="selected">' + number + '</a>');
+            
+            // Change the content textarea height
+            $descContent.css("height", ((number + 1) * 20) + "px")
+            
+            // Focus on the title
+            $descTitle.focus();
+        }
+        
+        // Switch description numbers
+        else {
+            saveCurrentDescription();
+            
+            // Load the chosen description values
+            var number = parseInt($button.text(), 10);
+            var $storedDesc = $descFields.find("#stored-desc-" + number);
+            $descTitle.val($storedDesc.find(".title").val());
+            $descContent.val($storedDesc.find(".content").val());
+            
+            // Switch the selected button class
+            $descButtons.find("a.selected").removeClass("selected");
+            $button.addClass("selected");
+        }
+    });
+    
+    // Save current description before saving the product
+    $('form.product').submit(function() {
+        saveCurrentDescription();
+    });
+    
+    // Handle the showing and hiding of the cover edit menu
+    var $cover = $('.cover:first');
+    var $coverMenu = $cover.find("#edit-cover-list");
+    var $editLink = $cover.find("#edit-cover-link");
+    var coverMenuTimer;
+    $editLink.hoverIntent(function() {
+        if ($coverMenu.hasClass("shown")) return;
+        $coverMenu.stop().hide().css('opacity', 1).addClass("shown").fadeIn();
+    }, function(){}).hover(function() {
+        clearTimeout(coverMenuTimer);
+    }, function() {
+        coverMenuTimer = setTimeout(function() {
+            $coverMenu.fadeOut().removeClass("shown");
+        }, 50);
+    }).click(function() {
         e.preventDefault();
     });
     
+    $coverMenu.hover(function() {
+        clearTimeout(coverMenuTimer);
+    }, function() {
+        coverMenuTimer = setTimeout(function() {
+            $coverMenu.fadeOut().removeClass("shown");
+        }, 50);
+    });
     
     // Handle cover images
-    
     var $imageDialog = $('<section id="image-dialog"></section>');
     var $progressCont = $('<div id="progress-bar"></div>').hide().appendTo($imageDialog);
     var $progressBar = $('<div></div>').appendTo($progressCont);
@@ -338,55 +414,74 @@ $(document).ready(function() {
     }).appendTo($imageDialog);
     
     // Handle the image links to add and clear the cover
-    var $cover = $('.cover:first');
     var $coverId = $('#product_cover_image_id');
-    $('#change-cover-link').click(function(e) {
+    var $productTitle = $('#product_title');
+    var $removeCoverLink = $('#remove-cover-link');
+    var $removeCoverLi = $removeCoverLink.parent("li");
+    
+    function clearCoverImage() {
+        $cover.find('.blank-cover').remove().end()
+            .find('img').parent('a').remove();
+    }
+    
+    $('#upload-cover-link').click(function(e) {
+        $coverMenu.hide();
         initDialog();
         $.blockUI({message: $imageDialog});
         $imageDialog.one('exit', function(event, id, url, thumb) {
             if (url) {
-                $cover.empty().append('<a href="' + url + '"><img alt="" src="' + thumb + '" /></a>');
+                clearCoverImage();
+                $cover.append('<a href="' + url + '"><img alt="" src="' + thumb + '" /></a>');
                 $coverId.attr("name", "product[cover_image_id]").val(id);
+                $removeCoverLi.removeClass("disabled");
             }
             $.unblockUI();
         });
         e.preventDefault();
     });
     
-    //
-    $('#clear-cover-link').click(function(e) {
-        $cover.empty();
-        $coverId.attr("name", "product[cover_image_id]").val(null);
+    $removeCoverLink.click(function(e) {
         e.preventDefault();
+        if ($removeCoverLi.hasClass("disabled")) return;
+        $coverMenu.hide();
+        clearCoverImage();
+        $cover.prepend('<div class="blank-cover"><p>' + $productTitle.val() + '</p></div>');
+        $removeCoverLi.addClass("disabled");
+        $coverId.attr("name", "product[cover_image_id]").val(null);
     });
     
     $('#cover-url-link').click(function(e) {
-        var url = prompt("Enter the URL:");
+        $coverMenu.hide();
+        var url = prompt("Enter the URL of the image:");
         if (url) {
-            $cover.empty().append('<a href="' + url + '"><img alt="" src="' + url + '" /></a>')
+            clearCoverImage();
+            $cover.append('<a href="' + url + '"><img alt="" src="' + url + '" /></a>')
             $coverId.attr("name", "product[cover_image_url]").val(url);
+            $removeCoverLi.removeClass("disabled");
         }
     });
     
-    /*
+    // Change the cover text (if no image has been selected) when the title is changed
+    $productTitle.blur(function() {
+        $cover.find(".blank-cover p").text($(this).val());
+    });
     
+    /*
     // Handle amazon information
-    var $sidebar = $('#sidebar');
+    var $sidebar = $('#info-sidebar');
     var $productList = $sidebar.find('.products');
     var $productInfo = $sidebar.find('.product-info');
     var productInfo = [];
-    
-    var $productTitle = $('#product_title');
     
     // Load amazon data
     $productTitle.blur(function() {
         var title = $(this).val();
         
         if (!$.trim(title)) {
-            //$sidebar.hide();
+            $productList.add($productInfo).empty().hide();
             return;
         }
-        $sidebar.show()
+        $productList.add($productInfo).show();
         if (title == $sidebar.data("title")) return;
         $sidebar.block(blockUILoading);
         $.get('/admin/products/amazon_info.json', {'title': title}, function(data) {
@@ -445,5 +540,6 @@ $(document).ready(function() {
     }
     
     $productTitle.blur();
+    
     */
 });

@@ -3,5 +3,10 @@
   <%= render "products/inner_cover", :product => product, :link_to_image => link_to_image %>
   
   <%= form.hidden_field :cover_image_id, :value => @product.cover_image_id %>
-  <a href="#" id="change-cover-link"></a>
+  <a href="#" id="edit-cover-link"></a>
+  <ul id="edit-cover-list">
+    <li><a id="upload-cover-link" href="#">Upload an image</a></li>
+    <li><a id="cover-url-link" href="#">Use a URL</a></li>
+    <li class="last<%=raw product.cover_image.present? ? nil : ' disabled' %>"><a id="remove-cover-link" href="#">Remove image</a></li>
+  </ul>
 </div>

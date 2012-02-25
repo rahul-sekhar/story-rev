@@ -68,6 +68,24 @@
     border-radius: $radius;
 }
 
+@mixin rounded-corners-left($radius) {
+    -moz-border-top-left-radius: $radius;
+    -moz-border-bottom-left-radius: $radius;
+    -webkit-border-top-left-radius: $radius;
+    -webkit-border-bottom-left-radius: $radius;
+    border-top-left-radius: $radius;
+    border-bottom-left-radius: $radius;
+}
+
+@mixin rounded-corners-bottom($radius) {
+    -moz-border-bottom-left-radius: $radius;
+    -moz-border-bottom-right-radius: $radius;
+    -webkit-border-bottom-left-radius: $radius;
+    -webkit-border-bottom-right-radius: $radius;
+    border-bottom-left-radius: $radius;
+    border-bottom-right-radius: $radius;
+}
+
 @mixin link($link-color, $hover-color, $underline: none) {
     text-decoration: $underline;
     &:link, &:visited {
@@ -154,4 +172,13 @@
     padding: 0;
     list-style-type:none;
     font-size: 1em;
+}
+
+@mixin placeholder-color($color) {
+    &::-webkit-input-placeholder {
+        color: $color;
+    }
+    &:-moz-placeholder {
+        color: $color;
+    }
 }
