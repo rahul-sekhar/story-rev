@@ -347,7 +347,7 @@ $(document).ready(function() {
     var $errorMsg = $('<p class="error"></p>').hide().appendTo($imageDialog);
     var $dialogInfo = $('<p>Choose a file to upload. The image can be up to 2 MB and must be a JPEG, GIF or PNG file</p>').appendTo($imageDialog);
     var jqXHR = null;
-    var $cancel = $('<a href="#" class="cancel">Cancel</a>').click(function(e) {
+    var $cancel = $('<a href="#" class="cancel minor-button">Cancel</a>').click(function(e) {
             e.preventDefault();
             if (jqXHR) jqXHR.abort();
             $imageDialog.trigger('exit');
@@ -411,7 +411,7 @@ $(document).ready(function() {
                 initDialog($.parseJSON(data.jqXHR.responseText)[0]);
             }
         }
-    }).appendTo($imageDialog);
+    }).insertBefore($cancel);
     
     // Handle the image links to add and clear the cover
     var $coverId = $('#product_cover_image_id');

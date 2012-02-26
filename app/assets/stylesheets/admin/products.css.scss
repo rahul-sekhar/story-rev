@@ -28,6 +28,7 @@
         }
     }
     
+    // Input box widths
     input {
         width:e(188px, $input-font-size);
     }
@@ -75,6 +76,7 @@
         }
     }
     
+    // Cover image
     .blank-cover {
         width:100px;
         height:150px;
@@ -103,6 +105,7 @@
         }
     }
     
+    // Menu to edit the cover image
     #edit-cover-link {
         @include edit-button(30px);
         position:absolute;
@@ -154,6 +157,7 @@
         }
     }
     
+    // Award fields
     #award-field-list {
         float:left;
         width: e(380px);
@@ -197,6 +201,7 @@
         margin-top: e(5px, $content-text-size);
     }
     
+    // Description fields
     .descriptions label {
         margin-top: e(6px, $label-font-size);
     }
@@ -256,6 +261,7 @@
         
     }
     
+    // Buttons
     input.submit {
         float:right;
         width: e(80px, $small-heading-size);
@@ -267,6 +273,58 @@
         float:right;
         margin-right: 20px;
     }
+    
+    // Image upload dialog
+    .blockMsg {
+        @include rounded-corners(10px);
+    }
+    
+    #image-dialog {
+        margin: e(10px);
+        
+        .error {
+            color: $brown;
+        }
+        
+        input {
+            width:auto;
+            height:auto;
+            border:none;
+            float:none;
+        }
+        
+        .cancel {
+            margin: e(20px, $content-text-size) auto 0 auto;
+        }
+        
+        p {
+            margin-bottom: e(20px, $content-text-size);
+        }
+        
+        #progress-bar {
+            border:1px solid #ccc;
+            @include rounded-corners(5px);
+            height:e(30px);
+            position:relative;
+            
+            div {
+                background-color: lighten($light-teal, 5);
+                height: 100%;
+                position:absolute;
+                left:0;
+                top:0;
+                @include rounded-corners(5px);
+            }
+            
+            span {
+                @include content-text;
+                line-height: e(30px, $content-text-size);
+                position:relative;
+                z-index:1;
+            }
+        }
+    }
+    
     
     #info-sidebar {
        

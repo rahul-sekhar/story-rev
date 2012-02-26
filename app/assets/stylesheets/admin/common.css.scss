@@ -89,21 +89,36 @@ a {
 }
 
 a.button, input.submit {
+    display:block;
     @include small-heading;
     width: e(80px, $small-heading-size);
     height: e(40px, $small-heading-size);
     line-height: e(40px, $small-heading-size);
     text-align:center;
-    @include rounded-corners(e(8px, $small-heading-size));
+    @include rounded-corners(8px);
     border:none;
     cursor:pointer;
     color:white;
     background-color: $brown;
-    display:block;
     
-    &:hover {
-        background-color: lighten($brown, 10);
-    }
+    &:hover {background-color: lighten($brown, 10);}
+    
+    
+}
+
+a.minor-button {
+    display:block;
+    @include content-text;
+    width: e(70px, $content-text-size);
+    height: e(25px, $content-text-size);
+    line-height: e(25px, $content-text-size);
+    text-align:center;
+    @include rounded-corners(8px);
+    cursor:pointer;
+    color:white;
+    background-color: #ccc;
+    
+    &:hover {background-color: #d6d6d6;}
 }
 
 .token-input-list, input, textarea {
