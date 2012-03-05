@@ -505,13 +505,13 @@ $(document).ready(function() {
             $sidebar.data("title", title)
             
             $.each(data, function(index, entry) {
-                var $coverThumb = $('<div class="cover-thumb"></div>')
+                var $coverThumb = $('<div class="cover-thumb" title="' + entry.title + '"></div>')
                     .data('productInfo', entry)
                     .appendTo($productList);
                     
                 if (entry.thumb) {
                     list_length += parseInt(entry.thumbWidth, 10) + 14;
-                    $coverThumb.append('<img src="' + entry.thumb + '" alt="' + entry.title + '" title="' + entry.title + '" />')
+                    $coverThumb.append('<img src="' + entry.thumb + '" alt="' + entry.title + '" />')
                     .height(entry.thumbHeight)
                     .width(entry.thumbWidth);
                 }
