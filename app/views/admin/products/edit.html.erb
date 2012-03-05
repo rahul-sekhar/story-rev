@@ -28,15 +28,9 @@
   </li>
 <% end %>
 
-<div id="product-fields">
-  
-  <%= render "fields" %>
-  
-  <%= link_to "Delete", admin_product_path(@product),
-    :class => "delete-product button",
-    :confirm => "Are you sure you want to delete this product? This cannot be undone.",
-    :method => :delete %>
-  
-  <%= render "amazon_sidebar" %>
+<%= render "fields" %>
 
-  </div>
+<%= link_to "Delete", admin_product_path(@product),
+  :class => "delete-product button",
+  :confirm => "Are you sure you want to delete this product? This cannot be undone.",
+  :method => :delete %>

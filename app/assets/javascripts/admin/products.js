@@ -503,6 +503,7 @@ $(document).ready(function() {
             
             var list_length = 0;
             $sidebar.data("title", title)
+            
             $.each(data, function(index, entry) {
                 var $coverThumb = $('<div class="cover-thumb"></div>')
                     .data('productInfo', entry)
