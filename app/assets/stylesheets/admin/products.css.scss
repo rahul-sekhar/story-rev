@@ -15,7 +15,7 @@
         }
     }
     
-    div.input {
+    div.input, div.table {
         @include clearfix;
         &:after {
             clear:left;
@@ -325,9 +325,116 @@
         }
     }
     
+    // Book information sidebar styling
     
     #info-sidebar {
-       
+        #product-scroller {
+            position:relative;
+            
+            #product-list {
+                min-height:75px;
+                padding:5px 20px 5px 10px;
+                
+                .cover-thumb {
+                    float:left;
+                    margin-left: 10px;
+                    border:2px solid transparent;
+                    opacity:0.7;
+                    overflow:hidden;
+                    background-color: #bbb;
+                    
+                    &:hover {
+                        border:2px solid #888;
+                    }
+                    
+                    &.selected {
+                        opacity:1;
+                        border:2px solid #444;
+                    }
+                    
+                    img {
+                        display:block;
+                    }
+                }
+            }
+            
+            .product-list-wrapper {
+                overflow:hidden;
+            }
+            
+            .left-scroll, .right-scroll {
+                background-color:#999;
+                opacity:0.6;
+                position:absolute;
+                top:0;
+                height:100%;
+                width:20px;
+                z-index:2;
+                
+                &:hover {
+                    background-color: #aaa;
+                }
+            }
+            
+            .left-scroll {
+                left:0;
+            }
+            
+            .right-scroll {
+                right:0;
+            }
+        }
+        
+        .cover {
+            margin:0 auto;
+            float:none;
+        }
+        
+        .use-link-wrapper {
+            text-align:center;
+        }
+        
+        #product-info {
+            @include reset-list;
+            @include smaller-text;
+            margin-top: e(30px, $smaller-text-size);
+            @include word-wrap;
+            
+            li {
+                margin-top: e(10px, $smaller-text-size);
+            }
+        }
+    }
+    
+    // Editions and copies section
+    
+    div.first {
+        margin-top: e(40px);
+    }
+    
+    .table-container {
+        float:left;
+        @include rounded-corners(5px);
+        border:1px solid #ccc;
+        min-height: e(100px);
+    }
+    
+    td {
+        @include content-text;
+        font-size:11px;
+        padding: 0 e(15px, 11px);
+    }
+    
+    tr {
+        height: e(20px);
+        
+        &.alt {
+            background-color: #efefef;
+        }
+        
+        &.selected {
+            font-weight:bold;
+        }
     }
 }
 

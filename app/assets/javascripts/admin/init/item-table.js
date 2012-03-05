@@ -5,6 +5,7 @@ var DEFAULTS = {
     url: null,                      // If the URL is left null, it is taken from
                                     // the tables data-url attribute
     objectName: "object",
+    addLinkCaption: "Add",
     tooltips: true,
     numbered: false,
     selectable: false,
@@ -194,7 +195,7 @@ $.ItemTable = function(table, settings) {
     
     if (settings.addable) {
         // Add an add button
-        var $addLink = $('<a href="#" class="add-link">Add</a>')
+        var $addLink = $('<a href="#" class="add-link">' + settings.addLinkCaption + '</a>')
             .click(function(e) {
                 // Clear and trigger a reset event for all the inputs
                 $dialog.find('.dialog-input').trigger("clear").trigger("reset");

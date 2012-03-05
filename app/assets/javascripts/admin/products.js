@@ -450,15 +450,19 @@ $(document).ready(function() {
         $coverId.attr("name", "product[cover_image_id]").val(null);
     });
     
-    $('#cover-url-link').click(function(e) {
-        $coverMenu.hide();
-        var url = prompt("Enter the URL of the image:");
+    function coverFromURL(url) {
         if (url) {
             clearCoverImage();
             $cover.append('<a href="' + url + '"><img alt="" src="' + url + '" /></a>')
             $coverId.attr("name", "product[cover_image_url]").val(url);
             $removeCoverLi.removeClass("disabled");
         }
+    }
+    
+    $('#cover-url-link').click(function(e) {
+        $coverMenu.hide();
+        var url = prompt("Enter the URL of the image:");
+        coverFromURL(url);
     });
     
     // Change the cover text (if no image has been selected) when the title is changed
@@ -466,53 +470,112 @@ $(document).ready(function() {
         $cover.find(".blank-cover p").text($(this).val());
     });
     
-    /*
+    
     // Handle amazon information
     var $sidebar = $('#info-sidebar');
-    var $productList = $sidebar.find('.products');
-    var $productInfo = $sidebar.find('.product-info');
-    var productInfo = [];
+    var $productList = $sidebar.find('#product-list');
+    var $productInfo = $sidebar.find('#product-info');
+    var $productScroller = $sidebar.find('#product-scroller');
+    var $scrollWrapper = $productScroller.find('.product-list-wrapper');
     
     // Load amazon data
     $productTitle.blur(function() {
         var title = $(this).val();
         
         if (!$.trim(title)) {
-            $productList.add($productInfo).empty().hide();
-            return;
-        }
-        $productList.add($productInfo).show();
-        if (title == $sidebar.data("title")) return;
-        $sidebar.block(blockUILoading);
-        $.get('/admin/products/amazon_info.json', {'title': title}, function(data) {
             $productList.empty();
             $productInfo.empty();
+            return;
+        }
+        
+        if (title == $sidebar.data("title")) return;
+        $productInfo.empty();
+        $productList.empty()
+        $scrollWrapper.scrollLeft(0);
+        $productScroller.block(blockUILoading);
+        $.get('/admin/products/amazon_info.json', {'title': title}, function(data) {
+            $productList.empty();
             
             if (!data.length) {
-                $productList.appendOption("none", "No amazon results found...");
-                $sidebar.unblock();
-                productInfo = []
+                $productScroller.unblock();
                 return;
             }
             
+            var list_length = 0;
             $sidebar.data("title", title)
             $.each(data, function(index, entry) {
-                $productList.appendOption(index, entry.title);
+                var $coverThumb = $('<div class="cover-thumb"></div>')
+                    .data('productInfo', entry)
+                    .appendTo($productList);
+                    
+                if (entry.thumb) {
+                    list_length += parseInt(entry.thumbWidth, 10) + 14;
+                    $coverThumb.append('<img src="' + entry.thumb + '" alt="' + entry.title + '" title="' + entry.title + '" />')
+                    .height(entry.thumbHeight)
+                    .width(entry.thumbWidth);
+                }
+                else {
+                    list_length += 50 + 14;
+                    $coverThumb.height(75)
+                    .width(50);
+                }
             });
             
-            productInfo = data;
-            
-            $sidebar.unblock();
+            $productList.css('width', list_length + 'px');
+            $productScroller.unblock();
+            $productList.find('.cover-thumb:first').click();
         });
     });
     
-    // Show book info on selection change
-    $productList.change(function() {
+    // Amazon product list scroller
+    var $leftScroll = $productScroller.find('.left-scroll');
+    var $rightScroll = $productScroller.find('.right-scroll');
+    var scrollTimer;
+    var scrollInterval = 10;
+    var direction = 0;
+    
+    var scrollFunction = function() {
+        $scrollWrapper.scrollLeft($scrollWrapper.scrollLeft() + (3 * direction));
+    }
+    
+    $leftScroll.hover(function() {
+        direction = -1;
+        scrollTimer = setInterval(scrollFunction, scrollInterval)
+    }, function() {
+        clearInterval(scrollTimer);
+    });
+    
+    $rightScroll.hover(function() {
+        direction = 1;
+        scrollTimer = setInterval(scrollFunction, scrollInterval)
+    }, function() {
+        clearInterval(scrollTimer);
+    });
+    
+    // Selection of a book
+    $productList.on('click', '.cover-thumb', function() {
+        var $selectedProduct = $(this);
+        if ($selectedProduct.hasClass("selected")) return;
+        
+        $productList.find('.cover-thumb.selected').removeClass("selected");
+        $selectedProduct.addClass("selected");
+        
         $productInfo.empty();
-        var currProduct = productInfo[$productList.val()];
+        var currProduct = $selectedProduct.data('productInfo');
+        
+        if (currProduct.image) {
+            $productInfo.append($('<li></li>')
+                .append($('<div class="cover"></div>')
+                    .append('<a href="' + currProduct.image + '" target="_blank"><img src="' + currProduct.image + '" alt="" /></a>')
+                )
+                .append($('<div class="use-link-wrapper"></div>')
+                    .append('<a href="#" class="use-link">Use</a>')
+                    .append(' (' + (currProduct.imageWidth || 0) + '&times;' + (currProduct.imageHeight || 0) + ')')
+                )
+            );
+        }
+            
         $productInfo
-            .append('<li><div class="cover"><img src="' + currProduct.image + '" alt="" /></div>')
-            .append('<a href="#" class="use-link">Use</a> (' + (currProduct.imageWidth || 0) + '&times;' + (currProduct.imageHeight || 0) + ')</li>')
             .appendLi('Title', currProduct.title)
             .appendLi('Author', currProduct.author)
             .appendLi('Illustrator', currProduct.illustrator)
@@ -521,18 +584,16 @@ $(document).ready(function() {
             .appendLi('Publication Date', currProduct.publicationDate)
             .appendLi('Age Level', currProduct.age)
             .appendLi('Pages', currProduct.pages)
-            .appendLi('Amazon Page:', '<a href="' + currProduct.details + '">' + currProduct.details + '</a>');
+            .appendLi('Amazon Page', '<a href="' + currProduct.details + '">' + currProduct.details + '</a>');
     });
     
     // Handle using amazon images
     $sidebar.on("click", "a.use-link", function(e) {
         var url = $sidebar.find('.cover img').attr('src');
-        if (url) {
-            $cover.empty().append('<a href="' + url + '"><img alt="" src="' + url + '" /></a>')
-            $coverId.attr("name", "product[cover_image_url]").val(url);
-        }
+        coverFromURL(url);
         e.preventDefault();
     });
+    
     
     $.fn.appendLi = function(title, value, br) {
         br = br || false;
@@ -540,6 +601,4 @@ $(document).ready(function() {
     }
     
     $productTitle.blur();
-    
-    */
 });

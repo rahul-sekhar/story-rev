@@ -27,6 +27,9 @@ class AWSInfo
         :image => x.get('LargeImage/URL'),
         :imageWidth => x.get('LargeImage/Width'),
         :imageHeight => x.get('LargeImage/Height'),
+        :thumb => x.get('SmallImage/URL'),
+        :thumbWidth => x.get('SmallImage/Width'),
+        :thumbHeight => x.get('SmallImage/Height')
       }
     end
     
