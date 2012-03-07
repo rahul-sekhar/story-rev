@@ -1,14 +1,16 @@
 class Edition < ActiveRecord::Base
-  attr_accessible :isbn, :base_price, :format_name
+  attr_accessible :isbn, :format_name, :publisher_name
   belongs_to :format
   belongs_to :product
+  belongs_to :publisher
   has_many :copies, :dependent => :destroy
   
   before_validation :convert_raw_isbn
   
   validates :isbn, :uniqueness => true
   validates :raw_isbn, :numericality => { :only_integer => true }
-  validates :base_price, :numericality => { :only_integer => true }
+  
+  validates_associated :publisher
   
   def format_name
     format ? format.name : nil
@@ -16,10 +18,14 @@ class Edition < ActiveRecord::Base
   
   def format_name=(name)
     self.format = name.present? ? (Format.name_is(name).first || Format.new({ :name => name })) : nil
-  end 
+  end
   
-  def formatted_base_price
-    RupeeHelper::to_rupee(base_price)
+  def publisher_name=(name)
+    self.publisher = name.present? ? (Publisher.name_is(name).first || Publisher.new({ :name => name })) : nil
+  end
+  
+  def publisher_name
+    publisher ? publisher.name : nil
   end
   
   def convert_raw_isbn
@@ -30,8 +36,7 @@ class Edition < ActiveRecord::Base
     {
       :id => id,
       :format_name => format_name,
-      :base_price => base_price,
-      :formatted_base_price => formatted_base_price,
+      :publisher_name => publisher_name,
       :isbn => isbn
     }
   end

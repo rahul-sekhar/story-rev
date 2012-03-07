@@ -1,7 +1,7 @@
 class Product < ActiveRecord::Base
   default_scope includes(:author)
   
-  attr_accessible :title, :author_name, :illustrator_name, :publisher_name, :year, :age_from, :age_to,
+  attr_accessible :title, :author_name, :illustrator_name, :year, :age_from, :age_to,
                   :genre_list, :keyword_list, :flipkart_id, :amazon_url, :short_description,
                   :award_attributes, :other_field_attributes, :cover_image_id, :cover_image_url
   
@@ -12,7 +12,6 @@ class Product < ActiveRecord::Base
   has_and_belongs_to_many :product_tags, :join_table => :products_product_tags, :uniq => true
   belongs_to :author
   belongs_to :illustrator
-  belongs_to :publisher
   has_many :product_awards, :dependent => :destroy
   has_many :editions, :dependent => :destroy
   has_many :copies, :through => :editions
@@ -30,7 +29,7 @@ class Product < ActiveRecord::Base
   
   validates_associated :author
   validates_associated :illustrator
-  validates_associated :publisher
+  
   validates_associated :product_awards
   validates_associated :other_fields
   
@@ -57,7 +56,7 @@ class Product < ActiveRecord::Base
   end
   
   def self.includes_data
-    includes(:illustrator, :publisher, :genres, :keywords, :product_tags, :other_fields, { :product_awards => { :award => :award_type }})
+    includes(:illustrator, :genres, :keywords, :product_tags, :other_fields, { :product_awards => { :award => :award_type }})
   end
   
   def self.includes_copies
@@ -117,14 +116,6 @@ class Product < ActiveRecord::Base
   
   def illustrator_name
     illustrator ? illustrator.full_name : nil
-  end
-  
-  def publisher_name=(name)
-    self.publisher = name.present? ? (Publisher.name_is(name).first || Publisher.new({ :name => name })) : nil
-  end
-  
-  def publisher_name
-    publisher ? publisher.name : nil
   end
   
   def genre_list

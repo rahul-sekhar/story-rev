@@ -48,9 +48,10 @@ $(document).ready(function() {
                     autocompleteSettings: { searchOnFocus: true }
                 },
                 {
-                    name: 'Base Price',
-                    field: 'formatted_base_price',
-                    raw: 'base_price'
+                    name: 'Publisher',
+                    field: 'publisher_name',
+                    type: 'autocomplete',
+                    sourceURL: '/admin/publishers'
                 }
             ]
         });
@@ -87,8 +88,7 @@ $(document).ready(function() {
                     {
                         name: 'Price',
                         field: 'formatted_price',
-                        raw: 'price',
-                        default_val: $editionTable.find('tr[data-id=' + id + '] td:eq(2)').data("val")
+                        raw: 'price'
                     }
                 ]
             });
@@ -115,7 +115,6 @@ $(document).ready(function() {
     }
     $('#product_author_name').tokenInput("/admin/authors.json", singleAutocompleteSettings);
     $('#product_illustrator_name').tokenInput("/admin/illustrators.json", singleAutocompleteSettings);
-    $('#product_publisher_name').tokenInput("/admin/publishers.json", singleAutocompleteSettings);
     $('#product_genre_list').tokenInput("/admin/genres.json", tagAutocompleteSettings);
     $('#product_keyword_list').tokenInput("/admin/keywords.json", tagAutocompleteSettings);
     $('#product_product_tag_list').tokenInput("/admin/product_tags.json", tagAutocompleteSettings);

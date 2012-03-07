@@ -48,7 +48,7 @@
         <tr data-id="<%= e.id %>"<%= alt ? ' class="alt"' : nil %>>
           <td data-val="<%= e.isbn %>"><%= e.isbn %></td>
           <td data-val="<%= e.format_name %>"><%= e.format_name %></td>
-          <td data-val="<%= e.base_price %>"><%= e.formatted_base_price %></td>
+          <td data-val="<%= e.publisher_name %>"><%= e.publisher_name %></td>
         </tr>
         <% alt != alt %>
       <% end %>

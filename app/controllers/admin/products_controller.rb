@@ -31,6 +31,7 @@ class Admin::ProductsController < Admin::ApplicationController
       redirect_to admin_product_path(@product), :notice => "Product created - its accession number is #{@product.accession_id}"
     else
       flash.now.alert = "Some fields are not valid"
+      @product.build_empty_fields
       render "new"
     end
   end
