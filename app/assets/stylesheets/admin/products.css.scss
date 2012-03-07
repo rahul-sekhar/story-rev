@@ -259,7 +259,7 @@
         margin: e(10px);
         
         .error {
-            color: $brown;
+            color: $error-text-color;
         }
         
         input {
@@ -404,7 +404,7 @@
     .errors {
         @include reset-list;
         @include content-text;
-        color: $brown;
+        color: $error-text-color;
     }
     
     .rating {

@@ -4,6 +4,8 @@ $(document).ready(function() {
     // Skip this code if we aren't on a product page
     if (!$body.hasClass('product')) return;
     
+    console.log("Yes!");
+    
     if ($body.hasClass('search')) {
         // Handle the search box
         $('#product-search').tokenInput("/admin/products", {
@@ -473,7 +475,6 @@ $(document).ready(function() {
     $productTitle.blur(function() {
         $cover.find(".blank-cover p").text($(this).val());
     });
-    
     
     // Handle amazon information
     var $sidebar = $('#info-sidebar');

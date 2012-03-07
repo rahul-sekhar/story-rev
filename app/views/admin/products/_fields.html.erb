@@ -1,25 +1,10 @@
-<%= simple_form_for [:admin, @product] do |f| %>
-  
-  <ul>
-  <% f.object.errors.full_messages.each do |e| %>
-    <li><%= e %></li>
-  <% end %>
-  </ul>
-  
-  <ul>
-  <% f.object.product_awards.each do |p| %>
-    <% p.errors.full_messages.each do |e| %>
-      <li><%= e %></li>
-    <% end %>
-  <% end %>
-  </ul>
-  
+<%= simple_form_for [:admin, @product], :defaults => { :required => false, :error => false } do |f| %>
   <div id="product-fields">
   
     <%= render "cover", :product => @product, :link_to_image => true, :form => f %>
     
-    <%= f.input :accession_id, :required => false, :label => "Book no.", :disabled => true %>
-    <%= f.input :title, :required => false %>
+    <%= f.input :accession_id, :label => "Book no.", :disabled => true %>
+    <%= f.input :title %>
     <%= f.input :author_name, :label => "Author" %>
     <%= f.input :illustrator_name, :label => "Illustrator" %>
     <%= f.input :year,

@@ -153,6 +153,16 @@ label {
     }
 }
 
+.field_with_errors label {
+    color: $error-text-color;
+    font-weight:bold;
+}
+
+.disabled.field_with_errors label {
+    color: $text-color;
+    font-weight: normal;
+}
+
 div.input, div.table {
     @include clearfix;
     &:after {

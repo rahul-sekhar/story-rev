@@ -30,8 +30,8 @@ class Admin::ProductsController < Admin::ApplicationController
     if @product.save
       redirect_to admin_product_path(@product), :notice => "Product created - its accession number is #{@product.accession_id}"
     else
-      flash.now.alert = "Some fields are not valid"
       @product.build_empty_fields
+      @class = "product form"
       render "new"
     end
   end
@@ -47,7 +47,8 @@ class Admin::ProductsController < Admin::ApplicationController
     if @product.update_attributes(params[:product])
       redirect_to admin_products_path, :notice => "Product saved - its accession number is #{@product.accession_id}"
     else
-      flash.now.alert = "Some fields are not valid"
+      @product.build_empty_fields
+      @class = "product form"
       render "edit"
     end
   end
@@ -59,6 +60,9 @@ class Admin::ProductsController < Admin::ApplicationController
   end
   
   def amazon_info
+    render :json => []
+    return
+    
     @info_objects = AWSInfo.search(params[:title])
     
     respond_to do |format|
