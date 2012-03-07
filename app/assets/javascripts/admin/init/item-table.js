@@ -5,20 +5,25 @@ var DEFAULTS = {
     url: null,                      // If the URL is left null, it is taken from
                                     // the tables data-url attribute
     objectName: "object",
-    addLinkCaption: "Add",
+    addLinkText: "Add",
     tooltips: true,
     numbered: false,
     selectable: false,
     addable: true,
     editable: true,
     removable: true,
+    editLinkText: '',
+    removeLinkText: '',
     initialLoad: false,             // If set to true, loads json items from the set URL on creation
     columns: [{
         name: "Column 1",
         field: "column_1",
         
+        multilineLabel: false,      // If set to true, the label is given a multi-line class
+        
         type: null,                 // If left empty, this defaults to 'text'.
-                                    // other options are: 'autocomplete', 'read_only', 'image'
+                                    // other options are: 'autocomplete', 'read_only', 'image',
+                                    // 'rating'
         
         sourceURL: null,            // Source URL for autocomplete data
         
@@ -82,17 +87,18 @@ $.ItemTable = function(table, settings) {
         var $dialog = $('<section class="dialog"></section>').hide().appendTo('body');
         var $dialogForm = $('<form method="POST" action="' + settings.url + '"></form>').appendTo($dialog);
         // Add inputs for each column
-        $.each(settings.columns, function(index, value) {
-            if (value.type == "read_only") return;
+        $.each(settings.columns, function(index, column) {
+            if (column.type == "read_only") return;
             var $div = $('<div class="input"></div>').appendTo($dialogForm);
-            $div.append('<label for="' + field_id(value) + '">' + value.name + '</label>');
-            constructInput($div, value);
+            $div.append('<label for="' + field_id(column) + '"' + (column.multilineLabel ? ' class="multi-line"' : '') + '>' + column.name + '</label>');
+            constructInput($div, column);
         });
         // Add submit and cancel buttons
-        var $submit = $('<input type="submit" value="Save" />').appendTo($dialogForm);
-        $('<a href="#">Cancel</a>').click(function() {
+        var $buttonContainer = $('<div class="button-container"></div>').appendTo($dialogForm);
+        var $submit = $('<input type="submit" class="minor-button" value="Save" />').appendTo($buttonContainer);
+        $('<a href="#" class="minor-button">Cancel</a>').click(function() {
             $.unblockUI();
-        }).appendTo($dialogForm);
+        }).appendTo($buttonContainer);
         // A 'PUT' method parameter to be added to the form for edits
         var $putParam = $('<input type="hidden" name="_method" value="PUT" />');
         // A list to display errors
@@ -145,9 +151,9 @@ $.ItemTable = function(table, settings) {
         $table.on("click", ".edit-link", function(e) {
             var $tr = $(this).closest('tr');
             // Fill dialog fields
-            $.each(settings.columns, function(index, value) {
+            $.each(settings.columns, function(index, column) {
                 var field_val = $tr.find('td:eq(' + index + ')').data('val');
-                $dialog.find('#' + field_id(value)).trigger("fill", field_val);
+                $dialog.find('#' + field_id(column)).trigger("fill", field_val);
             });
             // Trigger a reset event in all the inputs
             $dialog.find('.dialog-input').trigger("reset");
@@ -165,7 +171,7 @@ $.ItemTable = function(table, settings) {
     
     if (settings.removable) {
         // Delete button handling
-        $table.on("click", ".delete-link", function(e) {
+        $table.on("click", ".remove-link", function(e) {
             var $tr = $(this).closest('tr');
             $.blockUI({
                 message: $.blockUI.loadingMessage,
@@ -195,7 +201,7 @@ $.ItemTable = function(table, settings) {
     
     if (settings.addable) {
         // Add an add button
-        var $addLink = $('<a href="#" class="add-link">' + settings.addLinkCaption + '</a>')
+        var $addLink = $('<a href="#" class="add-link">' + settings.addLinkText + '</a>')
             .click(function(e) {
                 // Clear and trigger a reset event for all the inputs
                 $dialog.find('.dialog-input').trigger("clear").trigger("reset");
@@ -208,15 +214,17 @@ $.ItemTable = function(table, settings) {
                 // Show the dialog box
                 $.blockUI({ message: $dialog });
                 e.preventDefault();
-            }).insertAfter($tableContainer);
+            })
+            .insertAfter($tableContainer)
+            .wrap('<p class="add-container"></div>');
     }
     
     // Initialize tooltips
     if (settings.tooltips) {
         $table.find('tr').each(function() {
             var $tr = $(this);
-            $.each(settings.columns, function(index, value) {
-                $tr.find('td:eq(' + index + ')').attr("title", value.name);
+            $.each(settings.columns, function(index, column) {
+                $tr.find('td:eq(' + index + ')').attr("title", column.name);
             });
         });
     }
@@ -265,18 +273,27 @@ $.ItemTable = function(table, settings) {
     
     function createRow(data) {
         var $tr = $('<tr></tr>').attr("data-id", data.id);
-        $.each(settings.columns, function(index, value) {
+        $.each(settings.columns, function(index, column) {
             var $td = $('<td></td>');
-            if (value.type == "image") {
-                $td.html('<img src="' + data[value.field] + '" alt="" />');
+            if (column.type == "image") {
+                $td.html('<img src="' + data[column.field] + '" alt="" />');
+            }
+            else if (column.type == "rating") {
+                var rating = parseInt(data[column.field], 10)
+                for (var i = 1; i <= rating; i++) {
+                    $td.append('<img src="/images/star.png" alt="star" />');
+                }
+                for (var i = rating; i < 5; i++) {
+                    $td.append('<img src="/images/empty-star.png" alt="no star" />');
+                }
             }
             else {
-                var text = value.displayCallback ? value.displayCallback(data[value.field]) : data[value.field];
+                var text = column.displayCallback ? column.displayCallback(data[column.field]) : data[column.field];
                 $td.text(text || "")
             }
             
-            $td.data("val", data[value.raw || value.field] || "")
-                .attr("title", value.name)
+            $td.data("val", data[column.raw || column.field] || "")
+                .attr("title", column.name)
                 .appendTo($tr);
             
         });
@@ -352,19 +369,67 @@ $.ItemTable = function(table, settings) {
             return;
         }
         
-        // Handle other types
-        var autocompleteDefaults = {
-            tokenLimit: 1,
-            addClass: "fill thin dialog",
-            tokenValue: "name",
-            textPrePopulate: true,
-            allowCustom: true
+        // Handle ratings
+        if (column.type == "rating") {
+            var $input = $('<input class="dialog-input" type="text" id="' + field_id(column) + '" name="' + field_name(column) + '" />')
+                .attr('autocomplete', 'off')
+                .appendTo($container)
+                .hide();
+            
+            var $ratingDiv = $('<div class="rating"></div').appendTo($container);
+            for (var i = 1; i<=5; i++) {
+                $('<div></div>').data('number', i).appendTo($ratingDiv);
+            }
+            
+            var setRating = function(rating) {
+                rating = parseInt(rating, 10);
+                
+                $ratingDiv
+                    .find("div:lt(" + rating + ")").addClass("filled").end()
+                    .find("div:gt(" + (rating - 1) + ")").removeClass("filled");
+            }
+            
+            $ratingDiv
+                .on("click", "div", function() {
+                    var rating = $(this).data("number");
+                    $input.val(rating);
+                    setRating(rating);
+                })
+                .on("mouseenter", "div", function() {
+                    setRating($(this).data("number"));
+                })
+                .on("mouseleave", "div", function() {
+                    setRating($input.val());
+                });
+            
+            $input
+                .on("fill", function(e, val) {
+                    setRating(val);
+                    $input.val(val);
+                })
+                .on("clear", function(e) {
+                    setRating(column.default_val || 3);
+                    $input.val(column.default_val || 3);
+                });
+            
+            return;
         }
         
+        // Handle other types
         var $input = $('<input class="dialog-input" type="text" id="' + field_id(column) + '" name="' + field_name(column) + '" />')
             .attr('autocomplete', 'off')
             .appendTo($container);
+        
+        // Handle autocomplete inputs
         if (column.type == "autocomplete") {
+            var autocompleteDefaults = {
+                tokenLimit: 1,
+                addClass: "fill thin dialog",
+                tokenValue: "name",
+                textPrePopulate: true,
+                allowCustom: true
+            }
+            
             $input.tokenInput(column.sourceURL, $.extend({}, autocompleteDefaults, column.autocompleteSettings))
                 .on("reset", function() {
                     var val = $input.val();
@@ -375,6 +440,10 @@ $.ItemTable = function(table, settings) {
                 });
         }
         
+        // Handle ratings
+        
+        
+        // Events for fill and clear triggers
         $input
             .on("fill", function(e, val) {
                 $input.val(val);
@@ -387,10 +456,10 @@ $.ItemTable = function(table, settings) {
     function addManageLinks($tr, settings) {
         if ($tr) {
             if (settings.editable) {
-                $tr.append('<td><a class="edit-link" href="#">Edit</a></td>');
+                $tr.append('<td class="has-button"><a class="edit-link" href="#">' + settings.editLinkText + '</a></td>');
             }
             if (settings.removable) {
-                $tr.append('<td><a class="delete-link" href="#">Delete</a></td>');
+                $tr.append('<td class="has-button last"><a class="remove-link" href="#">' + settings.removeLinkText + '</a></td>');
             }
             return $tr
         }

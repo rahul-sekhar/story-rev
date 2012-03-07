@@ -33,6 +33,7 @@ $(document).ready(function() {
         var $editionTable = $('#edition-table')
         $editionTable.itemTable({
             objectName: 'edition',
+            addLinkText: 'New Edition',
             selectable: true,
             columns: [
                 {
@@ -64,6 +65,7 @@ $(document).ready(function() {
             $copyTable.itemTable({
                 url: editionURL + '/' + id + '/copies',
                 objectName: 'copy',
+                addLinkText: 'New Copy',
                 initialLoad: true,
                 columns: [
                     {
@@ -73,10 +75,13 @@ $(document).ready(function() {
                     },
                     {
                         name: 'Condition Rating',
-                        field: 'condition_rating'
+                        field: 'condition_rating',
+                        multilineLabel: true,
+                        type: 'rating'
                     },
                     {
                         name: 'Condition Description',
+                        multilineLabel: true,
                         field: 'condition_description'
                     },
                     {

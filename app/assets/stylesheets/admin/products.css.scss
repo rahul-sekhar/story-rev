@@ -4,30 +4,6 @@
         margin-left: e(120px);
     }
     
-    label {
-        margin-right: e(20px, $label-font-size);
-        width: e(80px, $label-font-size);
-        
-        &.inline {
-            margin-left: e(10px, $label-font-size);
-            margin-right: e(10px, $label-font-size);
-            width:auto;
-        }
-    }
-    
-    div.input, div.table {
-        @include clearfix;
-        &:after {
-            clear:left;
-        }
-        margin-top: e(20px);
-        
-        .token-input-list {
-            float:left;
-            clear:none;
-        }
-    }
-    
     // Input box widths
     input {
         width:e(188px, $input-font-size);
@@ -412,28 +388,37 @@
         margin-top: e(40px);
     }
     
-    .table-container {
+    .dialog .minor-button {
+        width: e(100px, $content-text-size);
         float:left;
-        @include rounded-corners(5px);
-        border:1px solid #ccc;
-        min-height: e(100px);
+        color:white;
+        margin-left: e(20px, $content-text-size);
     }
     
-    td {
+    .dialog .button-container {
+        margin: e(20px) auto;
+        width: e(260px);
+        clear:left;
+    }
+    
+    .errors {
+        @include reset-list;
         @include content-text;
-        font-size:11px;
-        padding: 0 e(15px, 11px);
+        color: $brown;
     }
     
-    tr {
-        height: e(20px);
+    .rating {
+        cursor: pointer;
         
-        &.alt {
-            background-color: #efefef;
-        }
-        
-        &.selected {
-            font-weight:bold;
+        div {
+            float:left;
+            width:16px;
+            height:16px;
+            background: url('/images/empty-star.png') no-repeat center;
+            
+            &.filled {
+                background: url('/images/star.png') no-repeat center;
+            }
         }
     }
 }

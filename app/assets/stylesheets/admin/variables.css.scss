@@ -3,7 +3,8 @@ $teal: #459aa2;
 $light-teal: #57acb6;
 $brown: #b9603e;
 $golden: #e6c35a;
-$light-purple: #b989ab;
+$purple: #b989ab;
+$text-color: #605c5a;
 
 // Themes
 $small-heading-size: 14px;
@@ -19,7 +20,7 @@ $content-text-size: 13px;
     font-family: Arial, Helvetica, sans-serif;
     font-size: e($content-text-size);
     line-height: e(20px, $content-text-size);
-    color: #605c5a;
+    color: $text-color;
 }
 
 $smaller-text-size: 12px;
@@ -44,6 +45,7 @@ $caption-font-size: 12px;
     text-transform: lowercase;
     background: url('/images/icons.png') no-repeat;
     padding-left: 22px + $padding;
+    @include link($text-color, lighten($text-color, 10));
 }
 
 @mixin add-button($height:22px) {

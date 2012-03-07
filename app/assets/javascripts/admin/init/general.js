@@ -5,6 +5,8 @@ $.blockUI.loadingCss =  {
     borderRadius:   '10px',
     width:          '32px',
     height:         '32px',
+    left:           '48%',
+    top:            '48%',
     margin:         0, 
     textAlign:      'center', 
     backgroundColor:'#eee', 

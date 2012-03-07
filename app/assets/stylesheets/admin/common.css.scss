@@ -5,7 +5,6 @@
 body {
     font-size: $body-font-size;
     font-family: Serif;
-    background-color: #f2f2f2;
 }
 
 
@@ -13,10 +12,7 @@ body {
 $wrapper-width: 980px;
 #wrapper {
     width: e($wrapper-width);
-    border-left:2px solid #eee;
-    border-right:2px solid #eee;
     margin: 0 auto;
-    background-color: #fff;
     @include clearfix;
     min-height: 100%;
 }
@@ -44,7 +40,7 @@ $side-nav-width: 210px;
 }
 
 #top-nav {
-    background-color: $light-purple;
+    background-color: $purple;
     @include reset-list;
     @include clearfix;
     padding:0 e(20px) 0 e(40px);
@@ -106,7 +102,7 @@ a.button, input.submit {
     
 }
 
-a.minor-button {
+.minor-button {
     display:block;
     @include content-text;
     width: e(70px, $content-text-size);
@@ -126,13 +122,22 @@ a.minor-button {
     border: 1px solid $text-field-border-color;
 }
 
+/* Labels and inputs */
+
 $label-font-size: $content-text-size;
 label {
     @include content-text;
     float:left;
     text-align:right;
     line-height: e(25px, $label-font-size);
-    margin-right: e(10px, $label-font-size);
+    margin-right: e(20px, $label-font-size);
+    width: e(80px, $label-font-size);
+    
+    &.inline {
+        margin-left: e(10px, $label-font-size);
+        margin-right: e(10px, $label-font-size);
+        width:auto;
+    }
     
     &.multi-line {
         line-height: e(17px, $label-font-size);
@@ -145,6 +150,19 @@ label {
     &.inline {
         margin-left: e(10px, $label-font-size);
         width:auto;
+    }
+}
+
+div.input, div.table {
+    @include clearfix;
+    &:after {
+        clear:left;
+    }
+    margin:e(20px) 0;
+    
+    .token-input-list {
+        float:left;
+        clear:none;
     }
 }
 
@@ -165,7 +183,68 @@ input {
     }
 }
 
+/* Tables */
+
 table {
     border-collapse:collapse;
 }
 
+.table-container {
+    float:left;
+    @include rounded-corners(5px);
+    border:1px solid #ccc;
+    min-height: e(100px);
+    @include clearfix;
+    margin-bottom:e(5px);
+    min-width: e(250px);
+}
+
+td {
+    @include content-text;
+    font-size:11px;
+    padding: 0 e(20px, 11px);
+    cursor:default;
+    
+    .edit-link {
+        @include edit-button;
+    }
+    
+    .remove-link {
+        @include remove-button;
+    }
+    
+    &.has-button {
+        padding: 0 e(10px, 11px);
+        
+        &.last {
+            padding-right:e(20px, 11px);
+        }
+    }
+}
+
+tr {
+    height: e(20px);
+    
+    &.alt {
+        background-color: #efefef;
+    }
+    
+    &.selected {
+        background-color:lighten($teal,10);
+        
+        td {
+            color:white;
+        }
+    }
+}
+
+.table {
+    .add-container {
+        clear:left;
+        margin-left: e(100px, $content-text-size);
+    }
+    
+    .add-link {
+        @include add-caption-button;
+    }
+}
