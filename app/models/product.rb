@@ -6,6 +6,7 @@ class Product < ActiveRecord::Base
                   :award_attributes, :other_field_attributes, :cover_image_id, :cover_image_url
   
   before_validation :set_accession_id
+  after_validation :validate_virtual_attributes
   
   has_and_belongs_to_many :keywords, :join_table => :products_keywords, :uniq => true
   has_and_belongs_to_many :genres, :join_table => :products_genres, :uniq => true
@@ -61,6 +62,11 @@ class Product < ActiveRecord::Base
   
   def self.includes_copies
     includes(:editions => [:format, :copies])
+  end
+  
+  def validate_virtual_attributes
+    self.errors[:author_name] = errors[:author] if errors[:author].present?
+    self.errors[:illustrator_name] = errors[:illustrator] if errors[:illustrator].present?
   end
   
   def set_accession_id

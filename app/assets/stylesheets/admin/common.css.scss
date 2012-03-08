@@ -153,7 +153,7 @@ label {
     }
 }
 
-.field_with_errors label {
+.field_with_errors label, label.error {
     color: $error-text-color;
     font-weight:bold;
 }

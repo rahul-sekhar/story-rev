@@ -60,9 +60,6 @@ class Admin::ProductsController < Admin::ApplicationController
   end
   
   def amazon_info
-    render :json => []
-    return
-    
     @info_objects = AWSInfo.search(params[:title])
     
     respond_to do |format|

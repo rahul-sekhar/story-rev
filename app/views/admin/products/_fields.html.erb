@@ -1,6 +1,5 @@
 <%= simple_form_for [:admin, @product], :defaults => { :required => false, :error => false } do |f| %>
   <div id="product-fields">
-  
     <%= render "cover", :product => @product, :link_to_image => true, :form => f %>
     
     <%= f.input :accession_id, :label => "Book no.", :disabled => true %>
@@ -13,9 +12,9 @@
       :label_html => { :class => "multi-line centered" },
       :input_html => { :maxlength => 4 } %>
     <div class="input">
-      <%= f.label :age_from, "Age level" %>
+      <%= f.label :age_from, "Age level", :class => ( @product.errors[:age_from].present? ? "error" : nil ) %>
       <%= f.input_field :age_from, :maxlength => 2, :as => :string %>
-      <%= f.label :age_to, "to", :class => "inline" %>
+      <%= f.label :age_to, "to", :class => "inline" + ( @product.errors[:age_to].present? ? " error" : "" ) %>
       <%= f.input_field :age_to, :maxlength => 2, :as => :string %>
     </div>
     <%= f.input :genre_list, :label => "Genres", :input_html => { "data-pre" => @product.genres_json } %>
@@ -23,7 +22,7 @@
     <%= f.input :product_tag_list, :label => "Product Tags", :input_html => { "data-pre" => @product.product_tags_json } %>
     
     <div class="input">
-      <label>Awards</label>
+      <label<%=raw @product.errors[:product_awards].present? ? ' class="error"' : '' %>>Awards</label>
       <div id="award-field-list">
         <ul>
           <% for product_award in @product.product_awards %>
