@@ -4,8 +4,6 @@ $(document).ready(function() {
     // Skip this code if we aren't on a product page
     if (!$body.hasClass('product')) return;
     
-    console.log("Yes!");
-    
     if ($body.hasClass('search')) {
         // Handle the search box
         $('#product-search').tokenInput("/admin/products", {
@@ -63,7 +61,10 @@ $(document).ready(function() {
         var editionURL = $editionTable.data("url")
         $editionTable.on("selectionChange", function(e, id) {
             $copyTable.empty();
-            if (!id) return;
+            if (!id) {
+                $copyTable.parent().next('.add-container').remove();
+                return;
+            }
             
             $copyTable.itemTable({
                 url: editionURL + '/' + id + '/copies',

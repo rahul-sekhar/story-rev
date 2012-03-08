@@ -473,7 +473,7 @@ $.ItemTable = function(table, settings) {
         
         // Check if the selection has changed and trigger an event if so
         var new_selected = get_selected();
-        if (new_selected != old_selected) {
+        if (new_selected === null || new_selected != old_selected) {
             $table.trigger("selectionChange", new_selected);
         }
     }
