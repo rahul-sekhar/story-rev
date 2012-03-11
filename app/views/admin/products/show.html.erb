@@ -38,29 +38,33 @@
   <input type="text" disabled="disabled" value="<%= @product.author_name %>" />
 </div>
 
-<div class="table">
+<div class="input">
   <label>Editions</label>
   
-  <div class="table-container">
-    <table id="edition-table" data-url="<%= admin_product_editions_path(@product) %>">
-      <% alt = false %>
-      <% @product.editions.each do |e| %>
-        <tr data-id="<%= e.id %>"<%= alt ? ' class="alt"' : nil %>>
-          <td data-val="<%= e.isbn %>"><%= e.isbn %></td>
-          <td data-val="<%= e.format_name %>"><%= e.format_name %></td>
-          <td data-val="<%= e.publisher_name %>"><%= e.publisher_name %></td>
-        </tr>
-        <% alt != alt %>
-      <% end %>
-    </table>
+  <div class="table-wrapper">
+    <div class="table-container">
+      <table id="edition-table" data-url="<%= admin_product_editions_path(@product) %>">
+        <% alt = false %>
+        <% @product.editions.each do |e| %>
+          <tr data-id="<%= e.id %>"<%= alt ? ' class="alt"' : nil %>>
+            <td data-val="<%= e.isbn %>"><%= e.isbn %></td>
+            <td data-val="<%= e.format_name %>"><%= e.format_name %></td>
+            <td data-val="<%= e.publisher_name %>"><%= e.publisher_name %></td>
+          </tr>
+          <% alt != alt %>
+        <% end %>
+      </table>
+    </div>
   </div>
 </div>
 
-<div class="table">
+<div class="input">
   <label>Copies</label>
   
-  <div class="table-container">
-    <table id="copy-table">
-    </table>
+  <div class="table-wrapper">
+    <div class="table-container">
+      <table id="copy-table">
+      </table>
+    </div>
   </div>
 </div>

@@ -1,6 +1,10 @@
 .product {
+    #top-nav li {
+        margin-right: e(10px);
+    }
+    
     #search-box {
-        margin-top: e(20px);
+        margin-top: e(-20px);
         margin-left: e(120px);
     }
     
@@ -28,7 +32,7 @@
     }
     
     #product-fields {
-        margin: e(30px) 0;
+        margin-top:e(-10px);
         position:relative;
     }
     
@@ -382,44 +386,8 @@
         }
     }
     
-    // Editions and copies section
-    
-    div.first {
-        margin-top: e(40px);
-    }
-    
-    .dialog .minor-button {
-        width: e(100px, $content-text-size);
-        float:left;
-        color:white;
-        margin-left: e(20px, $content-text-size);
-    }
-    
-    .dialog .button-container {
-        margin: e(20px) auto;
-        width: e(260px);
-        clear:left;
-    }
-    
-    .errors {
-        @include reset-list;
-        @include content-text;
-        color: $error-text-color;
-    }
-    
-    .rating {
-        cursor: pointer;
-        
-        div {
-            float:left;
-            width:16px;
-            height:16px;
-            background: url('/images/empty-star.png') no-repeat center;
-            
-            &.filled {
-                background: url('/images/star.png') no-repeat center;
-            }
-        }
+    table {
+        width: e(500px);
     }
 }
 

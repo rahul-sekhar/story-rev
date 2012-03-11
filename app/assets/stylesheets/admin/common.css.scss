@@ -44,13 +44,14 @@ $side-nav-width: 210px;
     @include reset-list;
     @include clearfix;
     padding:0 e(20px) 0 e(40px);
+    margin-bottom: e(40px);
     
     li {
         float:left;
         @include small-heading;
         @include inner-link(white, lighten($golden, 25));
         line-height:e(50px);
-        margin-left:e(10px);
+        margin-right:e(50px);
         
         &.descendant:before { content: '>'; }
         &.current {
@@ -163,7 +164,7 @@ label {
     font-weight: normal;
 }
 
-div.input, div.table {
+div.input {
     @include clearfix;
     &:after {
         clear:left;
@@ -203,10 +204,12 @@ table {
     float:left;
     @include rounded-corners(5px);
     border:1px solid #ccc;
-    min-height: e(100px);
+    height: e(100px);
     @include clearfix;
     margin-bottom:e(5px);
     min-width: e(250px);
+    overflow-y:auto;
+    overflow-x:hidden;
 }
 
 td {
@@ -224,14 +227,12 @@ td {
     }
     
     &.has-button {
-        padding: 0 e(10px, 11px);
-        
-        &.last {
-            padding-right:e(20px, 11px);
-        }
+        width: e(22px);
+        padding: 0 e(5px, 11px);
     }
 }
 
+$table-row-selected-color: lighten($teal,10);
 tr {
     height: e(20px);
     
@@ -240,7 +241,7 @@ tr {
     }
     
     &.selected {
-        background-color:lighten($teal,10);
+        background-color:$table-row-selected-color;
         
         td {
             color:white;
@@ -248,13 +249,52 @@ tr {
     }
 }
 
-.table {
+.table-wrapper {
     .add-container {
         clear:left;
-        margin-left: e(100px, $content-text-size);
+        float:right;
     }
     
     .add-link {
         @include add-caption-button;
+    }
+    
+    float:left;
+}
+
+// Dialogs from tables
+.dialog {
+    .minor-button {
+        width: e(100px, $content-text-size);
+        float:left;
+        color:white;
+        margin-left: e(20px, $content-text-size);
+    }
+    
+    .button-container {
+        margin: e(20px) auto;
+        width: e(260px);
+        clear:left;
+    }
+    
+    .errors {
+        @include reset-list;
+        @include content-text;
+        color: $error-text-color;
+    }
+    
+    .rating {
+        cursor: pointer;
+        
+        div {
+            float:left;
+            width:16px;
+            height:16px;
+            background: url('/images/empty-star.png') no-repeat center;
+            
+            &.filled {
+                background: url('/images/star.png') no-repeat center;
+            }
+        }
     }
 }

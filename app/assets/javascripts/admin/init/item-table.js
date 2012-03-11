@@ -38,6 +38,8 @@ var DEFAULTS = {
         
         default_val: null,          // The default value
         
+        class_name: null,           // The column class
+        
         displayCallback: function(data) { return data; }
     }]
 }
@@ -170,7 +172,7 @@ $.ItemTable = function(table, settings) {
     }
     
     if (settings.removable) {
-        // Delete button handling
+        // Remove button handling
         $table.on("click", ".remove-link", function(e) {
             var $tr = $(this).closest('tr');
             $.blockUI({
@@ -183,7 +185,7 @@ $.ItemTable = function(table, settings) {
                 data: {_method: "DELETE"},
                 success: function(data) {
                     $tr.remove();
-                    select_item(null);
+                    select_item($table.find('tr.selected:first'));
                     restripe();
                     $.unblockUI();
                 },
@@ -276,7 +278,9 @@ $.ItemTable = function(table, settings) {
         $.each(settings.columns, function(index, column) {
             var $td = $('<td></td>');
             if (column.type == "image") {
-                $td.html('<img src="' + data[column.field] + '" alt="" />');
+                if (data[column.field]) {
+                    $td.html('<img src="' + data[column.field] + '" alt="" />');
+                }
             }
             else if (column.type == "rating") {
                 var rating = parseInt(data[column.field], 10)
@@ -291,6 +295,9 @@ $.ItemTable = function(table, settings) {
                 var text = column.displayCallback ? column.displayCallback(data[column.field]) : data[column.field];
                 $td.text(text || "")
             }
+            
+            if (column.class_name)
+                $td.addClass(column.class_name);
             
             $td.data("val", data[column.raw || column.field] || "")
                 .attr("title", column.name)
@@ -346,6 +353,7 @@ $.ItemTable = function(table, settings) {
                 },
                 done: function (e, data) {
                     $progressText.hide();
+                    $inputDiv.find('.image-uploader').show();
                     var jsonData = $.parseJSON(data.jqXHR.responseText);
                     $img.attr('src', jsonData.url);
                     $imgId.val(jsonData.id);
@@ -484,7 +492,7 @@ $.ItemTable = function(table, settings) {
     }
     
     function get_selected() {
-        return $table.find('tr.selected').first().data("id") || null;
+        return $table.find('tr.selected:first').data("id") || null;
     }
     
     function deselect_all() {

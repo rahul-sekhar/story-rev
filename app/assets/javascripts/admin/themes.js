@@ -8,6 +8,7 @@ $(document).ready(function() {
     var $themeTable = $('#theme-table')
     $themeTable.itemTable({
         objectName: 'theme',
+        addLinkText: 'Add Theme',
         selectable: true,
         columns: [
             {
@@ -16,11 +17,13 @@ $(document).ready(function() {
                 type: 'image',
                 image_id_field: 'icon_id',
                 image_url: '/admin/theme_icons.json',
-                raw: 'icon_data_json'
+                raw: 'icon_data_json',
+                class_name: 'icon'
             },
             {
                 name: 'Name',
                 field: 'name',
+                class_name: 'name'
             },
         ]
     });

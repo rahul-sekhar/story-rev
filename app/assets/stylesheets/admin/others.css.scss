@@ -1,0 +1,51 @@
+.themes {
+    .table {
+        float:left;
+    }
+    
+    .table-container {
+        height: e(200px);
+    }
+    
+    #theme-table-wrapper {
+        .table-container {
+            width: e(250px);
+            min-width:0;
+        }
+        
+        table {
+            width:100%;
+        }
+        
+        tr {
+            height:e(50px);
+            border-bottom:1px solid #ccc;
+            
+            &.alt {
+                background-color:transparent;
+            }
+            
+            &.selected {
+                background-color:$table-row-selected-color;
+            }
+        }
+        
+        td {
+            padding: e(5px, 11px);
+        }
+        
+        .icon {
+            width: e(50px, 11px);
+        }
+        
+        .name {
+            max-width: e(250px - 50px - (32px * 2));
+            overflow:hidden;
+            @include word-wrap;
+        }
+        
+        .has-button {
+            width: e(22px, 11px);
+        }
+    }
+}

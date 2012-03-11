@@ -10,7 +10,7 @@ class Theme < ActiveRecord::Base
   end
   
   def icon_id=(img_id)
-    if (theme_icon.present? && img_id != theme_icon.id)
+    if (theme_icon.present? && img_id.to_i != theme_icon.id)
       theme_icon.destroy
     end
     

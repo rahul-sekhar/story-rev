@@ -3,7 +3,7 @@
     <%= render "cover", :product => @product, :link_to_image => true, :form => f %>
     
     <%= f.input :accession_id, :label => "Book no.", :disabled => true %>
-    <%= f.input :title %>
+    <%= f.input :title, :input_html => { :autocomplete => :off } %>
     <%= f.input :author_name, :label => "Author" %>
     <%= f.input :illustrator_name, :label => "Illustrator" %>
     <%= f.input :year,

@@ -1,13 +1,29 @@
-<div class="table-container themes">
-  <table id="theme-table" data-url="<%= admin_themes_path %>">
-    <% @themes.each do |t| %>
-      <tr data-id="<%= t.id %>">
-        <td data-val="<%= t.icon_data_json %>"><%= t.theme_icon.present? ? image_tag(t.icon_url) : nil %></td>
-        <td data-val="<%= t.name %>"><%= t.name %></td>
-      </tr>
-    <% end %>
-  </table>
+<% content_for :top_nav do %>
+  <li class="current">
+    <%= link_to "Themes", admin_themes_path %>
+  </li>
+  
+  <li>
+    <%= link_to "Sidebar Feature Boxes", "#" %>
+  </li>
+<% end %>
+
+<div class="table-wrapper" id="theme-table-wrapper">
+  <div class="table-container">
+    <table id="theme-table" data-url="<%= admin_themes_path %>">
+      <% @themes.each do |t| %>
+        <tr data-id="<%= t.id %>">
+          <td class="icon" data-val="<%= t.icon_data_json %>"><%= t.theme_icon.present? ? image_tag(t.icon_url) : nil %></td>
+          <td class="name" data-val="<%= t.name %>"><%= t.name %></td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
 </div>
 
-<table id="theme-product-table">
-</table>
+<div class="table-wrapper" id="theme-product-table-wrapper">
+  <div class="table-container">
+    <table id="theme-product-table">
+    </table>
+  </div>
+</div>
