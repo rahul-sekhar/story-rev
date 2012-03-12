@@ -1,0 +1,30 @@
+/***************************
+ ********* Layout **********
+ ***************************/
+
+#wrapper {
+    width:e(960px);
+    margin:0 auto;
+    border:1px solid #ccc;
+    border-top:none;
+}
+
+
+// Footer
+
+#page-footer {
+    @include rounded-corners (10px);
+    margin: e(30px);
+    background-color: $teal;
+}
+
+
+/***************************
+ ********* Styles **********
+ ***************************/
+
+
+
+.email_obf span {
+    display:none;
+}

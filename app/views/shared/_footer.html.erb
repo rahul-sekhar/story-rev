@@ -1,0 +1,45 @@
+<footer id="page-footer">
+  
+  <section id="more-info">
+    
+    <h2>More</h2>
+    
+    <nav>
+      <ul>
+        <% more_nav_links.each do |name,text| %>
+          <li<%= class_if (more_nav_selected == name), "selected" %>/><%= link_to text, current_url(:info => name) %></li>
+        <% end %>
+      </ul>
+    </nav>
+    
+    <article>
+      <%= render "shared/more-info", :section => more_nav_selected %>
+    </article>
+    
+  </section>
+  
+  
+  <section id="subscribe">
+    <h2>Subscribe</h2>
+    
+    <p>Would you like to be notified when we get new books?
+    
+    <input type="text" name="email" id="subscribe-email" />
+    <input type="submit" value="OK" />  
+  </section>
+  
+  
+  <section id="contact">
+    <h2>Get in Touch</h2>
+    
+    <p class="email_obf">story<span>to.prevent.spam</span>revolution@<span>no.spam.</span>gmail.com</p>
+    
+    <p>9632385904 or 9900271565</p>
+  </section>
+  
+  
+  <section id="designed-by">
+    <p>Website by <a href="http://www.kairi.in">kairi</a></p>
+  </section>
+  
+</footer>

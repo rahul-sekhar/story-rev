@@ -1,12 +1,4 @@
-// Site specific mixins
-
-@mixin caps-spaced ($letter: 1px, $word: 1px) {
-    text-transform: uppercase;
-    letter-spacing: $letter;
-    word-spacing:  $word;
-    word-spacing: 1px;
-}
-
+$body-font-size:100%;
 
 // General functions
 

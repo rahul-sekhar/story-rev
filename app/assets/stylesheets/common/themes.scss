@@ -1,0 +1,21 @@
+$small-heading-size: 14px;
+@mixin small-heading {
+    font-family: Quicksand, sans-serif;
+    font-size: e($small-heading-size);
+    text-transform: uppercase;
+    
+}
+
+$content-text-size: 13px;
+@mixin content-text {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: e($content-text-size);
+    line-height: e(20px, $content-text-size);
+    color: $text-color;
+}
+
+$smaller-text-size: 12px;
+@mixin smaller-text {
+    @include content-text;
+    font-size: e($smaller-text-size);
+}

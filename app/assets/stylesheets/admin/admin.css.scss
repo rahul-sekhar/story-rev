@@ -2,9 +2,11 @@
  *= require_self
 */
 
-@import "functions.css.scss";
-@import "variables.css.scss";
-@import "reset.css.scss";
+@import "../common/functions.css.scss";
+@import "../common/colors.css.scss";
+@import "../common/themes.css.scss";
+@import "../common/mixins.css.scss";
+@import "../common/reset.css.scss";
 @import "common.css.scss";
 @import "token-input.css.scss";
 @import "products.css.scss";

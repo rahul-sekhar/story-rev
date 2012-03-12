@@ -8,8 +8,12 @@
 </head>
 <body>
 
-<%= link_to "Admin Area", admin_root_url %>
-<%= yield %>
+<div id="wrapper">
+  <%= link_to "Admin Area", admin_root_url %>
+  <%= yield %>
+  
+  <%= render "shared/footer" %>
+</div>
 
 </body>
 </html>
