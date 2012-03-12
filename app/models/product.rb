@@ -2,14 +2,13 @@ class Product < ActiveRecord::Base
   default_scope includes(:author)
   
   attr_accessible :title, :author_name, :illustrator_name, :year, :age_from, :age_to,
-                  :genre_list, :keyword_list, :flipkart_id, :amazon_url, :short_description,
+                  :keyword_list, :flipkart_id, :amazon_url, :short_description,
                   :award_attributes, :other_field_attributes, :cover_image_id, :cover_image_url
   
   before_validation :set_accession_id
   after_validation :validate_virtual_attributes
   
   has_and_belongs_to_many :keywords, :join_table => :products_keywords, :uniq => true
-  has_and_belongs_to_many :genres, :join_table => :products_genres, :uniq => true
   has_and_belongs_to_many :product_tags, :join_table => :products_product_tags, :uniq => true
   belongs_to :author
   belongs_to :illustrator
@@ -57,7 +56,7 @@ class Product < ActiveRecord::Base
   end
   
   def self.includes_data
-    includes(:illustrator, :genres, :keywords, :product_tags, :other_fields, { :product_awards => { :award => :award_type }})
+    includes(:illustrator, :keywords, :product_tags, :other_fields, { :product_awards => { :award => :award_type }})
   end
   
   def self.includes_copies
@@ -122,16 +121,6 @@ class Product < ActiveRecord::Base
   
   def illustrator_name
     illustrator ? illustrator.full_name : nil
-  end
-  
-  def genre_list
-    genres.map{ |x| x.name }.join(",")
-  end
-  def genre_list=(tag_list)
-    self.genres = Genre.split_list(tag_list)
-  end
-  def genres_json
-    genres.to_json({ :only => [:id, :name] })
   end
   
   def keyword_list

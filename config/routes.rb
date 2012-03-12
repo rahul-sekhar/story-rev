@@ -24,7 +24,6 @@ StoryRev::Application.routes.draw do
     resources :authors
     resources :illustrators
     resources :publishers
-    resources :genres
     resources :keywords
     resources :product_tags
     resources :formats

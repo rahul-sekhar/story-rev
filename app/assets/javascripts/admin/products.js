@@ -118,7 +118,6 @@ $(document).ready(function() {
     }
     $('#product_author_name').tokenInput("/admin/authors.json", singleAutocompleteSettings);
     $('#product_illustrator_name').tokenInput("/admin/illustrators.json", singleAutocompleteSettings);
-    $('#product_genre_list').tokenInput("/admin/genres.json", tagAutocompleteSettings);
     $('#product_keyword_list').tokenInput("/admin/keywords.json", tagAutocompleteSettings);
     $('#product_product_tag_list').tokenInput("/admin/product_tags.json", tagAutocompleteSettings);
     

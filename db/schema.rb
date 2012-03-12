@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120307114200) do
+ActiveRecord::Schema.define(:version => 20120312130437) do
 
   create_table "admin_roles", :force => true do |t|
     t.string   "name"
@@ -91,14 +91,6 @@ ActiveRecord::Schema.define(:version => 20120307114200) do
 
   add_index "formats", ["name"], :name => "index_formats_on_name", :unique => true
 
-  create_table "genres", :force => true do |t|
-    t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "genres", ["name"], :name => "index_genres_on_name", :unique => true
-
   create_table "illustrators", :force => true do |t|
     t.string   "first_name"
     t.string   "last_name"
@@ -166,14 +158,6 @@ ActiveRecord::Schema.define(:version => 20120307114200) do
 
   add_index "products_awards", ["product_id", "award_id"], :name => "index_products_awards_on_product_id_and_award_id"
   add_index "products_awards", ["product_id"], :name => "index_products_awards_on_product_id"
-
-  create_table "products_genres", :id => false, :force => true do |t|
-    t.integer "product_id"
-    t.integer "genre_id"
-  end
-
-  add_index "products_genres", ["product_id", "genre_id"], :name => "index_products_genres_on_product_id_and_genre_id", :unique => true
-  add_index "products_genres", ["product_id"], :name => "index_products_genres_on_product_id"
 
   create_table "products_keywords", :id => false, :force => true do |t|
     t.integer "product_id"
