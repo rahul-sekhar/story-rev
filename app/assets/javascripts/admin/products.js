@@ -212,12 +212,17 @@ $(document).ready(function() {
         }).change();
     });
     
+    function checkFirstAward() {
+        $awardList.find('li:visible').removeClass('first').first().addClass('first');
+    }
+    
     // Handle award removal [set the award name value to ""]
     $awardList.on("click", ".remove-link", function(e) {
         var $award = $(this).parent('li');
         $award.hide();
         $award.find('.award_type').val("");
         $award.find('.award_name').empty().appendOption("", "Removed").val("");
+        checkFirstAward();
         e.preventDefault();
     });
     
@@ -245,6 +250,7 @@ $(document).ready(function() {
     // Handle adding awards
     $('#add-award-link').click(function(e) {
         $awardTemplate.clone().appendTo($awardList);
+        checkFirstAward();
         e.preventDefault();
     });
     

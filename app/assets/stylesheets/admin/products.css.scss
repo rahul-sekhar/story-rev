@@ -11,6 +11,10 @@
     // Input box widths
     input {
         width:e(188px, $input-font-size);
+        
+        &.submit {
+            width:auto;
+        }
     }
     
     #product_accession_id {
@@ -48,11 +52,10 @@
         padding: 0 e($sidebar-hor-padding);
         
         h2 {
-            @include small-heading;
-            font-size: e(16px);
-            color: white;
+            @include large-heading;
+            color: $color-g1;
             text-align:center;
-            margin: e(20px, 16px) 0;
+            margin: e(20px, $large-heading-size) 0;
         }
     }
     
@@ -64,7 +67,7 @@
         p {
             text-align:center;
             margin: 20% 6px;
-            line-height:e(16px, $content-text-size);
+            line-height:e(16px, $text-size);
             @include word-wrap;
         }
     }
@@ -72,7 +75,7 @@
     .cover {
         max-width:100px;
         max-height:150px;
-        border:2px solid #ccc;
+        border:2px solid $color-e1;
         @include rounded-corners(5px);
         float:right;
         margin-right: e(40px + $sidebar-width + (2 * $sidebar-hor-padding));
@@ -98,32 +101,31 @@
         position:absolute;
         right:5px;
         bottom:-30px - (21px * 3) - 4px;
-        @include reset-list;
-        border:1px solid #ddd;
+        border:1px solid $color-e1;
         text-align:right;
         padding: 2px 2px;
         width: e(90px);
-        background-color: #f6f6f6;
+        background-color: $color-e2;
         
         li{
-            @include content-text;
+            @include small-text;
             text-transform:lowercase;
-            font-size:e(11px);
-            line-height: e(20px, 11px);
-            border-bottom:1px dotted #ccc;
+            line-height: e(20px, $small-text-size);
+            border-bottom:1px dotted $color-e1;
             
             a {
-                @include link($teal, $teal);
+                @include link-color;
                 display:block;
                 padding:0 4px;
                 &:hover {
-                    background-color:#ddd;
+                    background-color:$color-e3;
+                    color: $color-g1;
                 }
             }
             
             &.disabled {
                 a {
-                    @include link(#ccc, #ccc);
+                    @include link($color-e1,$color-e1);
                     cursor:default;
                     &:hover {
                         background-color:transparent;
@@ -144,41 +146,43 @@
         
         input {
             float:none;
-            width: e(28px, 10px);
-            font-size: e(10px);
-            height: e(20px, 10px);
+            width: e(28px, $input-font-size);
+            height: e(20px, $input-font-size);
         }
         
         select {
-            font-size: e(10px);
-            height: e(20px, 10px);
+            height: e(20px, $input-font-size);
         }
         
         .award-fields {
             float:left;
             clear:left;
+            width: e(350px);
         }
         
         .remove-link {
             @include remove-button;
-            margin-left: e(5px, $content-text-size);
-            float:left;
+            float:right;
         }
         
         ul {
-            @include reset-list;
             width:100%;
         }
         
         li {
-            margin-bottom: e(5px);
+            padding: e(5px) 0;
             @include clearfix;
+            border-top:1px dotted $color-e1;
+            
+            &:first-child, &.first {
+                border-top:none;
+            }
         }
     }
     
     #add-award-link {
         @include add-caption-button;
-        margin-top: e(5px, $content-text-size);
+        margin-top: e(5px, $small-text-size);
     }
     
     // Description fields
@@ -190,18 +194,18 @@
         float:left;
         max-width: 400px;
         input {
-            background-color: #dedede;
+            background-color: $color-e1;
             font-weight:bold;
             width: e(360px, $input-font-size);
             height: e(40px, $input-font-size);
             border:none;
             @include rounded-corners(0);
-            @include placeholder-color(#999);
+            @include placeholder-color($color-e3);
         }
         
         textarea {
             padding: e(5px, $input-font-size);
-            border:1px solid #dedede;
+            border:1px solid $color-e1;
             width:e(358px, $input-font-size);
             min-height:100px;
             height:100px;
@@ -221,20 +225,20 @@
             
             a {
                 display:block;
-                @include small-heading;
+                @include heading;
                 text-align:center;
                 @include rounded-corners-left(9px);
                 padding-left:5px;
                 margin-bottom:2px;
                 height:18px;
-                color: white;
-                background-color: #ccc;
+                color: $color-g1;
+                background-color: $color-e1;
                 
                 &:hover {background-color:darken(#ccc, 5);}
-                &.selected {background-color:$brown;}
-                &.selected:hover {background-color:$brown;}
-                &.add {background-color:$teal;}
-                &.add:hover {background-color:darken($teal, 5);}
+                &.selected {background-color:$color-c1;}
+                &.selected:hover {background-color:$color-c1;}
+                &.add {background-color:$color-a1;}
+                &.add:hover {background-color:darken($color-a1, 5);}
             }
         }
         
@@ -244,9 +248,8 @@
     // Buttons
     input.submit {
         float:right;
-        width: e(80px, $small-heading-size);
-        margin-right: e($sidebar-width + (2 * $sidebar-hor-padding) + 30px, $small-heading-size);
-        margin-bottom: e(30px, $small-heading-size);
+        margin-right: e($sidebar-width + (2 * $sidebar-hor-padding) + 50px, $button-size);
+        margin-bottom: e(30px, $button-size);
     }
     
     .delete-product {
@@ -263,7 +266,7 @@
         margin: e(10px);
         
         .error {
-            color: $error-text-color;
+            @include error-text;
         }
         
         input {
@@ -274,21 +277,21 @@
         }
         
         .cancel {
-            margin: e(20px, $content-text-size) auto 0 auto;
+            margin: e(20px, $minor-button-size) auto 0 auto;
         }
         
         p {
-            margin-bottom: e(20px, $content-text-size);
+            margin-bottom: e(20px, $text-size);
         }
         
         #progress-bar {
-            border:1px solid #ccc;
+            border:1px solid $color-e1;
             @include rounded-corners(5px);
             height:e(30px);
             position:relative;
             
             div {
-                background-color: lighten($light-teal, 5);
+                background-color: $color-d1;
                 height: 100%;
                 position:absolute;
                 left:0;
@@ -297,12 +300,19 @@
             }
             
             span {
-                @include content-text;
-                line-height: e(30px, $content-text-size);
+                @include text;
+                line-height: e(30px, $text-size);
                 position:relative;
                 z-index:1;
             }
         }
+    }
+    
+    // Copies and editions page
+    
+    .next-book.button {
+        float:right;
+        margin-right: e(140px, $button-size);
     }
     
     // Book information sidebar styling
@@ -321,15 +331,15 @@
                     border:2px solid transparent;
                     opacity:0.7;
                     overflow:hidden;
-                    background-color: #bbb;
+                    background-color: darken($color-e1, 5);
                     
                     &:hover {
-                        border:2px solid #888;
+                        border:2px solid darken($color-e1, 10);
                     }
                     
                     &.selected {
                         opacity:1;
-                        border:2px solid #444;
+                        border:2px solid darken($color-e1, 20);
                     }
                     
                     img {
@@ -343,7 +353,7 @@
             }
             
             .left-scroll, .right-scroll {
-                background-color:#999;
+                background-color:$color-e3;
                 opacity:0.6;
                 position:absolute;
                 top:0;
@@ -352,7 +362,7 @@
                 z-index:2;
                 
                 &:hover {
-                    background-color: #aaa;
+                    background-color: $color-e1;
                 }
             }
             
@@ -375,13 +385,12 @@
         }
         
         #product-info {
-            @include reset-list;
-            @include smaller-text;
-            margin-top: e(30px, $smaller-text-size);
+            @include small-text;
+            margin-top: e(30px, $small-text-size);
             @include word-wrap;
             
             li {
-                margin-top: e(10px, $smaller-text-size);
+                margin-top: e(10px, $small-text-size);
             }
         }
     }

@@ -1,24 +1,24 @@
-$token-font-size: 12px;
-$dropdown-font-size: 11px;
+$token-font-size: $small-text-size;
+$dropdown-font-size: $small-text-size;
 $default-width: 400px;
 $thin-width:200px;
 $dropdown-hover-color: #eee;
 $dropdown-hover-text-color: #222;
-$token-bg-color: #f6f6f6;
-$token-bg-color-s: #eee;
-$token-border-color: #ccc;
-$token-border-color-s: #ccc;
-$token-hint-color: #aaa;
-$token-font-color: #ccc;
+$token-bg-color: $color-e2;
+$token-bg-color-s: $color-e1;
+$token-border-color: $color-e1;
+$token-border-color-s: $color-e1;
+$token-hint-color: $color-e1;
+$token-font-color: $text-color;
 
 ul.token-input-list {
     overflow: hidden; 
     height: auto !important; 
     height: 1%;
     width: e($default-width, $token-font-size);
-    border: 1px solid $text-field-border-color;//#8496ba;
+    border: 1px solid $field-border-color;
     cursor: text;
-    font-size: e($token-font-size);
+    @include small-text;
     min-height: 1px;
     z-index: 100;
     margin: 0;
@@ -33,15 +33,14 @@ ul.token-input-list {
     }
     
     .overlay-hint {
-        @include smaller-text;
-        font-size: e($smaller-text-size, $token-font-size);
+        font-size: 1em;
         position:absolute;
         margin:0;
         display:block;
         top:0;
-        right: e(10px, $smaller-text-size);
+        right: e(10px, $token-font-size);
         color: $token-hint-color;
-        line-height: e(25px, $smaller-text-size);
+        line-height: e(25px, $token-font-size);
     }
     
     &.fill {
@@ -135,7 +134,6 @@ li.token-input-input-token {
     list-style-type: none;
 }
 
-$dropdown-font-size: $smaller-text-size;
 div.token-input-dropdown {
     position: absolute;
     width: e($default-width, $dropdown-font-size);
@@ -145,7 +143,7 @@ div.token-input-dropdown {
     border-right: 1px solid #aaa;
     border-bottom: 1px solid #aaa;
     cursor: default;
-    @include smaller-text;
+    @include small-text;
     
     z-index: 111;
     

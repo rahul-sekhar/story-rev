@@ -1,0 +1,48 @@
+$text-color: $color-f1;
+$light-text-color: $color-f2;
+$error-text-color: $color-c1;
+$field-border-color: $color-e1;
+
+$heading-size: 14px;
+@mixin heading {
+    font-family: Quicksand, sans-serif;
+    text-transform: uppercase;
+    font-size: e($heading-size);
+    color: $text-color;
+}
+
+$small-heading-size: 12px;
+@mixin small-heading {
+    @include heading;
+    font-size: e($small-heading-size);
+}
+
+$large-heading-size: 16px;
+@mixin large-heading {
+    @include heading;
+    font-size: e($large-heading-size);
+}
+
+$text-size: 13px;
+@mixin text {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: e($text-size);
+    line-height: e(20px, $text-size);
+    color: $text-color;
+}
+
+$small-text-size: 11px;
+@mixin small-text {
+    @include text;
+    font-size: e($small-text-size);
+}
+
+@mixin error-text {
+    @include text;
+    color: $error-text-color;
+    font-weight:bold;
+}
+
+@mixin link-color {
+    @include link ($color-a1, lighten($color-a1, 10));
+}

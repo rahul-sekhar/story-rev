@@ -19,23 +19,23 @@
         
         tr {
             height:e(50px);
-            border-bottom:1px solid #ccc;
+            border-bottom:1px solid $color-e1;
             
             &.alt {
                 background-color:transparent;
             }
             
             &.selected {
-                background-color:$table-row-selected-color;
+                background-color:$color-a2;
             }
         }
         
         td {
-            padding: e(5px, 11px);
+            padding: e(5px, $small-text-size);
         }
         
         .icon {
-            width: e(50px, 11px);
+            width: e(50px, $small-text-size);
         }
         
         .name {
@@ -45,7 +45,7 @@
         }
         
         .has-button {
-            width: e(22px, 11px);
+            width: e(22px, $small-text-size);
         }
     }
 }

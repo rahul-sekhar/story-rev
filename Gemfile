@@ -18,6 +18,7 @@ gem 'rmagick'
 gem 'simple_form'
 gem 'nokogiri'
 gem 'amazon-ecs'
+gem 'terminator'
 
 gem 'capistrano'
 gem 'bcrypt-ruby', '~> 3.0.0', :require => "bcrypt"

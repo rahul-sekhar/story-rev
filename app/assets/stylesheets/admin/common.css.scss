@@ -4,7 +4,7 @@
 
 body {
     font-size: $body-font-size;
-    font-family: Serif;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 
@@ -23,39 +23,37 @@ $side-nav-width: 210px;
     width:e($side-nav-width);
     
     ul {
-        @include reset-list;
         margin: e(200px) e(30px) 0 e(20px);
         
-        background-color: $teal;
+        background-color: $color-a1;
         @include rounded-corners(10px);
         padding: e(20px) e(30px);
         
         li {
-            @include small-heading;
-            @include inner-link($golden, lighten($golden, 10));
-            border-bottom:2px dotted $light-teal;
+            @include heading;
+            @include inner-link($color-b1, lighten($color-b1, 10));
+            border-bottom:2px dotted $color-a2;
             margin-bottom:e(20px);
         }
     }
 }
 
 #top-nav {
-    background-color: $purple;
-    @include reset-list;
+    background-color: $color-d1;
     @include clearfix;
     padding:0 e(20px) 0 e(40px);
     margin-bottom: e(40px);
     
     li {
         float:left;
-        @include small-heading;
-        @include inner-link(white, lighten($golden, 25));
+        @include heading;
+        @include inner-link($color-g1, lighten($color-b2, 20));
         line-height:e(50px);
         margin-right:e(50px);
         
         &.descendant:before { content: '>'; }
         &.current {
-            @include inner-link($golden, $golden);
+            @include inner-link($color-b2, $color-b2);
         }
         &.right {
             float:right;
@@ -78,56 +76,58 @@ $side-nav-width: 210px;
  ***************************/
 
 p {
-    @include content-text;
+    @include text;
 }
 
 a {
-    @include link ($teal, $light-teal);
+    @include link-color;
 }
 
+$button-size: $heading-size;
 a.button, input.submit {
-    display:block;
-    @include small-heading;
-    width: e(80px, $small-heading-size);
-    height: e(40px, $small-heading-size);
-    line-height: e(40px, $small-heading-size);
+    display:inline-block;
+    @include heading;
+    padding: 0 e(20px, $button-size);
+    height: e(35px, $button-size);
+    line-height: e(35px, $button-size);
     text-align:center;
     @include rounded-corners(8px);
     border:none;
     cursor:pointer;
-    color:white;
-    background-color: $brown;
+    color:$color-g1;
+    background-color: $color-c1;
     
-    &:hover {background-color: lighten($brown, 10);}
+    &:hover {background-color: lighten($color-c1, 10);}
     
     
 }
 
+$minor-button-size: $text-size;
 .minor-button {
     display:block;
-    @include content-text;
-    width: e(70px, $content-text-size);
-    height: e(25px, $content-text-size);
-    line-height: e(25px, $content-text-size);
+    @include text;
+    width: e(70px, $minor-button-size);
+    height: e(25px, $minor-button-size);
+    line-height: e(25px, $minor-button-size);
     text-align:center;
     @include rounded-corners(8px);
     cursor:pointer;
     color:white;
-    background-color: #ccc;
+    background-color: $color-e1;
     
-    &:hover {background-color: #d6d6d6;}
+    &:hover {background-color: $color-e3;}
 }
 
 .token-input-list, input, textarea {
     @include rounded-corners(3px);
-    border: 1px solid $text-field-border-color;
+    border: 1px solid $field-border-color;
 }
 
 /* Labels and inputs */
 
-$label-font-size: $content-text-size;
+$label-font-size: $text-size;
 label {
-    @include content-text;
+    @include text;
     float:left;
     text-align:right;
     line-height: e(25px, $label-font-size);
@@ -155,8 +155,7 @@ label {
 }
 
 .field_with_errors label, label.error {
-    color: $error-text-color;
-    font-weight:bold;
+    @include error-text
 }
 
 .disabled.field_with_errors label {
@@ -177,9 +176,9 @@ div.input {
     }
 }
 
-$input-font-size: $smaller-text-size;
+$input-font-size: $small-text-size;
 input, select, textarea {
-    @include smaller-text;
+    @include small-text;
 }
 
 input, textarea {
@@ -190,7 +189,7 @@ input {
     height: e(25px, $input-font-size);
     float:left;
     &:disabled {
-        background-color: #eee;
+        background-color: $color-e2;
     }
 }
 
@@ -203,7 +202,7 @@ table {
 .table-container {
     float:left;
     @include rounded-corners(5px);
-    border:1px solid #ccc;
+    border:1px solid $color-e1;
     height: e(100px);
     @include clearfix;
     margin-bottom:e(5px);
@@ -213,9 +212,8 @@ table {
 }
 
 td {
-    @include content-text;
-    font-size:11px;
-    padding: 0 e(20px, 11px);
+    @include small-text;
+    padding: 0 e(20px, $small-text-size);
     cursor:default;
     
     .edit-link {
@@ -228,23 +226,22 @@ td {
     
     &.has-button {
         width: e(22px);
-        padding: 0 e(5px, 11px);
+        padding: 0 e(5px, $small-text-size);
     }
 }
 
-$table-row-selected-color: lighten($teal,10);
 tr {
     height: e(20px);
     
     &.alt {
-        background-color: #efefef;
+        background-color: $color-e2;
     }
     
     &.selected {
-        background-color:$table-row-selected-color;
+        background-color:$color-a2;
         
         td {
-            color:white;
+            color:$color-g1;
         }
     }
 }
@@ -265,10 +262,10 @@ tr {
 // Dialogs from tables
 .dialog {
     .minor-button {
-        width: e(100px, $content-text-size);
+        width: e(100px, $text-size);
         float:left;
         color:white;
-        margin-left: e(20px, $content-text-size);
+        margin-left: e(20px, $text-size);
     }
     
     .button-container {
@@ -278,9 +275,7 @@ tr {
     }
     
     .errors {
-        @include reset-list;
-        @include content-text;
-        color: $error-text-color;
+        @include error-text;
     }
     
     .rating {

@@ -1,4 +1,5 @@
 <li>
+  <a class="remove-link" href="#"></a>
   <div class="award-fields">
   <% award_list = (f.object.award) ? (Award.where(:award_type_id => f.object.award.award_type_id)) : [] %>
   <% selected = f.object.award ? f.object.award.award_type_id : nil %>
@@ -20,8 +21,7 @@
                     :id => nil,
                     :class => "award_name" %>
   
-  <%= f.input_field :year, :id => nil, :index => nil, :as => "string", :class => 'award_year', :maxlength => 4 %>
+  <%= f.input_field :year, :id => nil, :index => nil, :as => "string", :class => 'award_year', :maxlength => 4, :placeholder => "year" %>
   <%= f.hidden_field :id, :index => nil, :value => f.object.id %>
   </div>
-  <a class="remove-link" href="#"></a>
 </li>

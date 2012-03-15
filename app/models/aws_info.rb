@@ -1,12 +1,21 @@
 class AWSInfo
   require 'amazon/ecs'
+  require 'timeout'
   
   def self.search(title)
     
     init
-    res = get_xml(title)
     objects = []
     
+    begin
+      res = Timeout.timeout(5) {
+        get_xml(title)
+      }
+    rescue Timeout::Error
+      return objects
+    end
+    
+    ActiveRecord::Base.logger.info("Moving on")
     res.items.each do |x|
       attrs = x.get_element('ItemAttributes')
       item_title = attrs.get('Title')
