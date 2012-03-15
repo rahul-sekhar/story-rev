@@ -238,11 +238,19 @@ tr {
     }
     
     &.selected {
-        background-color:$color-a2;
+        background-color:$color-b2;
         
         td {
-            color:$color-g1;
+            //color:$color-g1;
         }
+        
+        &:hover {
+            background-color:$color-b2;
+        }
+    }
+    
+    &:hover {
+        background-color: $color-b3;
     }
 }
 
