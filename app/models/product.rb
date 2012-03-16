@@ -33,6 +33,16 @@ class Product < ActiveRecord::Base
   validates_associated :product_awards
   validates_associated :other_fields
   
+  scope :stocked?, where(:in_stock => true)
+  
+  def self.includes_data
+    includes(:illustrator, :keywords, :product_tags, :other_fields, { :product_awards => { :award => :award_type }})
+  end
+  
+  def self.includes_copies
+    includes(:editions => [:format, :copies])
+  end
+  
   def self.search(query, fields, output)
     escaped = SqlHelper::escapeWildcards(query).upcase
     product_array = []
@@ -53,14 +63,6 @@ class Product < ActiveRecord::Base
       end
     end
     return product_array
-  end
-  
-  def self.includes_data
-    includes(:illustrator, :keywords, :product_tags, :other_fields, { :product_awards => { :award => :award_type }})
-  end
-  
-  def self.includes_copies
-    includes(:editions => [:format, :copies])
   end
   
   def validate_virtual_attributes
@@ -210,8 +212,9 @@ class Product < ActiveRecord::Base
   end
   
   def check_stock
-    if (in_stock != (copies.length > 0))
-        self.in_stock = (copies.length > 0)
+    is_in_stock? = (copies.stocked?.length > 0)
+    if (in_stock != is_in_stock?)
+        self.in_stock = is_in_stock?
         save
     end
   end

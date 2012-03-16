@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120312130437) do
+ActiveRecord::Schema.define(:version => 20120315135519) do
 
   create_table "admin_roles", :force => true do |t|
     t.string   "name"
@@ -56,11 +56,13 @@ ActiveRecord::Schema.define(:version => 20120312130437) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "price"
+    t.boolean  "in_stock"
   end
 
   add_index "copies", ["accession_id"], :name => "index_copies_on_accession_id", :unique => true
   add_index "copies", ["condition_rating"], :name => "index_copies_on_condition_rating"
   add_index "copies", ["edition_id"], :name => "index_copies_on_edition_id"
+  add_index "copies", ["in_stock"], :name => "index_copies_on_in_stock"
 
   create_table "cover_images", :force => true do |t|
     t.integer  "product_id"
@@ -82,6 +84,7 @@ ActiveRecord::Schema.define(:version => 20120312130437) do
   add_index "editions", ["format_id"], :name => "index_editions_on_format_id"
   add_index "editions", ["isbn"], :name => "index_editions_on_isbn", :unique => true
   add_index "editions", ["product_id"], :name => "index_editions_on_product_id"
+  add_index "editions", ["publisher_id"], :name => "index_editions_on_publisher_id"
 
   create_table "formats", :force => true do |t|
     t.string   "name"
@@ -146,6 +149,7 @@ ActiveRecord::Schema.define(:version => 20120312130437) do
   add_index "products", ["age_from", "age_to"], :name => "index_products_on_age_from_and_age_to"
   add_index "products", ["author_id"], :name => "index_products_on_author_id"
   add_index "products", ["illustrator_id"], :name => "index_products_on_illustrator_id"
+  add_index "products", ["in_stock"], :name => "index_products_on_in_stock"
   add_index "products", ["title"], :name => "index_products_on_title", :unique => true
 
   create_table "products_awards", :force => true do |t|
@@ -180,6 +184,9 @@ ActiveRecord::Schema.define(:version => 20120312130437) do
     t.integer "theme_id"
   end
 
+  add_index "products_themes", ["product_id", "theme_id"], :name => "index_products_themes_on_product_id_and_theme_id", :unique => true
+  add_index "products_themes", ["product_id"], :name => "index_products_themes_on_product_id"
+
   create_table "publishers", :force => true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -195,10 +202,14 @@ ActiveRecord::Schema.define(:version => 20120312130437) do
     t.datetime "updated_at"
   end
 
+  add_index "theme_icons", ["theme_id"], :name => "index_theme_icons_on_theme_id"
+
   create_table "themes", :force => true do |t|
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "themes", ["name"], :name => "index_themes_on_name"
 
 end

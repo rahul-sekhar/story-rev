@@ -1,5 +1,6 @@
 class Copy < ActiveRecord::Base
   before_validation :set_accession_id
+  after_initialize :init
   after_save :check_product_stock
   after_destroy :check_product_stock
   
@@ -7,6 +8,12 @@ class Copy < ActiveRecord::Base
   validates :accession_id, :presence => true, :uniqueness => true
   validates :condition_rating, :numericality => { :only_integer => true, :greater_than_or_equal_to => 0, :less_than_or_equal_to => 5 }
   validates :price, :numericality => { :only_integer => true }
+  
+  scope :stocked?, where(:in_stock => true)
+  
+  def init
+    self.in_stock = true if in_stock.nil?
+  end
   
   def formatted_price
     RupeeHelper::to_rupee(price)
@@ -39,7 +46,13 @@ class Copy < ActiveRecord::Base
   end
   
   def check_product_stock
-    p = edition.product
-    p.check_stock
+    edition.product.check_stock if in_stock
+  end
+  
+  def set_stock=(value)
+    if (in_stock != value)
+      self.in_stock = value
+      check_product_stock
+    end
   end
 end
