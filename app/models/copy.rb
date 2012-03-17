@@ -14,7 +14,7 @@ class Copy < ActiveRecord::Base
   def init
     self.in_stock = true if in_stock.nil?
     self.condition_rating ||= 3
-  end
+  end 
   
   def formatted_price
     RupeeHelper::to_rupee(price)
@@ -25,9 +25,9 @@ class Copy < ActiveRecord::Base
       :id => id,
       :accession_id => accession_id,
       :price => price,
-      :formatted_price => formatted_price,
-      :condition_description => condition_description,
-      :condition_rating => condition_rating
+        :formatted_price => formatted_price,
+        :condition_description => condition_description,
+        :condition_rating => condition_rating
     }
   end
   
@@ -37,9 +37,9 @@ class Copy < ActiveRecord::Base
   
   def find_accession_id
     base_acc = edition.product.accession_id
-    last_copy = edition.product.copies.where('"copies".id <> ?', id || 0).order("accession_id DESC").first
+    last_copy = Copy.where('accession_id LIKE ?', "#{base_acc}%").order("accession_id DESC").first
     if last_copy.present?
-      new_acc = last_copy.accession_id[7,9].to_i + 1
+      new_acc = last_copy.accession_id[10,3].to_i + 1
       "#{base_acc}-#{"%03d" % new_acc}"
     else
       "#{base_acc}-001"

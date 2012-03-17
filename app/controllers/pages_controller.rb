@@ -1,6 +1,7 @@
 class PagesController < ApplicationController
   
   def store
-    @products = Product.stocked
+    @class = "store"
+    @products = Product.stocked.page(params[:page]).per(20)
   end
 end

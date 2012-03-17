@@ -1,3 +1,5 @@
 <section id="products">
   <%= render :partial => "products/cover", :collection => @products, :as => :product %>
 </section>
+
+<%= paginate @products %>

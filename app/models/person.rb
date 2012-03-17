@@ -13,16 +13,11 @@ module Person
     self.first_name = split_name.join(" ")
   end
   
-  def has_name?
-    last_name.present?
-  end
-  
-  def get_letter
-    last_name[0] if has_name?
-  end
-  
   module ClassMethods
     def name_is(name)
+      # Add a space for a single worded name
+      name = " #{name}" if !name.include? ' '
+      
       where("LOWER(first_name || ' ' || last_name) = ?", name.downcase).first
     end
     

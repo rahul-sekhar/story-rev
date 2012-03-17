@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120315135519) do
+ActiveRecord::Schema.define(:version => 20120317131755) do
 
   create_table "admin_roles", :force => true do |t|
     t.string   "name"
@@ -26,8 +26,10 @@ ActiveRecord::Schema.define(:version => 20120315135519) do
     t.string   "last_name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "accession_id"
   end
 
+  add_index "authors", ["accession_id"], :name => "index_authors_on_accession_id", :unique => true
   add_index "authors", ["last_name", "first_name"], :name => "index_authors_on_last_name_and_first_name"
 
   create_table "award_types", :force => true do |t|
@@ -143,11 +145,15 @@ ActiveRecord::Schema.define(:version => 20120315135519) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "in_stock"
+    t.datetime "in_stock_at"
+    t.datetime "out_of_stock_at"
+    t.datetime "book_date"
   end
 
   add_index "products", ["accession_id"], :name => "index_products_on_accession_id", :unique => true
   add_index "products", ["age_from", "age_to"], :name => "index_products_on_age_from_and_age_to"
   add_index "products", ["author_id"], :name => "index_products_on_author_id"
+  add_index "products", ["book_date"], :name => "index_products_on_book_date"
   add_index "products", ["illustrator_id"], :name => "index_products_on_illustrator_id"
   add_index "products", ["in_stock"], :name => "index_products_on_in_stock"
   add_index "products", ["title"], :name => "index_products_on_title", :unique => true

@@ -2,11 +2,13 @@ class Product < ActiveRecord::Base
   default_scope includes(:author)
   
   attr_accessible :title, :author_name, :illustrator_name, :year, :age_from, :age_to,
-                  :keyword_list, :flipkart_id, :amazon_url, :short_description,
+                  :keyword_list, :product_tag_list, :flipkart_id, :amazon_url, :short_description,
                   :award_attributes, :other_field_attributes, :cover_image_id, :cover_image_url
   
+  after_initialize :init
   before_validation :set_accession_id
   after_validation :validate_virtual_attributes
+  after_create :set_timestamps
   
   has_and_belongs_to_many :keywords, :join_table => :products_keywords, :uniq => true
   has_and_belongs_to_many :product_tags, :join_table => :products_product_tags, :uniq => true
@@ -47,12 +49,12 @@ class Product < ActiveRecord::Base
     escaped = SqlHelper::escapeWildcards(query).upcase
     product_array = []
     if fields == "all" && output == "display_target"
-      product_array |= self.select("id, title")
+      product_array |= self.select("id, title, in_stock")
                             .where("UPPER(title) LIKE ?", "%#{escaped}%")
                             .map { |x| {:id => x.id, :name => x.title }}
       
       if (escaped =~ /^[A-Z]-[0-9]/)
-        product_array |= self.select("id, title, accession_id")
+        product_array |= self.select("id, title, accession_id, in_stock")
                               .where('accession_id LIKE ?', "#{escaped}%")
                               .map { |x| {:id => x.id, :name => "#{x.title} - #{x.accession_id}" }}
       elsif (escaped =~ /^[0-9]+$/)
@@ -65,6 +67,15 @@ class Product < ActiveRecord::Base
     return product_array
   end
   
+  def init
+    self.in_stock = false if in_stock.nil?
+  end
+  
+  def set_timestamps
+    touch :book_date
+    touch :out_of_stock_at
+  end
+  
   def validate_virtual_attributes
     self.errors[:author_name] = errors[:author] if errors[:author].present?
     self.errors[:illustrator_name] = errors[:illustrator] if errors[:illustrator].present?
@@ -75,16 +86,16 @@ class Product < ActiveRecord::Base
   end
   
   def find_accession_id
-    if author.present? && author.has_name?
-      letter = author.get_letter.upcase
-      return accession_id if accession_id.to_s[0] == letter
+    if author.present?
+      author_acc = author.accession_id
+      return accession_id if accession_id.to_s[0,5] == author_acc
       
-      last_product = Product.where('accession_id LIKE ?', "#{letter}%").order("accession_id DESC").first
+      last_product = Product.where('accession_id LIKE ?', "#{author_acc}%").order("accession_id DESC").first
       if last_product.present?
-        new_acc = last_product.accession_id[2,4].to_i + 1
-        "#{letter}-#{"%03d" % new_acc}"
+        new_acc = last_product.accession_id[6,3].to_i + 1
+        "#{author_acc}-#{"%03d" % new_acc}"
       else
-        "#{letter}-001"
+        "#{author_acc}-001"
       end
     end
   end
@@ -141,7 +152,7 @@ class Product < ActiveRecord::Base
     product_tags.map{ |x| x.name }.join(",")
   end
   def product_tag_list=(tag_list)
-    self.product_tags = product_tag.split_list(tag_list)
+    self.product_tags = ProductTag.split_list(tag_list)
   end
   def product_tags_json
     product_tags.to_json({ :only => [:id, :name] })
@@ -209,7 +220,7 @@ class Product < ActiveRecord::Base
       :title => title,
       :author_name => author_name,
       :age_level => age_level,
-      :in_stock => in_stock
+      :in_stock => in_stock_
     }
   end
   
@@ -218,41 +229,16 @@ class Product < ActiveRecord::Base
     if (in_stock != is_in_stock)
         self.in_stock = is_in_stock
         save
+        
+        if (is_in_stock)
+          touch :in_stock_at
+          
+          # If the product went out of stock at least a day ago, update the book_date
+          touch :book_date if ((in_stock_at - out_of_stock_at) / 3600) > 24
+          
+        else
+          touch :out_of_stock_at
+        end
     end
-  end
-  
-  def self.sort_accession_ids
-    p_hash = {}
-    Product.order(:accession_id).each do |p|
-      p_hash[p.accession_id] = p.title
-    end
-    
-    p_hash.each do |k,v|
-      puts "#{k} - #{v}"
-    end
-  end
-  
-  # Functions for debugging and administration via the console
-  def self.reset_accession_ids
-    i = 0
-    
-    Product.all.each do |p|
-      i+=1
-      p.accession_id = "#{i.to_s}#{p.accession_id}"
-      p.save(:validate => false)
-    end
-    
-    Product.all.each do |p|
-      p.save  
-    end
-    
-    return nil
-  end
-  
-  def self.display_by_accession_id
-    Product.order(:accession_id).each do |p|
-      puts "#{p.accession_id} - #{p.author.last_name}, #{p.author.first_name} - #{p.title}"
-    end
-    return nil
   end
 end

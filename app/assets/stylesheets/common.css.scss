@@ -2,17 +2,19 @@
  ********* Layout **********
  ***************************/
 
+$wrapper-width: 960px;
 #wrapper {
-    width:e(960px);
-    margin:0 auto;
-    border:1px solid #ccc;
-    border-top:none;
+    width: e($wrapper-width);
+    margin: 0 auto;
+    @include clearfix;
+    min-height: 100%;
 }
 
 
 // Footer
 
 #page-footer {
+    clear:both;
     @include rounded-corners (10px);
     margin: e(30px);
 }
@@ -23,7 +25,28 @@
  ***************************/
 
 
-
+// Obfuscate email addresses from parsers with invisible spans of text
 .email_obf span {
     display:none;
+}
+
+// Cover image
+.cover-container {
+    width:100px;
+    height:150px;
+    
+    p {
+        text-align:center;
+        margin: 20% 6px;
+        line-height:e(16px, $text-size);
+        @include word-wrap;
+    }
+}
+
+.cover {
+    img {
+        max-width:100px;
+        max-height:150px;
+        display:block;
+    }
 }

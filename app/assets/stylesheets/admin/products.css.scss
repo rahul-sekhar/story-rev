@@ -1,10 +1,13 @@
 .product {
+    .notice {
+        margin-bottom: e(10px, $text-size);
+    }
+    
     #top-nav li {
         margin-right: e(10px);
     }
     
     #search-box {
-        margin-top: e(-20px);
         margin-left: e(120px);
     }
     

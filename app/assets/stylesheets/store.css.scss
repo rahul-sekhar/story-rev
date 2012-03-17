@@ -1,0 +1,13 @@
+.store {
+    
+    #products {
+        @include clearfix;
+        width: e((100px + 40px) * 4 + 40px);
+        
+        .cover-container {
+            margin-left: e(40px);
+            margin-bottom: e(20px);
+            float:left;
+        }
+    }
+}

@@ -2,11 +2,12 @@
 <html>
 <head>
   <title>StoryRev</title>
+  <link href='http://fonts.googleapis.com/css?family=Quicksand:700' rel='stylesheet' type='text/css'>
   <%= stylesheet_link_tag    "application" %>
   <%= javascript_include_tag "application" %>
   <%= csrf_meta_tags %>
 </head>
-<body>
+<body<%= class_if @class, @class %>>
 
 <div id="wrapper">
   <%= link_to "Admin Area", admin_root_url %>

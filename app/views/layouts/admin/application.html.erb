@@ -7,7 +7,7 @@
   <%= javascript_include_tag "admin/admin" %>
   <%= csrf_meta_tags %>
 </head>
-<body<%=raw @class ? " class=\"#{@class}\"" : nil %>>
+<body<%= class_if @class, @class %>>
   
   <div id="wrapper">
   
