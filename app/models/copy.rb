@@ -9,10 +9,11 @@ class Copy < ActiveRecord::Base
   validates :condition_rating, :numericality => { :only_integer => true, :greater_than_or_equal_to => 0, :less_than_or_equal_to => 5 }
   validates :price, :numericality => { :only_integer => true }
   
-  scope :stocked?, where(:in_stock => true)
+  scope :stocked, where(:in_stock => true)
   
   def init
     self.in_stock = true if in_stock.nil?
+    self.condition_rating ||= 3
   end
   
   def formatted_price

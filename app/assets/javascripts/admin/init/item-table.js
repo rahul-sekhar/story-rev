@@ -88,6 +88,7 @@ $.ItemTable = function(table, settings) {
     if (settings.addable || settings.editable) {
         var $dialog = $('<section class="dialog"></section>').hide().appendTo('body');
         var $dialogForm = $('<form method="POST" action="' + settings.url + '"></form>').appendTo($dialog);
+        
         // Add inputs for each column
         $.each(settings.columns, function(index, column) {
             if (column.type == "read_only") return;
@@ -95,14 +96,22 @@ $.ItemTable = function(table, settings) {
             $div.append('<label for="' + field_id(column) + '"' + (column.multilineLabel ? ' class="multi-line"' : '') + '>' + column.name + '</label>');
             constructInput($div, column);
         });
+        
         // Add submit and cancel buttons
         var $buttonContainer = $('<div class="button-container"></div>').appendTo($dialogForm);
         var $submit = $('<input type="submit" class="minor-button" value="Save" />').appendTo($buttonContainer);
-        $('<a href="#" class="minor-button">Cancel</a>').click(function() {
+        var $cancel = $('<a href="#" class="minor-button">Cancel</a>').click(function() {
             $.unblockUI();
         }).appendTo($buttonContainer);
+        
+        // Add a binding for the Escape key
+        $dialog.keyup(function(e) {
+            if (e.keyCode == KEYCODE_ESC) $cancel.click();
+        });
+        
         // A 'PUT' method parameter to be added to the form for edits
         var $putParam = $('<input type="hidden" name="_method" value="PUT" />');
+        
         // A list to display errors
         var $errs = $('<ul class="errors"></ul>');
         

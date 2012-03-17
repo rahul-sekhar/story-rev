@@ -365,6 +365,11 @@ $(document).ready(function() {
             $imageDialog.trigger('exit');
         }).appendTo($imageDialog);
     
+    // Add a binding for the Escape key
+    $imageDialog.keyup(function(e) {
+        if (e.keyCode == KEYCODE_ESC) $cancel.click();
+    });
+    
     var initDialog = function(errMsg) {
         $progressCont.hide();
         $imageDialog.find('input').show();

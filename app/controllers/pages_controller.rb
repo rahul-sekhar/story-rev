@@ -1,6 +1,6 @@
 class PagesController < ApplicationController
   
   def store
-    @products = Product.all
+    @products = Product.stocked
   end
 end

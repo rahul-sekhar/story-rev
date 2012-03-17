@@ -29,7 +29,7 @@ class Edition < ActiveRecord::Base
   end
   
   def convert_raw_isbn
-    self.raw_isbn = isbn.gsub("-", "")
+    self.raw_isbn = isbn.to_s.gsub("-", "")
   end
   
   def get_hash

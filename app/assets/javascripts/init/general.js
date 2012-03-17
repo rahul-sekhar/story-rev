@@ -56,3 +56,6 @@ $.fn.appendOption = function(value, text) {
 function include(arr,obj) {
     return (arr.indexOf(obj) != -1);
 }
+
+// Keycode constants
+var KEYCODE_ESC = 27;

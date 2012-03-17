@@ -33,7 +33,7 @@ class Product < ActiveRecord::Base
   validates_associated :product_awards
   validates_associated :other_fields
   
-  scope :stocked?, where(:in_stock => true)
+  scope :stocked, where(:in_stock => true)
   
   def self.includes_data
     includes(:illustrator, :keywords, :product_tags, :other_fields, { :product_awards => { :award => :award_type }})
@@ -75,9 +75,11 @@ class Product < ActiveRecord::Base
   end
   
   def find_accession_id
-    if title.present?
-      letter = title[0].upcase
-      last_product = self.class.where('UPPER(SUBSTR(title,1,1)) = ? AND id <> ?', letter, id || 0).order("accession_id DESC").first
+    if author.present? && author.has_name?
+      letter = author.get_letter.upcase
+      return accession_id if accession_id.to_s[0] == letter
+      
+      last_product = Product.where('accession_id LIKE ?', "#{letter}%").order("accession_id DESC").first
       if last_product.present?
         new_acc = last_product.accession_id[2,4].to_i + 1
         "#{letter}-#{"%03d" % new_acc}"
@@ -212,10 +214,45 @@ class Product < ActiveRecord::Base
   end
   
   def check_stock
-    is_in_stock? = (copies.stocked?.length > 0)
-    if (in_stock != is_in_stock?)
-        self.in_stock = is_in_stock?
+    is_in_stock = (copies.stocked.length > 0)
+    if (in_stock != is_in_stock)
+        self.in_stock = is_in_stock
         save
     end
+  end
+  
+  def self.sort_accession_ids
+    p_hash = {}
+    Product.order(:accession_id).each do |p|
+      p_hash[p.accession_id] = p.title
+    end
+    
+    p_hash.each do |k,v|
+      puts "#{k} - #{v}"
+    end
+  end
+  
+  # Functions for debugging and administration via the console
+  def self.reset_accession_ids
+    i = 0
+    
+    Product.all.each do |p|
+      i+=1
+      p.accession_id = "#{i.to_s}#{p.accession_id}"
+      p.save(:validate => false)
+    end
+    
+    Product.all.each do |p|
+      p.save  
+    end
+    
+    return nil
+  end
+  
+  def self.display_by_accession_id
+    Product.order(:accession_id).each do |p|
+      puts "#{p.accession_id} - #{p.author.last_name}, #{p.author.first_name} - #{p.title}"
+    end
+    return nil
   end
 end

@@ -89,7 +89,6 @@ a.button, input.submit {
     @include heading;
     padding: 0 e(20px, $button-size);
     height: e(35px, $button-size);
-    line-height: e(35px, $button-size);
     text-align:center;
     @include rounded-corners(8px);
     border:none;
@@ -98,8 +97,10 @@ a.button, input.submit {
     background-color: $color-c1;
     
     &:hover {background-color: lighten($color-c1, 10);}
-    
-    
+}
+
+a.button {
+    line-height: e(35px, $button-size);
 }
 
 $minor-button-size: $text-size;
@@ -108,7 +109,6 @@ $minor-button-size: $text-size;
     @include text;
     width: e(70px, $minor-button-size);
     height: e(25px, $minor-button-size);
-    line-height: e(25px, $minor-button-size);
     text-align:center;
     @include rounded-corners(8px);
     cursor:pointer;
@@ -116,6 +116,10 @@ $minor-button-size: $text-size;
     background-color: $color-e1;
     
     &:hover {background-color: $color-e3;}
+}
+
+a.minor-button {
+    line-height: e(25px, $minor-button-size);
 }
 
 .token-input-list, input, textarea {
