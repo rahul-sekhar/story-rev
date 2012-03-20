@@ -1,68 +1,101 @@
 // Site specific mixins
 
-@mixin button($height:22px) {
+// Button base
+@mixin button($base, $height:20px) {
     display:block;
-    min-width: 22px;
+    min-width: 20px;
     width: $height;
     height: $height;
     background: url('/images/icons.png') no-repeat;
+    
+    background-position: center ($base + ($height - 20px) / 2);
+    &:hover {
+        background-position: center ($base - 60px + ($height - 20px) / 2);
+    }
 }
 
-@mixin caption-button($height:22px, $padding: 4px) {
+@mixin caption-button($base, $height:20px, $padding: 4px) {
     display:inline-block;
     @include small-text;
     font-size: e($small-text-size, $text-size);
     line-height:$height;
     text-transform: lowercase;
     background: url('/images/icons.png') no-repeat;
-    padding-left: 22px + $padding;
+    padding-left: 20px + $padding;
     @include link-color;
-}
-
-@mixin add-button($height:22px) {
-    @include button($height);
-    background-position: center (0px + ($height - 22px) / 2);
+    
+    background-position: left ($base + ($height - 20px) / 2);
     &:hover {
-        background-position: center (-40px + ($height - 22px) / 2);
+        background-position: left ($base - 60px + ($height - 20px) / 2);
     }
 }
 
-@mixin add-caption-button($height:22px, $padding: 4px) {
-    @include caption-button($height, $padding);
-    background-position: left (0px + ($height - 22px) / 2);
-    &:hover {
-        background-position: left (-40px + ($height - 22px) / 2);
-    }
+// Add button
+@mixin add-button($height:20px) {
+    @include button(0px, $height);
+}
+@mixin add-caption-button($height:20px, $padding: 4px) {
+    @include caption-button(0px, $height, $padding);
 }
 
-@mixin remove-button($height:22px) {
-    @include button($height);
-    background-position: center (-80px + ($height - 22px) / 2);
-    &:hover {
-        background-position: center (-120px + ($height - 22px) / 2);
-    }
+// Edit button
+@mixin edit-button($height:20px) {
+    @include button(-120px, $height);
+}
+@mixin edit-caption-button($height:20px, $padding: 4px) {
+    @include caption-button(-120px, $height, $padding);
 }
 
-@mixin remove-caption-button($height:22px, $padding: 4px) {
-    @include caption-button($height, $padding);
-    background-position: left (-80px + ($height - 22px) / 2);
-    &:hover {
-        background-position: left (-120px + ($height - 22px) / 2);
-    }
+// Remove button
+@mixin remove-button($height:20px) {
+    @include button(-240px, $height);
+}
+@mixin remove-caption-button($height:20px, $padding: 4px) {
+    @include caption-button(-240px, $height, $padding);
 }
 
-@mixin edit-button($height:22px) {
-    @include button($height);
-    background-position: center (-160px + ($height - 22px) / 2);
-    &:hover {
-        background-position: center (-200px + ($height - 22px) / 2);
-    }
+// Zoom button
+@mixin zoom-button($height:20px) {
+    @include button(-360px, $height);
+}
+@mixin zoom-caption-button($height:20px, $padding: 4px) {
+    @include caption-button(-360px, $height, $padding);
 }
 
-@mixin edit-caption-button($height:22px, $padding: 4px) {
-    @include caption-button($height, $padding);
-    background-position: left (-160px + ($height - 22px) / 2);
+// List button
+@mixin list-button($height:20px) {
+    @include button(-480px, $height);
+}
+@mixin list-caption-button($height:20px, $padding: 4px) {
+    @include caption-button(-480px, $height, $padding);
+}
+
+// Page button
+@mixin page-button($height:20px) {
+    @include button(-600px, $height);
+}
+@mixin page-caption-button($height:20px, $padding: 4px) {
+    @include caption-button(-600px, $height, $padding);
+}
+
+// Ticked button
+@mixin ticked-button($height:20px) {
+    @include button(-720px, $height);
+}
+@mixin ticked-caption-button($height:20px, $padding: 4px) {
+    @include caption-button(-720px, $height, $padding);
+}
+
+// Loading button
+@mixin loading-button($height:20px) {
+    @include button(-120px, $height);
     &:hover {
-        background-position: left (-200px + ($height - 22px) / 2);
+        background-position: left (-120px + ($height - 20px) / 2);
+    }
+}
+@mixin loading-caption-button($height:20px, $padding: 4px) {
+    @include caption-button(-120px, $height, $padding);
+    &:hover {
+        background-position: left (-120px + ($height - 20px) / 2);
     }
 }

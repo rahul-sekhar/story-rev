@@ -15,7 +15,6 @@ $.blockUI.loadingCss =  {
 var blockUILoading = { message: $.blockUI.loadingMessage, css: $.blockUI.loadingCss };
 
 $.blockUI.dialogCss = { 
-    padding:        0, 
     margin:         0, 
     width:          '30%', 
     top:            '10%', 

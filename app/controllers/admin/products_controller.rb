@@ -7,7 +7,7 @@ class Admin::ProductsController < Admin::ApplicationController
         if params[:q].present?
           render :json => Product.search(params[:q], params[:search_by], params[:output])
         else
-          head :ok
+          render :json => Product.includes_data.all.map{|x| x.get_list_hash}
         end
       end
     end

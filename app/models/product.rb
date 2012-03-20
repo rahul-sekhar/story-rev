@@ -8,6 +8,7 @@ class Product < ActiveRecord::Base
   after_initialize :init
   before_validation :set_accession_id
   after_validation :validate_virtual_attributes
+  before_save :check_age_level
   after_create :set_timestamps
   
   has_and_belongs_to_many :keywords, :join_table => :products_keywords, :uniq => true
@@ -38,11 +39,11 @@ class Product < ActiveRecord::Base
   scope :stocked, where(:in_stock => true)
   
   def self.includes_data
-    includes(:illustrator, :keywords, :product_tags, :other_fields, { :product_awards => { :award => :award_type }})
+    includes(:illustrator, :keywords, :copies, :product_tags, :other_fields, { :product_awards => { :award => :award_type }}, :editions)
   end
   
   def self.includes_copies
-    includes(:editions => [:format, :copies])
+    includes({ :editions => :format }, :copies)
   end
   
   def self.search(query, fields, output)
@@ -81,6 +82,12 @@ class Product < ActiveRecord::Base
     self.errors[:illustrator_name] = errors[:illustrator] if errors[:illustrator].present?
   end
   
+  def check_age_level
+    if (age_to && !age_from)
+      self.age_from = age_to
+    end
+  end
+  
   def set_accession_id
     self.accession_id = find_accession_id
   end
@@ -112,7 +119,11 @@ class Product < ActiveRecord::Base
   
   def age_level
     if (age_from && age_to)
-      "#{age_from}-#{age_to}"
+      if (age_from == age_to)
+        "#{age_from}"
+      else
+        "#{age_from} to #{age_to}"
+      end
     elsif age_from
       "#{age_from}+"
     elsif age_to
@@ -139,7 +150,7 @@ class Product < ActiveRecord::Base
   end
   
   def keyword_list
-    keywords.map{ |x| x.name }.join(",")
+    keywords.map{ |x| x.name }.join(", ")
   end
   def keyword_list=(tag_list)
     self.keywords = Keyword.split_list(tag_list)
@@ -149,13 +160,17 @@ class Product < ActiveRecord::Base
   end
   
   def product_tag_list
-    product_tags.map{ |x| x.name }.join(",")
+    product_tags.map{ |x| x.name }.join(", ")
   end
   def product_tag_list=(tag_list)
     self.product_tags = ProductTag.split_list(tag_list)
   end
   def product_tags_json
     product_tags.to_json({ :only => [:id, :name] })
+  end
+  
+  def award_list
+    product_awards.map {|x| x.award.full_name}.join(", ")
   end
   
   def editions_json
@@ -220,7 +235,23 @@ class Product < ActiveRecord::Base
       :title => title,
       :author_name => author_name,
       :age_level => age_level,
-      :in_stock => in_stock_
+      :stock => copies.length
+    }
+  end
+  
+  def get_list_hash
+    {
+      :id => id,
+      :title => title,
+      :author_name => author_name,
+      :author_last_name => author.last_name,
+      :illustrator_name => illustrator_name,
+      :illustrator_last_name => illustrator.present? ? illustrator.last_name : nil,
+      :age_level => age_level,
+      :age_from => age_from,
+      :keyword_list => keyword_list,
+      :award_list => award_list,
+      :stock => copies.length
     }
   end
   
@@ -240,5 +271,9 @@ class Product < ActiveRecord::Base
           touch :out_of_stock_at
         end
     end
+  end
+  
+  def in_theme? (theme)
+    theme.product_ids.include?(id)
   end
 end

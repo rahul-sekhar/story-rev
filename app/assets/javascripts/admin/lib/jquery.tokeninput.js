@@ -128,7 +128,7 @@ var methods = {
     },
     get: function() {
     	return this.data("tokenInputObject").getTokens();
-   	},
+    },
     reset: function() {
 	this.data("tokenInputObject").reset();
 	return this;

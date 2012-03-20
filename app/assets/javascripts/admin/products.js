@@ -67,7 +67,7 @@ $(document).ready(function() {
             }
             
             $copyTable.itemTable({
-                url: editionURL + '/' + id + '/copies',
+                url: editionURL + '/' + id + '/copies.json',
                 objectName: 'copy',
                 addLinkText: 'New Copy',
                 initialLoad: true,
@@ -78,7 +78,7 @@ $(document).ready(function() {
                         type: 'read_only'
                     },
                     {
-                        name: 'Condition Rating',
+                        name: 'Condition',
                         field: 'condition_rating',
                         multilineLabel: true,
                         type: 'rating'

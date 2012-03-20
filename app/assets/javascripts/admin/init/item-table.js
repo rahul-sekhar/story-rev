@@ -15,6 +15,11 @@ var DEFAULTS = {
     editLinkText: '',
     removeLinkText: '',
     initialLoad: false,             // If set to true, loads json items from the set URL on creation
+    blockOnLoad: true,              // Block the table on the initial load
+    headings: false,                // Whether to show headings for each column
+    sortable: false,                // Whether the table columns can be sorted
+    containCells: false,            // If set to true, the content of each cell is placed in a div with class "container"
+    
     columns: [{
         name: "Column 1",
         field: "column_1",
@@ -23,7 +28,7 @@ var DEFAULTS = {
         
         type: null,                 // If left empty, this defaults to 'text'.
                                     // other options are: 'autocomplete', 'read_only', 'image',
-                                    // 'rating'
+                                    // 'rating', 'fixed', 'html'
         
         sourceURL: null,            // Source URL for autocomplete data
         
@@ -39,6 +44,16 @@ var DEFAULTS = {
         default_val: null,          // The default value
         
         class_name: null,           // The column class
+        
+        html_content: null,         // The HTML content for a fixed column
+        
+        noHeading: false,           // Whether the column heading is hidden (if headings are enabled)
+        
+        sort_by: null,              // What attribute to sort the column by - if null, the column cannot be sorted
+        
+        default_sort: null,         // Whether the column is initially sorted - set to "asc" or "desc" for the order
+        
+        numeric: false,             // Whether the column has numeric value (So that zeroes are not converted to empty cells)
         
         displayCallback: function(data) { return data; }
     }]
@@ -56,6 +71,10 @@ var methods = {
             
             $(this).data("itemTableObject", new $.ItemTable(this, settings));
         });
+    },
+    
+    getSelected: function() {
+    	return this.data("itemTableObject").getSelected();
     }
 }
 
@@ -91,7 +110,7 @@ $.ItemTable = function(table, settings) {
         
         // Add inputs for each column
         $.each(settings.columns, function(index, column) {
-            if (column.type == "read_only") return;
+            if ($.inArray(column.type, ["read_only", "fixed", "custom"]) > -1) return;
             var $div = $('<div class="input"></div>').appendTo($dialogForm);
             $div.append('<label for="' + field_id(column) + '"' + (column.multilineLabel ? ' class="multi-line"' : '') + '>' + column.name + '</label>');
             constructInput($div, column);
@@ -100,8 +119,9 @@ $.ItemTable = function(table, settings) {
         // Add submit and cancel buttons
         var $buttonContainer = $('<div class="button-container"></div>').appendTo($dialogForm);
         var $submit = $('<input type="submit" class="minor-button" value="Save" />').appendTo($buttonContainer);
-        var $cancel = $('<a href="#" class="minor-button">Cancel</a>').click(function() {
+        var $cancel = $('<a href="#" class="minor-button">Cancel</a>').click(function(e) {
             $.unblockUI();
+            e.preventDefault();
         }).appendTo($buttonContainer);
         
         // Add a binding for the Escape key
@@ -207,8 +227,60 @@ $.ItemTable = function(table, settings) {
         });
     }
     
+    // Add column headings
+    if (settings.headings) {
+        var $headings = $('<tr class="headings"></tr>');
+        $.each(settings.columns, function(index, column) {
+            var $th = $('<th></th>');
+            
+            if (!column.noHeading)
+                $th.text(column.name);
+            
+            // Handle sorting
+            if (settings.sortable && column.sort_by) {
+                $th.click(function(e) {
+                    e.preventDefault();
+                    var sort_order = sort_switch($th);
+                    sort_by_column(column, index, sort_order);
+                }).addClass('sortable')
+                .wrapInner('<span></span>');
+            }
+            
+            if (column.class_name)
+                $th.addClass(column.class_name);
+            
+            $th.appendTo($headings);
+            
+            if(settings.containCells)
+                $th.wrapInner('<div class="container"></div>');
+        });
+        
+        $headings.prependTo($table);
+    }
+    
     // Add edit and delete buttons to exisiting items
     addManageLinks($table.find('tr'), settings)
+    
+    // Add fixed colums to existing rows
+    $.each(settings.columns, function(index, column) {
+        if (column.type == "fixed") {
+            var $td = $('<td></td>')
+                .html(column.html_content);
+                
+            if(settings.containCells)
+                $td.wrapInner('<div class="container"></div>');
+            
+            if (column.class_name)
+                $td.addClass(column.class_name);
+            
+            if (settings.tooltips)
+                setTooltip($td, column);
+            
+            $table.find("tr td:eq(" + index + ")").before(
+                $td.clone()
+            )
+        }
+    });
     
     if (settings.addable) {
         // Add an add button
@@ -235,19 +307,43 @@ $.ItemTable = function(table, settings) {
         $table.find('tr').each(function() {
             var $tr = $(this);
             $.each(settings.columns, function(index, column) {
-                $tr.find('td:eq(' + index + ')').attr("title", column.name);
+                setTooltip($tr.find('td:eq(' + index + ')'), column);
             });
         });
     }
     
     // Load initial items
     if (settings.initialLoad) {
+        
+        if (settings.blockOnLoad) {
+            $tableContainer.block({
+                message: $.blockUI.loadingMessage,
+                css: $.blockUI.loadingCss,
+                overlayCSS: { 
+                    backgroundColor: 'transparent', 
+                    opacity: 1
+                }
+            });
+        }
+        
         $.get(settings.url, function(data) {
             $.each(data, function(index, value) {
                 $table.append(createRow(value));
             });
             restripe();
+            
+            if (settings.blockOnLoad)
+                $tableContainer.unblock();
+            
+            if (settings.sortable) {
+                sort_by_default_column();
+            }
+            
+            $table.trigger('tableLoad');
         });
+    }
+    else if (settings.sortable) {
+        sort_by_default_column();
     }
     
     // Restripe the table
@@ -261,6 +357,10 @@ $.ItemTable = function(table, settings) {
         if (settings.addable) {
             $addLink.remove();
         }
+    }
+    
+    this.getSelected = function() {
+        return get_selected();
     }
     
     
@@ -279,6 +379,8 @@ $.ItemTable = function(table, settings) {
             var $number = $row.find('td.number');
             if (!$number.length) $number = $('<td class="number"></td>').prependTo($row);
             $number.text(index + 1)
+            if(settings.containCells)
+                $number.wrapInner('<div class="container"></div>');
         });
     }
     
@@ -286,6 +388,7 @@ $.ItemTable = function(table, settings) {
         var $tr = $('<tr></tr>').attr("data-id", data.id);
         $.each(settings.columns, function(index, column) {
             var $td = $('<td></td>');
+            
             if (column.type == "image") {
                 if (data[column.field]) {
                     $td.html('<img src="' + data[column.field] + '" alt="" />');
@@ -294,27 +397,70 @@ $.ItemTable = function(table, settings) {
             else if (column.type == "rating") {
                 var rating = parseInt(data[column.field], 10)
                 for (var i = 1; i <= rating; i++) {
-                    $td.append('<img src="/images/star.png" alt="star" />');
+                    $td.append('<div class="star"></div>');
                 }
                 for (var i = rating; i < 5; i++) {
-                    $td.append('<img src="/images/empty-star.png" alt="no star" />');
+                    $td.append('<div class="empty star"></div>');
                 }
+            }
+            else if (column.type == "fixed") {
+                $td.html(column.html_content);
+            }
+            else if (column.type == "custom") {
+                $td.html(column.displayCallback ? column.displayCallback(data[column.field]) : data[column.field] || "")
             }
             else {
                 var text = column.displayCallback ? column.displayCallback(data[column.field]) : data[column.field];
-                $td.text(text || "")
+                
+                if (!column.numeric)
+                    text = text || "";
+                
+                if (column.type == "html")
+                    $td.html(text);
+                else {
+                    $td.text(text);
+                }
+            }
+            
+            if (settings.sortable && column.sort_by) {
+                $td.data("sortBy", data[column.sort_by]);
             }
             
             if (column.class_name)
                 $td.addClass(column.class_name);
             
             $td.data("val", data[column.raw || column.field] || "")
-                .attr("title", column.name)
                 .appendTo($tr);
             
+            if(settings.containCells)
+                $td.wrapInner('<div class="container"></div>');
+            
+            if (settings.tooltips)
+                setTooltip($td, column);
         });
         return addManageLinks($tr, settings);
     }
+    
+    function setTooltip($td, column) {
+        var tooltip = "[" + column.name + "]";
+        
+        if (column.tooltipCallback) {
+            tooltip = column.tooltipCallback($td.data('val'));
+        }
+        else if (column.type == "image") { }
+        else if (column.type == "rating") {
+            tooltip += " " + parseInt($td.data('val'), 10) + "/5";
+        }
+        else if (column.type == "fixed") {
+            tooltip = column.name;
+        }
+        else {
+            var cellText = settings.containCells ? $td.children('.container').text() : $td.text();
+            tooltip += " " + cellText;
+        }
+        
+        $td.attr("title", tooltip);
+    };
     
     function field_id(column) {
         return settings.objectName + '_' + (column.raw || column.field);
@@ -395,15 +541,15 @@ $.ItemTable = function(table, settings) {
             
             var $ratingDiv = $('<div class="rating"></div').appendTo($container);
             for (var i = 1; i<=5; i++) {
-                $('<div></div>').data('number', i).appendTo($ratingDiv);
+                $('<div class="star"></div>').data('number', i).appendTo($ratingDiv);
             }
             
             var setRating = function(rating) {
                 rating = parseInt(rating, 10);
                 
                 $ratingDiv
-                    .find("div:lt(" + rating + ")").addClass("filled").end()
-                    .find("div:gt(" + (rating - 1) + ")").removeClass("filled");
+                    .find(".star:lt(" + rating + ")").removeClass("empty").end()
+                    .find(".star:gt(" + (rating - 1) + ")").addClass("empty");
             }
             
             $ratingDiv
@@ -473,12 +619,23 @@ $.ItemTable = function(table, settings) {
     function addManageLinks($tr, settings) {
         if ($tr) {
             if (settings.editable) {
-                $tr.append('<td class="has-button"><a class="edit-link" href="#">' + settings.editLinkText + '</a></td>');
+                var $editLink = $('<td class="has-button" title="Edit"><a class="edit-link" href="#">' + settings.editLinkText + '</a></td>')
+                    .appendTo($tr);
+                
+                if(settings.containCells)
+                    $editLink.wrapInner('<div class="container"></div>');
             }
             if (settings.removable) {
-                $tr.append('<td class="has-button last"><a class="remove-link" href="#">' + settings.removeLinkText + '</a></td>');
+                var $removeLink = $('<td class="has-button last" title="Remove"><a class="remove-link" href="#">' + settings.removeLinkText + '</a></td>')
+                    .appendTo($tr);
+                
+                if(settings.containCells)
+                    $removeLink.wrapInner('<div class="container"></div>');
             }
-            return $tr
+            return $tr;
+        }
+        else {
+            return null;
         }
     }
     
@@ -506,6 +663,83 @@ $.ItemTable = function(table, settings) {
     
     function deselect_all() {
         $table.find('tr.selected').removeClass('selected');
+    }
+    
+    // Sorting functions
+    function sort_by_column(column, index, order) {
+        $table.find('td').filter(function() {
+            return $(this).index() === index;
+        }).sortElements(function(a,b) {
+            var $a = $(a);
+            var $b = $(b);
+            
+            if ($a.data('sortBy') == null)
+                return order == "asc" ? -1 : 1;
+            if ($b.data('sortBy') == null)
+                return order == "asc" ? 1 : -1;
+            return $a.data('sortBy') > $b.data('sortBy') ?
+                order == "asc" ? -1 : 1
+                : order == "asc" ? 1 : -1;
+        }, function() {
+           return this.parentNode; 
+        });
+        
+        restripe();
+    }
+    
+    var $sortArrow = $('<div class="sort-arrow"></div>');
+    
+    function sort_by_default_column() {
+        $.each(settings.columns, function(index, column) {
+            if (column.default_sort) {
+                sort_by_column(column, index, column.default_sort);
+                var $th = $table.find('tr.headings th:eq(' + index + ')')
+                    .addClass('sorting')
+                    .data('sortOrder', column.default_sort);
+                
+                $sortArrow
+                    .removeClass("asc")
+                    .removeClass("desc")
+                    .addClass(column.default_sort);
+                
+                if (settings.containCells)
+                    $th.children('.container').append($sortArrow);
+                else
+                    $th.append($sortArrow);
+                
+                return false;
+            }td
+        });
+    }
+    
+    // Returns the order to sort by
+    function sort_switch($th) {
+        var sort_order;
+        
+        if ($th.hasClass('sorting')) {
+            sort_order = $th.data('sortOrder') == "desc" ? "asc" : "desc";
+        }
+        else {
+            $table.find('th.sorting')
+                .data('sortOrder', null)
+                .removeClass('sorting');
+            
+            $th.addClass('sorting');
+            sort_order = "desc";
+        }
+        
+        $sortArrow.removeClass('asc')
+            .removeClass('desc')
+            .addClass(sort_order);
+        
+        $th.data('sortOrder', sort_order);
+        
+        if (settings.containCells)
+            $th.children('.container').append($sortArrow);
+        else
+            $th.append($sortArrow);
+        
+        return sort_order;
     }
 }
 

@@ -63,9 +63,10 @@ $side-nav-width: 210px;
     }
 }
 
+$content-width: $wrapper-width - $side-nav-width - 30px;
 #content {
     float:left;
-    width: e($wrapper-width - $side-nav-width - 30px);
+    width: e($content-width);
     margin-left: e(10px);
     margin-top: e(50px);
 }
@@ -125,6 +126,12 @@ a.minor-button {
 .token-input-list, input, textarea {
     @include rounded-corners(3px);
     border: 1px solid $field-border-color;
+}
+
+/* Flash messages */
+
+.notice {
+    margin-bottom: e(10px, $text-size);
 }
 
 /* Labels and inputs */
@@ -201,6 +208,7 @@ input {
 
 table {
     border-collapse:collapse;
+    text-align:left;
 }
 
 .table-container {
@@ -215,11 +223,14 @@ table {
     overflow-x:hidden;
 }
 
-td {
+td, th {
     @include small-text;
-    padding: 0 e(20px, $small-text-size);
+    line-height: e(20px, $small-text-size);
+    padding: 0 e(10px, $small-text-size);
     cursor:default;
-    
+}
+
+td {
     .edit-link {
         @include edit-button;
     }
@@ -228,14 +239,65 @@ td {
         @include remove-button;
     }
     
+    .zoom-link {
+        @include zoom-button;
+    }
+    
+    .add-link {
+        @include add-button;
+    }
+    
+    .loading-link {
+        @include loading-button;
+    }
+    
+    .ticked-link {
+        @include ticked-button;
+    }
+    
     &.has-button {
-        width: e(22px);
+        width: e(20px);
         padding: 0 e(5px, $small-text-size);
     }
 }
 
+th {
+    color: $color-a1;
+    
+    &.sortable {
+        cursor: pointer;
+    }
+    
+    .sort-arrow {
+        width:8px;
+        height:100%;
+        background: url('/images/sort_arrows.png') no-repeat 0 center;
+        margin-left: e(10px);
+        float:left;
+        
+        &.desc {
+            background-position: -8px center;
+        }
+    }
+    
+    span {
+        display:block;
+        float:left;
+    }
+}
+
+tr .container {
+    height:e(20px, $small-text-size);
+    max-width:e(300px, $small-text-size);
+    overflow:hidden;
+    white-space: nowrap;
+    text-overflow:ellipsis;
+}
+
 tr {
     height: e(20px);
+    
+    @include transition(background-color 200ms);
     
     &.alt {
         background-color: $color-e2;
@@ -243,10 +305,6 @@ tr {
     
     &.selected {
         background-color:$color-b2;
-        
-        td {
-            //color:$color-g1;
-        }
         
         &:hover {
             background-color:$color-b2;
@@ -256,16 +314,24 @@ tr {
     &:hover {
         background-color: $color-b3;
     }
+    
+    &.headings:hover {
+        background-color: #fff;
+    }
 }
 
 .table-wrapper {
-    .add-container {
+    .add-container, .select-container {
         clear:left;
         float:right;
     }
     
     .add-link {
         @include add-caption-button;
+    }
+    
+    .select-link {
+        @include list-caption-button;
     }
     
     float:left;
@@ -292,16 +358,18 @@ tr {
     
     .rating {
         cursor: pointer;
-        
-        div {
-            float:left;
-            width:16px;
-            height:16px;
-            background: url('/images/empty-star.png') no-repeat center;
-            
-            &.filled {
-                background: url('/images/star.png') no-repeat center;
-            }
-        }
+    }
+}
+
+// Stars
+
+.star {
+    float:left;
+    width:16px;
+    height:16px;
+    background: url('/images/stars.png') no-repeat center 0px;
+    
+    &.empty {
+        background-position: center -16px;
     }
 }

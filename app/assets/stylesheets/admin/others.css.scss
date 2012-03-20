@@ -7,9 +7,10 @@
         height: e(200px);
     }
     
+    $theme-table-width: 220px;
     #theme-table-wrapper {
         .table-container {
-            width: e(250px);
+            width: e($theme-table-width);
             min-width:0;
         }
         
@@ -26,7 +27,15 @@
             }
             
             &.selected {
-                background-color:$color-a2;
+                background-color:$color-b2;
+                
+                &:hover {
+                    background-color:$color-b2;
+                }
+            }
+            
+            &:hover {
+                background-color: $color-b3;
             }
         }
         
@@ -46,6 +55,53 @@
         
         .has-button {
             width: e(22px, $small-text-size);
+        }
+    }
+    
+    #theme-product-table-wrapper {
+        margin-left: 20px;
+        .table-container {
+            width: e($content-width - $theme-table-width - 20px - 4px);
+            min-width:0;
+        }
+        
+        table {
+            width:100%;
+        }
+        
+        .age, .copies {
+            padding: e(5px, $small-text-size);
+        }
+    }
+    
+    // Dialog box
+    
+    #select-theme-books {
+        @include clearfix;
+        height:100%;
+        width:100%;
+        
+        .table-wrapper {
+            height: 95%;
+            width:100%;
+        }
+        
+        .close-button {
+            @include remove-button;
+            float:right;
+        }
+        
+        .table-container {
+            height:100%;
+            width:100%;
+        }
+        
+        table {
+            width:100%;
+        }
+        
+        .awards .container, .keywords .container {
+            max-width: e(150px, $small-text-size);
         }
     }
 }
