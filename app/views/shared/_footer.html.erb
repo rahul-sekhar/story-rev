@@ -2,19 +2,24 @@
   
   <section id="more-info">
     
-    <h2>More</h2>
-    
-    <nav>
+    <nav class="navigation">
+      <h2>More</h2>
       <ul>
         <% more_nav_links.each do |name,text| %>
-          <li<%= class_if (more_nav_selected == name), "selected" %>/><%= link_to text, current_url(:info => name) %></li>
+          <li<%= class_if (more_nav_selected == name), "selected" %>/>
+            <%= link_to text, current_url({ :info => name }, "page-footer") %>
+          </li>
         <% end %>
       </ul>
     </nav>
     
-    <article>
+    <article class="content">
       <%= render "shared/more-info", :section => more_nav_selected %>
     </article>
+    
+    <div id="designed-by">
+      <p>Website by <a href="http://www.kairi.in">kairi</a></p>
+    </div>
     
   </section>
   
@@ -24,8 +29,10 @@
     
     <p>Would you like to be notified when we get new books?
     
-    <input type="text" name="email" id="subscribe-email" />
-    <input type="submit" value="OK" />  
+    <div class="email">
+      <input type="text" name="email" id="subscribe-email" placeholder="email address" />
+      <input type="image" src="/images/tick-button.png" alt="OK"  id="subscribe-email-submit" />
+    </div>
   </section>
   
   
@@ -38,8 +45,6 @@
   </section>
   
   
-  <section id="designed-by">
-    <p>Website by <a href="http://www.kairi.in">kairi</a></p>
-  </section>
+  
   
 </footer>

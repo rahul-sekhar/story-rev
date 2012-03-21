@@ -1,9 +1,9 @@
 module ApplicationHelper
   
   # Add parameters to the current URL
-  def current_url(new_params)
+  def current_url(new_params, element_id = nil)
     new_params = request.query_parameters.merge(new_params)
-    request.url.split("?")[0] + "?" + new_params.map{ |k,v| "#{k}=#{v}" }.join("&")
+    request.url.split("?")[0] + "?" + new_params.map{ |k,v| "#{k}=#{v}" }.join("&") + (element_id ? "##{element_id}" : "")
   end
   
   # The more info menu items

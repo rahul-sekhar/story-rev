@@ -6,7 +6,7 @@
     min-width: 20px;
     width: $height;
     height: $height;
-    background: url('/images/icons.png') no-repeat;
+    background: url('/images/admin-icons.png') no-repeat;
     
     background-position: center ($base + ($height - 20px) / 2);
     &:hover {
@@ -20,7 +20,7 @@
     font-size: e($small-text-size, $text-size);
     line-height:$height;
     text-transform: lowercase;
-    background: url('/images/icons.png') no-repeat;
+    background: url('/images/admin-icons.png') no-repeat;
     padding-left: 20px + $padding;
     @include link-color;
     

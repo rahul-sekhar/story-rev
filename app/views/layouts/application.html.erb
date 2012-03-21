@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>StoryRev</title>
-  <link href='http://fonts.googleapis.com/css?family=Quicksand:700' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Arvo|Quicksand:700' rel='stylesheet' type='text/css'>
   <%= stylesheet_link_tag    "application" %>
   <%= javascript_include_tag "application" %>
   <%= csrf_meta_tags %>
@@ -10,7 +10,20 @@
 <body<%= class_if @class, @class %>>
 
 <div id="wrapper">
-  <%= link_to "Admin Area", admin_root_url %>
+  
+  <header id="page-header">
+    <img src="/images/header.png" alt="" />
+    <nav class="navigation">
+      <ul>
+        <li class="store"><%= link_to "Bookstore", root_url %></li>
+        <li class="blog"><%= link_to "Articles", root_url %></li>
+        <li class="more-url"><%= link_to "Learn More", root_url %></li>
+      </ul>
+      
+      <%= link_to "Shopping Cart", root_url, :id=>"shopping-cart-link" %>
+    </nav>
+  </header>
+  
   <%= yield %>
   
   <%= render "shared/footer" %>

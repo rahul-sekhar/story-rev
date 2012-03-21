@@ -116,7 +116,7 @@ $(document).ready(function() {
         preventDuplicates: true,
         dataPrepopulate: true
     }
-    $('#product_author_name').tokenInput("/admin/authors.json", singleAutocompleteSettings);
+    var $authorNameInput = $('#product_author_name').tokenInput("/admin/authors.json", singleAutocompleteSettings);
     $('#product_illustrator_name').tokenInput("/admin/illustrators.json", singleAutocompleteSettings);
     $('#product_keyword_list').tokenInput("/admin/keywords.json", tagAutocompleteSettings);
     $('#product_product_tag_list').tokenInput("/admin/product_tags.json", tagAutocompleteSettings);
@@ -462,7 +462,10 @@ $(document).ready(function() {
         if ($removeCoverLi.hasClass("disabled")) return;
         $coverMenu.hide();
         clearCoverImage();
-        $cover.prepend('<div class="blank-cover"><p>' + $productTitle.val() + '</p></div>');
+        $cover.prepend($('<div class="blank-cover"></div>')
+            .append('<p class="title">' + $productTitle.val() + '</p>')
+            .append('<p class="author">' + $authorNameInput.val() + '</p>')
+        );
         $removeCoverLi.addClass("disabled");
         $coverId.attr("name", "product[cover_image_id]").val(null);
     });
@@ -483,9 +486,14 @@ $(document).ready(function() {
     });
     
     // Change the cover text (if no image has been selected) when the title is changed
-    $productTitle.blur(function() {
-        $cover.find(".blank-cover p").text($(this).val());
+    $productTitle.change(function() {
+        $cover.find(".blank-cover p.title").text($(this).val());
     });
+    
+    $authorNameInput.change(function() {
+        $cover.find(".blank-cover p.author").text($(this).val());
+    });
+    
     
     // Handle amazon information
     var $sidebar = $('#info-sidebar');

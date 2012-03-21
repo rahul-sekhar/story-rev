@@ -3,12 +3,14 @@
   <%= link_to (image_tag product.cover_image.thumb_url, :alt => product.title), (link_to_image ? product.cover_image.url : product_path(product)) %>
 <% else %>
   <div class="blank-cover">
-    <p>
     <% if link_to_image || product.new_record? %>
-      <%= product.title %>
+      <p class="title"><%= product.title %></p>
+      <p class="author"><%= product.author_name %></p>
     <% else %>
-      <%= link_to product.title, product_path(product) %>
+      <a href="<%= product_path(product) %>">
+        <p class="title"><%= product.title %></p>
+        <p class="author"><%= product.author_name %></p>
+      </a>
     <% end %>
-    </p>
   </div>
 <% end %>

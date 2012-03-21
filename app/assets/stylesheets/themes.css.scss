@@ -1,7 +1,43 @@
+$text-color: $color-a3;
+
+$heading-size: 14px;
+@mixin heading {
+    font-family: Quicksand, sans-serif;
+    text-transform: uppercase;
+    font-size: e($heading-size);
+    color: $text-color;
+}
+
 $text-size: 13px;
 @mixin text {
     font-family: Arial, Helvetica, sans-serif;
     font-size: e($text-size);
-    line-height: e(20px, $text-size);
+    line-height: 150%;
     color: $text-color;
+}
+
+$small-text-size: 11px;
+@mixin small-text {
+    @include text;
+    font-size: e($small-text-size);
+}
+
+$alt-text-size: 15px;
+@mixin alt-text {
+    font-family: Arvo, Arial, Helvetica, sans-serif;
+    font-size: e($alt-text-size);
+    line-height: 150%;
+    color: $text-color;
+}
+
+$small-alt-text-size: 12px;
+@mixin small-alt-text {
+    @include alt-text;
+    font-size: e($small-alt-text-size);
+}
+
+$large-alt-text-size: 17px;
+@mixin large-alt-text {
+    @include alt-text;
+    font-size: e($large-alt-text-size);
 }

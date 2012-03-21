@@ -78,6 +78,12 @@ $body-font-size:100%;
     border-bottom-right-radius: $radius;
 }
 
+@mixin box-shadow($properties) {
+    -moz-box-shadow: $properties;
+    -webkit-box-shadow: $properties;
+    box-shadow: $properties;
+}
+
 @mixin link($link-color, $hover-color, $underline: none) {
     text-decoration: $underline;
     &:link, &:visited {

@@ -1,11 +1,27 @@
 .store {
+    #sidebar {
+        float:right;
+        width:e(260px);
+        
+        h3 {
+            @include alt-text;
+            margin-bottom: e(10px, $alt-text-size);
+            font-weight:normal;
+            color: $color-c1;
+        }
+        
+        .feature {
+            margin-top: e(10px);
+            margin-bottom: e(40px);
+        }
+    }
     
     #products {
         @include clearfix;
-        width: e((100px + 40px) * 4 + 40px);
+        width: e((100px + 20px) * 5 + 10px);
         
         .cover-container {
-            margin-left: e(40px);
+            margin-right: e(20px);
             margin-bottom: e(20px);
             float:left;
         }

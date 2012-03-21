@@ -2,13 +2,77 @@
  ********* Layout **********
  ***************************/
 
-$wrapper-width: 960px;
+$wrapper-width: 900px;
 #wrapper {
     width: e($wrapper-width);
     margin: 0 auto;
     @include clearfix;
     min-height: 100%;
+    padding: 0px e(30px);
 }
+
+// Header
+
+#page-header {
+    text-align:center;
+    margin-top: e(50px);
+    margin-bottom: e(40px);
+    
+    .navigation {
+        border-top: 1px solid $color-a5;
+        border-bottom: 1px solid $color-a5;
+        @include clearfix;
+        margin: e(20px) 0;
+    }
+    
+    ul {
+        float:left;
+    }
+    
+    li {
+        float:left;
+        @include large-alt-text;
+        @include inner-link($text-color, lighten($text-color, 20));
+        line-height: e(45px, $large-alt-text-size);
+        margin-left: e(20px, $large-alt-text-size);
+        
+        a {
+            border-bottom: none;
+        }
+        
+        &:not(:first-child):before {
+            content: "";
+            width:6px;
+            height:45px;
+            float:left;
+            margin-right: e(20px, $large-alt-text-size);
+            background: url('/images/icons.png') no-repeat 0px -100px;
+        }
+    }
+    
+    #shopping-cart-link {
+        float:right;
+        @include text;
+        display:block;
+        line-height: e(45px, $text-size);
+        @include link($color-d1, lighten($color-d1, 20));
+        border-bottom: none;
+        text-transform:lowercase;
+        background: url('/images/icons.png') no-repeat 0px 12px;
+        padding-left: e(35px, $text-size);
+        margin-right: e(20px, $text-size);
+        
+        &:hover {
+            background-position: 0px -48px;
+        }
+    }
+}
+
+.store #page-header .store, .blog #page-header .blog {
+    @include inner-link($color-c1, $color-c1);
+}
+
+
 
 
 // Footer
@@ -16,7 +80,116 @@ $wrapper-width: 960px;
 #page-footer {
     clear:both;
     @include rounded-corners (10px);
-    margin: e(30px);
+    background-color: $color-a1;
+    @include clearfix;
+    padding: e(50px) 0 e(10px) 0;
+    margin: e(40px) 0;
+    
+    h2 {
+        @include stitched-heading;
+    }
+    
+    #more-info {
+        float:left;
+        
+        h2 {
+            padding-left: 10px;
+            padding-right: e(20px, $heading-size);
+            width:e(110px - 30px - 10px, $heading-size);
+        }
+        
+        .navigation {
+            float:left;
+            text-align:right;
+            margin-left: e(30px);
+            width:e(110px);
+            
+            li {
+                @include text;
+                line-height:120%;
+                margin-top: e(20px);
+                text-transform:lowercase;
+                
+                a {
+                    border-bottom: none;
+                    @include link ($color-a4, darken($color-a4, 10));
+                    
+                    &:before {
+                        content: '> ';
+                    }
+                }
+            }
+        }
+        
+        .content {
+            margin-left:e(200px);
+            background-color:$color-a2;
+            width: e(290px);
+            height: e(270px);
+            @include rounded-corners(5px);
+            padding: e(20px) e(30px);
+            border:1px dashed #FDDF71;
+            
+            h3 {display:none;}
+            
+            p {
+                @include small-alt-text;
+                margin-top: e(10px, $small-alt-text-size);
+                margin-bottom: e(20px, $small-alt-text-size);
+            }
+        }
+        
+        #designed-by {
+            float:right;
+            @include inner-link ($color-a2, lighten($color-a2, 10));
+            
+            p {
+                color: $color-a2;
+                font-size:e(12px);
+                text-transform:lowercase;
+                margin-top: e(10px, 12px);
+            }
+        }
+    }
+    
+    #subscribe, #contact {
+        float:right;
+        clear:right;
+        width:e(275px);
+        
+        margin-top: e(50px);
+        
+        h2 {
+            width:e(180px - 30px - 11px, $heading-size);
+            margin-bottom: e(10px, $heading-size);
+            margin-left: e(-5px, $heading-size);
+        }
+        
+        p {
+            max-width: e(200px, $text-size);
+            color: white;
+            margin-bottom: e(10px, $text-size);
+            
+            @include inner-link ($color-a4, darken($color-a4, 10));
+        }
+        
+        #subscribe-email {
+            height:30px;
+            @include small-text;
+            line-height: e(30px, $small-text-size);
+            border:1px solid $color-a5;
+            @include rounded-corners(5px);
+            width:e(155px, $small-text-size);
+            padding:0 e(10px, $small-text-size);
+            float:left;
+        }
+        
+        #subscribe-email-submit {
+            margin-left: e(20px);
+            display:block;
+            float:left;
+        }
+    }
 }
 
 
@@ -24,6 +197,15 @@ $wrapper-width: 960px;
  ********* Styles **********
  ***************************/
 
+p {
+    @include text;
+    margin-bottom: e(20px, $text-size);
+}
+
+a {
+    @include link($color-d1, lighten($color-d1, 20));
+    border-bottom: 1px dotted;
+}
 
 // Obfuscate email addresses from parsers with invisible spans of text
 .email_obf span {
@@ -35,15 +217,53 @@ $wrapper-width: 960px;
     width:100px;
     height:150px;
     
-    p {
-        text-align:center;
-        margin: 20% 6px;
-        line-height:e(16px, $text-size);
-        @include word-wrap;
+    .blank-cover {
+        width:100px;
+        height:150px;
+        background-color: $color-a6;
+        
+        a {
+            width:100%;
+            height:100%;
+            display:block;
+            border-bottom:none;
+            position:relative;
+            
+            &:hover p {
+                color: $color-a2;
+            }
+        }
+        
+        p {
+            @include small-text;
+            text-align:center;
+            line-height:e(16px, $small-text-size);
+            @include word-wrap;
+            color: $color-a4;
+            position:absolute;
+            width:84px;
+            left:8px;
+            margin:0;
+            overflow:hidden;
+            text-overflow: ellipsis;
+            whitespace: nowrap;
+            
+            &.title {
+                top:15px;
+                max-height:88px;
+            }
+            
+            &.author {
+                bottom:15px;
+                max-height:32px;
+            }
+        }
     }
 }
 
 .cover {
+    @include box-shadow(3px -1px 5px $color-a2);
+    
     img {
         max-width:100px;
         max-height:150px;

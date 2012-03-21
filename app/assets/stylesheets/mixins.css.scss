@@ -1,68 +1,29 @@
-// Site specific mixins
-
-@mixin button($height:22px) {
-    display:block;
-    min-width: 22px;
-    width: $height;
-    height: $height;
-    background: url('/images/icons.png') no-repeat;
-}
-
-$caption-font-size: 12px;
-@mixin caption-button($height:22px, $padding: 4px) {
+@mixin stitched-heading {
+    @include heading;
+    color: $color-b1;
+    line-height: 28px;
+    padding: 2px 11px 0 e(30px, $heading-size);
+    background: url('/images/stitched-heading.gif') repeat-x 0px -30px;
     display:inline-block;
-    line-height:$height;
-    font-size: e(12px, $content-text-size);
-    text-transform: lowercase;
-    background: url('/images/icons.png') no-repeat;
-    padding-left: 22px + $padding;
-    @include link($text-color, lighten($text-color, 10));
-}
-
-@mixin add-button($height:22px) {
-    @include button($height);
-    background-position: center (0px + ($height - 22px) / 2);
-    &:hover {
-        background-position: center (-40px + ($height - 22px) / 2);
+    position:relative;
+    
+    &:before {
+        width:10px;
+        height:30px;
+        left:0;
+        top:0;
+        position:absolute;
+        content: '';
+        background: url('/images/stitched-heading.gif') no-repeat 0px 0px;
     }
-}
-
-@mixin add-caption-button($height:22px, $padding: 4px) {
-    @include caption-button($height, $padding);
-    background-position: left (0px + ($height - 22px) / 2);
-    &:hover {
-        background-position: left (-40px + ($height - 22px) / 2);
-    }
-}
-
-@mixin remove-button($height:22px) {
-    @include button($height);
-    background-position: center (-80px + ($height - 22px) / 2);
-    &:hover {
-        background-position: center (-120px + ($height - 22px) / 2);
-    }
-}
-
-@mixin remove-caption-button($height:22px, $padding: 4px) {
-    @include caption-button($height, $padding);
-    background-position: left (-80px + ($height - 22px) / 2);
-    &:hover {
-        background-position: left (-120px + ($height - 22px) / 2);
-    }
-}
-
-@mixin edit-button($height:22px) {
-    @include button($height);
-    background-position: center (-160px + ($height - 22px) / 2);
-    &:hover {
-        background-position: center (-200px + ($height - 22px) / 2);
-    }
-}
-
-@mixin edit-caption-button($height:22px, $padding: 4px) {
-    @include caption-button($height, $padding);
-    background-position: left (-160px + ($height - 22px) / 2);
-    &:hover {
-        background-position: left (-200px + ($height - 22px) / 2);
+    
+    &:after {
+        width:11px;
+        height:30px;
+        right:0;
+        top:0;
+        position:absolute;
+        content: '';
+        background: url('/images/stitched-heading.gif') no-repeat 0px -60px;
     }
 }
