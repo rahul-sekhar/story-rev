@@ -88,14 +88,14 @@
 
 // Loading button
 @mixin loading-button($height:20px) {
-    @include button(-120px, $height);
+    @include button(-840px, $height);
     &:hover {
-        background-position: left (-120px + ($height - 20px) / 2);
+        background-position: left (-840px + ($height - 20px) / 2);
     }
 }
 @mixin loading-caption-button($height:20px, $padding: 4px) {
-    @include caption-button(-120px, $height, $padding);
+    @include caption-button(-840px, $height, $padding);
     &:hover {
-        background-position: left (-120px + ($height - 20px) / 2);
+        background-position: left (-840px + ($height - 20px) / 2);
     }
 }

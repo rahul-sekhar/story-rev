@@ -100,6 +100,9 @@ $(document).ready(function() {
     $dialogTable.on('tableLoad', function() {
         loaded = true;
         $dialogTableWrapper.unblock();
+        
+        // Set the table row class for books that are in the theme
+        $dialogTable.find('.ticked-link').closest('tr').addClass('in_theme');
     });
     
     // Handle the clicking of links to add books to a theme
@@ -134,6 +137,11 @@ $(document).ready(function() {
                     .addClass(data.in_theme ? 'ticked-link' : 'add-link')
                     .data('val', data.in_theme);
                 $td.attr('title', getTooltip(data.in_theme));
+                
+                if (data.in_theme)
+                    $clicked.closest('tr').addClass('in_theme');
+                else
+                    $clicked.closest('tr').removeClass('in_theme');
             },
             error: function(data) {
                 $clicked.removeClass().addClass(oldVal ? 'ticked-link' : 'add-link');

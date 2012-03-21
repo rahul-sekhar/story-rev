@@ -70,7 +70,7 @@
         }
         
         .age, .copies {
-            padding: e(5px, $small-text-size);
+            padding: 0 e(5px, $small-text-size);
         }
     }
     
@@ -102,6 +102,15 @@
         
         .awards .container, .keywords .container {
             max-width: e(150px, $small-text-size);
+        }
+        
+        td {
+            color: $light-text-color;
+        }
+        
+        .in_theme td{
+            color: $text-color;
+            font-weight:bold;
         }
     }
 }
