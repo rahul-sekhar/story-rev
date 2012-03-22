@@ -1,6 +1,16 @@
+// jQuery UI settings
+
+$.extend($.ui.dialog.prototype.options, {
+    modal: true,
+    resizable: false,
+    draggable: false,
+    show: 'fade',
+    hide: 'fade'
+});
+
 $(document).ready(function() {
     // Handle external links
-    $("a.ext").click(function(e) {
+    $('body').on('click', 'a.ext', function(e) {
         window.open(this.href);
         e.preventDefault();
     });

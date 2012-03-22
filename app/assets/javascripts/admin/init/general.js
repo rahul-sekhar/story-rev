@@ -26,6 +26,7 @@ $.blockUI.dialogCss = {
     padding:        '10px'
 }
 
+
 $.blockUI.defaults.applyPlatformOpacityRules = false;
 $.blockUI.defaults.css = $.blockUI.dialogCss;
 $.blockUI.defaults.overlayCSS = { 

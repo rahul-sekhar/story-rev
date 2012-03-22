@@ -85,7 +85,7 @@ $body-font-size:100%;
     box-shadow: $properties;
 }
 
-@mixin link($link-color, $hover-color, $underline: none) {
+@mixin link($link-color: $link-color, $hover-color: $link-hover-color, $underline: none) {
     text-decoration: $underline;
     &:link, &:visited {
         color: $link-color;

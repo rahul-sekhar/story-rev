@@ -28,3 +28,25 @@
         background: url('/images/stitched-heading.gif') no-repeat 0px -60px;
     }
 }
+
+@mixin link-image-replacement ($pos: 0, $hover-pos: 0, $width: 30px, $height: 20px, $url: '/images/icons.png') {
+    display:block;
+    width:$width;
+    height:$height;
+    white-space:nowrap;
+    overflow:hidden;
+    border-bottom:none;
+    
+    &:before {
+        content:url('/images/icons.png');
+        display:-moz-inline-box;
+        display:inline-block;
+        font-size:0;
+        line-height:0;
+        margin-top: -1 * $pos;
+    }
+    
+    &:hover:before {
+        margin-top: -1 * $hover-pos;
+    }
+}

@@ -55,7 +55,7 @@ $wrapper-width: 900px;
         @include text;
         display:block;
         line-height: e(45px, $text-size);
-        @include link($color-d1, lighten($color-d1, 20));
+        @include link;
         border-bottom: none;
         text-transform:lowercase;
         background: url('/images/icons.png') no-repeat 0px 12px;
@@ -203,7 +203,7 @@ p {
 }
 
 a {
-    @include link($color-d1, lighten($color-d1, 20));
+    @include link;
     border-bottom: 1px dotted;
     @include transition(color 300ms ease);
 }
@@ -292,4 +292,17 @@ a {
     &.empty:before {
         margin-top: -16px;
     }
+}
+
+// Dialogs
+.ui-dialog-titlebar { display:none; }
+
+.ui-widget-overlay {
+    background: #000;
+    opacity:0.6;
+    height:100%;
+    left:0;
+    position:absolute;
+    top:0;
+    width:100%;
 }

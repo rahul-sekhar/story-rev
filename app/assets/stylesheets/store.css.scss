@@ -28,6 +28,42 @@
     }
     
     // Book info section
+    #book-info-popup {
+        background-color: #fff;
+        overflow:hidden;
+        @include rounded-corners(10px);
+        position:relative;
+        margin-bottom: e(30px);
+        
+        .close-button {
+            float:right;
+            @include small-text;
+            @include link;
+            @include link-image-replacement(300px, 360px);
+            margin-top: e(3px, $small-text-size);
+            
+            &:focus {
+                outline:none;
+            }
+        }
+        
+        img.loading {
+            position:absolute;
+            left:600px / 2 - 32px / 2;
+            top: 320px /2 - (32px + 35px) / 2;
+            display:block;
+        }
+        
+        p.loading {
+            position:absolute;
+            text-align:center;
+            line-height: 20px;
+            width:100%;
+            top: 320px / 2 + 32px / 2 - 15px / 2;
+            left:0;
+        }
+    }
+    
     #book-info {
         padding: e(20px);
         
@@ -42,6 +78,7 @@
                 img {
                     max-width: 180px;
                     max-height: 270px;
+                    display:block;
                 }
             }
         }
@@ -112,25 +149,7 @@
             
             .buy-link {
                 float:left;
-                display:block;
-                width:30px;
-                height:20px;
-                white-space:nowrap;
-                overflow:hidden;
-                border-bottom:none;
-                
-                &:before {
-                    content:url('/images/icons.png');
-                    display:-moz-inline-box;
-                    display:inline-block;
-                    font-size:0;
-                    line-height:0;
-                    margin-top: -180px;
-                }
-                
-                &:hover:before {
-                    margin-top: -240px;
-                }
+                @include link-image-replacement(180px, 240px);
             }
         }
         
@@ -167,7 +186,7 @@
     .back-button {
         float:right;
         @include text;
-        @include link($color-d1, lighten($color-d1, 20));
+        @include link;
         text-transform:lowercase;
         margin: e(30px, $text-size) e(20px, $text-size) e(30px, $text-size) 0;
     }

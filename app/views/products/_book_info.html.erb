@@ -4,7 +4,7 @@
       <img src="<%= @product.cover_image.medium_url %>" alt="" />
     </div>
     <% if @product.amazon_url.present? %>
-      <p class="amazon-link"><%= link_to "View reviews on amazon", @product.amazon_url %></p>
+      <p class="amazon-link"><%= link_to "View reviews on amazon", @product.amazon_url, :class => :ext %></p>
     <% end %>
   </div>
 <% end %>
@@ -34,7 +34,7 @@
 <% if @product.cover_image.blank? %>
   <% if @product.amazon_url.present? %>
     <div class="amazon-links">
-      <p class="amazon-link"><%= link_to "View reviews on amazon", @product.amazon_url %></p>
+      <p class="amazon-link"><%= link_to "View reviews on amazon", @product.amazon_url, :class => :ext %></p>
     </div>
   <% end %>
 <% end %>

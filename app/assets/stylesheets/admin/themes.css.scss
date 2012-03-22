@@ -2,6 +2,8 @@ $text-color: $color-f1;
 $light-text-color: $color-f2;
 $error-text-color: $color-c1;
 $field-border-color: $color-e1;
+$link-color: $color-a1;
+$link-hover-color: lighten($color-a1, 10);
 
 $heading-size: 14px;
 @mixin heading {
