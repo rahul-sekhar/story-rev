@@ -4,7 +4,7 @@
       <img src="<%= @product.cover_image.medium_url %>" alt="" />
     </div>
     <% if @product.amazon_url.present? %>
-      <%= link_to "View reviews on amazon", @product.amazon_url, :class => "amazon-link" %>
+      <p class="amazon-link"><%= link_to "View reviews on amazon", @product.amazon_url %></p>
     <% end %>
   </div>
 <% end %>
@@ -34,7 +34,7 @@
 <% if @product.cover_image.blank? %>
   <% if @product.amazon_url.present? %>
     <div class="amazon-links">
-      <%= link_to "View reviews on amazon", @product.amazon_url, :class => "amazon-link" %>
+      <p class="amazon-link"><%= link_to "View reviews on amazon", @product.amazon_url %></p>
     </div>
   <% end %>
 <% end %>
@@ -45,7 +45,7 @@
   <% @product.copies.each do |c| %>
     <tr>
       <td class="format" title="<%= c.edition.publisher_name %>"><%= c.edition.format_name %></td>
-      <td>
+      <td title="<%= c.condition_description %>">
         <% c.condition_rating.times do %>
           <span class="star">*</span>
         <% end %>
@@ -55,7 +55,7 @@
         <% end %>
       </td>
       <td><%= RupeeHelper.to_rupee(c.price) %></td>
-      <td><%= link_to "Buy", "#", :class => "buy-link" %></td>
+      <td><%= link_to "Buy", "#", :class => "buy-link", :title => "Buy" %></td>
     </tr>
   <% end %>
 </table>

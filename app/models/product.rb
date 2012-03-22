@@ -174,7 +174,7 @@ class Product < ActiveRecord::Base
   end
   
   def award_list
-    product_awards.map {|x| x.award.full_name}.join(", ")
+    product_awards.map {|x| x.full_name}.join(", ")
   end
   
   def editions_json

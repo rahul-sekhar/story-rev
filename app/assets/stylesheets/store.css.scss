@@ -33,7 +33,7 @@
         
         .cover-section {
             float:left;
-            margin: 0 e(20px) e(40px) 0;
+            margin: 0 e(30px) e(40px) 0;
             
             .large-cover {
                 border:1px solid $color-a5;
@@ -44,6 +44,11 @@
                     max-height: 270px;
                 }
             }
+        }
+        
+        .amazon-link {
+            @include small-text;
+            margin-bottom:e(5px, $small-text-size);
         }
         
         h2 {
@@ -101,6 +106,10 @@
                 padding-right: e(20px, $smaller-text-size);
             }
             
+            .format {
+                padding-right: e(40px, $smaller-text-size);
+            }
+            
             .buy-link {
                 float:left;
                 display:block;
@@ -125,8 +134,41 @@
             }
         }
         
+        .amazon-links {
+            margin-top: e(20px);
+        }
+        
         .awards, .keywords {
             float:right;
+            width: e(150px);
+            margin-left: e(60px);
+            clear:right;
+            
+            h3 {
+                margin-top: 0;
+            }
+            
+            p {
+                @include small-text;
+                color: $color-e1;
+            }
         }
+        
+        .awards {
+            margin-bottom: e(20px);
+        }
+        
+        .keywords {
+            margin-top: e(40px);
+            margin-bottom: e(20px);
+        }
+    }
+    
+    .back-button {
+        float:right;
+        @include text;
+        @include link($color-d1, lighten($color-d1, 20));
+        text-transform:lowercase;
+        margin: e(30px, $text-size) e(20px, $text-size) e(30px, $text-size) 0;
     }
 }
