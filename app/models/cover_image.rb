@@ -19,6 +19,10 @@ class CoverImage < ActiveRecord::Base
     filename.thumb.url
   end
   
+  def medium_url
+    filename.medium.url
+  end
+  
   def url
     filename.url
   end

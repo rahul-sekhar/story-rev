@@ -8,6 +8,7 @@ class Edition < ActiveRecord::Base
   before_validation :convert_raw_isbn
   
   validates :isbn, :uniqueness => true
+  validates :format, :presence => true
   validates :raw_isbn, :numericality => { :only_integer => true }
   
   validates_associated :publisher

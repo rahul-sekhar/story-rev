@@ -24,6 +24,7 @@ $body-font-size:100%;
     
     &:before {
         content: image-url($image-name);
+        display:-moz-inline-box;
         display: inline-block;
         font-size: 0;
         line-height: 0;

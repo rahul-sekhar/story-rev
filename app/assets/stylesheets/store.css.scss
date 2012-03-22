@@ -26,4 +26,107 @@
             float:left;
         }
     }
+    
+    // Book info section
+    #book-info {
+        padding: e(20px);
+        
+        .cover-section {
+            float:left;
+            margin: 0 e(20px) e(40px) 0;
+            
+            .large-cover {
+                border:1px solid $color-a5;
+                margin-bottom: e(10px);
+                
+                img {
+                    max-width: 180px;
+                    max-height: 270px;
+                }
+            }
+        }
+        
+        h2 {
+            @include very-large-heading;
+            margin-bottom: e(10px);
+            margin-left: e(-1px);
+        }
+        
+        h3 {
+            @include heading;
+            margin-top: e(40px, $heading-size);
+            margin-bottom: e(10px, $heading-size);
+        }
+        
+        .creators {
+            p {
+                @include small-text;
+                font-style:italic;
+                margin-bottom: e(5px, $small-text-size);
+            }
+            
+            span {
+                @include heading;
+                font-size: e($heading-size, $small-text-size);
+                text-transform:none;
+                font-style:normal;
+                margin-left: e(5px, $heading-size);
+            }
+        }
+        
+        .age_year {
+            margin-top: e(20px);
+            
+            p {
+                margin-bottom: e(5px, $text-size);
+            }
+            span {
+                font-weight:bold;
+                
+                &.sidenote {
+                    font-weight:normal;
+                    font-style:italic;
+                    margin-left: e(3px, $text-size);
+                }
+            }
+        }
+        
+        .details {
+            clear:left;
+        }
+        
+        .copies {
+            td {
+                @include smaller-text;
+                padding-right: e(20px, $smaller-text-size);
+            }
+            
+            .buy-link {
+                float:left;
+                display:block;
+                width:30px;
+                height:20px;
+                white-space:nowrap;
+                overflow:hidden;
+                border-bottom:none;
+                
+                &:before {
+                    content:url('/images/icons.png');
+                    display:-moz-inline-box;
+                    display:inline-block;
+                    font-size:0;
+                    line-height:0;
+                    margin-top: -180px;
+                }
+                
+                &:hover:before {
+                    margin-top: -240px;
+                }
+            }
+        }
+        
+        .awards, .keywords {
+            float:right;
+        }
+    }
 }

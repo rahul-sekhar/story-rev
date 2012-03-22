@@ -4,6 +4,7 @@
     line-height: 28px;
     padding: 2px 11px 0 e(30px, $heading-size);
     background: url('/images/stitched-heading.gif') repeat-x 0px -30px;
+    display:-moz-inline-box;
     display:inline-block;
     position:relative;
     

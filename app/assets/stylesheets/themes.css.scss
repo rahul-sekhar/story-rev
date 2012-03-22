@@ -8,12 +8,25 @@ $heading-size: 14px;
     color: $text-color;
 }
 
+$very-large-heading-size: 24px;
+@mixin very-large-heading {
+    font-family: Quicksand, sans-serif;
+    font-size: e($very-large-heading-size);
+    color: $text-color;
+}
+
 $text-size: 13px;
 @mixin text {
     font-family: Arial, Helvetica, sans-serif;
     font-size: e($text-size);
     line-height: 150%;
     color: $text-color;
+}
+
+$smaller-text-size: 12px;
+@mixin smaller-text {
+    @include text;
+    font-size: e($smaller-text-size);
 }
 
 $small-text-size: 11px;

@@ -397,10 +397,10 @@ $.ItemTable = function(table, settings) {
             else if (column.type == "rating") {
                 var rating = parseInt(data[column.field], 10)
                 for (var i = 1; i <= rating; i++) {
-                    $td.append('<div class="star"></div>');
+                    $td.append('<span class="star">*</span>');
                 }
                 for (var i = rating; i < 5; i++) {
-                    $td.append('<div class="empty star"></div>');
+                    $td.append('<span class="empty star"></span>');
                 }
             }
             else if (column.type == "fixed") {

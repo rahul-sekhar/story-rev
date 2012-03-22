@@ -38,6 +38,10 @@ class Product < ActiveRecord::Base
   
   scope :stocked, where(:in_stock => true)
   
+  def self.includes_cover
+    includes(:cover_image)
+  end
+  
   def self.includes_data
     includes(:illustrator, :keywords, :copies, :product_tags, :other_fields, { :product_awards => { :award => :award_type }}, :editions)
   end
@@ -122,7 +126,7 @@ class Product < ActiveRecord::Base
       if (age_from == age_to)
         "#{age_from}"
       else
-        "#{age_from} to #{age_to}"
+        "#{age_from} - #{age_to}".html_safe
       end
     elsif age_from
       "#{age_from}+"

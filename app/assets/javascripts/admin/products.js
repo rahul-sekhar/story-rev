@@ -67,7 +67,7 @@ $(document).ready(function() {
             }
             
             $copyTable.itemTable({
-                url: editionURL + '/' + id + '/copies.json',
+                url: editionURL + '/' + id + '/copies',
                 objectName: 'copy',
                 addLinkText: 'New Copy',
                 initialLoad: true,

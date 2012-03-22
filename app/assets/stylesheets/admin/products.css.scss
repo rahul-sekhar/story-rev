@@ -340,7 +340,7 @@
     
     .next-book.button {
         float:right;
-        margin-right: e(140px, $button-size);
+        margin-right: e(40px, $button-size);
     }
     
     // Book information sidebar styling
@@ -423,8 +423,12 @@
         }
     }
     
+    .table-container {
+        width: e(600px);
+    }
+    
     table {
-        width: e(500px);
+        width: 100%;
     }
 }
 

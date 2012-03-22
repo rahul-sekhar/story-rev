@@ -1,9 +1,6 @@
 class ProductsController < ApplicationController
-  def new
-    
-  end
-  
-  def create
-    
+  def show
+    @class = "store product"
+    @product = Product.find(params[:id])
   end
 end

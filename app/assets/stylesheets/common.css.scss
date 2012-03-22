@@ -145,9 +145,9 @@ $wrapper-width: 900px;
             
             p {
                 color: $color-a2;
-                font-size:e(12px);
+                @include smaller-text;
                 text-transform:lowercase;
-                margin-top: e(10px, 12px);
+                margin-top: e(10px, $smaller-text-size);
             }
         }
     }
@@ -205,6 +205,7 @@ p {
 a {
     @include link($color-d1, lighten($color-d1, 20));
     border-bottom: 1px dotted;
+    @include transition(color 300ms ease);
 }
 
 // Obfuscate email addresses from parsers with invisible spans of text
@@ -268,5 +269,27 @@ a {
         max-width:100px;
         max-height:150px;
         display:block;
+    }
+}
+
+// Stars
+
+.star {
+    float:left;
+    display:block;
+    width:16px;
+    height:16px;
+    overflow:hidden;
+    
+    &:before {
+        content:url('/images/stars.png');
+        display:-moz-inline-box;
+        display:inline-block;
+        font-size:0;
+        line-height:0;
+    }
+    
+    &.empty:before {
+        margin-top: -16px;
     }
 }

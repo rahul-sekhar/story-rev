@@ -86,6 +86,7 @@ a {
 
 $button-size: $heading-size;
 a.button, input.submit {
+    display:-moz-inline-box;
     display:inline-block;
     @include heading;
     padding: 0 e(20px, $button-size);
@@ -365,11 +366,20 @@ tr {
 
 .star {
     float:left;
+    display:block;
     width:16px;
     height:16px;
-    background: url('/images/stars.png') no-repeat center 0px;
+    overflow:hidden;
     
-    &.empty {
-        background-position: center -16px;
+    &:before {
+        content:url('/images/stars.png');
+        display:-moz-inline-box;
+        display:inline-block;
+        font-size:0;
+        line-height:0;
+     }
+    
+    &.empty:before {
+        margin-top: -16px;
     }
 }
