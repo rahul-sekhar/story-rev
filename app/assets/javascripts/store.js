@@ -27,7 +27,7 @@ $(document).ready(function() {
             .append($loading.show())
             .dialog('open');
             
-        $.get(this.href, function(data) {
+        $.get(this.href, {ajax: true}, function(data) {
             var $bookInfo = $('#book-info', data);
             $loading.fadeOut().remove();
             $dialog.append($bookInfo.hide());

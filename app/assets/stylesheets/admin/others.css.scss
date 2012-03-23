@@ -114,3 +114,35 @@
         }
     }
 }
+
+.passwords {
+    p {
+        float:left;
+        clear:left;
+    }
+    
+    .roles {
+        float:left;
+        
+        li {
+            float:left;
+            @include text;
+            margin-left: e(20px, $text-size);
+        }
+    }
+    
+    .role-form {
+        display:none;
+        clear:left;
+        margin-top: e(20px);
+        float:left;
+    }
+    
+    .submit {
+        float:right;
+    }
+    
+    label {
+        width: e(200px, $label-font-size);
+    }
+}

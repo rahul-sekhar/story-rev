@@ -1,0 +1,33 @@
+<% content_for :top_nav do %>
+  <li>
+    <%= link_to "Themes", admin_themes_path %>
+  </li>
+  
+  <li>
+    <%= link_to "Sidebar Feature Boxes", "#" %>
+  </li>
+  
+  <% if admin? %>
+    <li class="current">
+      <%= link_to "Passwords", admin_roles_path %>
+    </li>
+  <% end %>
+<% end %>
+
+<p>Change passwords:</p>
+<ul class="roles">
+  <% @roles.each do |r| %>
+    <li><%= link_to r.name, "#", "data-id" => r.id %></li>
+  <% end %>
+</ul>
+
+<% @roles.each do |r| %>
+  <div class="role-form" id="role-<%= r.id %>">
+    <%= simple_form_for r, :defaults => { :required => false, :error => false } do |f| %>
+      <%= f.input :admin_password, :label_html => { :class => "multi-line" }, :label => "Current admin password" %>
+      <%= f.input :password, :label_html => { :class => "multi-line" }, :label => "New #{r.name} password" %>
+      <%= f.input :password_confirmation, :label_html => { :class => "multi-line" }, :label => "Re-enter new #{r.name} password" %>
+      <%= f.submit "Save", :class => "submit" %>
+    <% end %>
+  </div>
+<% end %>

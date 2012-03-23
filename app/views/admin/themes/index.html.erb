@@ -6,6 +6,12 @@
   <li>
     <%= link_to "Sidebar Feature Boxes", "#" %>
   </li>
+  
+  <% if admin? %>
+    <li>
+      <%= link_to "Passwords", admin_roles_path %>
+    </li>
+  <% end %>
 <% end %>
 
 <div class="table-wrapper" id="theme-table-wrapper">

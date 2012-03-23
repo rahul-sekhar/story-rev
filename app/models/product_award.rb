@@ -1,5 +1,6 @@
 class ProductAward < ActiveRecord::Base
   self.table_name = :products_awards
+  default_scope includes(:award)
   
   belongs_to :product
   belongs_to :award

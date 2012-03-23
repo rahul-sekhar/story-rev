@@ -1,11 +1,21 @@
+class AdminValidator < ActiveModel::EachValidator
+  def validate_each(record, attribute, value)
+    unless Admin::Role.authenticate(value) == "admin"
+      record.errors[attribute] << (options[:message] || "is not correct")
+    end
+  end
+end
+
 class Admin::Role < ActiveRecord::Base
   self.table_name = :admin_roles
   
-  attr_accessible :password, :password_confirmation
-  attr_accessor :password
+  attr_accessible :password, :password_confirmation, :admin_password
+  attr_accessor :password, :admin_password
+  attr_writer :admin_password
   before_save :encrypt_password
   
   validates :password, :presence => true, :confirmation => true
+  validates :admin_password, :admin => true
   validates :name, :presence => true
   
   def self.authenticate(password)

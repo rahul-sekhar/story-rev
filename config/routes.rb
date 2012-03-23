@@ -35,5 +35,6 @@ StoryRev::Application.routes.draw do
     resources :award_types do
       resources :awards
     end
+    resources :roles
   end
 end

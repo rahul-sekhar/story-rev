@@ -1,7 +1,5 @@
 $(document).ready(function() {
     var $body = $('body');
-    
-    // Skip this code if we aren't on a product page
     if (!$body.hasClass('themes')) return;
     
     // Convert the tables to editable ones
