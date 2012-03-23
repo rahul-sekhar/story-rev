@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120317131755) do
+ActiveRecord::Schema.define(:version => 20120323043628) do
 
   create_table "admin_roles", :force => true do |t|
     t.string   "name"
@@ -200,6 +200,21 @@ ActiveRecord::Schema.define(:version => 20120317131755) do
   end
 
   add_index "publishers", ["name"], :name => "index_publishers_on_name", :unique => true
+
+  create_table "shopping_carts", :force => true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "shopping_carts", ["updated_at"], :name => "index_shopping_carts_on_updated_at"
+
+  create_table "shopping_carts_copies", :id => false, :force => true do |t|
+    t.integer "shopping_cart_id"
+    t.integer "copy_id"
+  end
+
+  add_index "shopping_carts_copies", ["shopping_cart_id", "copy_id"], :name => "index_shopping_carts_copies_on_shopping_cart_id_and_copy_id", :unique => true
+  add_index "shopping_carts_copies", ["shopping_cart_id"], :name => "index_shopping_carts_copies_on_shopping_cart_id"
 
   create_table "theme_icons", :force => true do |t|
     t.integer  "theme_id"

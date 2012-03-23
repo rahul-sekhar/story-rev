@@ -46,7 +46,7 @@ $wrapper-width: 900px;
             height:45px;
             float:left;
             margin-right: e(20px, $large-alt-text-size);
-            background: url('/images/icons.png') no-repeat 0px -100px;
+            background: url('/images/icons.png') no-repeat 0px -220px;
         }
     }
     
@@ -62,9 +62,10 @@ $wrapper-width: 900px;
         padding-left: e(35px, $text-size);
         margin-right: e(20px, $text-size);
         
-        &:hover {
-            background-position: 0px -48px;
-        }
+        &:hover {background-position: 0px -48px;}
+        
+        &.full {background-position: 0px -108px;}
+        &.full:hover {background-position: 0px -168px;}
     }
 }
 
@@ -118,6 +119,10 @@ $wrapper-width: 900px;
                         content: '> ';
                     }
                 }
+                
+                &.selected {
+                    @include inner-link (darken($color-a4,10), darken($color-a4,10));
+                }
             }
         }
         
@@ -129,6 +134,15 @@ $wrapper-width: 900px;
             @include rounded-corners(5px);
             padding: e(20px) e(30px);
             border:1px dashed #FDDF71;
+            position:relative;
+            
+            .ajax-content {
+                position:absolute;
+                width: e(290px);
+                height: e(270px);
+                left: e(30px);
+                top: e(20px);
+            }
             
             h3 {display:none;}
             
@@ -208,6 +222,30 @@ a {
     @include transition(color 300ms ease);
 }
 
+h2 {
+    @include very-large-heading;
+    margin-bottom: e(10px);
+    margin-left: e(-1px);
+}
+
+h3 {
+    @include heading;
+    margin-top: e(40px, $heading-size);
+    margin-bottom: e(10px, $heading-size);
+}
+
+// Image alt text styling
+img {
+    @include small-text;
+    color:inherit;
+}
+
+// Table
+table {
+    border-collapse:collapse;
+    text-align:left;
+}
+
 // Obfuscate email addresses from parsers with invisible spans of text
 .email_obf span {
     display:none;
@@ -283,8 +321,7 @@ a {
     
     &:before {
         content:url('/images/stars.png');
-        display:-moz-inline-box;
-        display:inline-block;
+        @include inline-block;
         font-size:0;
         line-height:0;
     }
@@ -294,11 +331,51 @@ a {
     }
 }
 
+// Buttons
+
+.close-button, .remove-link {
+    @include small-text;
+    @include link;
+    @include link-image-replacement(540px, 600px);
+}
+
+.close-button {
+    position:absolute;
+    top: 5px;
+    right: 2px;
+    z-index:10;
+    
+    &:focus {
+        outline:none;
+    }
+}
+
+.button {
+    @include smaller-heading;
+    @include inline-block;
+    line-height: e(28px, $smaller-heading-size);
+    padding: 0 e(15px, $smaller-heading-size);
+    padding-top: e(2px, $smaller-heading-size);
+    @include rounded-corners(5px);
+    @include link ($color-a4, $color-a4);
+    border-bottom:none;
+    @include transition (background-color 200ms ease);
+    background-color: $color-a1;
+    &:hover {background-color: lighten($color-a1,10)};
+    
+    &.major {
+        background-color: $color-e1;
+        &:hover {background-color: lighten($color-e1,10)};
+    }
+}
+
 // Dialogs
-.ui-dialog-titlebar { display:none; }
+.ui-dialog-titlebar {
+    display:none;
+}
 
 .ui-widget-overlay {
-    background: #000;
+    background: #666;
     opacity:0.6;
     height:100%;
     left:0;

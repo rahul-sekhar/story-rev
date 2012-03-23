@@ -67,5 +67,11 @@ function include(arr,obj) {
     return (arr.indexOf(obj) != -1);
 }
 
+// Function to resize the jquery UI blocking overlay
+function resizeOverlay() {
+    $('.ui-widget-overlay').width($(document).width())
+        .height($(document).height());
+}
+
 // Keycode constants
 var KEYCODE_ESC = 27;

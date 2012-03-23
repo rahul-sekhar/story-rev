@@ -1,8 +1,9 @@
 class Admin::RolesController < Admin::ApplicationController
 
   def index
-    @roles = Admin::Role.order(:created_at)
     @class = "passwords"
+    @title = "Passwords"
+    @roles = Admin::Role.order(:created_at)
   end
   
   def update

@@ -24,8 +24,7 @@ $body-font-size:100%;
     
     &:before {
         content: image-url($image-name);
-        display:-moz-inline-box;
-        display: inline-block;
+        @include inline-block;
         font-size: 0;
         line-height: 0;
     }
@@ -180,4 +179,9 @@ $body-font-size:100%;
     &:-moz-placeholder {
         color: $color;
     }
+}
+
+@mixin inline-block {
+    display:-moz-inline-box;
+    display:inline-block;
 }

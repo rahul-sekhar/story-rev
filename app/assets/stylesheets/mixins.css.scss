@@ -4,8 +4,7 @@
     line-height: 28px;
     padding: 2px 11px 0 e(30px, $heading-size);
     background: url('/images/stitched-heading.gif') repeat-x 0px -30px;
-    display:-moz-inline-box;
-    display:inline-block;
+    @include inline-block;
     position:relative;
     
     &:before {
@@ -29,22 +28,25 @@
     }
 }
 
-@mixin link-image-replacement ($pos: 0, $hover-pos: 0, $width: 30px, $height: 20px, $url: '/images/icons.png') {
+@mixin image-replacement ($pos: 0, $width: 30px, $height: 20px, $url: '/images/icons.png') {
     display:block;
     width:$width;
     height:$height;
     white-space:nowrap;
     overflow:hidden;
-    border-bottom:none;
     
     &:before {
         content:url('/images/icons.png');
-        display:-moz-inline-box;
-        display:inline-block;
+        @include inline-block;
         font-size:0;
         line-height:0;
         margin-top: -1 * $pos;
     }
+}
+
+@mixin link-image-replacement ($pos: 0, $hover-pos: 0, $width: 30px, $height: 20px, $url: '/images/icons.png') {
+    @include image-replacement($pos, $width, $height, $url);
+    border-bottom:none;
     
     &:hover:before {
         margin-top: -1 * $hover-pos;

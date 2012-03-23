@@ -15,8 +15,7 @@
 }
 
 @mixin caption-button($base, $height:20px, $padding: 4px) {
-    display:-moz-inline-box;
-    display:inline-block;
+    @include inline-block;
     @include small-text;
     font-size: e($small-text-size, $text-size);
     line-height:$height;

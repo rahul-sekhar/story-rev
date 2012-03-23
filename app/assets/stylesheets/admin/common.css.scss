@@ -86,8 +86,7 @@ a {
 
 $button-size: $heading-size;
 a.button, input.submit {
-    display:-moz-inline-box;
-    display:inline-block;
+    @include inline-block
     @include heading;
     padding: 0 e(20px, $button-size);
     height: e(35px, $button-size);
@@ -373,8 +372,7 @@ tr {
     
     &:before {
         content:url('/images/stars.png');
-        display:-moz-inline-box;
-        display:inline-block;
+        @include inline-block;
         font-size:0;
         line-height:0;
      }

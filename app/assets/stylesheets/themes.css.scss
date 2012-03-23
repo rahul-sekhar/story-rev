@@ -10,6 +10,12 @@ $heading-size: 14px;
     color: $text-color;
 }
 
+$smaller-heading-size: 13px;
+@mixin smaller-heading {
+    @include heading;
+    font-size: e($smaller-heading-size);
+}
+
 $very-large-heading-size: 24px;
 @mixin very-large-heading {
     font-family: Quicksand, sans-serif;

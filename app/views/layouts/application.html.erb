@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Story Revolution</title>
+  <title>Story Revolution<%= @title.present? ? " - #{@title}" : "" %></title>
   <link href='http://fonts.googleapis.com/css?family=Arvo|Quicksand:700' rel='stylesheet' type='text/css'>
   <%= stylesheet_link_tag    "application" %>
   <%= javascript_include_tag "application" %>
@@ -20,7 +20,10 @@
         <li class="more-url"><%= link_to "Learn More", root_url %></li>
       </ul>
       
-      <%= link_to "Shopping Cart", root_url, :id=>"shopping-cart-link" %>
+      <%= link_to "Shopping Cart (#{shopping_cart.items})", shopping_cart_path,
+        :id=>"shopping-cart-link",
+        :class => shopping_cart.items > 0 ? "full" : nil
+      %>
     </nav>
   </header>
   

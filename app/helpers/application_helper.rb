@@ -25,5 +25,4 @@ module ApplicationHelper
   def class_if (condition, class_name)
     (' class="' + class_name + '"').html_safe if (condition)
   end
-  
 end

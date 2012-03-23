@@ -3,6 +3,7 @@ class Admin::ThemesController < Admin::ApplicationController
   
   def index
     @class = "themes"
+    @title = "Themes"
     @themes = Theme.includes(:theme_icon).all
   end
   

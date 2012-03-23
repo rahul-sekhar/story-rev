@@ -36,7 +36,7 @@ class Copy < ActiveRecord::Base
   end
   
   def find_accession_id
-    base_acc = edition.product.accession_id
+    base_acc = product.accession_id
     last_copy = Copy.where('accession_id LIKE ?', "#{base_acc}%").order("accession_id DESC").first
     if last_copy.present?
       new_acc = last_copy.accession_id[10,3].to_i + 1
@@ -46,8 +46,12 @@ class Copy < ActiveRecord::Base
     end
   end
   
+  def product
+    edition.product
+  end
+  
   def check_product_stock
-    edition.product.check_stock if in_stock
+    product.check_stock if in_stock
   end
   
   def set_stock=(value)

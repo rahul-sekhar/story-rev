@@ -1,6 +1,8 @@
 class Admin::ProductsController < Admin::ApplicationController
   def index
     @class = "product search"
+    @title = "Search"
+    
     respond_to do |format|
       format.html
       format.json do
@@ -15,11 +17,13 @@ class Admin::ProductsController < Admin::ApplicationController
   
   def show
     @class = "product editions"
+    @title = "Copies & Editions"
     @product = Product.find(params[:id])    
   end
   
   def new
     @class = "product form"
+    @title = "Add Product"
     @product = Product.new
     @product.build_empty_fields
     @product.title = params[:title] if params[:title]
@@ -38,6 +42,7 @@ class Admin::ProductsController < Admin::ApplicationController
   
   def edit
     @class = "product form"
+    @title = "Edit Book Information"
     @product = Product.find(params[:id])
     @product.build_empty_fields
   end

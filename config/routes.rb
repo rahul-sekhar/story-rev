@@ -2,6 +2,10 @@ StoryRev::Application.routes.draw do
   
   root :to => "pages#store"
   resources :products
+  get "more_info" => "pages#more_info"
+  get "shopping_cart" => "shopping_carts#index", :as => "shopping_cart"
+  put "shopping_cart" => "shopping_carts#update"
+  get "update_cart" => "shopping_carts#update", :as => "update_cart"
   
   # Admin routes  
   namespace :admin do

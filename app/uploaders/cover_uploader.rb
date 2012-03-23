@@ -25,6 +25,10 @@ class CoverUploader < CarrierWave::Uploader::Base
   version :medium do
     process :resize_to_fit => [180,270]
   end
+  
+  version :tiny do
+    process :resize_to_fit => [40,60]
+  end
 
   # Provide a default URL as a default if there hasn't been a file uploaded:
   # def default_url

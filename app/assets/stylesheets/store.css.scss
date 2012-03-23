@@ -27,45 +27,44 @@
         }
     }
     
-    // Book info section
-    #book-info-popup {
+    .back-button {
+        float:right;
+        clear:both;
+        @include text;
+        @include link;
+        text-transform:lowercase;
+        margin: e(20px, $text-size);
+        
+        &.left {
+            float:left;
+            margin-left: 0;
+        }
+    }
+    
+    
+    .dialog {
         background-color: #fff;
         overflow:hidden;
         @include rounded-corners(10px);
         position:relative;
         margin-bottom: e(30px);
-        
-        .close-button {
-            float:right;
-            @include small-text;
-            @include link;
-            @include link-image-replacement(300px, 360px);
-            margin-top: e(3px, $small-text-size);
-            
-            &:focus {
-                outline:none;
-            }
-        }
-        
-        img.loading {
-            position:absolute;
-            left:600px / 2 - 32px / 2;
-            top: 320px /2 - (32px + 35px) / 2;
-            display:block;
-        }
-        
-        p.loading {
-            position:absolute;
-            text-align:center;
-            line-height: 20px;
-            width:100%;
-            top: 320px / 2 + 32px / 2 - 15px / 2;
-            left:0;
-        }
+        padding: e(10px);
+        @include box-shadow(3px 3px 10px -3px #333);
     }
     
+    p.loading-large {
+        text-align:center;
+        line-height: 20px;
+        width:100%;
+        position:absolute;
+        left:0;
+        top:40%;
+    }
+    
+    // Book Info section
     #book-info {
         padding: e(20px);
+        max-width: e(600px);
         
         .cover-section {
             float:left;
@@ -88,17 +87,7 @@
             margin-bottom:e(5px, $small-text-size);
         }
         
-        h2 {
-            @include very-large-heading;
-            margin-bottom: e(10px);
-            margin-left: e(-1px);
-        }
         
-        h3 {
-            @include heading;
-            margin-top: e(40px, $heading-size);
-            margin-bottom: e(10px, $heading-size);
-        }
         
         .creators {
             p {
@@ -141,6 +130,10 @@
             td {
                 @include smaller-text;
                 padding-right: e(20px, $smaller-text-size);
+                
+                &.cart {
+                    padding-right:0;
+                }
             }
             
             .format {
@@ -149,7 +142,17 @@
             
             .buy-link {
                 float:left;
-                @include link-image-replacement(180px, 240px);
+                @include link-image-replacement(300px, 360px);
+            }
+            
+            .loading {
+                float:left;
+                @include image-replacement(480px);
+            }
+            
+            .added {
+                float:left;
+                @include image-replacement(420px);
             }
         }
         
@@ -183,11 +186,130 @@
         }
     }
     
-    .back-button {
-        float:right;
-        @include text;
-        @include link;
-        text-transform:lowercase;
-        margin: e(30px, $text-size) e(20px, $text-size) e(30px, $text-size) 0;
+    // Shopping Cart Section
+    #shopping-cart {
+        padding: e(20px);
+        @include clearfix;
+        max-width: e(500px);
+        position:relative;
+        overflow:hidden;
+        
+        .js-remove {
+            position:absolute;
+            left:0;
+            top:0;
+            padding: e(20px);
+        }
+        
+        .ajax-content {
+            @include clearfix;
+        }
+        
+        h2 {
+            text-transform:uppercase;
+            float:left;
+            margin-bottom: e(20px, $very-large-heading-size);
+        }
+        
+        .finalise-button {
+            float:right;
+            margin-right: e(10px, $smaller-heading-size);
+        }
+        
+        #empty-button {
+            float: right;
+            margin-right: e(20px, $smaller-heading-size);
+        }
+        
+        .container {
+            float:left;
+            clear:both;
+        }
+        
+        .refresh-box {
+            clear:both;
+            position:relative;
+            
+            p {
+                @include small-text;
+                margin-left: e(205px, $small-text-size);
+                color: $color-a6;
+            }
+        }
+        
+        #refresh-button {
+            position:absolute;
+            bottom:0;
+            left:0;
+            width: e(190px, $smaller-heading-size);
+            padding-left:0;
+            padding-right:0;
+            text-align:center;
+        }
+        
+        table {
+            border-top: 1px solid $color-a5;
+            width:100%;
+            
+            p { margin: 0; }
+            .title { font-weight: bold; }
+            .creators { font-style: italic; }
+            .format { float:left; }
+            .rating {
+                float:left;
+                margin-left: e(30px, $text-size);
+            }
+        }
+        
+        tr {
+            border-bottom: 1px solid $color-a5;
+        }
+        
+        td {
+            padding:e(10px);
+            
+            &.tiny-cover {
+                img {
+                    display:block;
+                    max-height:60px;
+                    max-width:40px;
+                }
+                
+                padding-left:0;
+            }
+            
+            &.copy {
+                min-width: e(300px);
+            }
+            
+            &.price {
+                vertical-align: top;
+            }
+            
+            &.remove {
+                vertical-align: top;
+                padding-right:0;
+            }
+        }
+        
+        .total {
+            float:right;
+            font-weight: bold;
+            text-align:center;
+            margin-top: e(20px);
+            margin-bottom: e(10px);
+            
+            span {
+                font-weight:normal;
+                margin-left: e(3px, $text-size);
+            }
+            
+            .sidenote {
+                @include small-text;
+                font-size: e($small-text-size, $text-size);
+                color: $color-a6;
+                display:block;
+            }
+        }
     }
 }

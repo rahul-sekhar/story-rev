@@ -23,6 +23,10 @@ class CoverImage < ActiveRecord::Base
     filename.medium.url
   end
   
+  def tiny_url
+    filename.tiny.url
+  end
+  
   def url
     filename.url
   end

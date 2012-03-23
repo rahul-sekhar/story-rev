@@ -7,7 +7,7 @@
       <ul>
         <% more_nav_links.each do |name,text| %>
           <li<%= class_if (more_nav_selected == name), "selected" %>/>
-            <%= link_to text, current_url({ :info => name }, "page-footer") %>
+            <%= link_to text, current_url({ :info => name }, "page-footer"), "data-section" => name %>
           </li>
         <% end %>
       </ul>

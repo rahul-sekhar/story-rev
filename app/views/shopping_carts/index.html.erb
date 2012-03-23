@@ -1,0 +1,71 @@
+<section id="shopping-cart">
+  <h2>Shopping Cart</h2>
+  
+  <% if shopping_cart.items > 0 %>
+    <a href="#" class="major button finalise-button">Finalise Order</a>
+    
+    <div class="refresh-box">
+      <a href="<%= update_cart_path(:shopping_cart => { :refresh => true }) %>" class="button" id="refresh-button">Refresh Availability</a>
+      <p>Books are only removed from the store when your order is finalised, so
+      books in your cart may occasionally become unavailable while you are
+      shopping.</p>
+    </div>
+  <% end %>
+  
+  <div class="container">
+  <% if shopping_cart.items > 0 %>
+    <table>
+      <% shopping_cart.copies.each do |c| %>
+        <tr data-id="<%= c.id %>">
+          <td class="tiny-cover">
+            <% if c.product.cover_image.present? %>
+              <a href="<%= product_path(c.product) %>" class="product-link">
+                <img src="<%= c.product.cover_image.tiny_url %>" alt="" />
+              </a>
+            <% end %>
+          </td>
+          
+          <td class="copy">
+            <p class="title">
+              <%= link_to c.product.title, product_path(c.product), :class => "product-link" %>
+            </p>
+            <p class="creators">
+              <%= c.product.author_name + (c.product.illustrator.present? ? ' ' + c.product.illustrator_name : '') %>
+            </p>
+            <p class="format" title="<%= c.edition.publisher_name %>">
+              <%= c.edition.format_name %>
+            </p>
+            <p class="rating" title="<%= c.condition_description %>">
+              <%= render "shared/rating", :rating => c.condition_rating %>
+            </p>
+          </td>
+          <td class="price">
+            <p><%= RupeeHelper.to_rupee(c.price) %></p>
+          </td>
+          <td class="remove">
+            <%= link_to "Remove", update_cart_path(:shopping_cart => { :remove_copy => c.id }),
+              :class => "remove-link",
+              :title => "Remove from cart"
+            %>
+          </td>
+        </tr>
+      <% end %>
+    </table>
+    
+    <div class="total">
+      <p>Total: <span><%= RupeeHelper.to_rupee(shopping_cart.total) %></span> <span class="sidenote">(excluding postage)</span></p>
+    </div>
+  <% else %>
+    <p class="empty-msg">Your shopping cart is empty</p>
+  <% end %>
+  </div>
+  
+  <% if shopping_cart.items > 0 %>
+    <a href="#" class="major button finalise-button">Finalise Order</a>
+    <a href="<%= update_cart_path(:shopping_cart => { :empty => true }) %>" class="button" id="empty-button">Empty Cart</a>
+    <%= link_to "Back", :back, :class => "back-button left" %>
+  <% else %>
+    <%= link_to "Back", :back, :class => "back-button left" %>
+  <% end %>
+  
+</section>
