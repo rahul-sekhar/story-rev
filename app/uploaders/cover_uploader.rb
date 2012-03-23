@@ -20,18 +20,20 @@ class CoverUploader < CarrierWave::Uploader::Base
   
   version :thumb do
     process :resize_to_fit => [100,150]
+    process :get_dimensions
   end
   
   version :medium do
     process :resize_to_fit => [180,270]
-    process :get_version_dimensions
+    process :get_dimensions
   end
   
   version :tiny do
     process :resize_to_fit => [40,60]
+    process :get_dimensions
   end
   
-  def get_version_dimensions
+  def get_dimensions
     width, height = `identify -format "%wx%h" #{file.path}`.split(/x/) 
   end
 

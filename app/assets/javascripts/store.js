@@ -36,11 +36,6 @@ $(document).ready(function() {
         $.get(this.href, {ajax: true}, function(data) {
             var $bookInfo = $('#book-info', data).find('.back-button').remove().end();
             
-            // Set the cover image dimensions
-            var $coverImg = $bookInfo.find('.large-cover img');
-            $coverImg.width($coverImg.data('width'));
-            $coverImg.height($coverImg.data('height'));
-            
             $bookInfoLoading.remove();
             $bookInfoDialog.append($bookInfo.hide());
             

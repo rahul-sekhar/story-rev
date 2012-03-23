@@ -7,6 +7,11 @@ class CoverImage < ActiveRecord::Base
   
   validates :filename, :presence => true, :file_size => { :maximum => 4.megabytes.to_i }
   
+  def store_dimensions
+    self.width = filename.get_dimensions[0].to_i
+    self.height = filename.get_dimensions[1].to_i
+  end
+  
   def file_info
   {
     :id => id,
@@ -33,8 +38,30 @@ class CoverImage < ActiveRecord::Base
     filename.url
   end
   
-  def store_dimensions
-    self.medium_width = filename.medium.get_version_dimensions[0].to_i
-    self.medium_height = filename.medium.get_version_dimensions[1].to_i
+  def ratio
+    @ratio ||= (height.to_f / width)
   end
+  
+  # Calculate version dimensions
+  def medium_width
+     ratio > 1.5 ? (270.to_f / ratio).round : 180
+  end
+  def medium_height
+    ratio < 1.5 ? (ratio * 180).round : 270
+  end
+  
+  def thumb_width
+     ratio > 1.5 ? (150.to_f / ratio).round : 100
+  end
+  def thumb_height
+    ratio < 1.5 ? (ratio * 100).round : 150
+  end
+  
+  def tiny_width
+     ratio > 1.5 ? (60.to_f / ratio).round : 40
+  end
+  def tiny_height
+    ratio < 1.5 ? (ratio * 40).round : 60
+  end
+  
 end

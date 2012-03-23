@@ -20,7 +20,7 @@
           <td class="tiny-cover">
             <% if c.product.cover_image.present? %>
               <a href="<%= product_path(c.product) %>" class="product-link">
-                <img src="<%= c.product.cover_image.tiny_url %>" alt="" />
+                <img src="<%= c.product.cover_image.tiny_url %>" alt="" width="<%= c.product.cover_image.tiny_width %>" height="<%= c.product.cover_image.tiny_height %>" />
               </a>
             <% end %>
           </td>
