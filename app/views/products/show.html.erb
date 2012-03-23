@@ -3,7 +3,7 @@
   <% if @product.cover_image.present? %>
     <div class="cover-section">
       <div class="large-cover">
-        <img src="<%= @product.cover_image.medium_url %>" alt="" />
+        <img src="<%= @product.cover_image.medium_url %>" alt="" data-width="<%= @product.cover_image.medium_width %>" data-height="<%= @product.cover_image.medium_height %>" />
       </div>
       <% if @product.amazon_url.present? %>
         <p class="amazon-link"><%= link_to "View reviews on amazon", @product.amazon_url, :class => :ext %></p>

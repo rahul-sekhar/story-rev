@@ -1,6 +1,8 @@
 class CoverImage < ActiveRecord::Base
   mount_uploader :filename, CoverUploader
   
+  before_save :store_dimensions
+  
   belongs_to :product
   
   validates :filename, :presence => true, :file_size => { :maximum => 4.megabytes.to_i }
@@ -29,5 +31,10 @@ class CoverImage < ActiveRecord::Base
   
   def url
     filename.url
+  end
+  
+  def store_dimensions
+    self.medium_width = filename.medium.get_version_dimensions[0].to_i
+    self.medium_height = filename.medium.get_version_dimensions[1].to_i
   end
 end

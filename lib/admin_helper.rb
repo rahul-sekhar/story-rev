@@ -80,4 +80,11 @@ module AdminHelper
     end
     return nil
   end
+  
+  # Recreate cover image versions
+  def self.recreate_cover_versions
+    CoverImage.all.each do |c|
+      c.filename.recreate_versions!
+    end
+  end
 end
