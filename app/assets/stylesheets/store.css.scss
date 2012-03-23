@@ -65,6 +65,7 @@
     #book-info {
         padding: e(20px);
         max-width: e(600px);
+        @include clearfix;
         
         .cover-section {
             float:left;
