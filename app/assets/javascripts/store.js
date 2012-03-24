@@ -228,7 +228,7 @@ $(document).ready(function() {
                 shoppingCartSwitchHtml(data.html);
                 updateShoppingCartCount(data.item_count);
                 
-                if (callbackFunction) successFunction();
+                if (successFunction) successFunction();
             },
             error: function(xhr) {
                 $shoppingCartSection.empty().append($removedHtml.contents());
