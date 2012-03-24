@@ -17,7 +17,7 @@ $(document).ready(function() {
     var $bookInfoLoading = $('<p class="loading-large"><img alt="" src="/images/loading2.gif" /><br />Loading...</p>');
     
     $body.on('click', '.product-link', function(e) {
-        if (e.ctrlKey || e.metaKey || e.shiftKey) return;
+        if (extClick(e)) return;
         e.preventDefault();
         
         // Close the shopping cart dialog if it is open
@@ -33,22 +33,32 @@ $(document).ready(function() {
         
         $bookInfoLoading.css('top', $bookInfoDialog.height() / 2 - $bookInfoLoading.height() / 2 + 'px');
             
-        $.get(this.href, {ajax: true}, function(data) {
-            var $bookInfo = $('#book-info', data).find('.back-button').remove().end();
-            
-            $bookInfoLoading.remove();
-            $bookInfoDialog.append($bookInfo.hide());
-            
-            $bookInfo.fadeIn();
-            setTimeout(function() {
-                resizeDialog($bookInfoDialog, $bookInfo, true, true);
-            }, 50);
+        $.ajax({
+            url: this.href,
+            type: 'GET',
+            dataType: 'html',
+            data: {ajax: true},
+            success: function(data) {
+                var $bookInfo = $('#book-info', data).find('.back-button').remove().end();
+                
+                $bookInfoLoading.remove();
+                $bookInfoDialog.append($bookInfo.hide());
+                
+                $bookInfo.fadeIn();
+                setTimeout(function() {
+                    resizeDialog($bookInfoDialog, $bookInfo, true, true);
+                }, 50);
+            },
+            error: function (xhr){
+                $bookInfoDialog.dialog("close");
+                displayError(xhr);
+            }
         });
     });
     
     // Handle 'add to cart' links
     $body.on('click', '.cart .buy-link', function(e) {
-        if (e.ctrlKey || e.metaKey || e.shiftKey) return;
+        if (extClick(e)) return;
         e.preventDefault();
         
         var $this = $(this)
@@ -56,10 +66,13 @@ $(document).ready(function() {
         var $loading = $('<span class="loading" title="Adding...">Adding</span>');
         $this.replaceWith($loading);
         
-        $.post('/shopping_cart.json', {
+        $.ajax({
+            url: "/shopping_cart.json",
+            data: {
                 _method: "PUT",
                 shopping_cart: { add_copy: copy_id }
-            }, function(data) {
+            },
+            success: function(data) {
                 var $added = $('<span class="added" title="Added to cart">In Cart</span>');
                 $loading.replaceWith($added);
                 $('<a href="/update_cart?shopping_cart%5Bremove_copy%5D=' + copy_id + '" class="remove-link" title="Remove from cart">Remove</a>')
@@ -68,31 +81,45 @@ $(document).ready(function() {
                     .fadeIn();
                 updateShoppingCartCount(data.item_count);
                 $shoppingCartLink.click();
+            },
+            error: function(xhr) {
+                $loading.replaceWith($this);
+                displayError(xhr);
             }
-        );
+        });
     });
     
     // Handle 'remove from cart' links
     $body.on('click', '.cart .remove-link', function(e) {
-        if (e.ctrlKey || e.metaKey || e.shiftKey) return;
+        if (extClick(e)) return;
         e.preventDefault();
         
-        var $icon = $(this).prev('span');
-        $(this).fadeOut();
+        var $removeLink = $(this);
+        var $icon = $removeLink.prev('span');
+        $removeLink.fadeOut(function() {
+            $(this).remove();
+        });
         var copy_id = $icon.closest("tr").data("id");
         var $loading = $('<span class="loading" title="Removing...">Removing</span>');
         $icon.replaceWith($loading);
         
-        $.post('/shopping_cart.json', {
+        $.ajax({
+            url: "/shopping_cart.json",
+            data: {
                 _method: "PUT",
                 shopping_cart: { remove_copy: copy_id }
             },
-            function(data) {
+            success: function(data) {
                 var $buyLink = $('<a href="/update_cart?shopping_cart%5Badd_copy%5D=' + copy_id + '" class="buy-link" title="Add to cart">Buy</a>')
                 $loading.replaceWith($buyLink);
                 updateShoppingCartCount(data.item_count);
+            },
+            error: function(xhr){
+                $loading.replaceWith($icon);
+                $removeLink.stop().show().css('opacity', 1).insertAfter($icon);
+                displayError(xhr);
             }
-        );
+        });
     });
     
     /* Shopping cart dialog */
@@ -112,7 +139,7 @@ $(document).ready(function() {
     });
     
     $shoppingCartLink.on('click', function(e) {
-        if (e.ctrlKey || e.metaKey || e.shiftKey) return;
+        if (extClick(e)) return;
         e.preventDefault();
         $cartCloseButton.detach();
         
@@ -123,19 +150,29 @@ $(document).ready(function() {
         
         $shoppingCartLoading.css('top', $shoppingCartDialog.height() / 2 - $shoppingCartLoading.height() / 2 + 'px');
         
-        $.get('/shopping_cart', {ajax: true}, function(data) {
-            var $shoppingCart = $('#shopping-cart', data).find('.back-button').remove().end();
-            $shoppingCartLoading.remove();
-            $shoppingCartDialog.append($shoppingCart.hide());
-            
-            $shoppingCartSection = $shoppingCart;
-            
-            $shoppingCart.fadeIn();
-            setTimeout(function() {
-                resizeDialog($shoppingCartDialog, $shoppingCart, true, true, function() {
-                    $shoppingCartDialog.css('height', 'auto');
-                });
-            }, 50);
+        $.ajax({
+            url: '/shopping_cart',
+            type: 'GET',
+            dataType: 'html',
+            data: {ajax: true},
+            success: function(data) {
+                var $shoppingCart = $('#shopping-cart', data).find('.back-button').remove().end();
+                $shoppingCartLoading.remove();
+                $shoppingCartDialog.append($shoppingCart.hide());
+                
+                $shoppingCartSection = $shoppingCart;
+                
+                $shoppingCart.fadeIn();
+                setTimeout(function() {
+                    resizeDialog($shoppingCartDialog, $shoppingCart, true, true, function() {
+                        $shoppingCartDialog.css('height', 'auto');
+                    });
+                }, 50);
+            },
+            error: function(xhr) {
+                $shoppingCartDialog.dialog("close");
+                displayError(xhr);
+            }
         });
     });
     
@@ -143,7 +180,17 @@ $(document).ready(function() {
     var $shoppingCartSection = $('#shopping-cart');
     var $shoppingCartSectionDialog = $shoppingCartSection.add($shoppingCartDialog);
     $shoppingCartSectionDialog.on('click', '#empty-button', function(e) {
-        handleShoppingCartButton(e, { empty: true });
+        handleShoppingCartButton(e, { empty: true }, function() {
+            
+            // Check for open dialogs and change the copy status
+            if ($bookInfoDialog.dialog("isOpen") === true) {
+                $bookInfoDialog.find('.added').each(function() {
+                    var $icon = $(this);
+                    var copy_id = $icon.closest("tr").data("id");
+                    $icon.parent('td').empty().append('<a href="/update_cart?shopping_cart%5Badd_copy%5D=' + copy_id + '" class="buy-link" title="Add to cart">Buy</a>');
+                });
+            }
+        });
     });
     
     // Handle refreshing the cart
@@ -154,26 +201,40 @@ $(document).ready(function() {
     // Handle 'remove from cart' links
     $shoppingCartSectionDialog.on('click', '.remove-link', function(e) {
         var copy_id = $(this).closest("tr").data("id");
-        handleShoppingCartButton(e, { remove_copy: copy_id });
+        handleShoppingCartButton(e, { remove_copy: copy_id }, function() {
+            
+            // Check for open dialogs with the removed copy
+            if ($bookInfoDialog.dialog("isOpen") === true) {
+                $bookInfoDialog.find('tr[data-id=' + copy_id + '] .added').parent('td').empty().append('<a href="/update_cart?shopping_cart%5Badd_copy%5D=' + copy_id + '" class="buy-link" title="Add to cart">Buy</a>');
+            }
+        });
     });
     
     // Generic function to handle each of the shopping cart buttons
-    function handleShoppingCartButton(e, params) {
-        if (e.ctrlKey || e.metaKey || e.shiftKey) return;
+    function handleShoppingCartButton(e, params, successFunction) {
+        if (extClick(e)) return;
         e.preventDefault();
         
-        shoppingCartShowLoading();
+        var $removedHtml = shoppingCartShowLoading();
         
-        $.post('/shopping_cart.json', {
+        $.ajax({
+            url: '/shopping_cart.json',
+            data: {
                 _method: "PUT",
                 shopping_cart: params,
                 get_html: true
             },
-            function(data) {
+            success: function(data) {
                 shoppingCartSwitchHtml(data.html);
                 updateShoppingCartCount(data.item_count);
+                
+                if (callbackFunction) successFunction();
+            },
+            error: function(xhr) {
+                $shoppingCartSection.empty().append($removedHtml.contents());
+                displayError(xhr);
             }
-        );
+        });
     }
     
     // Function to update the shopping cart item count
@@ -185,17 +246,16 @@ $(document).ready(function() {
     function shoppingCartShowLoading() {
         var section_height = $shoppingCartSection.height();
         
-        var $jsRemove = $('<div class="js-remove"></div>')
-            .height(section_height)
-            .width($shoppingCartSection.width());
+        $shoppingCartSection.height(section_height)
+            .wrapInner('<div class="js-remove"></div>')
+            .append('<h2>Shopping Cart</h2>');
         
-        $shoppingCartSection.data('faded', false)
+        var $jsRemove = $shoppingCartSection.find('.js-remove')
             .height(section_height)
-            .wrapInner($jsRemove)
-            .append('<h2>Shopping Cart</h2>')
-            .find('.js-remove').fadeOut(function() {
-                $(this).remove();
-            })
+            .width($shoppingCartSection.width())
+            .fadeOut(function() {
+                $jsRemove.remove();
+            });
         
         $shoppingCartLoading
             .css('opacity', 1)
@@ -206,6 +266,9 @@ $(document).ready(function() {
         // Fix loading icon position
         var top = section_height / 2 - $shoppingCartLoading.outerHeight() / 2;
         $shoppingCartLoading.css('top', top + 'px');
+        
+        // Return the removed block of data
+        return $jsRemove;
     }
         
     function shoppingCartSwitchHtml(newHtml) {

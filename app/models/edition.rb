@@ -1,4 +1,6 @@
 class Edition < ActiveRecord::Base
+  default_scope includes(:format, :publisher)
+  
   attr_accessible :isbn, :format_name, :publisher_name
   belongs_to :format
   belongs_to :product

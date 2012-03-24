@@ -42,9 +42,9 @@
   <% end %>
   
   <h3>Available Copies</h3>
-  <% if @product.copies.length > 0 %>
+  <% if @product.copies.stocked.length > 0 %>
   <table class="copies">
-    <% @product.copies.each do |c| %>
+    <% @product.copies.stocked.each do |c| %>
       <tr data-id="<%= c.id %>">
         <td class="format" title="<%= c.edition.publisher_name %>"><%= c.edition.format_name %></td>
         <td title="<%= c.condition_description %>">

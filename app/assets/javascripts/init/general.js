@@ -1,5 +1,4 @@
 // jQuery UI settings
-
 $.extend($.ui.dialog.prototype.options, {
     modal: true,
     resizable: false,
@@ -8,6 +7,51 @@ $.extend($.ui.dialog.prototype.options, {
     hide: 'fade'
 });
 
+// Initialize ajax settings
+$.ajaxSetup({
+    type: "POST",
+    dataType: "json"
+});
+
+// Function to handle alerts
+function displayError(xhr) {
+    var message = xhr.responseText ? xhr.responseText : "The server cannot be reached";
+    alert(message);
+}
+
+// HTML Escaping function
+function escapeHTML(data) {
+        return data ? $('<div />').text(data).html() : '';
+}
+
+// Function to check whether a link was click such that it should open in a new page/tab
+function extClick(e) {
+    return (e.ctrlKey || e.metaKey || e.shiftKey || e.which == 2);
+}
+
+// Functions to simplify appending options to a select box
+function makeOption(value, text) {
+    return '<option value="' + value + '">' + text + '</option>';
+}
+$.fn.appendOption = function(value, text) {
+    return $(this).append(makeOption(value, text));
+}
+
+// Function to check if an array includes an item
+function include(arr,obj) {
+    return (arr.indexOf(obj) != -1);
+}
+
+// Function to resize the jquery UI blocking overlay
+function resizeOverlay() {
+    $('.ui-widget-overlay').width($(document).width())
+        .height($(document).height());
+}
+
+// Keycode constants
+var KEYCODE_ESC = 27;
+
+
 $(document).ready(function() {
     // Handle external links
     $('body').on('click', 'a.ext', function(e) {
@@ -15,7 +59,7 @@ $(document).ready(function() {
         e.preventDefault();
     });
     
-    // Email obfuscation [delay for a second in case that helps with spam]
+    // Email obfuscation [delay for a second in case that helps to prevent spam]
     var $emailLinks = $('.email_obf');
     if ($emailLinks.length) {
         setTimeout(function() {
@@ -43,35 +87,3 @@ $(document).ready(function() {
         }, 1000);
     }
 });
-
-// HTML Escaping function
-function escapeHTML(data) {
-    if (data) {
-        return $('<div />').text(data).html();
-    }
-    else {
-        return '';
-    }
-}
-
-// Functions to simplify appending options to a select box
-function makeOption(value, text) {
-    return '<option value="' + value + '">' + text + '</option>';
-}
-$.fn.appendOption = function(value, text) {
-    return $(this).append(makeOption(value, text));
-}
-
-// Function to check if an array includes an item
-function include(arr,obj) {
-    return (arr.indexOf(obj) != -1);
-}
-
-// Function to resize the jquery UI blocking overlay
-function resizeOverlay() {
-    $('.ui-widget-overlay').width($(document).width())
-        .height($(document).height());
-}
-
-// Keycode constants
-var KEYCODE_ESC = 27;

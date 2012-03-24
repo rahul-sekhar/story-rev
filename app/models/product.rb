@@ -47,7 +47,7 @@ class Product < ActiveRecord::Base
   end
   
   def self.includes_copies
-    includes({ :editions => :format }, :copies)
+    includes(:editions, :copies)
   end
   
   def self.search(query, fields, output)

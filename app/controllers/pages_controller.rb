@@ -4,6 +4,7 @@ class PagesController < ApplicationController
     @class = "store"
     @title = "Store"
     @products = Product.stocked.includes_cover.page(params[:page]).per(20)
+    @themes = Theme.all
   end
   
   def more_info
