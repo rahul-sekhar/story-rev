@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120323163117) do
+ActiveRecord::Schema.define(:version => 20120324140818) do
 
   create_table "admin_roles", :force => true do |t|
     t.string   "name"
@@ -115,6 +115,40 @@ ActiveRecord::Schema.define(:version => 20120323163117) do
 
   add_index "keywords", ["name"], :name => "index_keywords_on_name", :unique => true
 
+  create_table "orders", :force => true do |t|
+    t.integer  "step"
+    t.integer  "shopping_cart_id"
+    t.integer  "delivery_method"
+    t.integer  "pickup_point_id"
+    t.integer  "payment_method"
+    t.text     "other_pickup"
+    t.string   "name"
+    t.string   "email"
+    t.string   "phone"
+    t.text     "address"
+    t.string   "city"
+    t.string   "pin_code"
+    t.text     "other_info"
+    t.integer  "postage_amount"
+    t.integer  "total_amount"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "orders", ["email"], :name => "index_orders_on_email"
+  add_index "orders", ["name"], :name => "index_orders_on_name"
+  add_index "orders", ["pickup_point_id"], :name => "index_orders_on_pickup_point_id"
+  add_index "orders", ["shopping_cart_id"], :name => "index_orders_on_shopping_cart_id"
+  add_index "orders", ["step"], :name => "index_orders_on_step"
+
+  create_table "orders_copies", :id => false, :force => true do |t|
+    t.integer "order_id"
+    t.integer "copy_id"
+  end
+
+  add_index "orders_copies", ["order_id", "copy_id"], :name => "index_orders_copies_on_order_id_and_copy_id", :unique => true
+  add_index "orders_copies", ["order_id"], :name => "index_orders_copies_on_order_id"
+
   create_table "other_fields", :force => true do |t|
     t.integer  "product_id"
     t.string   "title"
@@ -124,6 +158,12 @@ ActiveRecord::Schema.define(:version => 20120323163117) do
   end
 
   add_index "other_fields", ["product_id"], :name => "index_other_fields_on_product_id"
+
+  create_table "pickup_points", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "product_tags", :force => true do |t|
     t.string   "name"

@@ -1,0 +1,19 @@
+<ul class="delivery">
+  <li><%= f.radio_button(:delivery_method, "1") %> Speed post (<%= RupeeHelper.to_rupee(10) %> per book)</li>
+  <li>
+    <%= f.radio_button(:delivery_method, "2") %>Pick up point in Bangalore
+    <ul class="pickup">
+      <% PickupPoint.all.each do |p| %>
+        <li><%= f.radio_button(:pickup_point_id, p.id) %> <%= p.name %></li>
+      <% end %>
+      
+      <li>
+        <%= f.radio_button(:pickup_point_id, 0) %>
+        <div class="other">
+          Other (we can sometimes find an unlisted common point)<br />
+          <%= f.text_area(:other_pickup) %>
+        </div>
+      </li>
+    </ul>
+  </li>
+</ul>

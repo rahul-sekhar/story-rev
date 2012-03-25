@@ -1,0 +1,23 @@
+<section id="order">
+  <%= simple_form_for @order, :url => order_path, :method => "post" do |f| %>
+    <%= render "step_#{@order.step}", :f => f %>
+    
+    <%= f.hidden_field :next_step, :value => (@order.step + 1) %>
+    <%= f.submit "Next", :class => "next button" %>
+  <% end %>
+  
+  <% unless @order.first_step? %>
+    <%= simple_form_for @order, :url => order_path, :method => :post do |f| %>
+      <%= f.hidden_field :next_step, :value => (@order.step - 1) %>
+      <%= f.submit "Back", :class => "back button" %>
+    <% end %>
+  <% end %>
+  
+  <%= form_for destroy_order_path, :method => :delete do |f| %>
+    <%= f.submit "Cancel", :class => "cancel button" %>
+  <% end %>
+</section>
+
+<pre style="clear:both"><%= params.to_yaml %></pre>
+<pre><%= @order.errors.full_messages.to_yaml %></pre>
+<pre><%= @order.to_yaml %></pre>

@@ -5,6 +5,8 @@ class Copy < ActiveRecord::Base
   after_destroy :check_product_stock
   
   belongs_to :edition
+  has_and_belongs_to_many :shopping_carts, :join_table => :shopping_carts_copies, :uniq => true
+  
   validates :accession_id, :presence => true, :uniqueness => true
   validates :condition_rating, :numericality => { :only_integer => true, :greater_than_or_equal_to => 0, :less_than_or_equal_to => 5 }
   validates :price, :numericality => { :only_integer => true }
@@ -51,7 +53,7 @@ class Copy < ActiveRecord::Base
   end
   
   def check_product_stock
-    product.check_stock if in_stock
+    product.check_stock
   end
   
   def set_stock=(value)

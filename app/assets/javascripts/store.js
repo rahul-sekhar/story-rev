@@ -5,7 +5,7 @@ $(document).ready(function() {
     // Handle product information popups
     var $bookInfoDialog = $('<section id="book-info-dialog" class="dialog"></section>');
     $bookInfoDialog.dialog({
-        position: ['center', 'center'],
+        position: "center",
         width: 600,
         height: 600,
         autoOpen:false
@@ -128,11 +128,12 @@ $(document).ready(function() {
     var $shoppingCartLink = $('#shopping-cart-link');
     var $shoppingCartDialog = $('<section id="shopping-cart-dialog" class="dialog"></section>');
     $shoppingCartDialog.dialog({
-        position: ['center', 'center'],
+        position: "center",
         width: 500,
-        height: 200,
+        height: 400,
         autoOpen:false
     });
+    
     var $cartCloseButton = $('<a href="#" class="close-button">Close</a>').click(function(e) {
         e.preventDefault();
         $shoppingCartDialog.dialog('close');
@@ -141,8 +142,16 @@ $(document).ready(function() {
     $shoppingCartLink.on('click', function(e) {
         if (extClick(e)) return;
         e.preventDefault();
-        $cartCloseButton.detach();
         
+        // Close the book info dialog if it is open
+        if ($bookInfoDialog.dialog("isOpen") === true) {
+            $bookInfoDialog.dialog("close");
+            $bookInfoDialog.one("dialogclose", function() {
+                $shoppingCartDialog.dialog("option", "position", "center")
+            });
+        }
+        
+        $cartCloseButton.detach();
         $shoppingCartDialog.empty()
             .append($cartCloseButton)
             .append($shoppingCartLoading.css('opacity',1).show())
@@ -161,8 +170,10 @@ $(document).ready(function() {
                 $shoppingCartDialog.append($shoppingCart.hide());
                 
                 $shoppingCartSection = $shoppingCart;
+                updateShoppingCartCount($shoppingCart.find('.container').data('count'));
                 
                 $shoppingCart.fadeIn();
+                
                 setTimeout(function() {
                     resizeDialog($shoppingCartDialog, $shoppingCart, true, true, function() {
                         $shoppingCartDialog.css('height', 'auto');
@@ -180,17 +191,7 @@ $(document).ready(function() {
     var $shoppingCartSection = $('#shopping-cart');
     var $shoppingCartSectionDialog = $shoppingCartSection.add($shoppingCartDialog);
     $shoppingCartSectionDialog.on('click', '#empty-button', function(e) {
-        handleShoppingCartButton(e, { empty: true }, function() {
-            
-            // Check for open dialogs and change the copy status
-            if ($bookInfoDialog.dialog("isOpen") === true) {
-                $bookInfoDialog.find('.added').each(function() {
-                    var $icon = $(this);
-                    var copy_id = $icon.closest("tr").data("id");
-                    $icon.parent('td').empty().append('<a href="/update_cart?shopping_cart%5Badd_copy%5D=' + copy_id + '" class="buy-link" title="Add to cart">Buy</a>');
-                });
-            }
-        });
+        handleShoppingCartButton(e, { empty: true });
     });
     
     // Handle refreshing the cart
@@ -201,13 +202,7 @@ $(document).ready(function() {
     // Handle 'remove from cart' links
     $shoppingCartSectionDialog.on('click', '.remove-link', function(e) {
         var copy_id = $(this).closest("tr").data("id");
-        handleShoppingCartButton(e, { remove_copy: copy_id }, function() {
-            
-            // Check for open dialogs with the removed copy
-            if ($bookInfoDialog.dialog("isOpen") === true) {
-                $bookInfoDialog.find('tr[data-id=' + copy_id + '] .added').parent('td').empty().append('<a href="/update_cart?shopping_cart%5Badd_copy%5D=' + copy_id + '" class="buy-link" title="Add to cart">Buy</a>');
-            }
-        });
+        handleShoppingCartButton(e, { remove_copy: copy_id });
     });
     
     // Generic function to handle each of the shopping cart buttons
@@ -295,6 +290,7 @@ $(document).ready(function() {
     
     // Resize a dialog to its contents height by sliding (check again after resizing)
     function resizeDialog($dialog, $content, resize_overlay, center_dialog, callbackFunction) {
+    
         if ($dialog.height() != $content.outerHeight()) {
             
             if (center_dialog) {
@@ -304,6 +300,7 @@ $(document).ready(function() {
                 var page_top = $(window).scrollTop();
                 var target_top =  page_top + $(window).height() / 2 - $content.outerHeight() / 2 - ($dialog.outerHeight() - $dialog.height()) / 2;
                 target_top = target_top > page_top ? target_top : page_top + 10;
+                
                 $widget.animate({top: (curr_top + (target_top - curr_offset)) + 'px'}, 500);
             }
             

@@ -14,9 +14,8 @@ class ShoppingCartsController < ApplicationController
       end
     else
       message = "An internal problem occured. Please contact us if it persists."
-      status = 500
       respond_to do |format|
-        format.html { redirect_to request.referer, :alert => message }
+        format.html { redirect_to request.referer, :alert => 500 }
         format.json { render :text => message, :status => status }
       end
     end

@@ -1,7 +1,13 @@
 StoryRev::Application.routes.draw do
   
   root :to => "pages#store"
+  
   resources :products
+  
+  get "order" => "orders#new"
+  post "order" => "orders#create"
+  delete "order" => "orders#destroy", :as => "destroy_order"
+  
   get "more_info" => "pages#more_info"
   get "shopping_cart" => "shopping_carts#index", :as => "shopping_cart"
   put "shopping_cart" => "shopping_carts#update"

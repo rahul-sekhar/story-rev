@@ -3,7 +3,12 @@ class ApplicationController < ActionController::Base
   helper_method :shopping_cart
   
   def shopping_cart
-    @shopping_cart ||= (session[:shopping_cart_id] && ShoppingCart.find(session[:shopping_cart_id])) || ShoppingCart.new
+    begin
+      @shopping_cart ||= (session[:shopping_cart_id] && ShoppingCart.find(session[:shopping_cart_id])) || ShoppingCart.new
+    rescue
+      session[:shopping_cart_id] = nil
+      @shopping_cart = ShoppingCart.new
+    end
   end
   
   def store_shopping_cart

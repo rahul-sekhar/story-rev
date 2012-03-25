@@ -1,0 +1,58 @@
+.order {
+    #order {
+        width: e(500px);
+    }
+    
+    textarea, input {
+        @include small-text;
+    }
+    
+    input.button {
+        @include smaller-heading;
+        line-height: e(28px, $smaller-heading-size);
+        color: $color-a4;
+    }
+    
+    textarea {
+        padding: e(3px, $small-text-size) e(5px, $small-text-size);
+    }
+    .delivery {
+        li {
+            font-weight: bold;
+            @include smaller-text;
+            margin-bottom: e(10px, $smaller-text-size);
+        }
+    }
+    
+    .pickup {
+        margin: e(10px, $smaller-text-size) 0 0 e(20px, $smaller-text-size);
+        li {
+            font-size: 1em;
+            font-weight: normal;
+            margin-bottom: e(5px, $smaller-text-size);
+            
+            input {
+                float:left;
+                clear:left;
+            }
+            
+            .other {
+                float:left;
+                
+                textarea {
+                    font-size: e($small-text-size, $smaller-text-size);
+                    height: e(60px, $small-text-size);
+                    width: e(300px, $small-text-size);
+                    margin-top: e(10px, $small-text-size);
+                }
+            }
+        }
+    }
+    
+    .next, .back, .cancel {
+        margin: e(20px, $smaller-heading-size) 0 e(20px, $smaller-heading-size) e(20px, $smaller-heading-size);
+        
+        clear:left;
+        float:right;
+    }
+}
