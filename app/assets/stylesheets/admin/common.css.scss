@@ -251,6 +251,10 @@ td {
         @include loading-button;
     }
     
+    .grey-ticked-link {
+        @include grey-ticked-button;
+    }
+    
     .ticked-link {
         @include ticked-button;
     }

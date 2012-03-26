@@ -2,7 +2,7 @@
   <h2>Shopping Cart</h2>
   
   <% if shopping_cart.items > 0 %>
-    <a href="<%= order_path %>" class="major button finalise-button">Finalise Order</a>
+    <a href="<%= order_path %>" class="major button order-button">Finalise Order</a>
     
     <div class="refresh-box">
       <a href="<%= update_cart_path(:shopping_cart => { :refresh => true }) %>" class="button" id="refresh-button">Refresh Availability</a>
@@ -61,7 +61,7 @@
   </div>
   
   <% if shopping_cart.items > 0 %>
-    <a href="<%= order_path %>" class="major button finalise-button">Finalise Order</a>
+    <a href="<%= order_path %>" class="major button order-button">Finalise Order</a>
     <a href="<%= update_cart_path(:shopping_cart => { :empty => true }) %>" class="button" id="empty-button">Empty Cart</a>
     <%= link_to "Back", :back, :class => "back-button left" %>
   <% else %>

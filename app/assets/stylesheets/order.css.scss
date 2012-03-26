@@ -1,58 +1,183 @@
-.order {
-    #order {
-        width: e(500px);
+#order {
+    width: e(540px);
+    padding: e(20px);
+    @include clearfix;
+    position:relative;
+    
+    .js-remove {
+        position:absolute;
+        left:0;
+        top:0;
+        padding: e(20px);
     }
     
-    textarea, input {
+    .ajax-content {
+        @include clearfix;
+    }
+    
+    h2 {
+        text-transform: uppercase;
+        float:left;
+    }
+    
+    .progress {
+        background-color: $color-e1;
+        clear:left;
+        @include clearfix;
+        padding:0 0 0 e(20px);
+        margin-bottom: e(20px);
+        
+        li {
+            float:left;
+            @include heading;
+            color: $color-a4;
+            line-height:e(40px, $heading-size);
+            margin-right:e(10px, $heading-size);
+            
+            &.current {
+                color: $color-b1;
+            }
+        }
+    }
+        
+    .form-container {
+        min-height: e(340px);
+    }
+    
+    p {
+        @include smaller-text;
+    }
+    
+    .error, .field_with_errors label {
+        color: $error-color;
+        font-weight:bold;
+    }
+    
+    label {
+        @include smaller-text;
+        width: e(60px, $smaller-text-size);
+        display:block;
+        float:left;
+        text-align:right;
+        line-height: e(24px, $smaller-text-size);
+        margin-right: e(10px, $smaller-text-size);
+    }
+    
+    textarea, .input input {
         @include small-text;
-    }
-    
-    input.button {
-        @include smaller-heading;
-        line-height: e(28px, $smaller-heading-size);
-        color: $color-a4;
+        border: 1px solid $color-a5;
+        @include rounded-corners(3px);
+        padding: e(3px, $small-text-size) e(5px, $small-text-size);
+        float:left;
     }
     
     textarea {
-        padding: e(3px, $small-text-size) e(5px, $small-text-size);
+        height: e(60px, $small-text-size);
+        width: e(300px, $small-text-size);
+        resize:vertical;
     }
+    
+    .input {
+        @include clearfix;
+        margin-bottom: e(20px);
+    }
+    
+    .button {
+        margin: e(20px, $smaller-heading-size) 0 0 e(20px, $smaller-heading-size);
+        clear:left;
+        float:right;
+        cursor: pointer;
+    }
+    
+    // Step 1
+    
     .delivery {
+        p {
+            margin:0;
+        }
         li {
-            font-weight: bold;
-            @include smaller-text;
             margin-bottom: e(10px, $smaller-text-size);
         }
     }
     
     .pickup {
         margin: e(10px, $smaller-text-size) 0 0 e(20px, $smaller-text-size);
+        
         li {
-            font-size: 1em;
-            font-weight: normal;
             margin-bottom: e(5px, $smaller-text-size);
-            
-            input {
-                float:left;
-                clear:left;
-            }
-            
-            .other {
-                float:left;
-                
-                textarea {
-                    font-size: e($small-text-size, $smaller-text-size);
-                    height: e(60px, $small-text-size);
-                    width: e(300px, $small-text-size);
-                    margin-top: e(10px, $small-text-size);
-                }
-            }
+        }
+        
+        textarea {
+            font-size: e($small-text-size);
+            margin-top: e(10px, $small-text-size);
+            margin-left: e(20px, $small-text-size);
         }
     }
     
-    .next, .back, .cancel {
-        margin: e(20px, $smaller-heading-size) 0 e(20px, $smaller-heading-size) e(20px, $smaller-heading-size);
+    // Step 2
+    .payment {
         
-        clear:left;
+        margin-left: e(10px);
+        
+        li {
+            margin-bottom: e(30px);
+        }
+        
+        input {
+            float:left
+        }
+        
+        p {
+            margin-left: e(25px, $smaller-text-size);
+            margin-bottom: e(10px, $smaller-text-size);
+        }
+    }
+    
+    // Step 3
+    .input input {
+        width: e(140px, $small-text-size);
+    }
+    
+    .first-column {
+        float:left;
+    }
+    
+    .second-column {
         float:right;
+    }
+    
+    #order_address {
+        width: e(200px, $small-text-size);
+    }
+    
+    .other_info {
+        clear:both;
+        
+        div {
+            width: 42%;
+            float:left;
+        }
+        
+        label {
+            float:none;
+            width:auto;
+            margin:0;
+            margin-bottom: e(10px, $smaller-text-size);
+            text-align:right;
+        }
+        
+        p {
+            text-align:right;
+            font-size: $small-text-size;
+            color: $color-a6;
+            max-width: e(160px, $small-text-size);
+            float:right;
+        }
+        
+        textarea {
+            float:right;
+            width: 52%;
+            height:e(130px, $small-text-size);
+        }
     }
 }

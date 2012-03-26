@@ -6,7 +6,7 @@ $(document).ready(function() {
     
     if ($body.hasClass('search')) {
         // Handle the search box
-        $('#product-search').tokenInput("/admin/products", {
+        $('#product-search').tokenInput("/admin/products/search", {
             overlayHintText: 'Search by title, author, ISBN or accession number',
             tokenLimit: 1,
             addClass: "fill",
@@ -626,4 +626,5 @@ $(document).ready(function() {
     }
     
     $productTitle.blur();
+    
 });

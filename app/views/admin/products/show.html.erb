@@ -1,11 +1,11 @@
 <% content_for :top_nav do %>
   <li>
-    <%= link_to "Books", admin_products_path %>
+    <%= link_to "Books", search_admin_products_path %>
   </li>
   
   <li>></li>
   <li>
-    <%= link_to "Search", admin_products_path %>
+    <%= link_to "Search", search_admin_products_path %>
   </li>
   
   <li>></li>
@@ -24,7 +24,7 @@
   </li>
   
   <li class="right">
-    <%= link_to "Stock-Taking", "#" %>
+    <%= link_to "Stock-Taking", admin_products_path %>
   </li>
 <% end %>
 

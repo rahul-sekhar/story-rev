@@ -15,7 +15,7 @@ StoryRev::Application.routes.draw do
   
   # Admin routes  
   namespace :admin do
-    root :to => "products#index"
+    root :to => "products#search"
     
     get "logout" => "sessions#destroy", :as => "logout"
     get "login" => "sessions#new", :as => "login"
@@ -28,8 +28,15 @@ StoryRev::Application.routes.draw do
       end
       collection do
         get 'amazon_info'
+        get 'search'
       end
     end
+    
+    post "stocks/add_copy" => "stocks#add_copy"
+    delete "stocks/remove_copy" => "stocks#remove_copy"
+    delete "stocks" => "stocks#clear", :as => "clear_stocks"
+    
+    resources :copies
     resources :cover_images
     resources :authors
     resources :illustrators

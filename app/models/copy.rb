@@ -6,6 +6,8 @@ class Copy < ActiveRecord::Base
   
   belongs_to :edition
   has_and_belongs_to_many :shopping_carts, :join_table => :shopping_carts_copies, :uniq => true
+  has_and_belongs_to_many :orders, :join_table => :orders_copies, :uniq => true
+  has_one :stock
   
   validates :accession_id, :presence => true, :uniqueness => true
   validates :condition_rating, :numericality => { :only_integer => true, :greater_than_or_equal_to => 0, :less_than_or_equal_to => 5 }
@@ -59,6 +61,7 @@ class Copy < ActiveRecord::Base
   def set_stock=(value)
     if (in_stock != value)
       self.in_stock = value
+      save
       check_product_stock
     end
   end

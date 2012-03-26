@@ -4,13 +4,15 @@ class OrdersController < ApplicationController
   
   def new
     @class= "store order"
+    @title = "Order"
     @order = (shopping_cart.order || shopping_cart.build_order)
     
     render :layout => "ajax" if params[:ajax]
   end
   
   def create
-    @class= "store order"
+    @class = "store order"
+    @title = "Order"
     
     if shopping_cart.order
       @order = shopping_cart.order
@@ -20,7 +22,16 @@ class OrdersController < ApplicationController
       @order.save
     end
     
-    render "new", :layout => params[:ajax] ? "ajax" : true
+    if (@order.complete?)
+      
+      # Must check for out of stock copies here
+      @order.finalise
+      session[:shopping_cart_id] = nil
+      
+      redirect_to root_url, :notice => "Order complete"
+    else
+      render "new", :layout => params[:ajax] ? "ajax" : true
+    end
   end
   
   def destroy

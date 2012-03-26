@@ -1,18 +1,17 @@
 <ul class="delivery">
-  <li><%= f.radio_button(:delivery_method, "1") %> Speed post (<%= RupeeHelper.to_rupee(10) %> per book)</li>
   <li>
-    <%= f.radio_button(:delivery_method, "2") %>Pick up point in Bangalore
+    <p><strong><%= f.radio_button(:delivery_method, "1") %> Speed post (<%= RupeeHelper.to_rupee(10) %> per book)</strong></p>
+  </li>
+  <li>
+    <p<%= class_if @order.errors[:pickup_point_id].present?,"error" %>><strong><%= f.radio_button(:delivery_method, "2") %> Pick up point in Bangalore</strong></p>
     <ul class="pickup">
       <% PickupPoint.all.each do |p| %>
-        <li><%= f.radio_button(:pickup_point_id, p.id) %> <%= p.name %></li>
+        <li><p><%= f.radio_button(:pickup_point_id, p.id) %> <%= p.name %></p></li>
       <% end %>
       
       <li>
-        <%= f.radio_button(:pickup_point_id, 0) %>
-        <div class="other">
-          Other (we can sometimes find an unlisted common point)<br />
-          <%= f.text_area(:other_pickup) %>
-        </div>
+        <p><%= f.radio_button(:pickup_point_id, 0) %> Other (we can sometimes find an unlisted common point)</p>
+        <%= f.text_area :other_pickup, :placeholder => "Other pickup point details" %>
       </li>
     </ul>
   </li>

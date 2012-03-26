@@ -1,17 +1,23 @@
 class Admin::ProductsController < Admin::ApplicationController
   def index
+    @class = "product stock-taking"
+    @title = "Stock Taking"
+    
+    @copies = Copy.stocked.includes({ :edition => :product }, :stock)
+    
+    respond_to do |format|
+      format.html
+      format.json { render :json => Product.includes_data.all.map{|x| x.get_list_hash} }
+    end
+  end
+  
+  def search
     @class = "product search"
     @title = "Search"
     
     respond_to do |format|
       format.html
-      format.json do
-        if params[:q].present?
-          render :json => Product.search(params[:q], params[:search_by], params[:output])
-        else
-          render :json => Product.includes_data.all.map{|x| x.get_list_hash}
-        end
-      end
+      format.json { render :json => Product.search(params[:q], params[:search_by], params[:output]) }
     end
   end
   
@@ -50,7 +56,7 @@ class Admin::ProductsController < Admin::ApplicationController
   def update
     @product = Product.find(params[:id])
     if @product.update_attributes(params[:product])
-      redirect_to admin_products_path, :notice => "Product saved - its accession number is #{@product.accession_id}"
+      redirect_to search_admin_products_path, :notice => "Product saved - its accession number is #{@product.accession_id}"
     else
       @product.build_empty_fields
       @class = "product form"
@@ -61,7 +67,7 @@ class Admin::ProductsController < Admin::ApplicationController
   def destroy
     @product = Product.find(params[:id])
     @product.destroy
-    redirect_to admin_products_path, :notice => "Product #{@product.accession_id} - #{@product.title} has been deleted"
+    redirect_to search_admin_products_path, :notice => "Product #{@product.accession_id} - #{@product.title} has been deleted"
   end
   
   def amazon_info

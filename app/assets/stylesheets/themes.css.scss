@@ -1,6 +1,7 @@
 $text-color: $color-a3;
 $link-color: $color-d1;
 $link-hover-color: lighten($color-d1, 20);
+$error-color: $color-c1;
 
 $heading-size: 14px;
 @mixin heading {

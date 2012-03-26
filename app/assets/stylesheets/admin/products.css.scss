@@ -430,5 +430,42 @@
     table {
         width: 100%;
     }
+    
+    // Stock taking page
+    
+    &.stock-taking {
+        .table-container {
+            width:98%;
+            height: e(400px);
+        }
+        
+        td {
+            padding-top: e(5px, $small-text-size);
+            padding-bottom: e(5px, $small-text-size);
+            color: $light-text-color;
+        }
+        
+        .stocked td {
+            color: $text-color;
+        }
+        
+        .acc {
+            min-width: e(55px, $small-text-size);
+        }
+        
+        .rating {
+            min-width: e(80px, $small-text-size);
+        }
+        
+        .price {
+            min-width: e(40px, $small-text-size);
+        }
+    }
+    
+    .cancel.button {
+        float:right;
+        margin-right: 2%;
+        margin-top: e(20px, $heading-size);
+    }
 }
 

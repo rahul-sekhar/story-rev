@@ -1,0 +1,14 @@
+<%= f.input :name %>
+<%= f.input :email, :wrapper_html => { :class => "first-column" } %>
+<%= f.input :phone, :as => :string, :wrapper_html => { :class => "second-column" } %>
+<%= f.input :address, :wrapper_html => { :class => "first-column" } %>
+<%= f.input :city, :wrapper_html => { :class => "second-column" } %>
+<%= f.input :pin_code, :wrapper_html => { :class => "second-column" } %>
+<div class="input text other_info">
+  <div>
+    <%= f.label :other_info, "Other Information" %>
+    <p>Tell us anything. We'd love to know more about you and who these books
+    are for. Or suggestions and feedback.</p>
+  </div>
+  <%= f.input_field :other_info %>
+</div>

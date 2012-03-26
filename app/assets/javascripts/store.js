@@ -20,9 +20,11 @@ $(document).ready(function() {
         if (extClick(e)) return;
         e.preventDefault();
         
-        // Close the shopping cart dialog if it is open
+        // Close the other dialogs if they is open
         if ($shoppingCartDialog.dialog("isOpen") === true)
             $shoppingCartDialog.dialog("close");
+        if ($orderDialog.dialog("isOpen") === true)
+            $orderDialog.dialog("close");
         
         $closeButton.detach();
         
@@ -122,7 +124,115 @@ $(document).ready(function() {
         });
     });
     
-    /* Shopping cart dialog */
+    /* ------------------- Order dialog ---------------------------*/
+    
+    var $orderLoading = $bookInfoLoading.clone();
+    var $orderDialog = $('<section id="order-dialog" class="dialog"></section>');
+    $orderDialog.dialog({
+        position: "center",
+        width: 600,
+        height: 400,
+        autoOpen:false
+    });
+    
+    var $orderCloseButton = $('<a href="#" class="close-button">Close</a>').click(function(e) {
+        e.preventDefault();
+        
+        $orderDialog.dialog("close");
+        $.ajax({
+            url: '/order',
+            data: {_method: 'DELETE', ajax: true},
+            error: function(xhr) {
+                displayError(xhr);
+            }
+        });
+    });
+    
+    $body.on('click', '.order-button', function(e) {
+        if (extClick(e)) return;
+        e.preventDefault();
+        
+        openOrderDialog();
+    });
+    
+    function openOrderDialog() {
+        // Close the other dialogs if they are open
+        if ($bookInfoDialog.dialog("isOpen") === true) {
+            $bookInfoDialog.dialog("close");
+            $bookInfoDialog.one("dialogclose", function() {
+                $orderDialog.dialog("option", "position", "center")
+            });
+        }
+        if ($shoppingCartDialog.dialog("isOpen") === true) {
+            $shoppingCartDialog.dialog("close");
+        }
+        
+        $orderCloseButton.detach();
+        $orderDialog.empty()
+            .append($orderCloseButton)
+            .append($orderLoading.css('opacity',1).show())
+            .dialog('open');
+        
+        $shoppingCartDialog.dialog("option", "position", "center")
+        
+        $orderLoading.css('top', $orderDialog.height() / 2 - $orderLoading.height() / 2 + 'px');
+        
+        $.ajax({
+            url: '/order',
+            type: 'GET',
+            dataType: 'html',
+            data: {ajax: true},
+            success: function(data) {
+                var $order = $('#order', data);
+                $orderLoading.remove();
+                $orderDialog.append($order.hide());
+                
+                $orderSection = $order;
+                $order.fadeIn();
+                
+                setTimeout(function() {
+                    resizeDialog($orderDialog, $order, true, true, function() {
+                        $orderDialog.css('height', 'auto');
+                    });
+                }, 50);
+            },
+            error: function(xhr) {
+                $orderDialog.dialog("close");
+                displayError(xhr);
+            }
+        });
+    }
+    
+    var $orderSection = $('#order');
+    
+    // Handle next, previous and cancel buttons
+    $orderDialog.add($orderSection).on('submit', 'form', function(e) {
+        var $form = $(this);
+        if ($form.is('#cancel-order') && !$form.closest('.ui-dialog').length) return;
+        e.preventDefault();
+        
+        if ($form.is('#cancel-order')) {
+            $orderCloseButton.click();
+            return;
+        }
+        
+        var $removedHtml = dialogShowLoading($orderSection, $orderLoading, 'Order');
+        
+        $.ajax({
+            url: '/order',
+            dataType: 'html',
+            data: $.extend({}, $form.serializeObject(), {ajax: true}),
+            success: function(data) {
+                dialogSwitchHtml($orderSection, $orderLoading, $('#order', data));
+            },
+            error: function(xhr) {
+                $orderSection.empty().append($removedHtml.contents());
+                displayError(xhr);
+            }
+        });
+    })
+    
+    /* ------------------- Shopping cart dialog ---------------------------*/
     
     var $shoppingCartLoading = $bookInfoLoading.clone();
     var $shoppingCartLink = $('#shopping-cart-link');
@@ -143,10 +253,16 @@ $(document).ready(function() {
         if (extClick(e)) return;
         e.preventDefault();
         
-        // Close the book info dialog if it is open
+        // Close the other dialogs if they are open
         if ($bookInfoDialog.dialog("isOpen") === true) {
             $bookInfoDialog.dialog("close");
             $bookInfoDialog.one("dialogclose", function() {
+                $shoppingCartDialog.dialog("option", "position", "center")
+            });
+        }
+        if ($orderDialog.dialog("isOpen") === true) {
+            $orderDialog.dialog("close");
+            $orderDialog.one("dialogclose", function() {
                 $shoppingCartDialog.dialog("option", "position", "center")
             });
         }
@@ -210,7 +326,7 @@ $(document).ready(function() {
         if (extClick(e)) return;
         e.preventDefault();
         
-        var $removedHtml = shoppingCartShowLoading();
+        var $removedHtml = dialogShowLoading($shoppingCartSection, $shoppingCartLoading, 'Shopping Cart');
         
         $.ajax({
             url: '/shopping_cart.json',
@@ -220,7 +336,7 @@ $(document).ready(function() {
                 get_html: true
             },
             success: function(data) {
-                shoppingCartSwitchHtml(data.html);
+                dialogSwitchHtml($shoppingCartSection, $shoppingCartLoading, $('#shopping-cart', data.html));
                 updateShoppingCartCount(data.item_count);
                 
                 if (successFunction) successFunction();
@@ -237,54 +353,45 @@ $(document).ready(function() {
         $shoppingCartLink.text('Shopping Cart (' + count + ')');
     }
     
-    // To refresh the shopping cart HTML
-    function shoppingCartShowLoading() {
-        var section_height = $shoppingCartSection.height();
+    // To refresh a dialogs HTML
+    function dialogShowLoading($section, $loading, heading) {
+        var section_height = $section.height();
         
-        $shoppingCartSection.height(section_height)
+        $section.height(section_height)
             .wrapInner('<div class="js-remove"></div>')
-            .append('<h2>Shopping Cart</h2>');
+            .append('<h2>' + heading + '</h2>');
         
-        var $jsRemove = $shoppingCartSection.find('.js-remove')
+        var $jsRemove = $section.find('.js-remove')
             .height(section_height)
-            .width($shoppingCartSection.width())
+            .width($section.width())
             .fadeOut(function() {
                 $jsRemove.remove();
             });
         
-        $shoppingCartLoading
-            .css('opacity', 1)
-            .hide()
-            .appendTo($shoppingCartSection)
+        $loading.hide()
+            .appendTo($section)
             .fadeIn();
-        
-        // Fix loading icon position
-        var top = section_height / 2 - $shoppingCartLoading.outerHeight() / 2;
-        $shoppingCartLoading.css('top', top + 'px');
         
         // Return the removed block of data
         return $jsRemove;
     }
         
-    function shoppingCartSwitchHtml(newHtml) {
-        var $newSection = $('#shopping-cart', newHtml)
-            .attr('id', null)
+    function dialogSwitchHtml($section, $loading, $newSection) {
+        $newSection.attr('id', null)
             .removeClass()
             .addClass('ajax-content')
             .hide();
         
-        if ($shoppingCartSection.closest('.ui-dialog').length > 0)
+        if ($section.closest('.ui-dialog').length > 0)
             $newSection.find('.back-button').remove();
         
         $newSection.find('h2').remove();
-        $shoppingCartLoading.stop().fadeOut(function() {
-            $shoppingCartLoading.remove();
-        });
+        $loading.remove();
         
-        $shoppingCartSection.append($newSection);
+        $section.append($newSection);
         $newSection.fadeIn();
         setTimeout(function() {
-            resizeDialog($shoppingCartSection, $newSection);
+            resizeDialog($section, $newSection);
         }, 50);
     }
     

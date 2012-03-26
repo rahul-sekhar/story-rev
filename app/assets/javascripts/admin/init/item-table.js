@@ -251,15 +251,14 @@ $.ItemTable = function(table, settings) {
             
             $th.appendTo($headings);
             
-            if(settings.containCells)
-                $th.wrapInner('<div class="container"></div>');
+            $th.wrapInner('<div class="container"></div>');
         });
         
         $headings.prependTo($table);
     }
     
     // Add edit and delete buttons to exisiting items
-    addManageLinks($table.find('tr'), settings)
+    addManageLinks($table.find('tr:not(.headings)'), settings)
     
     // Add fixed colums to existing rows
     $.each(settings.columns, function(index, column) {
@@ -311,6 +310,8 @@ $.ItemTable = function(table, settings) {
             });
         });
     }
+    
+    var $sortArrow = $('<div class="sort-arrow"></div>');
     
     // Load initial items
     if (settings.initialLoad) {
@@ -687,8 +688,6 @@ $.ItemTable = function(table, settings) {
         restripe();
     }
     
-    var $sortArrow = $('<div class="sort-arrow"></div>');
-    
     function sort_by_default_column() {
         $.each(settings.columns, function(index, column) {
             if (column.default_sort) {
@@ -702,10 +701,7 @@ $.ItemTable = function(table, settings) {
                     .removeClass("desc")
                     .addClass(column.default_sort);
                 
-                if (settings.containCells)
-                    $th.children('.container').append($sortArrow);
-                else
-                    $th.append($sortArrow);
+                $th.children('.container').append($sortArrow);
                 
                 return false;
             }td
@@ -733,11 +729,7 @@ $.ItemTable = function(table, settings) {
             .addClass(sort_order);
         
         $th.data('sortOrder', sort_order);
-        
-        if (settings.containCells)
-            $th.children('.container').append($sortArrow);
-        else
-            $th.append($sortArrow);
+        $th.children('.container').append($sortArrow);
         
         return sort_order;
     }

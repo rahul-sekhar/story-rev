@@ -1,9 +1,37 @@
 <section id="order">
-  <%= simple_form_for @order, :url => order_path, :method => "post" do |f| %>
-    <%= render "step_#{@order.step}", :f => f %>
+  <h2>Order</h2>
+  
+  <ul class="progress">
+    <li<%= class_if @order.step == 1, "current" %>>Delivery Options</li>
+    <li>></li>
+    <li<%= class_if @order.step == 2, "current" %>>Payment Options</li>
+    <li>></li>
+    <li<%= class_if @order.step == 3, "current" %>>Address</li>
+    <li>></li>
+    <li<%= class_if @order.step == 4, "current" %>>Confirm</li>
+  </ul>
+  
+  <%= simple_form_for @order,
+    :url => order_path,
+    :method => "post",
+    :defaults => { :required => false, :error => false } do |f|
+  %>
+    
+    <div class="form-container">
+    
+      <% if @order.errors.size > 0 %>
+        <p class="error">You haven't filled in some required fields</p>
+      <% end %>
+      
+      <%= render "step_#{@order.step}", :f => f %>
+    </div>
     
     <%= f.hidden_field :next_step, :value => (@order.step + 1) %>
-    <%= f.submit "Next", :class => "next button" %>
+    <% if @order.step == 4 %>
+      <%= f.submit "Confirm", :class => "next button" %>
+    <% else %>
+      <%= f.submit "Next", :class => "next button" %>
+    <% end %>
   <% end %>
   
   <% unless @order.first_step? %>
@@ -13,11 +41,7 @@
     <% end %>
   <% end %>
   
-  <%= form_for destroy_order_path, :method => :delete do |f| %>
+  <%= form_for destroy_order_path, :method => :delete, :html => { :id => "cancel-order" } do |f| %>
     <%= f.submit "Cancel", :class => "cancel button" %>
   <% end %>
 </section>
-
-<pre style="clear:both"><%= params.to_yaml %></pre>
-<pre><%= @order.errors.full_messages.to_yaml %></pre>
-<pre><%= @order.to_yaml %></pre>

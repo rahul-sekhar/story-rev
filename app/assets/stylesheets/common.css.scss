@@ -359,6 +359,7 @@ table {
     padding-top: e(2px, $smaller-heading-size);
     @include rounded-corners(5px);
     @include link ($color-a4, $color-a4);
+    color: $color-a4;
     border:none;
     @include transition (background-color 200ms ease);
     background-color: $color-a1;

@@ -78,24 +78,32 @@
     @include caption-button(-600px, $height, $padding);
 }
 
-// Ticked button
-@mixin ticked-button($height:20px) {
+// Grey ticked button
+@mixin grey-ticked-button($height:20px) {
     @include button(-720px, $height);
 }
-@mixin ticked-caption-button($height:20px, $padding: 4px) {
+@mixin grey-ticked-caption-button($height:20px, $padding: 4px) {
     @include caption-button(-720px, $height, $padding);
+}
+
+// Ticked button
+@mixin ticked-button($height:20px) {
+    @include button(-840px, $height);
+}
+@mixin ticked-caption-button($height:20px, $padding: 4px) {
+    @include caption-button(-840px, $height, $padding);
 }
 
 // Loading button
 @mixin loading-button($height:20px) {
-    @include button(-840px, $height);
+    @include button(-960px, $height);
     &:hover {
-        background-position: left (-840px + ($height - 20px) / 2);
+        background-position: left (-960px + ($height - 20px) / 2);
     }
 }
 @mixin loading-caption-button($height:20px, $padding: 4px) {
-    @include caption-button(-840px, $height, $padding);
+    @include caption-button(-960px, $height, $padding);
     &:hover {
-        background-position: left (-840px + ($height - 20px) / 2);
+        background-position: left (-960px + ($height - 20px) / 2);
     }
 }

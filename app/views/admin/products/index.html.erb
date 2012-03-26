@@ -1,11 +1,11 @@
 <% content_for :top_nav do %>
   <li>
-    <%= link_to "Books", admin_products_path %>
+    <%= link_to "Books", search_admin_products_path %>
   </li>
   
   <li>></li>
-  <li class="current">
-    <%= link_to "Search", admin_products_path %>
+  <li>
+    <%= link_to "Search", search_admin_products_path %>
   </li>
   
   <li>></li>
@@ -13,11 +13,30 @@
     <%= link_to "Add", new_admin_product_path %>
   </li>
   
-  <li class="right">
-    <%= link_to "Stock-Taking", "#" %>
+  <li class="right current">
+    <%= link_to "Stock-Taking", admin_products_path %>
   </li>
 <% end %>
 
-<div id="search-box">
-  <input name="product-search" id="product-search" />
+<div class="table-container">
+  <table id="stock-table">
+    <% alt = false %>
+    <% @copies.each do |c| %>
+      <% stocked = c.stock.present? %>
+      <% klass = (stocked && alt) ? "alt stocked" : (alt ? "alt" : (stocked ? "stocked" : nil)) %>
+      <tr data-id="<%= c.id %>"<%= class_if klass, klass %>>
+        <td class="acc" data-sort-by="<%= c.product.accession_id %>"><%= c.product.accession_id %></td>
+        <td data-sort-by="<%= c.product.title %>"><%= c.product.title %></td>
+        <td data-sort-by="<%= c.product.author_name %>"><%= c.product.author_name %></td>
+        <td><%= c.edition.format_name %></td>
+        <td class="rating" data-val="<%= c.condition_rating %>"><%= render "shared/rating", :rating => c.condition_rating %></td>
+        <td class="price"><%= RupeeHelper.to_rupee(c.price) %></td>
+        <td class="has-button"><%= link_to "", "#", :class => "zoom-link" %></td>
+        <td class="has-button"><%= link_to "", "#", :class => stocked ? "ticked-link" : "grey-ticked-link" %></td>
+      </tr>
+      <% alt != alt %>
+    <% end %>
+  </table>
 </div>
+
+<%= link_to "Clear", admin_clear_stocks_path, :method => :delete, :class => "cancel button" %>
