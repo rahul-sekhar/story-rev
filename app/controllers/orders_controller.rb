@@ -7,6 +7,8 @@ class OrdersController < ApplicationController
     @title = "Order"
     @order = (shopping_cart.order || shopping_cart.build_order)
     
+    @order.calculate_total if @order.step == 4
+    
     render :layout => "ajax" if params[:ajax]
   end
   
@@ -23,12 +25,8 @@ class OrdersController < ApplicationController
     end
     
     if (@order.complete?)
-      
-      # Must check for out of stock copies here
       @order.finalise
-      session[:shopping_cart_id] = nil
-      
-      redirect_to root_url, :notice => "Order complete"
+      render "confirmation", :layout => params[:ajax] ? "ajax" : true
     else
       render "new", :layout => params[:ajax] ? "ajax" : true
     end

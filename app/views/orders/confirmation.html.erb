@@ -1,0 +1,58 @@
+<section id="order">
+  <div class="final-confirmation">
+  <h2>Order</h2>
+  
+  <p>Your order has been confirmed!<br />
+  Thank you for ordering from Story Revolution.</p>
+  
+  <% if @order.out_of_stock.length > 0 %>
+    <p>This rarely happens, but in the few seconds you took to confirm your
+    order, the following books have become unavailable! We're very sorry.</p>
+    
+    <table>
+      <% @order.out_of_stock.each do |c| %>
+        <tr>
+          <td class="tiny-cover">
+            <% if c.product.cover_image.present? %>
+                <a href="<%= product_path(c.product) %>" class="product-link">
+                  <img src="<%= c.product.cover_image.tiny_url %>" alt="" width="<%= c.product.cover_image.tiny_width %>" height="<%= c.product.cover_image.tiny_height %>" />
+                </a>
+              <% end %>
+          </td>
+          
+          <td class="copy">
+            <p class="title">
+              <%= link_to c.product.title, product_path(c.product), :class => "product-link" %>
+            </p>
+            <p class="creators">
+              <%= c.product.author_name + (c.product.illustrator.present? ? ' ' + c.product.illustrator_name : '') %>
+            </p>
+            <p class="format" title="<%= c.edition.publisher_name %>">
+              <%= c.edition.format_name %>
+            </p>
+            <div class="rating" title="<%= c.condition_description %>">
+              <%= render "shared/rating", :rating => c.condition_rating %>
+            </p>
+          </td>
+          
+          <td class="price">
+            <p><%= RupeeHelper.to_rupee(c.price) %></p>
+          </td>
+          
+        </tr>
+      <% end %>
+    </table>
+  <% end %>
+  
+  <p>The total amount payable is <strong><%= RupeeHelper.to_rupee(@order.total_amount) %></strong></p>
+  
+  <%= render "payment_details", :order => @order %>
+  
+  
+  <p>We will <%= @order.delivery_method == 1 ? "post your books" : "get in touch with you about delivery" %> once we
+  receive your payment. For help or follow up, please mail us at
+  <a href="mailto:storyrevolution@gmail.com">storyrevolution@gmail.com</a>. Your order number is #<%= @order.id %>.</p>
+  
+  <%= link_to "Okay", root_url, :class => "ok-button button" %>
+  </div>
+</section>

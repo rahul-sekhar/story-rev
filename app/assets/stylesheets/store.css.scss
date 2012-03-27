@@ -134,6 +134,7 @@
                 
                 &.cart {
                     padding-right:0;
+                    width: 61px;
                 }
             }
             
@@ -191,7 +192,7 @@
     #shopping-cart {
         padding: e(20px);
         @include clearfix;
-        max-width: e(500px);
+        width: e(500px);
         position:relative;
         overflow:hidden;
         
@@ -227,25 +228,10 @@
             clear:both;
         }
         
-        .refresh-box {
+        p.info {
             clear:both;
-            position:relative;
-            
-            p {
-                @include small-text;
-                margin-left: e(205px, $small-text-size);
-                color: $color-a6;
-            }
-        }
-        
-        #refresh-button {
-            position:absolute;
-            bottom:0;
-            left:0;
-            width: e(190px, $smaller-heading-size);
-            padding-left:0;
-            padding-right:0;
-            text-align:center;
+            @include small-text;
+            color: $color-a6;
         }
         
         table {
@@ -264,6 +250,12 @@
         
         tr {
             border-bottom: 1px solid $color-a5;
+            
+            &.unavailable {
+                background-color: $color-a5;
+                border-top: 1px solid $color-a6;
+                border-bottom: 1px solid $color-a6;
+            }
         }
         
         td {
@@ -280,16 +272,29 @@
             }
             
             &.copy {
-                min-width: e(300px);
+                width: e(260px);
             }
             
             &.price {
                 vertical-align: top;
+                width: e(120px);
+                padding-right: 0;
+                
+                .error {
+                    margin-top: e(10px, $text-size);
+                }
+                
+                .product-link {
+                    @include small-text;
+                    text-transform:lowercase;
+                    @include link;
+                }
             }
             
             &.remove {
                 vertical-align: top;
                 padding-right:0;
+                padding-left:0;
             }
         }
         

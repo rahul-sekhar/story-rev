@@ -354,9 +354,9 @@ table {
 .button {
     @include smaller-heading;
     @include inline-block;
-    line-height: e(28px, $smaller-heading-size);
+    line-height: e(30px, $smaller-heading-size);
+    height: e(30px, $smaller-heading-size);
     padding: 0 e(15px, $smaller-heading-size);
-    padding-top: e(2px, $smaller-heading-size);
     @include rounded-corners(5px);
     @include link ($color-a4, $color-a4);
     color: $color-a4;
@@ -384,4 +384,19 @@ table {
     position:absolute;
     top:0;
     width:100%;
+}
+
+#notice-dialog {
+    text-align: center;
+    padding: e(20px);
+    
+    .message {
+        margin-top: e(20px);
+    }
+}
+
+// Error messages
+.error {
+    color: $error-color;
+    font-weight:bold;
 }

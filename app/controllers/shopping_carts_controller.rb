@@ -26,6 +26,10 @@ class ShoppingCartsController < ApplicationController
     @title = "Shopping Cart"
     @copies = shopping_cart.copies.includes(:edition => {:product => [:illustrator, :cover_image]})
     
-    render :layout => "ajax" if (params[:ajax])
+    if (params[:count])
+      render :json => { :item_count => shopping_cart.items }
+    else
+      render :layout => "ajax" if (params[:ajax])
+    end
   end
 end

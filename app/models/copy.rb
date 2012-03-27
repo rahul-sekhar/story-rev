@@ -14,6 +14,7 @@ class Copy < ActiveRecord::Base
   validates :price, :numericality => { :only_integer => true }
   
   scope :stocked, where(:in_stock => true)
+  scope :unstocked, where(:in_stock => false)
   
   def init
     self.in_stock = true if in_stock.nil?

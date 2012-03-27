@@ -4,6 +4,12 @@
     @include clearfix;
     position:relative;
     
+    // Error messages
+    .error, .field_with_errors label {
+        color: $error-color;
+        font-weight:bold;
+    }
+    
     .js-remove {
         position:absolute;
         left:0;
@@ -46,11 +52,6 @@
     
     p {
         @include smaller-text;
-    }
-    
-    .error, .field_with_errors label {
-        color: $error-color;
-        font-weight:bold;
     }
     
     label {
@@ -178,6 +179,151 @@
             float:right;
             width: 52%;
             height:e(130px, $small-text-size);
+        }
+    }
+    
+    // Confirmation page
+    
+    table {
+        width:100%;
+        
+        .creators { font-style: italic; }
+    }
+    
+    td {
+        vertical-align:top;
+        padding:e(10px);
+        
+        p {
+            margin-bottom: e(5px, $small-text-size);
+        }
+        
+        &.price {
+            text-align: right;
+        }
+        
+        &.number{
+            padding-right:0;
+            padding-left: e(5px);
+            width: e(15px);
+        }
+    }
+    
+    .total {
+        text-align: right;
+        margin-right: e(10px);
+        margin-top: e(20px);
+        
+        p {
+            margin-bottom: e(10px, $small-text-size)
+        }
+    }
+    
+    .confirmation {
+        @include clearfix;
+        
+        p { @include small-text; }
+        
+        .contact {
+            clear:both;
+            float:left;
+            margin-top: e(40px);
+            margin-left: e(30px);
+            width: e(200px);
+            
+            p {
+                margin-bottom: 0;
+            }
+            
+            .phone-email {
+                margin-top: e(10px);
+            }
+        }
+        
+        .other {
+            width: e(280px);
+            margin-top: e(40px);
+            margin-left: e(20px);
+            float:left;
+            clear:right;
+            
+            .delivery span {
+                font-style:italic;
+            }
+        }
+    }
+    
+    .unavailable {
+        margin-top: e(30px);
+        @include clearfix;
+        
+        .error {
+            color: $error-color;
+            margin-left: e(30px, $small-text-size);
+        }
+        
+        .item {
+            float:left;
+            width: e(180px);
+            p {
+                margin-bottom: e(3px, $small-text-size);
+                margin-left: e(30px, $small-text-size);
+            }
+            .number {
+                width: e(25px, $small-text-size);
+                padding-left: e(5px, $small-text-size);
+                margin-left: 0;
+                float:left;
+            }
+            
+            .creators {
+                font-style: italic;
+            }
+            
+            .price {
+                clear:left;
+            }
+        }
+    }
+    
+    .final-confirmation {
+        p {
+            clear:left;
+        }
+        
+        h2 {
+            margin-bottom: e(30px, $very-large-heading-size);
+        }
+        
+        table {
+            margin: e(30px) 0 e(30px) e(10px);
+            width: 70%;
+            p { margin: 0; }
+            .title { font-weight: bold; }
+            .creators { font-style: italic; }
+            .format { float:left; }
+            .rating {
+                float:left;
+                margin-left: e(30px, $text-size);
+            }
+        }
+        
+        td {
+            padding:e(10px);
+            
+            &.tiny-cover {
+                img {
+                    display:block;
+                    max-height:60px;
+                    max-width:40px;
+                }
+                
+                padding-left:0;
+            }
+            
+            &.price {
+                vertical-align: top;
+            }
         }
     }
 }

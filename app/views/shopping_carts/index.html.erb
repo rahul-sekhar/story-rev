@@ -2,21 +2,18 @@
   <h2>Shopping Cart</h2>
   
   <% if shopping_cart.items > 0 %>
-    <a href="<%= order_path %>" class="major button order-button">Finalise Order</a>
+    <a href="<%= order_path %>" class="major button order-button">Check Out</a>
     
-    <div class="refresh-box">
-      <a href="<%= update_cart_path(:shopping_cart => { :refresh => true }) %>" class="button" id="refresh-button">Refresh Availability</a>
-      <p>Books are only removed from the store when your order is finalised, so
-      books in your cart may occasionally become unavailable while you are
-      shopping.</p>
-    </div>
+    <p class="info">Books are only removed from the store after you finish
+    ordering, so books in your cart may occasionally become unavailable while
+    you are shopping.</p>
   <% end %>
   
   <div class="container" data-count="<%= shopping_cart.items %>">
   <% if shopping_cart.items > 0 %>
     <table>
-      <% shopping_cart.copies.each do |c| %>
-        <tr data-id="<%= c.id %>">
+      <% shopping_cart.copies.order(:in_stock).each do |c| %>
+        <tr data-id="<%= c.id %>"<%= class_if !c.in_stock, "unavailable" %>>
           <td class="tiny-cover">
             <% if c.product.cover_image.present? %>
               <a href="<%= product_path(c.product) %>" class="product-link">
@@ -35,12 +32,18 @@
             <p class="format" title="<%= c.edition.publisher_name %>">
               <%= c.edition.format_name %>
             </p>
-            <p class="rating" title="<%= c.condition_description %>">
+            <div class="rating" title="<%= c.condition_description %>">
               <%= render "shared/rating", :rating => c.condition_rating %>
             </p>
           </td>
           <td class="price">
             <p><%= RupeeHelper.to_rupee(c.price) %></p>
+            <% unless c.in_stock %>
+              <p class="error">Now unavailable</p>
+              <% if c.product.copies.stocked.length > 0 %>
+                <%= link_to "Pick another copy", product_path(c.product), :class => "product-link unavailable-copy" %>
+              <% end %>
+            <% end %>
           </td>
           <td class="remove">
             <%= link_to "Remove", update_cart_path(:shopping_cart => { :remove_copy => c.id }),
@@ -61,7 +64,7 @@
   </div>
   
   <% if shopping_cart.items > 0 %>
-    <a href="<%= order_path %>" class="major button order-button">Finalise Order</a>
+    <a href="<%= order_path %>" class="major button order-button">Check Out</a>
     <a href="<%= update_cart_path(:shopping_cart => { :empty => true }) %>" class="button" id="empty-button">Empty Cart</a>
     <%= link_to "Back", :back, :class => "back-button left" %>
   <% else %>

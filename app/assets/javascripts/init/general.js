@@ -13,12 +13,6 @@ $.ajaxSetup({
     dataType: "json"
 });
 
-// Function to handle alerts
-function displayError(xhr) {
-    var message = xhr.responseText ? xhr.responseText : "The server cannot be reached";
-    alert(message);
-}
-
 // HTML Escaping function
 function escapeHTML(data) {
         return data ? $('<div />').text(data).html() : '';
@@ -51,6 +45,20 @@ function resizeOverlay() {
 // Keycode constants
 var KEYCODE_ESC = 27;
 
+// Reset dialog positions to the center
+function resetDialogPositions () {
+    $('.dialog:visible').dialog('option', 'position', 'center');
+}
+
+// Function to close the other dialogs
+function closeOtherDialogs(id) {
+    $('.dialog:visible:not(' + id + ')').each(function() {
+        var $this = $(this);
+        if ($this.dialog("isOpen") === true)
+            $this.dialog("close");
+    });
+}
+
 // Plguin to serialize to a JSON object
 $.fn.serializeObject = function()
 {
@@ -70,8 +78,10 @@ $.fn.serializeObject = function()
 };
 
 $(document).ready(function() {
+    var $body = $('body');
+    
     // Handle external links
-    $('body').on('click', 'a.ext', function(e) {
+    $body.on('click', 'a.ext', function(e) {
         window.open(this.href);
         e.preventDefault();
     });
@@ -103,4 +113,47 @@ $(document).ready(function() {
             $emailLinks.html('<a href="mailto:' + link + '">' + link + '</a>');
         }, 1000);
     }
+    
+    // Notice dialog
+    var $noticeDialog = $('<section id="notice-dialog" class="dialog"></section>');
+    $noticeDialog.dialog({
+        position: "center",
+        width: 400,
+        autoOpen:false
+    });
+    
+    var $message = $('<p class="message"></p>').appendTo($noticeDialog);
+    var $okButton = $('<a href="#" class="button">Okay</a>').click(function(e) {
+        e.preventDefault();
+        $noticeDialog.dialog("close");
+    }).appendTo($noticeDialog).wrap('<div class="button-holder"></div>');
+    
+    // Global function to handle errors
+    displayError = function(xhr, callback) {
+        var message = (xhr.responseText && xhr.responseText.length < 500) ? xhr.responseText : "The server cannot be reached";
+        displayNotice(message, callback)
+    };
+    
+    // Global function for notices
+    displayNotice = function(message, buttonText, callback) {
+        
+        buttonText = buttonText || "Okay";
+        
+        $message.text(message);
+        $okButton.text(buttonText);
+        $noticeDialog.dialog("open");
+        resetDialogPositions();
+        
+        if (callback)
+            $noticeDialog.dialog('option', 'hide', null)
+        else
+            $noticeDialog.dialog('option', 'hide', 'fade')
+        
+        $noticeDialog.one("dialogclose", callback);
+    }
+    
+    // Reposition any visible dialogs whenever a dialog closes
+    $body.on('dialogclose', function() {
+        resetDialogPositions();
+    });
 });

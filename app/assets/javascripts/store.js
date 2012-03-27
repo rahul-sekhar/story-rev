@@ -17,15 +17,23 @@ $(document).ready(function() {
     var $bookInfoLoading = $('<p class="loading-large"><img alt="" src="/images/loading2.gif" /><br />Loading...</p>');
     
     $body.on('click', '.product-link', function(e) {
+        
+        // If an unavailable shopping cart copy was clicked on, remove it from the cart
+        var $this = $(this);
+        if ($this.hasClass("unavailable-copy")) {
+            var copy_id = $this.closest('tr').data('id');
+            $.post("/shopping_cart.json", {
+                _method: "PUT",
+                shopping_cart: { remove_copy: copy_id }
+            }, function(data) {
+                updateShoppingCartCount(data.item_count);
+            });
+        }
+        
         if (extClick(e)) return;
         e.preventDefault();
         
-        // Close the other dialogs if they is open
-        if ($shoppingCartDialog.dialog("isOpen") === true)
-            $shoppingCartDialog.dialog("close");
-        if ($orderDialog.dialog("isOpen") === true)
-            $orderDialog.dialog("close");
-        
+        closeOtherDialogs('book-info-dialog');
         $closeButton.detach();
         
         $bookInfoDialog.empty()
@@ -139,33 +147,23 @@ $(document).ready(function() {
         e.preventDefault();
         
         $orderDialog.dialog("close");
-        $.ajax({
-            url: '/order',
-            data: {_method: 'DELETE', ajax: true},
-            error: function(xhr) {
-                displayError(xhr);
-            }
-        });
     });
     
     $body.on('click', '.order-button', function(e) {
         if (extClick(e)) return;
         e.preventDefault();
         
-        openOrderDialog();
+        if ($shoppingCartSection.find('.unavailable').length > 0) {
+            var message = "Some copies in your shopping cart are now unavailable. These copies will not be included in the order.";
+            displayNotice(message, "Continue", openOrderDialog)
+        }
+        else {
+            openOrderDialog();
+        }
     });
     
     function openOrderDialog() {
-        // Close the other dialogs if they are open
-        if ($bookInfoDialog.dialog("isOpen") === true) {
-            $bookInfoDialog.dialog("close");
-            $bookInfoDialog.one("dialogclose", function() {
-                $orderDialog.dialog("option", "position", "center")
-            });
-        }
-        if ($shoppingCartDialog.dialog("isOpen") === true) {
-            $shoppingCartDialog.dialog("close");
-        }
+        closeOtherDialogs('order-dialog');
         
         $orderCloseButton.detach();
         $orderDialog.empty()
@@ -212,7 +210,15 @@ $(document).ready(function() {
         e.preventDefault();
         
         if ($form.is('#cancel-order')) {
-            $orderCloseButton.click();
+            $orderDialog.dialog("close");
+            
+            $.ajax({
+                url: '/order',
+                data: {_method: 'DELETE', ajax: true},
+                error: function(xhr) {
+                    displayError(xhr);
+                }
+            });
             return;
         }
         
@@ -232,6 +238,21 @@ $(document).ready(function() {
         });
     })
     
+    // Handle okay button, for the confirmation page
+    $orderDialog.on('click', 'ok-button', function(e) {
+        if (extClick(e)) return;
+        e.preventDefault();
+        
+        $orderDialog.dialog("close");
+    });
+    
+    // Refresh the shopping cart count when the order dialog is closed
+    $orderDialog.on("dialogclose", function() {
+        $.get('/shopping_cart', { count: true }, function(data) {
+            updateShoppingCartCount(data.item_count);
+        });
+    });
+    
     /* ------------------- Shopping cart dialog ---------------------------*/
     
     var $shoppingCartLoading = $bookInfoLoading.clone();
@@ -239,7 +260,7 @@ $(document).ready(function() {
     var $shoppingCartDialog = $('<section id="shopping-cart-dialog" class="dialog"></section>');
     $shoppingCartDialog.dialog({
         position: "center",
-        width: 500,
+        width: 540,
         height: 400,
         autoOpen:false
     });
@@ -253,19 +274,7 @@ $(document).ready(function() {
         if (extClick(e)) return;
         e.preventDefault();
         
-        // Close the other dialogs if they are open
-        if ($bookInfoDialog.dialog("isOpen") === true) {
-            $bookInfoDialog.dialog("close");
-            $bookInfoDialog.one("dialogclose", function() {
-                $shoppingCartDialog.dialog("option", "position", "center")
-            });
-        }
-        if ($orderDialog.dialog("isOpen") === true) {
-            $orderDialog.dialog("close");
-            $orderDialog.one("dialogclose", function() {
-                $shoppingCartDialog.dialog("option", "position", "center")
-            });
-        }
+        closeOtherDialogs('shopping-cart-dialog');
         
         $cartCloseButton.detach();
         $shoppingCartDialog.empty()
@@ -308,11 +317,6 @@ $(document).ready(function() {
     var $shoppingCartSectionDialog = $shoppingCartSection.add($shoppingCartDialog);
     $shoppingCartSectionDialog.on('click', '#empty-button', function(e) {
         handleShoppingCartButton(e, { empty: true });
-    });
-    
-    // Handle refreshing the cart
-    $shoppingCartSectionDialog.on('click', '#refresh-button', function(e) {
-        handleShoppingCartButton(e);
     });
     
     // Handle 'remove from cart' links

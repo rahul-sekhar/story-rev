@@ -1,12 +1,13 @@
 class Order < ActiveRecord::Base
   after_initialize :init
   after_validation :change_step_if_invalid
-  before_save :remove_unecessary_fields
+  before_save :remove_unecessary_fields, :refresh_if_incomplete
   
   attr_accessible :next_step, :delivery_method, :pickup_point_id, :other_pickup,
-    :payment_method, :name, :email, :phone, :address, :city, :pin_code, :more_info
+    :payment_method, :name, :email, :phone, :address, :city, :pin_code, :other_info
   
-  attr_reader :next_step
+  attr_reader :next_step, :out_of_stock
+  attr_writer :out_of_stock
   
   has_and_belongs_to_many :copies, :join_table => :orders_copies, :uniq => true
   
@@ -66,8 +67,6 @@ class Order < ActiveRecord::Base
   
   def next_step=(n)
     self.step = n.to_i
-    
-    calculate_total if (n.to_i == 4)
   end
   
   def first_step?
@@ -94,11 +93,18 @@ class Order < ActiveRecord::Base
     step == 5
   end
   
+  def refresh_if_incomplete
+    if (step < 5 && shopping_cart)
+      self.copies = shopping_cart.copies.stocked
+      calculate_total
+    end
+  end
+  
   def calculate_total
     total = 0
     postage = 0
     
-    shopping_cart.copies.stocked.each do |c|
+    copies.each do |c|
       total += c.price
       if (delivery_method == 1)
         postage += 10
@@ -110,14 +116,24 @@ class Order < ActiveRecord::Base
   end
   
   def finalise
-    calculate_total
+    self.out_of_stock = []
     
-    shopping_cart.copies.stocked.each do |c|
-      c.set_stock = false
+    copies.each do |c|
+      if c.in_stock
+        c.set_stock = false
+      else
+        self.out_of_stock << c
+      end
     end
     
-    self.copies = shopping_cart.copies
-    self.shopping_cart.destroy
+    out_of_stock.each do |c|
+      self.copies.delete(c)
+    end
+    
+    calculate_total
+    
+    self.shopping_cart.copies = []
+    self.shopping_cart_id = nil
     save
   end
   
@@ -130,6 +146,24 @@ class Order < ActiveRecord::Base
     # Remove other pickup text if it is unrequired
     if (other_pickup.present? && (delivery_method != 2 || pickup_point_id != 0))
       self.other_pickup = nil
+    end
+  end
+  
+  def delivery_name
+    case delivery_method.to_i
+    when 1
+      "speed post"
+    when 2
+      "pickup"
+    end
+  end
+  
+  def payment_name
+    case delivery_method.to_i
+    when 1
+      "bank transfer"
+    when 2
+      "cheque"
     end
   end
 end

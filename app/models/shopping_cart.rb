@@ -6,8 +6,7 @@ class ShoppingCart < ActiveRecord::Base
   
   def add_copy=(copy_id)
     copy = Copy.find(copy_id)
-    self.copies << copy unless copy_ids.include? copy_id
-    save
+    self.copies << copy unless copies.include? copy
   end
   
   def remove_copy=(copy_id)
@@ -17,7 +16,7 @@ class ShoppingCart < ActiveRecord::Base
   
   def total
     price = 0
-    copies.each do |c|
+    copies.stocked.each do |c|
       price += c.price
     end
     
@@ -32,6 +31,6 @@ class ShoppingCart < ActiveRecord::Base
   end
   
   def items
-    new_record? ? 0 : copy_ids.length
+    new_record? ? 0 : copies.length
   end
 end

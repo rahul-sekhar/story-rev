@@ -1,4 +1,113 @@
-<p>Postage: <%= @order.postage_amount %></p>
-<p>Total: <%= @order.total_amount %></p>
+<div class="confirmation">
+  <table>
+    <% n = 0 %>
+    <% shopping_cart.copies.stocked.each do |c| %>
+      <% n += 1 %>
+      <tr>
+        <td class="number">
+          <p><strong><%= n %></strong></p>
+        </td>
+        
+        <td class="copy">
+          <p class="title">
+            <strong><%= c.product.title %></strong>
+          </p>
+          <p class="creators">
+            <%= c.product.author_name + (c.product.illustrator.present? ? ' ' + c.product.illustrator_name : '') %>
+          </p>
+        </td>
+        
+        <td class="edition">
+          <p class="format" title="<%= c.edition.publisher_name %>">
+            <%= c.edition.format_name %>
+          </p>
+          <div class="rating" title="<%= c.condition_description %>">
+            <%= render "shared/rating", :rating => c.condition_rating %>
+          </p>
+        </td>
+        
+        <td class="price">
+          <p><%= RupeeHelper.to_rupee(c.price) %></p>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+  
+  <div class="total">
+    <% if @order.postage_amount > 0 %>
+      <p class="postage"><strong>Postage:</strong> <%= RupeeHelper.to_rupee(@order.postage_amount) %></p>
+    <% end %>
+    <p class="total-amount"><strong>Total: <%= RupeeHelper.to_rupee(@order.total_amount) %></strong></p>
+  </div>
+  
 
-<p>Confirm your order?</p>
+  <% if shopping_cart.copies.unstocked.length > 0 %>
+  <div class="unavailable">
+    <p class="error">The following items are no longer available:</p>
+    <% n = 0 %>
+    <% shopping_cart.copies.unstocked.each do |c| %>
+      <% n+= 1 %>
+      <div class="item">
+        
+        <p class="number"><strong><%= n %></strong></p>
+        
+        <p class="title">
+          <strong><%= c.product.title %></strong>
+        </p>
+        
+        <p class="creators">
+          <%= c.product.author_name + (c.product.illustrator.present? ? ' ' + c.product.illustrator_name : '') %>
+        </p>
+        
+        <p class="format" title="<%= c.edition.publisher_name %>">
+          <%= c.edition.format_name %>
+        </p>
+        
+        <p class="rating" title="<%= c.condition_description %>">
+          <%= render "shared/rating", :rating => c.condition_rating %>
+        </p>
+        
+        <p class="price"><%= RupeeHelper.to_rupee(c.price) %></p>
+        
+      </div>
+    <% end %>
+  </div>
+  <% end %>
+  
+  <div class="contact">
+    
+    <p class="name"><%= @order.name %></p>
+    
+    <% if @order.address.present? %>
+      <%= simple_format @order.address, :class => :address %>
+    <% end %>
+    
+    <% if @order.city.present? || @order.pin_code.present? %>
+      <p class="city">
+        <%= @order.city.present? ?
+          @order.pin_code.present? ? "#{@order.city} - #{@order.pin_code}" : @order.city
+          : @order.pin_code %>
+      </p>
+    <% end %>
+    
+    <div class="phone-email">
+    <% if @order.phone.present? %>
+      <p>Phone: <%= @order.phone %></p>
+    <% end %>
+    
+    <p>Email: <%= @order.email %></p>
+    </div>
+  </div>
+  
+  <div class="other">
+    <p class="delivery">
+      Payment by <%= @order.payment_name %><br />
+      Delivery by <%= @order.delivery_name %>
+      <% if @order.delivery_method == 2 %>
+        <br /><span><%= @order.pickup_point.present? ? @order.pickup_point.name : @order.other_pickup %></span>
+      <% end %>
+    </p>
+    
+    <%= simple_format @order.other_info, :class => :comments %>
+  </div>
+</div>
