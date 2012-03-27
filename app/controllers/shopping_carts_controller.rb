@@ -26,6 +26,11 @@ class ShoppingCartsController < ApplicationController
     @title = "Shopping Cart"
     @copies = shopping_cart.copies.includes(:edition => {:product => [:illustrator, :cover_image]})
     
+    # Log if there are unavailable copies
+    if @copies.unstocked.length > 0
+      Loggers.store_log "Shopping cart ##{shopping_cart.id} viewed with #{@copies.unstocked.length} unavailable copies with ids - #{@copies.unstocked.map{|x| x.id}.join(", ")}"
+    end
+    
     if (params[:count])
       render :json => { :item_count => shopping_cart.items }
     else

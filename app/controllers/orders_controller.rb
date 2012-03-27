@@ -42,8 +42,13 @@ class OrdersController < ApplicationController
   end
   
   def check_shopping_cart
-    if shopping_cart.items == 0
-      message = "Your shopping cart is empty, so an order cannot be placed."
+    if shopping_cart.copies.stocked.length == 0
+      if shopping_cart.items > 0
+        message = "We're very sorry, but someone else has ordered the item(s) in your shopping cart, and they are now unavailable."
+      else
+        message = "Your shopping cart is empty, so an order cannot be placed."
+      end
+      
       if params[:ajax]
         render :text => message, :status => 400
       else

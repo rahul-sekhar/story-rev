@@ -238,14 +238,6 @@ $(document).ready(function() {
         });
     })
     
-    // Handle okay button, for the confirmation page
-    $orderDialog.on('click', 'ok-button', function(e) {
-        if (extClick(e)) return;
-        e.preventDefault();
-        
-        $orderDialog.dialog("close");
-    });
-    
     // Refresh the shopping cart count when the order dialog is closed
     $orderDialog.on("dialogclose", function() {
         $.get('/shopping_cart', { count: true }, function(data) {

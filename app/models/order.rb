@@ -29,10 +29,6 @@ class Order < ActiveRecord::Base
   validates :name, :presence => :true, :unless => :below_step_3?
   validates :email, :presence => :true, :unless => :below_step_3?
   
-  validates :address, :presence => :true, :if => :post_delivery?, :unless => :below_step_3?
-  validates :city, :presence => :true, :if => :post_delivery?, :unless => :below_step_3?
-  validates :pin_code, :presence => :true, :if => :post_delivery?, :unless => :below_step_3?
-  
   scope :complete, where(:step => 5)
   
   
@@ -51,7 +47,7 @@ class Order < ActiveRecord::Base
       valid_step = 1
     elsif attr_invalid?(:payment_method)
       valid_step = 2
-    elsif attr_invalid?(:name) || attr_invalid?(:email) || attr_invalid?(:address) || attr_invalid?(:city) || attr_invalid?(:pin_code)
+    elsif attr_invalid?(:name) || attr_invalid?(:email)
       valid_step = 3
     elsif attr_invalid?(:next_step)
       valid_step = 1
@@ -95,6 +91,12 @@ class Order < ActiveRecord::Base
   
   def refresh_if_incomplete
     if (step < 5 && shopping_cart)
+      
+      if copies.unstocked.length > 0
+        Loggers.store_log "Copies went out of stock during order (##{id}) - Copy ids: #{copies.unstocked.map{|x| x.id}.join(", ")}"
+      end
+      
+      
       self.copies = shopping_cart.copies.stocked
       calculate_total
     end
@@ -124,6 +126,10 @@ class Order < ActiveRecord::Base
       else
         self.out_of_stock << c
       end
+    end
+    
+    if out_of_stock.length > 0
+      Loggers.store_log "Copies went out of stock after order confirmation (##{id}) - Copy ids: #{out_of_stock.map{|x| x.id}.join(", ")}"
     end
     
     out_of_stock.each do |c|
