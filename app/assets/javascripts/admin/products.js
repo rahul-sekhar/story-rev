@@ -295,6 +295,8 @@ $(document).ready(function() {
         $storedDesc.find(".content").val($descContent.val());
     }
     
+    $descTitle.add($descContent).change(saveCurrentDescription);
+    
     $descButtons.on("click", "a", function(e) {
         e.preventDefault();
         var $button = $(this);
@@ -532,8 +534,8 @@ $(document).ready(function() {
     var $ageTo = $('#product_age_to');
     var $awardList = $('#award-field-list');
     
-    $productTitle.change(function() {
-        var title = $(this).val();
+    $productTitle.add($authorNameInput).change(function() {
+        var title = $productTitle.val();
         if (!title) {
             $ageGoogleLink.add($awardGoogleLink).remove();
         }
@@ -555,7 +557,7 @@ $(document).ready(function() {
     var $scrollWrapper = $productScroller.find('.product-list-wrapper');
     
     // Load amazon data
-    $productTitle.blur(function() {
+    $productTitle.change(function() {
         var title = $(this).val();
         
         if (!$.trim(title)) {
@@ -677,6 +679,6 @@ $(document).ready(function() {
         return $(this).append('<li><strong>' + title + ': </strong>' + (br ? '<br />' : '') + (value || '') + '</li>');
     }
     
-    $productTitle.blur();
+    $productTitle.change();
     
 });
