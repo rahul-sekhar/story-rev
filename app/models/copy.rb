@@ -66,4 +66,19 @@ class Copy < ActiveRecord::Base
       check_product_stock
     end
   end
+  
+  def self.condition_to_words(condition)
+    case condition
+    when 1
+      "acceptable"
+    when 2
+      "acceptable"
+    when 3
+      "good"
+    when 4
+      "excellent"
+    when 5
+      "like new"
+    end
+  end
 end

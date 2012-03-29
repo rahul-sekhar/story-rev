@@ -1,7 +1,15 @@
 <section id="filters">
-  <h2>Filter and Search</h2>
-  <div class="themes">
-    <h3>Themes</h3>
+  <%= form_tag store_path, :method => :get do %>
+    <ul>
+    <% 5.downto(1).each do |c| %>
+      <li>
+        <%= check_box_tag "condition[#{c}]", "1", params[:condition][c.to_s] %>
+        <span class="rating"><%= render "shared/rating", :rating => c %></span>
+        <%= Copy.condition_to_words(c) %>
+      </li>
+    <% end %>
+    </ul>
     
-  </div>
+    <%= submit_tag ("Apply") %>
+  <% end %>
 </section>

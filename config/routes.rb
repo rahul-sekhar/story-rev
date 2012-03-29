@@ -1,6 +1,6 @@
 StoryRev::Application.routes.draw do
   
-  root :to => "pages#store"
+  root :to => "pages#store", :as => "store"
   
   resources :products
   

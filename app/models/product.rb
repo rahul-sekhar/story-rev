@@ -50,6 +50,12 @@ class Product < ActiveRecord::Base
     includes(:editions, :copies)
   end
   
+  def self.filter(p)
+    filtered = self.scoped
+    
+    
+  end
+  
   def self.search(query, fields, output)
     escaped = SqlHelper::escapeWildcards(query).upcase
     product_array = []
@@ -230,7 +236,7 @@ class Product < ActiveRecord::Base
       cover_image.destroy
     end
     
-    self.cover_image = CoverImage.new(:remote_filename_url => url)
+    self.cover_image = CoverImage.create(:remote_filename_url => url)
   end
   
   def get_theme_hash

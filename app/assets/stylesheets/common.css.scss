@@ -372,6 +372,10 @@ table {
 }
 
 // Dialogs
+.ui-dialog {
+    position:absolute;
+    overflow: hidden;
+}
 .ui-dialog-titlebar {
     display:none;
 }

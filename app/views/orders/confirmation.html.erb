@@ -6,7 +6,7 @@
   Thank you for ordering from Story Revolution.</p>
   
   <% if @order.out_of_stock.length > 0 %>
-    <p>This rarely happens, but in the few seconds you took to confirm your
+    <p class="error">This rarely happens, but in the few seconds you took to confirm your
     order, the following books have become unavailable! We're very sorry.</p>
     
     <table>
@@ -53,6 +53,6 @@
   receive your payment. For help or follow up, please mail us at
   <a href="mailto:storyrevolution@gmail.com">storyrevolution@gmail.com</a>. Your order number is #<%= @order.id %>.</p>
   
-  <%= link_to "Okay", root_url, :class => "ok-button button" %>
+  <%= link_to "Okay", store_path, :class => "ok-button button" %>
   </div>
 </section>

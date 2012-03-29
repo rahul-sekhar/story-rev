@@ -10,6 +10,7 @@ $(document).ready(function() {
         height: 600,
         autoOpen:false
     });
+    //$bookInfoDialog.closest('.ui-dialog').css('position', 'absolute');
     var $closeButton = $('<a href="#" class="close-button">Close</a>').click(function(e) {
         e.preventDefault();
         $bookInfoDialog.dialog('close');
@@ -397,14 +398,12 @@ $(document).ready(function() {
         if ($dialog.height() != $content.outerHeight()) {
             
             if (center_dialog) {
-                var $widget = $dialog.closest('.ui-dialog');
-                var curr_offset = $widget.offset().top;
-                var curr_top = parseInt($widget.css('top'), 10);
                 var page_top = $(window).scrollTop();
                 var target_top =  page_top + $(window).height() / 2 - $content.outerHeight() / 2 - ($dialog.outerHeight() - $dialog.height()) / 2;
-                target_top = target_top > page_top ? target_top : page_top + 10;
                 
-                $widget.animate({top: (curr_top + (target_top - curr_offset)) + 'px'}, 500);
+                if (target_top < (page_top + 10)) target_top = page_top + 10
+                
+                $dialog.closest('.ui-dialog').animate({top: target_top + 'px'}, 500);
             }
             
             $dialog.animate({ height: $content.outerHeight() }, 500, function() {

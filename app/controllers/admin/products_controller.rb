@@ -42,6 +42,7 @@ class Admin::ProductsController < Admin::ApplicationController
     else
       @product.build_empty_fields
       @class = "product form"
+      @title = "Add Product"
       render "new"
     end
   end
@@ -60,6 +61,7 @@ class Admin::ProductsController < Admin::ApplicationController
     else
       @product.build_empty_fields
       @class = "product form"
+      @title = "Edit Book Information"
       render "edit"
     end
   end

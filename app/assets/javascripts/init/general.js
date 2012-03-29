@@ -45,11 +45,6 @@ function resizeOverlay() {
 // Keycode constants
 var KEYCODE_ESC = 27;
 
-// Reset dialog positions to the center
-function resetDialogPositions () {
-    $('.dialog:visible').dialog('option', 'position', 'center');
-}
-
 // Function to close the other dialogs
 function closeOtherDialogs(id) {
     $('.dialog:visible:not(' + id + ')').each(function() {
@@ -142,7 +137,6 @@ $(document).ready(function() {
         $message.text(message);
         $okButton.text(buttonText);
         $noticeDialog.dialog("open");
-        resetDialogPositions();
         
         if (callback)
             $noticeDialog.dialog('option', 'hide', null)
@@ -151,9 +145,4 @@ $(document).ready(function() {
         
         $noticeDialog.one("dialogclose", callback);
     }
-    
-    // Reposition any visible dialogs whenever a dialog closes
-    $body.on('dialogclose', function() {
-        resetDialogPositions();
-    });
 });

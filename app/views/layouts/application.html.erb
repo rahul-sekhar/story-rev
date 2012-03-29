@@ -15,9 +15,8 @@
     <img src="/images/header.png" alt="" />
     <nav class="navigation">
       <ul>
-        <li class="store"><%= link_to "Bookstore", root_url %></li>
-        <li class="blog"><%= link_to "Articles", root_url %></li>
-        <li class="more-url"><%= link_to "Learn More", root_url %></li>
+        <li class="store"><%= link_to "Bookstore", store_path %></li>
+        <li class="more-url"><%= link_to "Learn More", store_path(:anchor => "page-footer") %></li>
       </ul>
       
       <%= link_to "Shopping Cart (#{shopping_cart.items})", shopping_cart_path,
