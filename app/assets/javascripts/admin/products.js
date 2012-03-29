@@ -524,13 +524,8 @@ $(document).ready(function() {
     
     // Handle creating google links
     
-    var $ageGoogleLink = $('<a href=#" class="google-link">[google]</a>');
-    var $awardGoogleLink = $('<a href=#" class="google-link">[google]</a>');
-    $ageGoogleLink.add($awardGoogleLink).click(function(e) {
-        if (extClick(e)) return;
-        e.preventDefault();
-        window.open(this.href, "_blank", "height=600, width=800");
-    });
+    var $ageGoogleLink = $('<a href=#" class="google-link ext">[google]</a>');
+    var $awardGoogleLink = $('<a href=#" class="google-link ext">[google]</a>');
     var $ageTo = $('#product_age_to');
     var $awardList = $('#award-field-list');
     

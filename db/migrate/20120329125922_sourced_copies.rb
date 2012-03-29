@@ -8,5 +8,24 @@ class SourcedCopies < ActiveRecord::Migration
       
       t.timestamps
     end
+    
+    add_index :new_copies, :edition_id
+    add_index :new_copies, :price
+    add_index :new_copies, :number
+    
+    change_table :products do |t|
+      t.integer :publisher_id
+    end
+    
+    add_index :products, :publisher_id
+    
+    change_table :editions do |t|
+      t.integer :language_id
+    end
+    
+    create_table :languages do |t|
+      t.string :name
+      t.timestamps
+    end
   end
 end
