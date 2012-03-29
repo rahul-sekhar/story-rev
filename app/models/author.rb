@@ -3,17 +3,17 @@ class Author < ActiveRecord::Base
   
   attr_writer :full_name
   
-  before_validation :set_accession_id
+  before_validation :convert_full_name, :set_accession_id
   
   has_many :products, :dependent => :destroy
   
   validates :full_name, :length => { :maximum => 150 }, :presence => true
   validates :accession_id, :presence => true, :uniqueness => true
   
-  before_save :convert_full_name
-  
   def set_accession_id
     self.accession_id = find_accession_id
+    puts "Setting"
+    puts accession_id
   end
   
   def find_accession_id

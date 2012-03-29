@@ -53,7 +53,11 @@ class Product < ActiveRecord::Base
   def self.filter(p)
     filtered = self.scoped
     
+    if p[:condition].is_a?(Hash)
+      filtered = filtered.joins(:copies).where(:copies => { :condition_rating => p[:condition].keys })
+    end
     
+    return filtered
   end
   
   def self.search(query, fields, output)
