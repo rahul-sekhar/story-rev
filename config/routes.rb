@@ -25,6 +25,7 @@ StoryRev::Application.routes.draw do
     resources :products do
       resources :editions do
         resources :copies
+        resources :new_copies
       end
       collection do
         get 'amazon_info'
@@ -37,6 +38,7 @@ StoryRev::Application.routes.draw do
     delete "stocks" => "stocks#clear", :as => "clear_stocks"
     
     resources :copies
+    resources :new_copies
     resources :cover_images
     resources :authors
     resources :illustrators

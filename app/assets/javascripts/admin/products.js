@@ -57,27 +57,29 @@ $(document).ready(function() {
             ]
         });
         
-        // Auto add a copy after an edition is added
+        // Auto add a used copy after an edition is added
         $editionTable.on("addRow", function(e, data) {
             $copyTable.one("tableLoad", function() {
                 $copyTable.closest('.table-wrapper').find('.add-link').click();
             });
         });
         
-        // When the edition changes, construct a copies table
-        var $copyTable = $('#copy-table')
+        // When the edition changes, construct copies tables
+        var $copyTable = $('#copy-table');
+        var $newCopyTable = $('#new-copy-table');
+        
         var editionURL = $editionTable.data("url")
         $editionTable.on("selectionChange", function(e, id) {
-            $copyTable.empty();
+            $copyTable.add($newCopyTable).empty();
             if (!id) {
-                $copyTable.parent().next('.add-container').remove();
+                $copyTable.add($newCopyTable).parent().next('.add-container').remove();
                 return;
             }
             
             $copyTable.itemTable({
                 url: editionURL + '/' + id + '/copies',
                 objectName: 'copy',
-                addLinkText: 'New Copy',
+                addLinkText: 'Add Copy',
                 initialLoad: true,
                 columns: [
                     {
@@ -103,6 +105,41 @@ $(document).ready(function() {
                     }
                 ]
             });
+            
+            $newCopyTable.itemTable({
+                url: editionURL + '/' + id + '/new_copies',
+                objectName: 'new_copy',
+                addLinkText: 'Add New Copy',
+                initialLoad: true,
+                columns: [
+                    {
+                        name: 'Accession Number',
+                        field: 'accession_id',
+                        type: 'read_only'
+                    },
+                    {
+                        name: 'Price',
+                        field: 'formatted_price',
+                        raw: 'price'
+                    },
+                    {
+                        name: 'Number',
+                        field: 'number',
+                        numeric: true,
+                        default_val: "0"
+                    },
+                    {
+                        name: 'Limited Copies',
+                        field: 'limited_copies',
+                        type: 'boolean',
+                        default_val: true,
+                        multilineLabel: true,
+                        displayCallback: function(data) {
+                            return data ? "Limited" : "Unlimited";
+                        }
+                    }
+                ]
+            });
         });
         
         // Create a popup for the accession ID
@@ -114,8 +151,8 @@ $(document).ready(function() {
            $.unblockUI();
         }).appendTo($newCopyMsg);
         
-        $copyTable.on("addRow", function(e, data) {
-            $copyTable.one("unblock", function() {
+        $copyTable.add($newCopyTable).on("addRow", function(e, data) {
+            $(this).one("unblock", function() {
                 $accMsg.text(data.accession_id)
                 $.blockUI({
                     message: $newCopyMsg,

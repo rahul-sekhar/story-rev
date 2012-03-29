@@ -83,8 +83,8 @@ module AdminHelper
   
   def self.set_language_and_content_type
     Product.all.each do |p|
-      p.language_id ||= 1
-      p.content_type_id ||= 1
+      p.language_id = 1
+      p.content_type_id = 1
       p.save
     end
   end

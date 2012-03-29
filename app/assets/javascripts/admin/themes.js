@@ -213,8 +213,8 @@ $(document).ready(function() {
                 },
                 {
                     name:'Stock',
-                    field: 'stocked',
-                    type: 'numeric',
+                    field: 'stock',
+                    numeric: true,
                     class_name: 'copies'
                 },
                 {

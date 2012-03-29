@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120329141214) do
+ActiveRecord::Schema.define(:version => 20120329185056) do
 
   create_table "admin_roles", :force => true do |t|
     t.string   "name"
@@ -146,8 +146,10 @@ ActiveRecord::Schema.define(:version => 20120329141214) do
     t.integer  "price"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "accession_id"
   end
 
+  add_index "new_copies", ["accession_id"], :name => "index_new_copies_on_accession_id"
   add_index "new_copies", ["edition_id"], :name => "index_new_copies_on_edition_id"
   add_index "new_copies", ["number"], :name => "index_new_copies_on_number"
   add_index "new_copies", ["price"], :name => "index_new_copies_on_price"

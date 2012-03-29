@@ -23,6 +23,7 @@ class Product < ActiveRecord::Base
   has_many :product_awards, :dependent => :destroy
   has_many :editions, :dependent => :destroy
   has_many :copies, :through => :editions
+  has_many :new_copies, :through => :editions
   has_many :other_fields, :dependent => :destroy
   has_one :cover_image, :dependent => :destroy
   
@@ -51,11 +52,11 @@ class Product < ActiveRecord::Base
   end
   
   def self.includes_data
-    includes(:illustrator, :keywords, :copies, :product_tags, :other_fields, { :product_awards => { :award => :award_type }}, :editions => [:format, :publisher])
+    includes(:illustrator, :publisher, :keywords, :copies, :new_copies, :product_type, :content_type, :language, :country, :other_fields, { :product_awards => { :award => :award_type }}, :editions => [:format, :publisher])
   end
   
   def self.includes_copies
-    includes({:editions => [:format, :publisher]}, :copies)
+    includes({:editions => [:format, :publisher]}, :copies, :new_copies)
   end
   
   def self.filter(p)
@@ -276,7 +277,7 @@ class Product < ActiveRecord::Base
       :title => title,
       :author_name => author_name,
       :age_level => age_level,
-      :stock => copies.length
+      :stock => number_of_copies
     }
   end
   
@@ -292,15 +293,23 @@ class Product < ActiveRecord::Base
       :age_from => age_from,
       :keyword_list => keyword_list,
       :award_list => award_list,
-      :stock => copies.length
+      :stock => number_of_copies
     }
   end
   
+  def number_of_copies
+    num = copies.length
+    new_copies.each do |c|
+      num += c.number if c.number > 0
+    end
+    return num
+  end
+  
   def check_stock
-    is_in_stock = (copies.stocked.length > 0)
+    is_in_stock = (copies.stocked.length > 0) || (new_copies.stocked.length > 0)
+    
     if (in_stock != is_in_stock)
         self.in_stock = is_in_stock
-        save
         
         if (is_in_stock)
           touch :in_stock_at
@@ -311,6 +320,8 @@ class Product < ActiveRecord::Base
         else
           touch :out_of_stock_at
         end
+        
+        save
     end
   end
   

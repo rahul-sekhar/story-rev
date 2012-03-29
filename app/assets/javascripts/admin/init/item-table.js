@@ -28,7 +28,7 @@ var DEFAULTS = {
         
         type: null,                 // If left empty, this defaults to 'text'.
                                     // other options are: 'autocomplete', 'read_only', 'image',
-                                    // 'rating', 'fixed', 'html'
+                                    // 'rating', 'fixed', 'html', 'boolean'
         
         sourceURL: null,            // Source URL for autocomplete data
         
@@ -412,6 +412,9 @@ $.ItemTable = function(table, settings) {
                     $td.append('<span class="empty star"></span>');
                 }
             }
+            else if (column.type == "boolean") {
+                $td.text(column.displayCallback ? column.displayCallback(data[column.field]) : (data[column.field] ? "Yes" : "No"))
+            }
             else if (column.type == "fixed") {
                 $td.html(column.html_content);
             }
@@ -587,6 +590,23 @@ $.ItemTable = function(table, settings) {
             return;
         }
         
+        // Handle boolean inputs
+        if (column.type == "boolean") {
+            $('<input type="hidden" name="' + field_name(column) + '" value="0" />').appendTo($container);
+            var $input = $('<input class="dialog-input checkbox" type="checkbox" id="' + field_id(column) + '" name="' + field_name(column) + '" value="1" />')
+                .appendTo($container);
+            
+            $input
+                .on("fill", function(e, val) {
+                    $input.prop("checked", val);
+                })
+                .on("clear", function(e) {
+                    $input.prop("checked", column.default_val || false);
+                });
+            
+            return;
+        }
+        
         // Handle other types
         var $input = $('<input class="dialog-input" type="text" id="' + field_id(column) + '" name="' + field_name(column) + '" />')
             .attr('autocomplete', 'off')
@@ -612,16 +632,13 @@ $.ItemTable = function(table, settings) {
                 });
         }
         
-        // Handle ratings
-        
-        
         // Events for fill and clear triggers
         $input
             .on("fill", function(e, val) {
-                $input.val(val);
+                $input.val(val || (column.numeric ? "0" : ""));
             })
             .on("clear", function(e) {
-                $input.val(column.default_val || "")
+                $input.val(column.default_val || (column.numeric ? "0" : ""))
             });
     }
     

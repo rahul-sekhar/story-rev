@@ -1,4 +1,6 @@
 class Copy < ActiveRecord::Base
+  include CopyBase
+  
   before_validation :set_accession_id
   after_initialize :init
   after_save :check_product_stock
@@ -21,10 +23,6 @@ class Copy < ActiveRecord::Base
     self.condition_rating ||= 3
   end 
   
-  def formatted_price
-    RupeeHelper::to_rupee(price)
-  end
-  
   def get_hash
     return {
       :id => id,
@@ -34,29 +32,6 @@ class Copy < ActiveRecord::Base
         :condition_description => condition_description,
         :condition_rating => condition_rating
     }
-  end
-  
-  def set_accession_id
-    self.accession_id = find_accession_id
-  end
-  
-  def find_accession_id
-    base_acc = product.accession_id
-    last_copy = Copy.where('accession_id LIKE ?', "#{base_acc}%").order("accession_id DESC").first
-    if last_copy.present?
-      new_acc = last_copy.accession_id[10,3].to_i + 1
-      "#{base_acc}-#{"%03d" % new_acc}"
-    else
-      "#{base_acc}-001"
-    end
-  end
-  
-  def product
-    edition.product
-  end
-  
-  def check_product_stock
-    product.check_stock
   end
   
   def set_stock=(value)
