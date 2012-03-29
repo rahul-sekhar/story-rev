@@ -340,18 +340,31 @@
         }
     }
     
-    .next-book.submit {
+    .next-book.submit, .previous-book.submit {
         float:right;
         margin-right: e(20px, $button-size);
     }
     
     .next-book.button {
+        float:right;
         margin-right: e(40px, $button-size);
     }
     
-    .new-book.button {
+    .new-book.button, .previous-book.button {
         float:right;
         margin-right: e(20px, $button-size);
+    }
+    
+    .new-copy-dialog {
+        .minor-button {
+            margin: e(20px, $minor-button-size) auto;
+            float:none;
+        }
+        
+        .acc {
+            font-size: e(20px);
+            margin: e(20px, $minor-button-size) 0;
+        }
     }
     
     // Book information sidebar styling
@@ -461,7 +474,7 @@
         }
         
         .acc {
-            min-width: e(55px, $small-text-size);
+            min-width: e(75px, $small-text-size);
         }
         
         .rating {

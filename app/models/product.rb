@@ -302,8 +302,11 @@ class Product < ActiveRecord::Base
     theme.product_ids.include?(id)
   end
   
-  # Function to get the product with the next ID (rolls around at the last book)
   def next_product
-    Product.where('"products"."id" > ?', id).order(:id).limit(1).first || Product.limit(1).order(:id).first
+    Product.where('"products"."created_at" > ?', created_at).order(:created_at).limit(1).first || Product.limit(1).order(:created_at).first
+  end
+  
+  def previous_product
+    Product.where('"products"."created_at" < ?', created_at).order('"products"."created_at" DESC').limit(1).first || Product.limit(1).order('"products"."created_at" DESC').first
   end
 end

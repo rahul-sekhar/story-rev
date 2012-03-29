@@ -150,10 +150,14 @@ $.ItemTable = function(table, settings) {
                     $newTr = createRow(data);
                     
                     // Replace row or add a new row
-                    if ($tr.length)
+                    if ($tr.length) {
                         $tr.replaceWith($newTr);
-                    else
+                    }
+                    else {
                         $newTr.appendTo($table);
+                        // Trigger an add item event
+                        $table.trigger("addRow", data);
+                    }
                     
                     // Select the added/edited row
                     if (settings.selectable) select_item($newTr);
@@ -162,7 +166,11 @@ $.ItemTable = function(table, settings) {
                     restripe();
                     
                     // Hide the dialog
-                    $.unblockUI();
+                    $.unblockUI({
+                        onUnblock: function() {
+                            $table.trigger("unblock");
+                        }
+                    });
                 },
                 error: function(data) {
                     $errs.empty().prependTo($dialog);

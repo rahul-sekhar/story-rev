@@ -25,7 +25,7 @@
       <% stocked = c.stock.present? %>
       <% klass = (stocked && alt) ? "alt stocked" : (alt ? "alt" : (stocked ? "stocked" : nil)) %>
       <tr data-id="<%= c.id %>"<%= class_if klass, klass %>>
-        <td class="acc" data-sort-by="<%= c.product.accession_id %>"><%= c.product.accession_id %></td>
+        <td class="acc" data-sort-by="<%= c.accession_id %>"><%= c.accession_id %></td>
         <td data-sort-by="<%= c.product.title %>"><%= c.product.title %></td>
         <td data-sort-by="<%= c.product.author_name %>"><%= c.product.author_name %></td>
         <td><%= c.edition.format_name %></td>

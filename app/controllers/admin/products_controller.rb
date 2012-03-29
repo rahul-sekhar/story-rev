@@ -57,7 +57,14 @@ class Admin::ProductsController < Admin::ApplicationController
   def update
     @product = Product.find(params[:id])
     if @product.update_attributes(params[:product])
-      redirect_path = params[:commit] == "Next Book" ? edit_admin_product_path(@product.next_product) : search_admin_products_path
+      case params[:commit]
+      when "Next Book"
+        redirect_path = edit_admin_product_path(@product.next_product)
+      when "Previous Book"
+        redirect_path = edit_admin_product_path(@product.previous_product)
+      else
+        search_admin_products_path
+      end
       
       redirect_to redirect_path, :notice => "Product saved - its accession number is #{@product.accession_id}"
     else

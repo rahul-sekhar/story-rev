@@ -70,4 +70,5 @@
 </div>
 
 <%= link_to "Next Book", edit_admin_product_path(@product.next_product), :class => "next-book button" %>
+<%= link_to "Previous Book", edit_admin_product_path(@product.previous_product), :class => "previous-book button" %>
 <%= link_to "New", new_admin_product_path, :class => "new-book button" %>

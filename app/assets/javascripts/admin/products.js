@@ -56,8 +56,15 @@ $(document).ready(function() {
             ]
         });
         
+        // Auto add a copy after an edition is added
+        $editionTable.on("addRow", function(e, data) {
+            $copyTable.one("tableLoad", function() {
+                $copyTable.closest('.table-wrapper').find('.add-link').click();
+            });
+        });
+        
         // When the edition changes, construct a copies table
-        var $copyTable = $('#copy-table');
+        var $copyTable = $('#copy-table')
         var editionURL = $editionTable.data("url")
         $editionTable.on("selectionChange", function(e, id) {
             $copyTable.empty();
@@ -94,6 +101,25 @@ $(document).ready(function() {
                         raw: 'price'
                     }
                 ]
+            });
+        });
+        
+        // Create a popup for the accession ID
+        var $newCopyMsg = $('<div class="new-copy-dialog dialog"></div>');
+        $('<p>Copy accession number:</p>').appendTo($newCopyMsg);
+        var $accMsg = $('<p class="acc"></p>').appendTo($newCopyMsg);
+        $('<a class="minor-button" href="#">Okay</a>').click(function(e) {
+           e.preventDefault();
+           $.unblockUI();
+        }).appendTo($newCopyMsg);
+        
+        $copyTable.on("addRow", function(e, data) {
+            $copyTable.one("unblock", function() {
+                $accMsg.text(data.accession_id)
+                $.blockUI({
+                    message: $newCopyMsg,
+                    css: { top: '30%' }
+                });
             });
         });
     }
@@ -324,6 +350,12 @@ $(document).ready(function() {
     $('form.product').submit(function() {
         saveCurrentDescription();
     });
+    $('.next-book').click(function() {
+        saveCurrentDescription();
+    });
+    $('.previous-book').click(function() {
+        saveCurrentDescription();
+    });
     
     // Handle the showing and hiding of the cover edit menu
     var $cover = $('.cover:first');
@@ -520,7 +552,7 @@ $(document).ready(function() {
                 .appendTo($awardList);
         }
     });
-    
+    return;
     // Handle amazon information
     var $sidebar = $('#info-sidebar');
     var $productList = $sidebar.find('#product-list');
