@@ -1,7 +1,7 @@
 class Admin::AwardsController < Admin::ApplicationController
   
   def index
-    @awards = Award.where(:award_type_id => params[:award_type_id])
+    @awards = Award.order("name").where(:award_type_id => params[:award_type_id])
     respond_to do |format|
       format.json { render :json => @awards, :only => [:id, :name] }
     end

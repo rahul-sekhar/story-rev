@@ -57,7 +57,9 @@ class Admin::ProductsController < Admin::ApplicationController
   def update
     @product = Product.find(params[:id])
     if @product.update_attributes(params[:product])
-      redirect_to search_admin_products_path, :notice => "Product saved - its accession number is #{@product.accession_id}"
+      redirect_path = params[:commit] == "Next Book" ? edit_admin_product_path(@product.next_product) : search_admin_products_path
+      
+      redirect_to redirect_path, :notice => "Product saved - its accession number is #{@product.accession_id}"
     else
       @product.build_empty_fields
       @class = "product form"

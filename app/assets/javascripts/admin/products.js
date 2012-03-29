@@ -494,6 +494,32 @@ $(document).ready(function() {
         $cover.find(".blank-cover p.author").text($(this).val());
     });
     
+    // Handle creating google links
+    
+    var $ageGoogleLink = $('<a href=#" class="google-link">[google]</a>');
+    var $awardGoogleLink = $('<a href=#" class="google-link">[google]</a>');
+    $ageGoogleLink.add($awardGoogleLink).click(function(e) {
+        if (extClick(e)) return;
+        e.preventDefault();
+        window.open(this.href, "_blank", "height=600, width=800, location=no");
+    });
+    var $ageTo = $('#product_age_to');
+    var $awardList = $('#award-field-list');
+    
+    $productTitle.change(function() {
+        var title = $(this).val();
+        if (!title) {
+            $ageGoogleLink.add($awardGoogleLink).remove();
+        }
+        else {
+            var author_name = $authorNameInput.val();
+            $ageGoogleLink.attr('href', 'http://www.google.com/search?q=' + encodeURIComponent('"' + title + '" ' + author_name + ' age'))
+                .insertAfter($ageTo);
+            
+            $awardGoogleLink.attr('href', 'http://www.google.com/search?q=' + encodeURIComponent('"' + title + '" ' + author_name + ' award'))
+                .appendTo($awardList);
+        }
+    });
     
     // Handle amazon information
     var $sidebar = $('#info-sidebar');

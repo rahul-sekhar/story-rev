@@ -6,7 +6,7 @@
   
   <%= collection_select :product_award,
                         :award_type_id,
-                        AwardType.all,
+                        AwardType.order("name").all,
                         :id,
                         :name,
                         { :include_blank => "None", :selected => selected },

@@ -58,6 +58,12 @@
         }
     }
     
+    .google-link {
+        @include small-text;
+        margin-left: e(10px, $small-text-size);
+        @include link;
+    }
+    
     // Cover image
     .blank-cover {
         width:100px;
@@ -269,8 +275,6 @@
                 &.add:hover {background-color:darken($color-a1, 5);}
             }
         }
-        
-        
     }
     
     // Buttons
@@ -336,12 +340,12 @@
         }
     }
     
-    .next-book.button {
+    .next-book.submit {
         float:right;
         margin-right: e(20px, $button-size);
     }
     
-    &.editions .next-book.button {
+    .next-book.button {
         margin-right: e(40px, $button-size);
     }
     
