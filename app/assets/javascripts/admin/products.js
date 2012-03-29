@@ -552,7 +552,7 @@ $(document).ready(function() {
                 .appendTo($awardList);
         }
     });
-    return;
+    
     // Handle amazon information
     var $sidebar = $('#info-sidebar');
     var $productList = $sidebar.find('#product-list');
