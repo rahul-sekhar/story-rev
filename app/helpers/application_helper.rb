@@ -25,4 +25,8 @@ module ApplicationHelper
   def class_if (condition, class_name)
     (' class="' + class_name + '"').html_safe if (condition)
   end
+  
+  def filter_box (attr, val)
+    check_box_tag("#{attr}[#{val}]", "1", (params[attr.to_s] && params[attr.to_s][val.to_s])).html_safe
+  end
 end

@@ -1,13 +1,35 @@
 <section id="filters">
   <%= form_tag store_path, :method => :get do %>
+    <label>Condition</label>
     <ul>
     <% 5.downto(1).each do |c| %>
       <li>
-        <%= check_box_tag "condition[#{c}]", "1", params[:condition][c.to_s] %>
+        <%= filter_box "condition", c %>
         <span class="rating"><%= render "shared/rating", :rating => c %></span>
         <%= Copy.condition_to_words(c) %>
       </li>
     <% end %>
+    </ul>
+    
+    <label>Price</label>
+    <ul>
+      <%  %>
+      <li>
+        <%= filter_box "price", "-10" %>
+        Below Rs. 10
+      </li>
+      <li>
+        <%= filter_box "price", "10-20" %>
+        Rs. 10 to Rs. 20
+      </li>
+      <li>
+        <%= filter_box "price", "20-30" %>
+        Rs. 20 to Rs. 30
+      </li>
+      <li>
+        <%= filter_box "price", "30-" %>
+        Above Rs. 30
+      </li>
     </ul>
     
     <%= submit_tag ("Apply") %>

@@ -43,19 +43,29 @@ class Product < ActiveRecord::Base
   end
   
   def self.includes_data
-    includes(:illustrator, :keywords, :copies, :product_tags, :other_fields, { :product_awards => { :award => :award_type }}, :editions)
+    includes(:illustrator, :keywords, :copies, :product_tags, :other_fields, { :product_awards => { :award => :award_type }}, :editions => [:format, :publisher])
   end
   
   def self.includes_copies
-    includes(:editions, :copies)
+    includes({:editions => [:format, :publisher]}, :copies)
   end
   
   def self.filter(p)
     filtered = self.scoped
+    filtered_copies = false
+    copies = Copy.stocked
     
     if p[:condition].is_a?(Hash)
-      filtered = filtered.joins(:copies).where(:copies => { :condition_rating => p[:condition].keys })
+      filtered_copies = true
+      copies = copies.where(:condition_rating => p[:condition].keys).includes(:edition)
     end
+    
+    if p[:condition].is_a?(Hash)
+      filtered_copies = true
+      copies = copies.where(:condition_rating => p[:condition].keys).includes(:edition)
+    end
+    
+    filtered = filtered.where(:id => copies.map { |c| c.edition.product_id }) if filtered_copies
     
     return filtered
   end
@@ -290,5 +300,10 @@ class Product < ActiveRecord::Base
   
   def in_theme? (theme)
     theme.product_ids.include?(id)
+  end
+  
+  # Function to get the product with the next ID (rolls around at the last book)
+  def next_product
+    Product.where('"products"."id" > ?', id).order(:id).limit(1).first || Product.limit(1).order(:id).first
   end
 end

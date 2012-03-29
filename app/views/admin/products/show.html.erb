@@ -69,4 +69,5 @@
   </div>
 </div>
 
-<%= link_to "Next Book", new_admin_product_path, :class => "next-book button" %>
+<%= link_to "Next Book", edit_admin_product_path(@product.next_product), :class => "next-book button" %>
+<%= link_to "New", new_admin_product_path, :class => "new-book button" %>

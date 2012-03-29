@@ -336,11 +336,18 @@
         }
     }
     
-    // Copies and editions page
-    
     .next-book.button {
         float:right;
+        margin-right: e(20px, $button-size);
+    }
+    
+    &.editions .next-book.button {
         margin-right: e(40px, $button-size);
+    }
+    
+    .new-book.button {
+        float:right;
+        margin-right: e(20px, $button-size);
     }
     
     // Book information sidebar styling
