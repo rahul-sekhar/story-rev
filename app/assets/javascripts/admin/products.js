@@ -347,13 +347,7 @@ $(document).ready(function() {
     });
     
     // Save current description before saving the product
-    $('form.product').submit(function() {
-        saveCurrentDescription();
-    });
-    $('.next-book').click(function() {
-        saveCurrentDescription();
-    });
-    $('.previous-book').click(function() {
+    $('.product form').submit(function() {
         saveCurrentDescription();
     });
     
