@@ -529,7 +529,7 @@ $(document).ready(function() {
     $ageGoogleLink.add($awardGoogleLink).click(function(e) {
         if (extClick(e)) return;
         e.preventDefault();
-        window.open(this.href, "_blank", "height=600, width=800, location=no");
+        window.open(this.href, "_blank", "height=600, width=800");
     });
     var $ageTo = $('#product_age_to');
     var $awardList = $('#award-field-list');
