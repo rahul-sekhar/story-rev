@@ -1,8 +1,10 @@
 class Edition < ActiveRecord::Base
-  attr_accessible :isbn, :format_name, :publisher_name
+  attr_accessible :isbn, :format_name, :publisher_name, :language_name
+  
   belongs_to :format
   belongs_to :product
   belongs_to :publisher
+  
   has_many :copies, :dependent => :destroy
   
   before_validation :convert_raw_isbn

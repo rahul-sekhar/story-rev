@@ -81,6 +81,14 @@ module AdminHelper
     return nil
   end
   
+  def self.set_language_and_content_type
+    Product.all.each do |p|
+      p.language_id ||= 1
+      p.content_type_id ||= 1
+      p.save
+    end
+  end
+  
   # Recreate cover image versions
   def self.recreate_cover_versions
     CoverImage.all.each do |c|

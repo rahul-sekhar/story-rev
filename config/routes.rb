@@ -42,8 +42,11 @@ StoryRev::Application.routes.draw do
     resources :illustrators
     resources :publishers
     resources :keywords
-    resources :product_tags
+    resources :product_types
+    resources :content_types
     resources :formats
+    resources :countries
+    resources :languages
     resources :themes do
       resources :products, :controller => "theme_products"
       put :update_products
