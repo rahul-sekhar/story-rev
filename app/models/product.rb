@@ -108,7 +108,8 @@ class Product < ActiveRecord::Base
   
   def find_accession_id
     if author.present?
-      author_acc = author.accession_id
+      author.convert_full_name
+      author_acc = author.find_accession_id
       return accession_id if accession_id.to_s[0,5] == author_acc
       
       last_product = Product.where('accession_id LIKE ?', "#{author_acc}%").order("accession_id DESC").first

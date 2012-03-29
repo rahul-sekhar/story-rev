@@ -12,8 +12,6 @@ class Author < ActiveRecord::Base
   
   def set_accession_id
     self.accession_id = find_accession_id
-    puts "Setting"
-    puts accession_id
   end
   
   def find_accession_id
