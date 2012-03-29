@@ -63,7 +63,7 @@ class Admin::ProductsController < Admin::ApplicationController
       when "Previous Book"
         redirect_path = edit_admin_product_path(@product.previous_product)
       else
-        search_admin_products_path
+        redirect_path = search_admin_products_path
       end
       
       redirect_to redirect_path, :notice => "Product saved - its accession number is #{@product.accession_id}"
