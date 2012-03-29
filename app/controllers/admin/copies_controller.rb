@@ -3,7 +3,7 @@ class Admin::CopiesController < Admin::ApplicationController
   def index
     @edition = Edition.find(params[:edition_id])
     respond_to do |format|
-      format.json { render :json => @edition.copies.map { |x| x.get_hash }}
+      format.json { render :json => @edition.copies.stocked.map { |x| x.get_hash }}
     end
   end
   
