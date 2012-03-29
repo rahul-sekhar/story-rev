@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120326060126) do
+ActiveRecord::Schema.define(:version => 20120329125922) do
 
   create_table "admin_roles", :force => true do |t|
     t.string   "name"
@@ -66,6 +66,14 @@ ActiveRecord::Schema.define(:version => 20120326060126) do
   add_index "copies", ["edition_id"], :name => "index_copies_on_edition_id"
   add_index "copies", ["in_stock"], :name => "index_copies_on_in_stock"
 
+  create_table "countries", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "countries", ["name"], :name => "index_countries_on_name"
+
   create_table "cover_images", :force => true do |t|
     t.integer  "product_id"
     t.string   "filename"
@@ -83,10 +91,12 @@ ActiveRecord::Schema.define(:version => 20120326060126) do
     t.datetime "updated_at"
     t.string   "raw_isbn"
     t.integer  "publisher_id"
+    t.integer  "language_id"
   end
 
   add_index "editions", ["format_id"], :name => "index_editions_on_format_id"
   add_index "editions", ["isbn"], :name => "index_editions_on_isbn", :unique => true
+  add_index "editions", ["language_id"], :name => "index_editions_on_language_id"
   add_index "editions", ["product_id"], :name => "index_editions_on_product_id"
   add_index "editions", ["publisher_id"], :name => "index_editions_on_publisher_id"
 
@@ -114,6 +124,27 @@ ActiveRecord::Schema.define(:version => 20120326060126) do
   end
 
   add_index "keywords", ["name"], :name => "index_keywords_on_name", :unique => true
+
+  create_table "languages", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "languages", ["name"], :name => "index_languages_on_name"
+
+  create_table "new_copies", :force => true do |t|
+    t.integer  "edition_id"
+    t.boolean  "limited_copies"
+    t.integer  "number"
+    t.integer  "price"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "new_copies", ["edition_id"], :name => "index_new_copies_on_edition_id"
+  add_index "new_copies", ["number"], :name => "index_new_copies_on_number"
+  add_index "new_copies", ["price"], :name => "index_new_copies_on_price"
 
   create_table "orders", :force => true do |t|
     t.integer  "step"
@@ -190,14 +221,18 @@ ActiveRecord::Schema.define(:version => 20120326060126) do
     t.datetime "in_stock_at"
     t.datetime "out_of_stock_at"
     t.datetime "book_date"
+    t.integer  "publisher_id"
+    t.integer  "country_id"
   end
 
   add_index "products", ["accession_id"], :name => "index_products_on_accession_id", :unique => true
   add_index "products", ["age_from", "age_to"], :name => "index_products_on_age_from_and_age_to"
   add_index "products", ["author_id"], :name => "index_products_on_author_id"
   add_index "products", ["book_date"], :name => "index_products_on_book_date"
+  add_index "products", ["country_id"], :name => "index_products_on_country_id"
   add_index "products", ["illustrator_id"], :name => "index_products_on_illustrator_id"
   add_index "products", ["in_stock"], :name => "index_products_on_in_stock"
+  add_index "products", ["publisher_id"], :name => "index_products_on_publisher_id"
   add_index "products", ["title"], :name => "index_products_on_title", :unique => true
 
   create_table "products_awards", :force => true do |t|
