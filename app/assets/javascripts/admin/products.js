@@ -51,7 +51,8 @@ $(document).ready(function() {
                     name: 'Publisher',
                     field: 'publisher_name',
                     type: 'autocomplete',
-                    sourceURL: '/admin/publishers'
+                    sourceURL: '/admin/publishers',
+                    default_val: $editionTable.data('publisher')
                 }
             ]
         });
@@ -144,11 +145,45 @@ $(document).ready(function() {
     }
     var $authorNameInput = $('#product_author_name').tokenInput("/admin/authors.json", singleAutocompleteSettings);
     $('#product_illustrator_name').tokenInput("/admin/illustrators.json", singleAutocompleteSettings);
+    $('#product_publisher_name').tokenInput("/admin/publishers.json", singleAutocompleteSettings);
+    $('#product_country_name').tokenInput("/admin/countries.json", singleAutocompleteSettings);
     $('#product_keyword_list').tokenInput("/admin/keywords.json", tagAutocompleteSettings);
     $('#product_product_tag_list').tokenInput("/admin/product_tags.json", tagAutocompleteSettings);
     
-    var $awardList = $('#award-field-list ul');
+    // Function to handle adding options to select lists
+    function allowOptionAdding($input, object_name, url, data_container) {
+        $input.appendOption("add", "Add").on('change', function() {
+            var val = $input.val();
+            
+            if (val == "add") {
+                var name = prompt("Enter the name of the " + object_name);
+                if (name) {
+                    $input.prop("disabled", true);
+                    $.ajaxCall(url, {
+                        method: "POST",
+                        data: {name: name},
+                        dataContainer: data_container,
+                        success: function(data) {
+                            $input.find('option[value=add]').before(makeOption(data.id, data.name));
+                            $input.val(data.id).prop("disabled", false);
+                        },
+                        error: function() {
+                            $input.val($input.find('option:first').attr('value')).prop("disabled", false);
+                        }
+                    });
+                }
+                else {
+                    $input.val($input.find('option:first').attr('value'));
+                }
+            }
+        });
+    }
     
+    allowOptionAdding($('#product_language_id'), 'language', '/admin/languages', 'language');
+    allowOptionAdding($('#product_content_type_id'), 'content type', '/admin/content_types', 'content_type');
+    allowOptionAdding($('#product_product_type_id'), 'product type', '/admin/product_types', 'product_type');
+    
+    var $awardList = $('#award-field-list ul');
     // Check when a award type selector is changed
     $awardList.on("change", ".award_type", function() {
         var $awardType = $(this);

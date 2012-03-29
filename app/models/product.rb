@@ -1,9 +1,9 @@
 class Product < ActiveRecord::Base
   default_scope includes(:author)
   
-  attr_accessible :title, :author_name, :illustrator_name, :year, :age_from, :age_to,
-                  :keyword_list, :product_tag_list, :flipkart_id, :amazon_url, :short_description,
-                  :award_attributes, :other_field_attributes, :cover_image_id, :cover_image_url
+  attr_accessible :title, :author_name, :illustrator_name, :publisher_name, :year, :country_name, :age_from, :age_to,
+                  :keyword_list, :flipkart_id, :amazon_url, :short_description, :product_type_id, :content_type_id,
+                  :award_attributes, :other_field_attributes, :cover_image_id, :cover_image_url, :language_id
   
   after_initialize :init
   before_validation :set_accession_id
@@ -15,6 +15,11 @@ class Product < ActiveRecord::Base
   has_and_belongs_to_many :product_tags, :join_table => :products_product_tags, :uniq => true
   belongs_to :author
   belongs_to :illustrator
+  belongs_to :publisher
+  belongs_to :language
+  belongs_to :product_type
+  belongs_to :content_type
+  belongs_to :country
   has_many :product_awards, :dependent => :destroy
   has_many :editions, :dependent => :destroy
   has_many :copies, :through => :editions
@@ -23,6 +28,8 @@ class Product < ActiveRecord::Base
   
   validates :title, :presence => true, :length => { :maximum => 250 }, :uniqueness => true
   validates :author, :presence => true
+  validates :content_type, :presence => true
+  validates :language, :presence => true
   validates :age_from, :numericality => { :only_integer => true, :greater_than_or_equal_to => 0, :less_than => 100 }, :allow_blank => true
   validates :age_to, :numericality => { :only_integer => true, :greater_than_or_equal_to => 0, :less_than => 100 }, :allow_blank => true
   validates :year, :numericality => { :only_integer => true, :greater_than => 1000, :less_than => 2100 }, :allow_blank => true
@@ -32,7 +39,8 @@ class Product < ActiveRecord::Base
   
   validates_associated :author
   validates_associated :illustrator
-  
+  validates_associated :publisher
+  validates_associated :country
   validates_associated :product_awards
   validates_associated :other_fields
   
@@ -74,12 +82,12 @@ class Product < ActiveRecord::Base
     escaped = SqlHelper::escapeWildcards(query).upcase
     product_array = []
     if fields == "all" && output == "display_target"
-      product_array |= self.select("id, title, in_stock")
+      product_array |= self.select("id, title, in_stock, content_type_id, language_id")
                             .where("UPPER(title) LIKE ?", "%#{escaped}%")
                             .map { |x| {:id => x.id, :name => x.title }}
       
       if (escaped =~ /^[A-Z]-[0-9]/)
-        product_array |= self.select("id, title, accession_id, in_stock")
+        product_array |= self.select("id, title, accession_id, in_stock, content_type_id, language_id")
                               .where('accession_id LIKE ?', "#{escaped}%")
                               .map { |x| {:id => x.id, :name => "#{x.title} - #{x.accession_id}" }}
       elsif (escaped =~ /^[0-9]+$/)
@@ -94,6 +102,8 @@ class Product < ActiveRecord::Base
   
   def init
     self.in_stock = false if in_stock.nil?
+    self.content_type_id ||= 1
+    self.language_id ||= 1
   end
   
   def set_timestamps
@@ -174,6 +184,22 @@ class Product < ActiveRecord::Base
     illustrator ? illustrator.full_name : nil
   end
   
+  def publisher_name=(name)
+    self.publisher = name.present? ? (Publisher.name_is(name).first || Publisher.new({ :name => name })) : nil
+  end
+  
+  def publisher_name
+    publisher ? publisher.name : nil
+  end
+  
+  def country_name=(name)
+    self.country = name.present? ? (Country.name_is(name).first || Country.new({ :name => name })) : nil
+  end
+  
+  def country_name
+    country ? country.name : nil
+  end
+  
   def keyword_list
     keywords.map{ |x| x.name }.join(", ")
   end
@@ -182,16 +208,6 @@ class Product < ActiveRecord::Base
   end
   def keywords_json
     keywords.to_json({ :only => [:id, :name] })
-  end
-  
-  def product_tag_list
-    product_tags.map{ |x| x.name }.join(", ")
-  end
-  def product_tag_list=(tag_list)
-    self.product_tags = ProductTag.split_list(tag_list)
-  end
-  def product_tags_json
-    product_tags.to_json({ :only => [:id, :name] })
   end
   
   def award_list

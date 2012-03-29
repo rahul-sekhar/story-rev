@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120329125922) do
+ActiveRecord::Schema.define(:version => 20120329141214) do
 
   create_table "admin_roles", :force => true do |t|
     t.string   "name"
@@ -49,6 +49,14 @@ ActiveRecord::Schema.define(:version => 20120329125922) do
 
   add_index "awards", ["award_type_id"], :name => "index_awards_on_award_type_id"
   add_index "awards", ["name"], :name => "index_awards_on_name"
+
+  create_table "content_types", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "content_types", ["name"], :name => "index_content_types_on_name"
 
   create_table "copies", :force => true do |t|
     t.integer  "edition_id"
@@ -91,12 +99,10 @@ ActiveRecord::Schema.define(:version => 20120329125922) do
     t.datetime "updated_at"
     t.string   "raw_isbn"
     t.integer  "publisher_id"
-    t.integer  "language_id"
   end
 
   add_index "editions", ["format_id"], :name => "index_editions_on_format_id"
   add_index "editions", ["isbn"], :name => "index_editions_on_isbn", :unique => true
-  add_index "editions", ["language_id"], :name => "index_editions_on_language_id"
   add_index "editions", ["product_id"], :name => "index_editions_on_product_id"
   add_index "editions", ["publisher_id"], :name => "index_editions_on_publisher_id"
 
@@ -196,13 +202,13 @@ ActiveRecord::Schema.define(:version => 20120329125922) do
     t.datetime "updated_at"
   end
 
-  create_table "product_tags", :force => true do |t|
+  create_table "product_types", :force => true do |t|
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "product_tags", ["name"], :name => "index_product_tags_on_name", :unique => true
+  add_index "product_types", ["name"], :name => "index_product_types_on_name"
 
   create_table "products", :force => true do |t|
     t.string   "title"
@@ -223,15 +229,21 @@ ActiveRecord::Schema.define(:version => 20120329125922) do
     t.datetime "book_date"
     t.integer  "publisher_id"
     t.integer  "country_id"
+    t.integer  "language_id"
+    t.integer  "product_type_id"
+    t.integer  "content_type_id"
   end
 
   add_index "products", ["accession_id"], :name => "index_products_on_accession_id", :unique => true
   add_index "products", ["age_from", "age_to"], :name => "index_products_on_age_from_and_age_to"
   add_index "products", ["author_id"], :name => "index_products_on_author_id"
   add_index "products", ["book_date"], :name => "index_products_on_book_date"
+  add_index "products", ["content_type_id"], :name => "index_products_on_content_type_id"
   add_index "products", ["country_id"], :name => "index_products_on_country_id"
   add_index "products", ["illustrator_id"], :name => "index_products_on_illustrator_id"
   add_index "products", ["in_stock"], :name => "index_products_on_in_stock"
+  add_index "products", ["language_id"], :name => "index_products_on_language_id"
+  add_index "products", ["product_type_id"], :name => "index_products_on_product_type_id"
   add_index "products", ["publisher_id"], :name => "index_products_on_publisher_id"
   add_index "products", ["title"], :name => "index_products_on_title", :unique => true
 
@@ -253,14 +265,6 @@ ActiveRecord::Schema.define(:version => 20120329125922) do
 
   add_index "products_keywords", ["product_id", "keyword_id"], :name => "index_products_keywords_on_product_id_and_keyword_id", :unique => true
   add_index "products_keywords", ["product_id"], :name => "index_products_keywords_on_product_id"
-
-  create_table "products_product_tags", :id => false, :force => true do |t|
-    t.integer "product_id"
-    t.integer "product_tag_id"
-  end
-
-  add_index "products_product_tags", ["product_id", "product_tag_id"], :name => "index_products_product_tags_on_product_id_and_product_tag_id", :unique => true
-  add_index "products_product_tags", ["product_id"], :name => "index_products_product_tags_on_product_id"
 
   create_table "products_themes", :id => false, :force => true do |t|
     t.integer "product_id"

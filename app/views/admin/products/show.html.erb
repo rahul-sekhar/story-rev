@@ -43,7 +43,7 @@
   
   <div class="table-wrapper">
     <div class="table-container">
-      <table id="edition-table" data-url="<%= admin_product_editions_path(@product) %>">
+      <table id="edition-table" data-url="<%= admin_product_editions_path(@product) %>" data-publisher="<%= @product.publisher_name %>">
         <% alt = false %>
         <% @product.editions.each do |e| %>
           <tr data-id="<%= e.id %>"<%= alt ? ' class="alt"' : nil %>>

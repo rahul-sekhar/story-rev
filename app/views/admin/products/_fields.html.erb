@@ -6,19 +6,35 @@
     <%= f.input :title, :input_html => { :autocomplete => :off } %>
     <%= f.input :author_name, :label => "Author" %>
     <%= f.input :illustrator_name, :label => "Illustrator" %>
+    <%= f.input :publisher_name, :label => "Publisher" %>
     <%= f.input :year,
       :as => :string,
       :label => "Year of Publication",
       :label_html => { :class => "multi-line centered" },
       :input_html => { :maxlength => 4 } %>
+    <%= f.input :country_name, :label => "Country", :as => :string %>
+    <%= f.input :language_id,
+                :as => :select,
+                :collection => Language.all,
+                :include_blank => false
+                %>
     <div class="input">
       <%= f.label :age_from, "Age level", :class => ( @product.errors[:age_from].present? ? "error" : nil ) %>
       <%= f.input_field :age_from, :maxlength => 2, :as => :string %>
       <%= f.label :age_to, "to", :class => "inline" + ( @product.errors[:age_to].present? ? " error" : "" ) %>
       <%= f.input_field :age_to, :maxlength => 2, :as => :string %>
     </div>
+    <%= f.input :content_type_id,
+                :as => :select,
+                :collection => ContentType.all,
+                :include_blank => false
+                %>
+    <%= f.input :product_type_id,
+                :label => "Book type",
+                :as => :select,
+                :collection => ProductType.all
+                %>
     <%= f.input :keyword_list, :label => "Keywords", :input_html => { "data-pre" => @product.keywords_json } %>
-    <%= f.input :product_tag_list, :label => "Product Tags", :input_html => { "data-pre" => @product.product_tags_json } %>
     
     <div class="input">
       <label<%=raw @product.errors[:product_awards].present? ? ' class="error"' : '' %>>Awards</label>
