@@ -9,7 +9,7 @@ class Edition < ActiveRecord::Base
   
   before_validation :convert_raw_isbn
   
-  validates :isbn, allow_blank => true
+  validates :isbn, :allow_blank => true
   validates :format, :presence => true
   validates :raw_isbn, :numericality => { :only_integer => true }, :allow_blank => true
   
