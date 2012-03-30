@@ -1,5 +1,13 @@
 class Admin::EditionsController < Admin::ApplicationController
   
+  def index
+    @editions = Product.find(params[:product_id]).editions
+    
+    respond_to do |format|
+      format.json { render :json => @editions.map { |x| x.get_hash }}
+    end
+  end
+  
   def create
     @product = Product.find(params[:product_id])
     @edition = @product.editions.build(params[:edition])

@@ -246,4 +246,21 @@ class Order < ActiveRecord::Base
     end
     self.order_copies = []
   end
+  
+  def add_copy(copy_id)
+    copy = Copy.find(copy_id)
+    return if copy.in_stock = false || copies.include?(copy)
+    
+    if copy.new_copy
+      copy.number -= 1
+    else
+      copy.set_stock = false
+    end
+    
+    oc = self.order_copies.build
+    oc.copy = copy
+    oc.save
+    
+    calculate_total
+  end
 end

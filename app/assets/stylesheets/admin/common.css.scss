@@ -415,6 +415,11 @@ tr {
 }
 
 // Dialogs
+.close-button {
+    @include remove-button;
+    float:right;
+}
+
 .ui-dialog {
     position:absolute;
     overflow: hidden;

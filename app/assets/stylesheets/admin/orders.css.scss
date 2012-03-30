@@ -109,3 +109,9 @@
         }
     }
 }
+
+#add-order-copy {
+    .zoom-link {
+        @include zoom-button;
+    }
+}

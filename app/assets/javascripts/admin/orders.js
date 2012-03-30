@@ -96,7 +96,7 @@ $(document).ready(function() {
                 data: {
                     _method: "PUT",
                     order_copy: {
-                        number: number
+                        set_number: number
                     }
                 },
                 success: function(data) {
@@ -235,5 +235,151 @@ $(document).ready(function() {
         $pre.replaceWith($textbox);
         $this.hide();
         $textbox.focus();
+    });
+    
+    // Handle manually adding products to orders
+    var $addDialog = $('<section id="add-order-copy" class="dialog"></section');
+    $('<a class="close-button" href="#"></a>').click(function(e) {
+        e.preventDefault();
+        $.unblockUI();
+    }).appendTo($addDialog);
+    
+    var product_id = null
+    
+    var $searchBox = $('<input name="product-search" class="product-search" />')
+        .appendTo($addDialog)
+        .tokenInput("/admin/products/search", {
+            overlayHintText: 'Search by title, author, ISBN or accession number',
+            tokenLimit: 1,
+            addClass: "fill dialog",
+            additionalParams: { search_by: "all", output: "display_target" },
+            allowCustom: true,
+            addFormatter: function(query) { return "<li>Add a new product - <strong>" + escapeHTML(query) + "</strong></li>" },
+            onAdd: function(item) {
+                product_id = item.id;
+                $infoLink.data('id', product_id).show();
+                $editionBox.show();
+                $editionTable.itemTable({
+                    url: '/admin/products/' + item.id + '/editions',
+                    objectName: 'edition',
+                    editable: false,
+                    removable: false,
+                    addable: false,
+                    selectable: true,
+                    initialLoad: true,
+                    columns: [
+                        {
+                            name: 'ISBN',
+                            field: 'isbn'
+                        },
+                        {
+                            name: 'Format',
+                            field: 'format_name',
+                        },
+                        {
+                            name: 'Publisher',
+                            field: 'publisher_name',
+                        }
+                    ]
+                })
+            },
+            onDelete: function(){
+                product_id = null;
+                $infoLink.hide();
+                $editionBox.hide();
+                $copyBox.hide();
+            }
+        });
+    
+    var $infoLink = $('<a href="#" class="zoom-link"></a>').appendTo($addDialog).hide();
+    
+    var $editionBox = $('<div class="editions"></div>').appendTo($addDialog).hide();
+    $editionBox.append('<p>Editions</p>')
+        .append('<div class="table-container editions"><table></table></div>');
+    var $editionTable = $editionBox.find('table');
+    
+    var $copyBox = $('<div class="copies"></div>').appendTo($addDialog).hide();
+    $copyBox.append('<p>Copies</p>')
+        .append('<div class="table-container copies"><table></table></div>');
+    var $copyTable = $copyBox.find('table');
+    
+    $editionTable.on("selectionChange", function(e, id) {
+        $copyBox.show();
+        
+        $copyTable.itemTable({
+            url: '/admin/products/' + product_id + '/editions/' + id + '/copies',
+            objectName: 'copy',
+            editable: false,
+            removable: false,
+            addable: false,
+            initialLoad: true,
+            columns: [
+                {
+                    name: 'Accession Number',
+                    field: 'accession_id',
+                    type: 'read_only',
+                    class_name: 'accession_id'
+                },
+                {
+                    name: 'Condition',
+                    field: 'condition_rating',
+                    multilineLabel: true,
+                    type: 'rating'
+                },
+                {
+                    name: 'Condition Description',
+                    multilineLabel: true,
+                    field: 'condition_description'
+                },
+                {
+                    name: 'Price',
+                    field: 'formatted_price',
+                    raw: 'price'
+                },
+                {
+                    name: 'Number',
+                    field: 'number',
+                },
+                {
+                    name: 'Add to order',
+                    type: 'fixed',
+                    class_name: 'has-button',
+                    html_content: '<a class="add-link" href="#"></a>'
+                }
+            ]
+        });
+    });
+    
+    $copyTable.on('click', '.add-link', function(e) {
+        e.preventDefault();
+        
+        var copy_id = $(this).closest('tr').data('id');
+        
+        $.ajax({
+            url: '/admin/orders/' + curr_id,
+            method: 'POST',
+            data: {
+                _method: 'PUT',
+                order: {
+                    add_copy: copy_id
+                }
+            },
+            success: function(data) {
+                $ordersTable.trigger("selectionChange", curr_id);
+            },
+            error: function(data) {
+                $ordersTable.trigger("selectionChange", curr_id);
+            }
+        });
+        
+        $.unblockUI();
+    })
+    
+    $orderInfo.on('click', '.add-link', function(e) {
+        e.preventDefault();
+        
+        $.blockUI({
+            message: $addDialog
+        });
     });
 });

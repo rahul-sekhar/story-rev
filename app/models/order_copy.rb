@@ -40,6 +40,12 @@ class OrderCopy < ActiveRecord::Base
     }
   end
   
+  def set_number=(num)
+    self.copy.number -= (num.to_i - number)
+    self.copy.save
+    self.number = num.to_i
+  end
+  
   def revert_copy
     if copy.new_copy
       copy.number += number

@@ -8,6 +8,12 @@ class Admin::OrdersController < Admin::ApplicationController
   
   def update
     @order = Order.find(params[:id])
+    
+    if params[:order][:add_copy].present?
+      @order.add_copy(params[:order][:add_copy])
+      params[:order].delete(:add_copy)
+    end
+    
     if @order.update_attributes(params[:order])
       render :json => { :success => true }
     else
