@@ -12,7 +12,8 @@
   <div class="container" data-count="<%= shopping_cart.items %>">
   <% if shopping_cart.items > 0 %>
     <table>
-      <% shopping_cart.copies.order(:in_stock).each do |c| %>
+      <% @cart_copies.each do |sc| %>
+      <% c = sc.copy %>
         <tr data-id="<%= c.id %>"<%= class_if !c.in_stock, "unavailable" %>>
           <td class="tiny-cover">
             <% if c.product.cover_image.present? %>
@@ -23,6 +24,13 @@
           </td>
           
           <td class="copy">
+            <% if c.new_copy %>
+              <div class="number">
+                <p class="number"><%= sc.number %></p>
+                <%= link_to "Change", "#", :class => "edit-link" %>
+                <p class="sidenote">No. of<br /> copies</p>
+              </div>
+            <% end %>
             <p class="title">
               <%= link_to c.product.title, product_path(c.product), :class => "product-link" %>
             </p>
@@ -32,10 +40,13 @@
             <p class="format" title="<%= c.edition.publisher_name %>">
               <%= c.edition.format_name %>
             </p>
-            <div class="rating" title="<%= c.condition_description %>">
-              <%= render "shared/rating", :rating => c.condition_rating %>
-            </p>
+            <% if !c.new_copy %>
+              <div class="rating" title="<%= c.condition_description %>">
+                <%= render "shared/rating", :rating => c.condition_rating %>
+              </div>
+            <% end %>
           </td>
+          
           <td class="price">
             <p><%= RupeeHelper.to_rupee(c.price) %></p>
             <% unless c.in_stock %>
@@ -45,6 +56,7 @@
               <% end %>
             <% end %>
           </td>
+          
           <td class="remove">
             <%= link_to "Remove", update_cart_path(:shopping_cart => { :remove_copy => c.id }),
               :class => "remove-link",
@@ -56,7 +68,7 @@
     </table>
     
     <div class="total">
-      <p>Total: <span><%= RupeeHelper.to_rupee(shopping_cart.total) %></span> <span class="sidenote">(excluding postage)</span></p>
+      <p>Total: <span class="amount"><%= RupeeHelper.to_rupee(shopping_cart.total) %></span> <span class="sidenote">(excluding postage)</span></p>
     </div>
   <% else %>
     <p class="empty-msg">Your shopping cart is empty</p>

@@ -1,22 +1,31 @@
 class ShoppingCart < ActiveRecord::Base
   default_scope includes(:order, :copies)
   
-  has_and_belongs_to_many :copies, :join_table => :shopping_carts_copies, :uniq => true
+  has_many :shopping_cart_copies, :dependent => :destroy, :include => :copy
+  has_many :copies, :through => :shopping_cart_copies, :as => :copy
   has_one :order
   
   def add_copy=(copy_id)
-    copy = Copy.find(copy_id)
-    self.copies << copy unless copies.include? copy
+    self.shopping_cart_copies.build(:copy_id => copy_id) unless copy_ids.include? copy_id.to_i
   end
   
   def remove_copy=(copy_id)
-    copy = Copy.find(copy_id)
-    self.copies.delete(copy)
+    scc = shopping_cart_copies.where(:copy_id => copy_id).first
+    self.shopping_cart_copies.delete(scc) if scc
+  end
+  
+  def change_number=(data)
+    scc = shopping_cart_copies.where(:copy_id => data["copy_id"].to_i).first
+    if scc
+      scc.number = data["number"]
+      scc.save
+      self.shopping_cart_copies.reload
+    end
   end
   
   def total
     price = 0
-    copies.stocked.each do |c|
+    shopping_cart_copies.each do |c|
       price += c.price
     end
     
@@ -25,12 +34,11 @@ class ShoppingCart < ActiveRecord::Base
   
   def empty=(bool)
     if bool
-      self.copies = []
-      save
+      self.shopping_cart_copies.clear
     end
   end
   
   def items
-    new_record? ? 0 : copies.length
+    new_record? ? 0 : shopping_cart_copies.length
   end
 end

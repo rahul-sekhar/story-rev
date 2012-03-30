@@ -42,7 +42,7 @@ class OrdersController < ApplicationController
   end
   
   def check_shopping_cart
-    if shopping_cart.copies.stocked.length == 0
+    if shopping_cart.shopping_cart_copies.stocked.length == 0
       if shopping_cart.items > 0
         message = "We're very sorry, but someone else has ordered the item(s) in your shopping cart, and they are now unavailable."
       else

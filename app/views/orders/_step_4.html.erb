@@ -1,7 +1,8 @@
 <div class="confirmation">
   <table>
     <% n = 0 %>
-    <% shopping_cart.copies.stocked.each do |c| %>
+    <% shopping_cart.shopping_cart_copies.stocked.each do |scc| %>
+      <% c = scc.copy %>
       <% n += 1 %>
       <tr>
         <td class="number">
@@ -21,9 +22,17 @@
           <p class="format" title="<%= c.edition.publisher_name %>">
             <%= c.edition.format_name %>
           </p>
-          <div class="rating" title="<%= c.condition_description %>">
-            <%= render "shared/rating", :rating => c.condition_rating %>
-          </p>
+          <% unless c.new_copy %>
+            <div class="rating" title="<%= c.condition_description %>">
+              <%= render "shared/rating", :rating => c.condition_rating %>
+            </p>
+          <% end %>
+        </td>
+        
+        <td class="number">
+          <% if scc.number > 1 %>
+            <p class="number"><%= scc.number %></p>
+          <% end %>
         </td>
         
         <td class="price">
@@ -41,11 +50,11 @@
   </div>
   
 
-  <% if shopping_cart.copies.unstocked.length > 0 %>
+  <% if shopping_cart.shopping_cart_copies.unstocked.length > 0 %>
   <div class="unavailable">
     <p class="error">The following items are no longer available:</p>
     <% n = 0 %>
-    <% shopping_cart.copies.unstocked.each do |c| %>
+    <% shopping_cart.shopping_cart_copies.unstocked.each do |c| %>
       <% n+= 1 %>
       <div class="item">
         

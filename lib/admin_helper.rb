@@ -81,11 +81,11 @@ module AdminHelper
     return nil
   end
   
-  def self.set_language_and_content_type
-    Product.all.each do |p|
-      p.language_id = 1
-      p.content_type_id = 1
-      p.save
+  def self.reset_copies
+    Copy.all.each do |x|
+      x.new_copy = false
+      x.limited_copies = true
+      x.save
     end
   end
   

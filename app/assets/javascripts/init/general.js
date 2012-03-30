@@ -23,14 +23,6 @@ function extClick(e) {
     return (e.ctrlKey || e.metaKey || e.shiftKey || e.which == 2);
 }
 
-// Functions to simplify appending options to a select box
-function makeOption(value, text) {
-    return '<option value="' + value + '">' + text + '</option>';
-}
-$.fn.appendOption = function(value, text) {
-    return $(this).append(makeOption(value, text));
-}
-
 // Function to check if an array includes an item
 function include(arr,obj) {
     return (arr.indexOf(obj) != -1);

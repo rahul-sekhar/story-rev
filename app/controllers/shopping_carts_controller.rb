@@ -5,9 +5,14 @@ class ShoppingCartsController < ApplicationController
       respond_to do |format|
         format.html { redirect_to shopping_cart_path }
         format.json {
-          @copies = shopping_cart.copies.includes(:edition => {:product => [:illustrator, :cover_image]})
+          
+          @cart_copies = shopping_cart.shopping_cart_copies
+          @cart_copies = @cart_copies.includes(:copy => {:edition => {:product => [:illustrator, :cover_image]}})
+          @cart_copies = @cart_copies.order('"copies"."in_stock"')
+          
           render :json => {
             :item_count => shopping_cart.items,
+            :total => shopping_cart.total,
             :html => params[:get_html] ? render_to_string(:action => "index.html", :layout => "ajax") : nil
           }
         }
@@ -24,17 +29,27 @@ class ShoppingCartsController < ApplicationController
   def index
     @class = "store shopping-cart"
     @title = "Shopping Cart"
-    @copies = shopping_cart.copies.includes(:edition => {:product => [:illustrator, :cover_image]})
+    
+    @cart_copies = shopping_cart.shopping_cart_copies
+    @cart_copies = @cart_copies.includes(:copy => {:edition => {:product => [:illustrator, :cover_image]}})
+    @cart_copies = @cart_copies.order('"copies"."in_stock"')
     
     # Log if there are unavailable copies
-    if @copies.unstocked.length > 0
-      Loggers.store_log "Shopping cart ##{shopping_cart.id} viewed with #{@copies.unstocked.length} unavailable copies with ids - #{@copies.unstocked.map{|x| x.id}.join(", ")}"
-    end
+    log_unavailable if (@cart_copies.unstocked.length > 0)
     
     if (params[:count])
       render :json => { :item_count => shopping_cart.items }
     else
       render :layout => "ajax" if (params[:ajax])
     end
+  end
+  
+  
+  def log_unavailable  
+    msg = "Shopping cart ##{shopping_cart.id} viewed with:\n"
+    msg += "#{@cart_copies.unstocked.length} unavailable copies\n"
+    msg += "IDs - #{@cart_copies.unstocked.map{|x| x.copy_id}.join(", ")}"
+    
+    Loggers.store_log msg
   end
 end

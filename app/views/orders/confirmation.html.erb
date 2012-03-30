@@ -10,7 +10,8 @@
     order, the following books have become unavailable! We're very sorry.</p>
     
     <table>
-      <% @order.out_of_stock.each do |c| %>
+      <% @order.out_of_stock.each do |oc| %>
+      <% c = oc.copy %>
         <tr>
           <td class="tiny-cover">
             <% if c.product.cover_image.present? %>

@@ -1,0 +1,28 @@
+<tr data-id="<%= c.id %>">
+
+  <td class="format" title="<%= c.edition.publisher_name %>"><%= c.edition.format_name %></td>
+  
+  <% if c.new_copy %>
+    <td class="spacer"></td>
+  <% else %>
+    <td title="<%= c.condition_description %>">
+      <%= render "shared/rating", :rating => c.condition_rating %>
+    </td>
+  <% end %>
+  
+  <td><%= RupeeHelper.to_rupee(c.price) %></td>
+  <td class="cart">
+    <% if shopping_cart.copy_ids.include? c.id %>
+      <span class="added" title="Added to cart">In Cart</span>
+      <%= link_to "Remove", update_cart_path(:shopping_cart => { :remove_copy => c.id }),
+        :class => "remove-link",
+        :title => "Remove from cart"
+      %>
+    <% else %>
+      <%= link_to "Buy", update_cart_path(:shopping_cart => { :add_copy => c.id}),
+        :class => "buy-link",
+        :title => "Add to cart"
+      %>
+    <% end %>
+  </td>
+</tr>

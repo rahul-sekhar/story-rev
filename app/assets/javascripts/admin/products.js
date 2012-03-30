@@ -78,6 +78,7 @@ $(document).ready(function() {
             
             $copyTable.itemTable({
                 url: editionURL + '/' + id + '/copies',
+                extraParams: {used: true},
                 objectName: 'copy',
                 addLinkText: 'Add Copy',
                 initialLoad: true,
@@ -107,8 +108,9 @@ $(document).ready(function() {
             });
             
             $newCopyTable.itemTable({
-                url: editionURL + '/' + id + '/new_copies',
-                objectName: 'new_copy',
+                url: editionURL + '/' + id + '/copies',
+                extraParams: {new: true},
+                objectName: 'copy',
                 addLinkText: 'Add New Copy',
                 initialLoad: true,
                 columns: [

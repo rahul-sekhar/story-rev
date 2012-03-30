@@ -23,7 +23,6 @@ class Product < ActiveRecord::Base
   has_many :product_awards, :dependent => :destroy
   has_many :editions, :dependent => :destroy
   has_many :copies, :through => :editions
-  has_many :new_copies, :through => :editions
   has_many :other_fields, :dependent => :destroy
   has_one :cover_image, :dependent => :destroy
   
@@ -52,11 +51,11 @@ class Product < ActiveRecord::Base
   end
   
   def self.includes_data
-    includes(:illustrator, :publisher, :keywords, :copies, :new_copies, :product_type, :content_type, :language, :country, :other_fields, { :product_awards => { :award => :award_type }}, :editions => [:format, :publisher])
+    includes(:illustrator, :publisher, :keywords, :copies, :product_type, :content_type, :language, :country, :other_fields, { :product_awards => { :award => :award_type }}, :editions => [:format, :publisher])
   end
   
   def self.includes_copies
-    includes({:editions => [:format, :publisher]}, :copies, :new_copies)
+    includes({:editions => [:format, :publisher]}, :copies)
   end
   
   def self.filter(p)
@@ -297,16 +296,16 @@ class Product < ActiveRecord::Base
     }
   end
   
+  def number_of_copy_types
+    copies.stocked.length
+  end
+  
   def number_of_copies
-    num = copies.length
-    new_copies.each do |c|
-      num += c.number if c.number > 0
-    end
-    return num
+    copies.stocked.used_copies.length + copies.stocked.new_copies.map {|x| x.number}.inject{:+}.to_i
   end
   
   def check_stock
-    is_in_stock = (copies.stocked.length > 0) || (new_copies.stocked.length > 0)
+    is_in_stock = copies.stocked.length > 0
     
     if (in_stock != is_in_stock)
         self.in_stock = is_in_stock

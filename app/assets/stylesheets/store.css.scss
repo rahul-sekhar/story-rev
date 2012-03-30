@@ -142,6 +142,10 @@
                 padding-right: e(40px, $smaller-text-size);
             }
             
+            .spacer {
+                width: e(80px, $smaller-text-size);
+            }
+            
             .buy-link {
                 float:left;
                 @include link-image-replacement(300px, 360px);
@@ -192,7 +196,7 @@
     #shopping-cart {
         padding: e(20px);
         @include clearfix;
-        width: e(500px);
+        width: e(560px);
         position:relative;
         overflow:hidden;
         
@@ -246,6 +250,35 @@
                 float:left;
                 margin-left: e(30px, $text-size);
             }
+            div.number {
+                float:right;
+                
+                p {
+                    float:left;
+                }
+                
+                .edit-link {
+                    @include small-text;
+                    @include link;
+                    @include link-image-replacement(660px, 720px);
+                    float:left;
+                }
+                
+                p.sidenote {
+                    float:left;
+                    clear:left;
+                    font-size: e(10px);
+                    line-height: 120%;
+                    text-transform: lowercase;
+                    margin-top: e(5px, 10px);
+                }
+                
+                input {
+                    width: e(25px, $text-size);
+                    margin:0;
+                    float:left;
+                }
+            }
         }
         
         tr {
@@ -272,7 +305,7 @@
             }
             
             &.copy {
-                width: e(260px);
+                width: e(300px);
             }
             
             &.price {

@@ -6,7 +6,6 @@ class Edition < ActiveRecord::Base
   belongs_to :publisher
   
   has_many :copies, :dependent => :destroy
-  has_many :new_copies, :dependent => :destroy
   
   before_validation :convert_raw_isbn
   

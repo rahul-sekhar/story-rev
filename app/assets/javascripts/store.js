@@ -253,7 +253,7 @@ $(document).ready(function() {
     var $shoppingCartDialog = $('<section id="shopping-cart-dialog" class="dialog"></section>');
     $shoppingCartDialog.dialog({
         position: "center",
-        width: 540,
+        width: 600,
         height: 400,
         autoOpen:false
     });
@@ -316,6 +316,49 @@ $(document).ready(function() {
     $shoppingCartSectionDialog.on('click', '.remove-link', function(e) {
         var copy_id = $(this).closest("tr").data("id");
         handleShoppingCartButton(e, { remove_copy: copy_id });
+    });
+    
+    // Handle changing the number of copies
+    $shoppingCartSectionDialog.on('click', '.edit-link', function(e) {
+        e.preventDefault();
+        
+        var $this = $(this);
+        var copy_id = $this.closest("tr").data("id");
+        var $number = $this.siblings(".number");
+        var old_number = parseInt($number.text(), 10);
+        
+        var saveNumber = function() {
+            var number = parseInt($textBox.val(), 10);
+            if (!number || number < 0) number = 1;
+            $textBox.replaceWith($number.text(number));
+            $this.show();
+            
+            $.ajax({
+                url: '/shopping_cart.json',
+                data: {
+                    _method: "PUT",
+                    shopping_cart: {
+                        change_number: {
+                            copy_id: copy_id,
+                            number: number
+                        }
+                    }
+                },
+                success: function(data) {
+                    $shoppingCartSectionDialog.find('.total .amount').text('Rs. ' + data.total);
+                },
+                error: function(data) {
+                    $number.text(old_number);
+                }
+            });
+        };
+        
+        var $textBox = $('<input type="text" name="number" value="' + old_number + '" />')
+            .on('blur', saveNumber);
+        
+        $number.replaceWith($textBox);
+        $textBox.focus();
+        $this.hide();
     });
     
     // Generic function to handle each of the shopping cart buttons

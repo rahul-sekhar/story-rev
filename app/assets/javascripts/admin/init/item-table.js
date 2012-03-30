@@ -19,6 +19,7 @@ var DEFAULTS = {
     headings: false,                // Whether to show headings for each column
     sortable: false,                // Whether the table columns can be sorted
     containCells: false,            // If set to true, the content of each cell is placed in a div with class "container"
+    extraParams: {},
     
     columns: [{
         name: "Column 1",
@@ -144,7 +145,7 @@ $.ItemTable = function(table, settings) {
             $.ajax($dialogForm.attr('action'), {
                 type: "POST",
                 dataType: "json",
-                data: $dialogForm.serialize(),
+                data: $.extend({}, $dialogForm.serializeObject(), settings.extraParams),
                 success: function(data) {
                     var $tr = $table.find('tr[data-id=' + data.id + ']');
                     $newTr = createRow(data);
@@ -219,7 +220,7 @@ $.ItemTable = function(table, settings) {
             
             $.ajax(settings.url + '/' + $tr.data("id"), {
                 type:'POST',
-                data: {_method: "DELETE"},
+                data: $.extend({_method: "DELETE"}, settings.extraParams),
                 success: function(data) {
                     $tr.remove();
                     select_item($table.find('tr.selected:first'));
@@ -335,7 +336,7 @@ $.ItemTable = function(table, settings) {
             });
         }
         
-        $.get(settings.url, function(data) {
+        $.get(settings.url, settings.extraParams, function(data) {
             $.each(data, function(index, value) {
                 $table.append(createRow(value));
             });
@@ -592,16 +593,17 @@ $.ItemTable = function(table, settings) {
         
         // Handle boolean inputs
         if (column.type == "boolean") {
-            $('<input type="hidden" name="' + field_name(column) + '" value="0" />').appendTo($container);
-            var $input = $('<input class="dialog-input checkbox" type="checkbox" id="' + field_id(column) + '" name="' + field_name(column) + '" value="1" />')
+            var $input = $('<select class="dialog-input" name="' + field_name(column) + '" id="' + field_id(column) + '" />')
+                .appendOption('1', 'Yes')
+                .appendOption('0', 'No')
                 .appendTo($container);
             
             $input
                 .on("fill", function(e, val) {
-                    $input.prop("checked", val);
+                    $input.val(val ? '1' : '0')
                 })
                 .on("clear", function(e) {
-                    $input.prop("checked", column.default_val || false);
+                    $input.val(column.default_val ? '1' : '0')
                 });
             
             return;

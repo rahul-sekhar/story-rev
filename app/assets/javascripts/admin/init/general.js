@@ -33,3 +33,12 @@ $.blockUI.defaults.overlayCSS = {
     backgroundColor: '#000', 
     opacity:         0.6 
 }
+
+// Functions to simplify appending options to a select box
+function makeOption(value, text) {
+    return '<option value="' + value + '">' + text + '</option>';
+}
+$.fn.appendOption = function(value, text) {
+    return $(this).append(makeOption(value, text));
+}
+

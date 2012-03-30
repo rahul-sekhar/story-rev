@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120329185056) do
+ActiveRecord::Schema.define(:version => 20120330065728) do
 
   create_table "admin_roles", :force => true do |t|
     t.string   "name"
@@ -67,12 +67,18 @@ ActiveRecord::Schema.define(:version => 20120329185056) do
     t.datetime "updated_at"
     t.integer  "price"
     t.boolean  "in_stock"
+    t.boolean  "new_copy"
+    t.boolean  "limited_copies"
+    t.integer  "number"
   end
 
   add_index "copies", ["accession_id"], :name => "index_copies_on_accession_id", :unique => true
   add_index "copies", ["condition_rating"], :name => "index_copies_on_condition_rating"
   add_index "copies", ["edition_id"], :name => "index_copies_on_edition_id"
   add_index "copies", ["in_stock"], :name => "index_copies_on_in_stock"
+  add_index "copies", ["limited_copies"], :name => "index_copies_on_limited_copies"
+  add_index "copies", ["new_copy"], :name => "index_copies_on_new_copy"
+  add_index "copies", ["number"], :name => "index_copies_on_number"
 
   create_table "countries", :force => true do |t|
     t.string   "name"
@@ -139,21 +145,6 @@ ActiveRecord::Schema.define(:version => 20120329185056) do
 
   add_index "languages", ["name"], :name => "index_languages_on_name"
 
-  create_table "new_copies", :force => true do |t|
-    t.integer  "edition_id"
-    t.boolean  "limited_copies"
-    t.integer  "number"
-    t.integer  "price"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "accession_id"
-  end
-
-  add_index "new_copies", ["accession_id"], :name => "index_new_copies_on_accession_id"
-  add_index "new_copies", ["edition_id"], :name => "index_new_copies_on_edition_id"
-  add_index "new_copies", ["number"], :name => "index_new_copies_on_number"
-  add_index "new_copies", ["price"], :name => "index_new_copies_on_price"
-
   create_table "orders", :force => true do |t|
     t.integer  "step"
     t.integer  "shopping_cart_id"
@@ -180,13 +171,11 @@ ActiveRecord::Schema.define(:version => 20120329185056) do
   add_index "orders", ["shopping_cart_id"], :name => "index_orders_on_shopping_cart_id"
   add_index "orders", ["step"], :name => "index_orders_on_step"
 
-  create_table "orders_copies", :id => false, :force => true do |t|
+  create_table "orders_copies", :force => true do |t|
     t.integer "order_id"
     t.integer "copy_id"
+    t.integer "number"
   end
-
-  add_index "orders_copies", ["order_id", "copy_id"], :name => "index_orders_copies_on_order_id_and_copy_id", :unique => true
-  add_index "orders_copies", ["order_id"], :name => "index_orders_copies_on_order_id"
 
   create_table "other_fields", :force => true do |t|
     t.integer  "product_id"
@@ -291,16 +280,16 @@ ActiveRecord::Schema.define(:version => 20120329185056) do
 
   add_index "shopping_carts", ["updated_at"], :name => "index_shopping_carts_on_updated_at"
 
-  create_table "shopping_carts_copies", :id => false, :force => true do |t|
+  create_table "shopping_carts_copies", :force => true do |t|
     t.integer "shopping_cart_id"
     t.integer "copy_id"
+    t.integer "number"
   end
 
-  add_index "shopping_carts_copies", ["shopping_cart_id", "copy_id"], :name => "index_shopping_carts_copies_on_shopping_cart_id_and_copy_id", :unique => true
-  add_index "shopping_carts_copies", ["shopping_cart_id"], :name => "index_shopping_carts_copies_on_shopping_cart_id"
-
   create_table "stock_taking", :force => true do |t|
-    t.integer "copy_id"
+    t.integer  "copy_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "stock_taking", ["copy_id"], :name => "index_stock_taking_on_copy_id"

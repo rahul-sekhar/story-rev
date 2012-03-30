@@ -368,6 +368,10 @@ tr {
     .dialog-input.checkbox {
         width:auto;
     }
+    
+    select.dialog-input {
+        float:left;
+    }
 }
 
 // Stars

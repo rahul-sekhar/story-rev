@@ -9,7 +9,8 @@ class Order < ActiveRecord::Base
   attr_reader :next_step, :out_of_stock
   attr_writer :out_of_stock
   
-  has_and_belongs_to_many :copies, :join_table => :orders_copies, :uniq => true
+  has_many :order_copies, :dependent => :destroy, :include => :copy
+  has_many :copies, :through => :order_copies, :as => :copy
   
   belongs_to :pickup_point
   belongs_to :shopping_cart
@@ -96,8 +97,13 @@ class Order < ActiveRecord::Base
         Loggers.store_log "Copies went out of stock during order (##{id}) - Copy ids: #{copies.unstocked.map{|x| x.id}.join(", ")}"
       end
       
-      
-      self.copies = shopping_cart.copies.stocked
+      self.order_copies = []
+      shopping_cart.shopping_cart_copies.stocked.each do |scc|
+        oc = self.order_copies.build
+        oc.copy = scc.copy
+        oc.number = scc.number
+        oc.save
+      end
       calculate_total
     end
   end
@@ -106,10 +112,10 @@ class Order < ActiveRecord::Base
     total = 0
     postage = 0
     
-    copies.each do |c|
-      total += c.price
+    order_copies.each do |oc|
+      total += oc.price
       if (delivery_method == 1)
-        postage += 10
+        postage += (10 * oc.number)
       end
     end
     
@@ -120,11 +126,16 @@ class Order < ActiveRecord::Base
   def finalise
     self.out_of_stock = []
     
-    copies.each do |c|
-      if c.in_stock
-        c.set_stock = false
+    order_copies.each do |oc|
+      if oc.copy.new_copy
+        oc.copy.number -= oc.number
+        oc.copy.save
       else
-        self.out_of_stock << c
+        if oc.copy.in_stock
+          oc.copy.set_stock = false
+        else
+          self.out_of_stock << oc
+        end
       end
     end
     
@@ -132,13 +143,13 @@ class Order < ActiveRecord::Base
       Loggers.store_log "Copies went out of stock after order confirmation (##{id}) - Copy ids: #{out_of_stock.map{|x| x.id}.join(", ")}"
     end
     
-    out_of_stock.each do |c|
-      self.copies.delete(c)
+    out_of_stock.each do |oc|
+      self.order_copies.delete(oc)
     end
     
     calculate_total
     
-    self.shopping_cart.copies = []
+    self.shopping_cart.shopping_cart_copies = []
     self.shopping_cart_id = nil
     save
   end

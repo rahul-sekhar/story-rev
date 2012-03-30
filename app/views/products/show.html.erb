@@ -41,34 +41,26 @@
     <% end %>
   <% end %>
   
-  <h3>Available Copies</h3>
-  <% if @product.copies.stocked.length > 0 %>
-  <table class="copies">
-    <% @product.copies.stocked.each do |c| %>
-      <tr data-id="<%= c.id %>">
-        <td class="format" title="<%= c.edition.publisher_name %>"><%= c.edition.format_name %></td>
-        <td title="<%= c.condition_description %>">
-          <%= render "shared/rating", :rating => c.condition_rating %>
-        </td>
-        <td><%= RupeeHelper.to_rupee(c.price) %></td>
-        <td class="cart">
-          <% if shopping_cart.copy_ids.include? c.id %>
-            <span class="added" title="Added to cart">In Cart</span>
-            <%= link_to "Remove", update_cart_path(:shopping_cart => { :remove_copy => c.id }),
-              :class => "remove-link",
-              :title => "Remove from cart"
-            %>
-          <% else %>
-            <%= link_to "Buy", update_cart_path(:shopping_cart => { :add_copy => c.id}),
-              :class => "buy-link",
-              :title => "Add to cart"
-            %>
-          <% end %>
-        </td>
-      </tr>
+  <% if @product.copies.new_copies.stocked.length > 0 %>
+  <h3>New Copies</h3>
+  <table class="copies new-copies">
+    <% @product.copies.new_copies.stocked.each do |c| %>
+      <%= render "copy_row", :c => c %>
     <% end %>
   </table>
-  <% else %>
+  <% end %>
+  
+  <% if @product.copies.used_copies.stocked.length > 0 %>
+  <h3>Used Copies</h3>
+  <table class="copies used-copies">
+    <% @product.copies.used_copies.stocked.each do |c| %>
+      <%= render "copy_row", :c => c %>
+    <% end %>
+  </table>
+  <% end %>
+
+  <% if !(@product.copies.stocked.length > 0) %>
+    <h3>Available Copies</h3>
     <p>There are no copies in stock at the moment.</p>
   <% end %>
   
