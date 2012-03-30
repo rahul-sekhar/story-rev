@@ -102,6 +102,8 @@ $(document).ready(function() {
                 success: function(data) {
                     $number.text(number);
                     $this.show();
+                    
+                    updateOrderAmount(data);
                 },
                 error: function(data) {
                     $number.text(old_number);
@@ -116,6 +118,9 @@ $(document).ready(function() {
         $number.empty().append($textbox);
         $textbox.focus();
         $this.hide();
+    }).on('itemRemove', function(e, data) {
+        console.log(data);
+        updateOrderAmount(data);
     });
     
     $ordersTable.on("selectionChange", function(e, id) {
@@ -133,6 +138,8 @@ $(document).ready(function() {
                 .find(".payment").text(data.payment_text).end()
                 .find(".delivery").text(data.delivery_text).end()
                 .find(".pickup").text(data.pickup_point_text).end()
+                .find(".total span").text(data.total_amount).end()
+                .find(".postage span").text(data.postage_amount).end()
                 .show();
                 
                 // Update the copies table
@@ -365,6 +372,7 @@ $(document).ready(function() {
                 }
             },
             success: function(data) {
+                updateOrderAmount(data);
                 $ordersTable.trigger("selectionChange", curr_id);
             },
             error: function(data) {
@@ -378,8 +386,24 @@ $(document).ready(function() {
     $orderInfo.on('click', '.add-link', function(e) {
         e.preventDefault();
         
+        $searchBox.tokenInput("reset");
+        
         $.blockUI({
             message: $addDialog
         });
     });
+    
+    // Handle initial selection for the orders table
+    var initId = $ordersTable.data('init-select');
+    if (initId) {
+        $ordersTable.find('tr.selected').removeClass('selected');
+        $ordersTable.find('tr[data-id=' + initId + ']').addClass('selected');
+        $ordersTable.trigger("selectionChange", initId);
+    }
+    
+    function updateOrderAmount(data) {
+        $orderInfo.find('.total span').text(data.total_amount)
+        $orderInfo.find('.postage span').text(data.postage_amount)
+        $ordersTable.find('tr[data-id=' + curr_id + '] .total').text(data.total_amount)
+    }
 });

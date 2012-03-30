@@ -8,6 +8,8 @@ class Admin::CopiesController < Admin::ApplicationController
       @copies = @copies.new_copies
     elsif (params[:used])
       @copies = @copies.used_copies.stocked
+    else
+      @copies = @copies.new_or_stocked
     end
     
     respond_to do |format|

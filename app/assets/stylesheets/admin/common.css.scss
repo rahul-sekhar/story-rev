@@ -202,6 +202,11 @@ input, textarea {
     padding: 0 e(5px, $input-font-size);
 }
 
+textarea {
+    height: e(100px, $input-font-size);
+    width: e(250px, $input-font-size);
+}
+
 input {
     height: e(25px, $input-font-size);
     float:left;

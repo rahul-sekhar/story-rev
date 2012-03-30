@@ -19,6 +19,8 @@ class Copy < ActiveRecord::Base
   scope :new_copies, where(:new_copy => true)
   scope :used_copies, where(:new_copy => false)
   
+  scope :new_or_stocked, where("in_stock = TRUE OR new_copy = TRUE")
+  
   def init
     self.in_stock = true if in_stock.nil?
     self.new_copy = false if new_copy.nil?

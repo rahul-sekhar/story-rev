@@ -3,13 +3,13 @@
     <%= link_to "Pending Orders", pending_admin_orders_path %>
   </li>
   
-  <li class="current">
+  <li>
     <%= link_to "Old Orders", admin_orders_path %>
   </li>
   
-  <li>
+  <li class="current">
     <%= link_to "Add Order", new_admin_order_path %>
   </li>
 <% end %>
 
-<%= render "view_and_edit" %>
+<%= render "fields" %>

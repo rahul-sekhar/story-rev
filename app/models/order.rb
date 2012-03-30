@@ -1,7 +1,7 @@
 class Order < ActiveRecord::Base
   after_initialize :init
   after_validation :change_step_if_invalid
-  before_save :remove_unecessary_fields, :refresh_if_incomplete
+  before_save :remove_unecessary_fields, :refresh_if_incomplete, :calculate_total
   
   attr_accessible :next_step, :delivery_method, :pickup_point_id, :other_pickup,
     :payment_method, :name, :email, :phone, :address, :city, :pin_code, :other_info,
@@ -114,7 +114,6 @@ class Order < ActiveRecord::Base
         oc.number = scc.number
         oc.save
       end
-      calculate_total
     end
   end
   
@@ -207,7 +206,7 @@ class Order < ActiveRecord::Base
   def pickup_point_text
     return "" if delivery_method != 2
     
-    "Pickup point: #{pickup_point.present? ? pickup_point.name : "Other - other_pickup"}"
+    "Pickup point: #{pickup_point.present? ? pickup_point.name : "#{other_pickup} (other)"}"
   end
   
   def payment_text
@@ -224,19 +223,37 @@ class Order < ActiveRecord::Base
     x += city if city.present?
     x += " - " if (city.present? && pin_code.present?)
     x += pin_code if pin_code.present?
+    return x
+  end
+  
+  def formatted_postage_amount
+    RupeeHelper.to_rupee(postage_amount || 0)
+  end
+  
+  def formatted_total_amount
+    RupeeHelper.to_rupee(total_amount || 0)
   end
   
   def get_hash
-  {
-    :name => name,
-    :email => email,
-    :address => full_address,
-    :phone => phone,
-    :other_info => other_info,
-    :payment_text => payment_text,
-    :delivery_text => delivery_text,
-    :pickup_point_text => pickup_point_text
-  }
+    {
+      :name => name,
+      :email => email,
+      :address => full_address,
+      :phone => phone,
+      :other_info => other_info,
+      :payment_text => payment_text,
+      :delivery_text => delivery_text,
+      :pickup_point_text => pickup_point_text,
+      :postage_amount => formatted_postage_amount,
+      :total_amount => formatted_total_amount
+    }
+  end
+  
+  def amount_hash
+    {
+      :postage_amount => formatted_postage_amount,
+      :total_amount => formatted_total_amount
+    }
   end
   
   def revert_copies
@@ -256,11 +273,10 @@ class Order < ActiveRecord::Base
     else
       copy.set_stock = false
     end
+    copy.save
     
     oc = self.order_copies.build
     oc.copy = copy
     oc.save
-    
-    calculate_total
   end
 end

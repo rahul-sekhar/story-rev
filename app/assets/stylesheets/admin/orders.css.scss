@@ -4,6 +4,10 @@
         float:none;
     }
     
+    .table-container {
+        height: e(120px);
+    }
+    
     td.confirmed, td.packaged {
         width: e(75px, $small-text-size);
         padding:0;
@@ -40,6 +44,18 @@
         display:none;
         
         margin-top: e(30px);
+        
+        .amount {
+            margin-top: e(20px);
+            p {
+                margin: 0;
+                font-weight: bold;
+            }
+            
+            span {
+                font-weight: normal;
+            }
+        }
         
         .info {
             float:left;
@@ -107,6 +123,14 @@
             background: url('/images/admin-icons.png') no-repeat 0 -1320px;
             min-height: e(20px, $small-text-size);
         }
+    }
+    
+    
+    // Form
+    
+    .submit {
+        margin-left: e(100px, $heading-size);
+        margin-bottom: e(20px, $heading-size);
     }
 }
 

@@ -226,6 +226,7 @@ $.ItemTable = function(table, settings) {
                     select_item($table.find('tr.selected:first'));
                     restripe();
                     $.unblockUI();
+                    $table.trigger("itemRemove", data);
                 },
                 error: function(data) {
                     $.unblockUI();

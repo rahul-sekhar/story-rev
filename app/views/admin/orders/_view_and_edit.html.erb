@@ -1,0 +1,57 @@
+
+<div class="table-container">
+  <table id="orders-table" data-init-select="<%= params[:selected_order_id] %>">
+    <% @orders.each do |o| %>
+      <tr data-id="<%= o.id %>">
+        <td><%= o.id %></td>
+        <td><%= o.name %></td>
+        <td><%= o.city %></td>
+        <td><%= o.delivery_short %></td>
+        <td><%= o.number_of_copies %> books</td>
+        <td class="total"><%= o.formatted_total_amount %></td>
+        <td class="confirmed"><%= check_box_tag "confirmed", "1", o.confirmed, :id => nil, :class => :confirmed %> confirmed</td>
+        <td class="paid"><%= check_box_tag "paid", "1", o.paid, :id => nil, :class => :paid %> paid</td>
+        <td class="packaged"><%= check_box_tag "packaged", "1", o.packaged, :id => nil, :class => :packaged %> packaged</td>
+        <td class="posted"><%= check_box_tag "posted", "1", o.posted, :id => nil, :class => :posted %> posted</td>
+        <td class="has-button"><%= link_to "", edit_admin_order_path(o), :class => "edit-link" %></td>
+      </tr>
+    <% end %>
+  </table>
+</div>
+
+<section id="order-info">
+  <h2>Order : <span class="name"></span></h2>
+  
+  <div class="amount">
+    <p class="postage">Postage: <span></span></p>
+    <p class="total">Total: <span></span></p>
+  </div>
+  
+  <div class="table-wrapper" id="order-copies">
+    <div class="table-container">
+      <table></table>
+    </div>
+    <p class="add-container"><a href="#" class="add-link">Manually add book</a></p>
+  </div>
+  
+  <div class="info">
+    <p class="email" title="Email"></p>
+    
+    <div class="address" title="Address">
+      <span class="icon"></span>
+      <pre></pre>
+    </div>
+    
+    <p class="phone" title="Phone"></p>
+    
+    <p class="payment"></p>
+    
+    <p class="delivery"></p>
+    <p class="pickup"></p>
+  </div>
+  
+  <div class="comments" title="Comments">
+    <pre></pre>
+    <a href="#" class="edit-link"></a>
+  </div>
+</section>
