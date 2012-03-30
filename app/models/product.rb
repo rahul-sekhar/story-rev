@@ -12,7 +12,6 @@ class Product < ActiveRecord::Base
   after_create :set_timestamps
   
   has_and_belongs_to_many :keywords, :join_table => :products_keywords, :uniq => true
-  has_and_belongs_to_many :product_tags, :join_table => :products_product_tags, :uniq => true
   belongs_to :author
   belongs_to :illustrator
   belongs_to :publisher
@@ -26,7 +25,7 @@ class Product < ActiveRecord::Base
   has_many :other_fields, :dependent => :destroy
   has_one :cover_image, :dependent => :destroy
   
-  validates :title, :presence => true, :length => { :maximum => 250 }, :uniqueness => true
+  validates :title, :presence => true, :length => { :maximum => 255 }, :uniqueness => true
   validates :author, :presence => true
   validates :content_type, :presence => true
   validates :language, :presence => true

@@ -84,6 +84,11 @@ a {
     @include link-color;
 }
 
+h2 {
+    @include heading;
+    color: $color-a1;
+}
+
 $button-size: $heading-size;
 a.button, input.submit {
     @include inline-block;
@@ -262,6 +267,16 @@ td {
     
     &.has-button {
         width: e(20px);
+        padding: 0 e(5px, $small-text-size);
+    }
+    
+    &.number {
+        width: e(15px, $small-text-size);
+        padding: 0 0 0 e(10px, $small-text-size);
+    }
+    
+    &.accession_id {
+        width: e(80px, $small-text-size);
         padding: 0 e(5px, $small-text-size);
     }
 }

@@ -22,4 +22,21 @@ class OrderCopy < ActiveRecord::Base
   def check_number
     self.number = 1 unless (copy.new_copy && number > 0)
   end
+  
+  def get_hash
+    {
+      :id => id,
+      :title => copy.product.title,
+      :author_name => copy.product.author_name,
+      :accession_id => copy.accession_id,
+      :price => copy.formatted_price,
+      :format_name => copy.edition.format_name,
+      :isbn => copy.edition.isbn,
+      :new_copy => copy.new_copy,
+      :condition_rating => copy.new_copy ? copy.condition_rating : nil,
+      :condition_description => copy.new_copy ? copy.condition_description : nil,
+      :number => number,
+      :ticked => ticked
+    }
+  end
 end

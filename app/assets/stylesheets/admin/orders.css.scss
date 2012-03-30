@@ -1,24 +1,98 @@
 .orders {
-    .table-container, table {
+    .table-wrapper, .table-container, table {
         width:100%;
-        
-        td.confirmed, td.packaged {
-            width: e(75px, $small-text-size);
-            padding:0;
-        }
-        
-        td.posted {
-            width: e(60px, $small-text-size);
-            padding:0;
-        }
-        
-        td.paid {
-            width: e(50px, $small-text-size);
-            padding:0;
-        }
+        float:none;
+    }
+    
+    td.confirmed, td.packaged {
+        width: e(75px, $small-text-size);
+        padding:0;
+    }
+    
+    td.posted {
+        width: e(60px, $small-text-size);
+        padding:0;
+    }
+    
+    td.paid {
+        width: e(50px, $small-text-size);
+        padding:0;
+    }
+    
+    #order-copies {
+        margin-top: e(20px);
     }
     
     #order-info {
         display:none;
+        
+        margin-top: e(30px);
+        
+        .info {
+            float:left;
+            width: e(250px);
+            margin-top: e(30px);
+        }
+        
+        .comments {
+            float:left;
+            border: 1px dotted $color-e1;
+            width: e(350px);
+            min-height: e(160px);
+            margin-top: e(30px);
+            padding: e(15px) e(20px);
+            margin-bottom: e(40px);
+            position:relative;
+            
+            textarea {
+                width:  e(340px, $small-text-size);
+                min-height: e(160px, $small-text-size);
+                height: 100%;
+            }
+            
+            .edit-link {
+                @include edit-button;
+                position:absolute;
+                bottom: 10px;
+                right: 10px;
+            }
+        }
+        
+        .add-container {
+            font-size: $text-size;
+        }
+        
+        p, pre {
+            @include small-text;
+            margin-bottom: e(10px, $small-text-size);
+            line-height: e(20px, $small-text-size);
+        }
+        
+        .email {
+            padding-left: e(28px, $small-text-size);
+            background: url('/images/admin-icons.png') no-repeat 0 -1200px;
+        }
+        
+        .address {
+            position:relative;
+            padding-left: e(28px);
+            min-height: e(40px);
+            
+            .icon {
+                position:absolute;
+                display:block;
+                left:0;
+                top:0;
+                width: 20px;
+                height: 20px;
+                background: url('/images/admin-icons.png') no-repeat 0 -1260px;
+            }
+        }
+        
+        .phone {
+            padding-left: e(28px, $small-text-size);
+            background: url('/images/admin-icons.png') no-repeat 0 -1320px;
+            min-height: e(20px, $small-text-size);
+        }
     }
 }

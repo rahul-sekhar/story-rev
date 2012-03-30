@@ -7,11 +7,27 @@ $(document).ready(function() {
         selectable: true,
         removable: false,
         editable: false,
-        addable: false
+        addable: false,
+        columns: [
+            {
+                name: 'Name'
+            },
+            {
+                name: 'City'
+            },
+            {
+                name: 'Delivery Method'
+            },
+            {
+                name: 'Number of copies'
+            },
+            {
+                name: 'Total amount'
+            }
+        ]
     });
     
     $ordersTable.on('click', 'input', function(e) {
-        e.preventDefault();
         var $this = $(this);
         $this.prop('disabled', true);
         var order_id = $this.closest('tr').data('id');
@@ -33,20 +49,136 @@ $(document).ready(function() {
             error: function(data) {
                 $this.prop('disabled', false);
             }
-        })
+        });
     });
     
     var $orderInfo = $('#order-info');
+    var $copiesTable = $orderInfo.find('table').on('click', '.ticked', function(e) {
+        var $this = $(this);
+        $this.prop('disabled', true);
+        var order_copy_id = $this.closest('tr').data('id');
+        var val = ($this.is(':checked'));
+        
+        $.ajax({
+            url: '/admin/orders/' + curr_id + '/order_copies/' + order_copy_id,
+            method: 'POST',
+            data: {
+                _method: 'PUT',
+                order_copy: {
+                    ticked: val
+                }
+            },
+            success: function(data) {
+                $this.prop('checked', val)
+                $this.prop('disabled', false);
+            },
+            error: function(data) {
+                $this.prop('disabled', false);
+            }
+        });
+    });
+    var curr_id;
     
     $ordersTable.on("selectionChange", function(e, id) {
         $orderInfo.hide();
+        curr_id = id;
+        
+        // Update the order info
         $.get('/admin/orders/' + id, function(data) {
-            console.log(data);
-            $orderInfo.find(".name").text(data.name);
-            $orderInfo.find(".email").text(data.email);
-            $orderInfo.find(".address").text(data.address);
-            $orderInfo.find(".phone").text(data.phone);
-            $orderInfo.show();
+            $orderInfo.find(".name").text(data.name).end()
+                .find(".email").text(data.email).end()
+                .find(".address pre").text(data.address || "").end()
+                .find(".phone").text(data.phone).end()
+                .find(".comments pre").text(data.other_info).end()
+                .find(".payment").text(data.payment_text).end()
+                .find(".delivery").text(data.delivery_text).end()
+                .find(".pickup").text(data.pickup_point_text).end()
+                .show();
+                
+                // Update the copies table
+                $copiesTable.itemTable({
+                    url: '/admin/orders/' + id + '/order_copies',
+                    objectName: 'order_copy',
+                    addable: false,
+                    editable: false,
+                    initialLoad: true,
+                    numbered: true,
+                    columns: [
+                        {
+                            name: 'Title',
+                            field: 'title'
+                        },
+                        {
+                            name: 'Author',
+                            field: 'author_name'
+                        },
+                        {
+                            name: 'Accession Number',
+                            field: 'accession_id',
+                            class_name: 'accession_id'
+                        },
+                        {
+                            name: 'Price',
+                            field: 'price'
+                        },
+                        {
+                            name: 'Format',
+                            field: 'format_name'
+                        },
+                        {
+                            name: 'ISBN',
+                            field: 'isbn'
+                        },
+                        {
+                            name: 'Rating',
+                            field: 'condition_rating',
+                            type: 'rating'
+                        },
+                        {
+                            name: 'Ticked',
+                            field: 'ticked',
+                            class_name: 'has-button',
+                            type: 'html',
+                            displayCallback: function(data) {
+                                return '<input class="ticked" type="checkbox" ' + (data ? 'checked="checked" ' : '') + '/>';
+                            }
+                        }
+                    ]
+                });
         });
+    });
+    
+    $orderInfo.find('.comments .edit-link').click(function() {
+        var $this = $(this);
+        var $pre = $this.siblings('pre');
+        var $textbox = $('<textarea></textarea>').text($pre.text());
+        
+        var saveEdit = function() {
+            var text = $textbox.val();
+            console.log(text);
+            $.ajax ({
+                url: '/admin/orders/' + curr_id,
+                method: 'POST',
+                data: {
+                    _method: 'PUT',
+                    order: {
+                        other_info: text
+                    }
+                },
+                success: function(data) {
+                    $textbox.replaceWith($pre.text(text));
+                    $this.show();
+                },
+                error: function(data) {
+                    $textbox.replaceWith($pre);
+                    $this.show();
+                }
+            })
+        }
+        
+        $textbox.blur(saveEdit);
+        $pre.replaceWith($textbox);
+        $this.hide();
+        $textbox.focus();
     });
 });

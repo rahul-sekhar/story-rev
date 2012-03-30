@@ -204,6 +204,20 @@ class Order < ActiveRecord::Base
     end
   end
   
+  def pickup_point_text
+    return "" if delivery_method != 2
+    
+    "Pickup point: #{pickup_point.present? ? pickup_point.name : "Other - other_pickup"}"
+  end
+  
+  def payment_text
+    "Payment by #{payment_name}"
+  end
+  
+  def delivery_text
+    "Delivery by #{delivery_name}"
+  end
+  
   def full_address
     x = address
     x += "\n" if (city.present? || pin_code.present?)
@@ -218,7 +232,10 @@ class Order < ActiveRecord::Base
     :email => email,
     :address => full_address,
     :phone => phone,
-    :other_info => other_info
+    :other_info => other_info,
+    :payment_text => payment_text,
+    :delivery_text => delivery_text,
+    :pickup_point_text => pickup_point_text
   }
   end
 end

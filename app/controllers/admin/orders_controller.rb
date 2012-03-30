@@ -9,7 +9,7 @@ class Admin::OrdersController < Admin::ApplicationController
   def update
     @order = Order.find(params[:id])
     if @order.update_attributes(params[:order])
-      render :json => { :success => true, :params => params.inspect }
+      render :json => { :success => true }
     else
       render :json => @order.errors.full_messages, :status => :unprocessable_entity
     end
