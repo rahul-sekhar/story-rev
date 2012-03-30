@@ -1,0 +1,36 @@
+<% content_for :top_nav do %>
+  <li class="current">
+    <%= link_to "Pending Orders", pending_admin_orders_path %>
+  </li>
+<% end %>
+
+<div class="table-container">
+  <table id="orders-table">
+    <% @orders.each do |o| %>
+      <tr data-id="<%= o.id %>">
+        <td><%= o.name %></td>
+        <td><%= o.city %></td>
+        <td><%= o.delivery_short %></td>
+        <td><%= o.number_of_copies %> books</td>
+        <td><%= RupeeHelper.to_rupee(o.total_amount) %></td>
+        <td class="confirmed"><%= check_box_tag "confirmed", "1", o.confirmed, :id => nil, :class => :confirmed %> confirmed</td>
+        <td class="paid"><%= check_box_tag "paid", "1", o.paid, :id => nil, :class => :paid %> paid</td>
+        <td class="packaged"><%= check_box_tag "packaged", "1", o.packaged, :id => nil, :class => :packaged %> packaged</td>
+        <td class="posted"><%= check_box_tag "posted", "1", o.posted, :id => nil, :class => :posted %> posted</td>
+      </tr>
+    <% end %>
+  </table>
+</div>
+
+<section id="order-info">
+  <h2>Order: <span class="name"></span></h2>
+  
+  <div class="contact">
+    <p class="email" title="Email"></p>
+    <pre class="address" title="Address"></pre>
+    <p class="phone" title="Phone"></p>
+  </div>
+  
+  <div class="comments" title="Comments">
+  </div>
+</section>

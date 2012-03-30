@@ -4,7 +4,8 @@ class Order < ActiveRecord::Base
   before_save :remove_unecessary_fields, :refresh_if_incomplete
   
   attr_accessible :next_step, :delivery_method, :pickup_point_id, :other_pickup,
-    :payment_method, :name, :email, :phone, :address, :city, :pin_code, :other_info
+    :payment_method, :name, :email, :phone, :address, :city, :pin_code, :other_info,
+    :confirmed, :paid, :packaged, :posted
   
   attr_reader :next_step, :out_of_stock
   attr_writer :out_of_stock
@@ -37,6 +38,11 @@ class Order < ActiveRecord::Base
     self.step ||= 1
     self.delivery_method ||= 1
     self.payment_method ||= 1
+    
+    self.confirmed = false if confirmed.nil?
+    self.paid = false if paid.nil?
+    self.packaged = false if packaged.nil?
+    self.posted = false if posted.nil?
   end
   
   def change_step_if_invalid
@@ -88,6 +94,10 @@ class Order < ActiveRecord::Base
   
   def complete?
     step == 5
+  end
+  
+  def number_of_copies
+    order_copies.map{|x| x.number}.inject(:+)
   end
   
   def refresh_if_incomplete
@@ -151,6 +161,7 @@ class Order < ActiveRecord::Base
     
     self.shopping_cart.shopping_cart_copies = []
     self.shopping_cart_id = nil
+    self.confirmed = true
     save
   end
   
@@ -175,6 +186,15 @@ class Order < ActiveRecord::Base
     end
   end
   
+  def delivery_short
+    case delivery_method.to_i
+    when 1
+      "Post"
+    when 2
+      "Pick-up"
+    end
+  end
+  
   def payment_name
     case delivery_method.to_i
     when 1
@@ -182,5 +202,23 @@ class Order < ActiveRecord::Base
     when 2
       "cheque"
     end
+  end
+  
+  def full_address
+    x = address
+    x += "\n" if (city.present? || pin_code.present?)
+    x += city if city.present?
+    x += " - " if (city.present? && pin_code.present?)
+    x += pin_code if pin_code.present?
+  end
+  
+  def get_hash
+  {
+    :name => name,
+    :email => email,
+    :address => full_address,
+    :phone => phone,
+    :other_info => other_info
+  }
   end
 end

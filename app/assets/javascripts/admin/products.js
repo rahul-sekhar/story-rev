@@ -134,7 +134,6 @@ $(document).ready(function() {
                         name: 'Limited Copies',
                         field: 'limited_copies',
                         type: 'boolean',
-                        default_val: true,
                         multilineLabel: true,
                         displayCallback: function(data) {
                             return data ? "Limited" : "Unlimited";

@@ -1,0 +1,24 @@
+.orders {
+    .table-container, table {
+        width:100%;
+        
+        td.confirmed, td.packaged {
+            width: e(75px, $small-text-size);
+            padding:0;
+        }
+        
+        td.posted {
+            width: e(60px, $small-text-size);
+            padding:0;
+        }
+        
+        td.paid {
+            width: e(50px, $small-text-size);
+            padding:0;
+        }
+    }
+    
+    #order-info {
+        display:none;
+    }
+}

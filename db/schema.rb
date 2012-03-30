@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120330140452) do
+ActiveRecord::Schema.define(:version => 20120330154305) do
 
   create_table "admin_roles", :force => true do |t|
     t.string   "name"
@@ -164,6 +164,10 @@ ActiveRecord::Schema.define(:version => 20120330140452) do
     t.integer  "total_amount"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "confirmed"
+    t.boolean  "paid"
+    t.boolean  "packaged"
+    t.boolean  "posted"
   end
 
   add_index "orders", ["email"], :name => "index_orders_on_email"
@@ -176,6 +180,7 @@ ActiveRecord::Schema.define(:version => 20120330140452) do
     t.integer "order_id"
     t.integer "copy_id"
     t.integer "number"
+    t.boolean "ticked"
   end
 
   create_table "other_fields", :force => true do |t|

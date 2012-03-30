@@ -81,10 +81,10 @@ module AdminHelper
     return nil
   end
   
-  def self.reset_copies
-    Copy.all.each do |x|
-      x.new_copy = false
-      x.limited_copies = true
+  
+  # Pending on server - Order, OrderCopy
+  def self.reset(klass)
+    klass.all.each do |x|
       x.save
     end
   end

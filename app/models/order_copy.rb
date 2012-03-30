@@ -12,10 +12,11 @@ class OrderCopy < ActiveRecord::Base
   
   def init
     self.number ||= 1
+    self.ticked = false if ticked.nil?
   end
   
   def price
-    copy.in_stock ? copy.price * number : 0
+    copy.price * number
   end
   
   def check_number

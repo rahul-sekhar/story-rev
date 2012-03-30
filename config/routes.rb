@@ -37,6 +37,11 @@ StoryRev::Application.routes.draw do
     delete "stocks/remove_copy" => "stocks#remove_copy"
     delete "stocks" => "stocks#clear", :as => "clear_stocks"
     
+    resources :orders do
+      collection do
+        get 'pending'
+      end
+    end
     resources :copies
     resources :new_copies
     resources :cover_images
