@@ -4,8 +4,8 @@ $(document).ready(function() {
     
     var $ordersTable = $('#orders-table');
     $ordersTable.itemTable({
+        url: '/admin/orders',
         selectable: true,
-        removable: false,
         editable: false,
         addable: false,
         columns: [
@@ -52,6 +52,7 @@ $(document).ready(function() {
         });
     });
     
+    var curr_id;
     var $orderInfo = $('#order-info');
     var $copiesTable = $orderInfo.find('table').on('click', '.ticked', function(e) {
         var $this = $(this);
@@ -76,12 +77,51 @@ $(document).ready(function() {
                 $this.prop('disabled', false);
             }
         });
+    }).on('click', '.edit-link', function(e) {
+        e.preventDefault();
+        
+        var $this = $(this);
+        var $tr = $this.closest("tr");
+        var order_copy_id = $tr.data("id");
+        var $number = $tr.find(".copy-number");
+        var old_number = parseInt($number.text(), 10);
+        
+        var saveNumber = function() {
+            var number = parseInt($textbox.val(), 10);
+            if (!number || number < 0) number = 1;
+            $textbox.remove();
+            
+            $.ajax({
+                url: '/admin/orders/' + curr_id + '/order_copies/' + order_copy_id,
+                data: {
+                    _method: "PUT",
+                    order_copy: {
+                        number: number
+                    }
+                },
+                success: function(data) {
+                    $number.text(number);
+                    $this.show();
+                },
+                error: function(data) {
+                    $number.text(old_number);
+                    $this.show();
+                }
+            });
+        };
+        
+        var $textbox = $('<input type="text" name="number" value="' + old_number + '" />')
+            .on('blur', saveNumber);
+        
+        $number.empty().append($textbox);
+        $textbox.focus();
+        $this.hide();
     });
-    var curr_id;
     
     $ordersTable.on("selectionChange", function(e, id) {
         $orderInfo.hide();
         curr_id = id;
+        if (!curr_id) return;
         
         // Update the order info
         $.get('/admin/orders/' + id, function(data) {
@@ -122,6 +162,20 @@ $(document).ready(function() {
                             field: 'price'
                         },
                         {
+                            name: 'Number',
+                            field: 'number',
+                            class_name: 'copy-number'
+                        },
+                        {
+                            name: 'Edit Number',
+                            field: 'new_copy',
+                            class_name: 'has-button edit-number',
+                            displayCallback: function(data) {
+                                return data ? '<a class="edit-link" href="#"></a>' : ''
+                            },
+                            type: 'html'
+                        },
+                        {
                             name: 'Format',
                             field: 'format_name'
                         },
@@ -132,7 +186,8 @@ $(document).ready(function() {
                         {
                             name: 'Rating',
                             field: 'condition_rating',
-                            type: 'rating'
+                            type: 'rating',
+                            class_name: 'rating'
                         },
                         {
                             name: 'Ticked',

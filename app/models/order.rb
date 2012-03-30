@@ -238,4 +238,12 @@ class Order < ActiveRecord::Base
     :pickup_point_text => pickup_point_text
   }
   end
+  
+  def revert_copies
+    self.order_copies.each do |oc|
+      oc.revert_copy
+      oc.destroy
+    end
+    self.order_copies = []
+  end
 end

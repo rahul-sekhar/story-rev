@@ -81,8 +81,6 @@ module AdminHelper
     return nil
   end
   
-  
-  # Pending on server - Order, OrderCopy
   def self.reset(klass)
     klass.all.each do |x|
       x.save

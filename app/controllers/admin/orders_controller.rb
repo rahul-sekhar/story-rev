@@ -15,8 +15,22 @@ class Admin::OrdersController < Admin::ApplicationController
     end
   end
   
+  def index
+    @title = "Old Orders"
+    @class = "orders old"
+    
+    @orders = Order.where("step = 5 AND confirmed = TRUE AND paid = TRUE AND packaged = TRUE AND posted = TRUE")
+  end
+  
   def show
     @order = Order.find(params[:id])
     render :json => @order.get_hash
+  end
+  
+  def destroy
+    @order = Order.find(params[:id])
+    @order.revert_copies
+    @order.destroy
+    render :json => { :success => true }
   end
 end

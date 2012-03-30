@@ -1,0 +1,49 @@
+#book-info {
+    p {
+        margin-bottom: e(20px, $text-size);
+    }
+    
+    h2 {
+        @include very-large-heading;
+        margin-bottom: e(10px);
+        margin-left: e(-1px);
+    }
+    
+    h3 {
+        @include heading;
+        margin-top: e(40px, $heading-size);
+        margin-bottom: e(10px, $heading-size);
+    }
+}
+
+.ui-dialog .dialog {
+    background-color: #fff;
+    overflow:hidden;
+    @include rounded-corners(10px);
+    position:relative;
+    margin-bottom: e(30px);
+    padding: e(10px);
+    @include box-shadow(3px 3px 10px -3px #333);
+    
+    p.loading-large {
+        text-align:center;
+        line-height: 20px;
+        width:100%;
+        position:absolute;
+        left:0;
+        top:40%;
+    }
+    
+    .close-button {
+        position:absolute;
+        @include small-text;
+        @include link-image-replacement(540px, 600px);
+        top: 5px;
+        right: 2px;
+        z-index:10;
+        
+        &:focus {
+            outline:none;
+        }
+    }
+}

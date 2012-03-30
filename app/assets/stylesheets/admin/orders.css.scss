@@ -21,6 +21,19 @@
     
     #order-copies {
         margin-top: e(20px);
+        
+        .copy-number {
+            width: e(15px, $small-text-size);
+            padding-right: 0;
+            
+            input {
+                width: 100%;
+            }
+        }
+        
+        .edit-number {
+            padding-left: 0;
+        }
     }
     
     #order-info {

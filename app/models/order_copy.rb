@@ -33,10 +33,21 @@ class OrderCopy < ActiveRecord::Base
       :format_name => copy.edition.format_name,
       :isbn => copy.edition.isbn,
       :new_copy => copy.new_copy,
-      :condition_rating => copy.new_copy ? copy.condition_rating : nil,
+      :condition_rating => copy.new_copy ?  nil : copy.condition_rating,
       :condition_description => copy.new_copy ? copy.condition_description : nil,
-      :number => number,
+      :number => copy.new_copy ? number : nil,
       :ticked => ticked
     }
+  end
+  
+  def revert_copy
+    if copy.new_copy
+      copy.number += number
+      copy.save
+    else
+      copy.set_stock = true
+    end
+    
+    self.copy = nil
   end
 end

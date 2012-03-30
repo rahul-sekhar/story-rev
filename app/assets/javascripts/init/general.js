@@ -64,6 +64,34 @@ $.fn.serializeObject = function()
     return o;
 };
 
+// Resize a dialog to its contents height by sliding (check again after resizing)
+function resizeDialog($dialog, $content, resize_overlay, center_dialog, callbackFunction) {
+
+    if ($dialog.height() != $content.outerHeight()) {
+        
+        if (center_dialog) {
+            var page_top = $(window).scrollTop();
+            var target_top =  page_top + $(window).height() / 2 - $content.outerHeight() / 2 - ($dialog.outerHeight() - $dialog.height()) / 2;
+            
+            if (target_top < (page_top + 10)) target_top = page_top + 10
+            
+            $dialog.closest('.ui-dialog').animate({top: target_top + 'px'}, 500);
+        }
+        
+        $dialog.animate({ height: $content.outerHeight() }, 500, function() {
+            if (resize_overlay)
+                resizeOverlay();
+            
+            resizeDialog($dialog, $content, resize_overlay, center_dialog, callbackFunction);
+        });
+    }
+    else {
+        if (callbackFunction) {
+            callbackFunction();
+        }
+    }
+}
+
 $(document).ready(function() {
     var $body = $('body');
     

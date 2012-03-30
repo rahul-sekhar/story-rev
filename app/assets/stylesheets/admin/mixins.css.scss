@@ -107,3 +107,28 @@
         background-position: left (-960px + ($height - 20px) / 2);
     }
 }
+
+@mixin image-replacement ($pos: 0, $width: 30px, $height: 20px, $url: '/images/icons.png') {
+    display:block;
+    width:$width;
+    height:$height;
+    white-space:nowrap;
+    overflow:hidden;
+    
+    &:before {
+        content:url('/images/icons.png');
+        @include inline-block;
+        font-size:0;
+        line-height:0;
+        margin-top: -1 * $pos;
+    }
+}
+
+@mixin link-image-replacement ($pos: 0, $hover-pos: 0, $width: 30px, $height: 20px, $url: '/images/icons.png') {
+    @include image-replacement($pos, $width, $height, $url);
+    border-bottom:none;
+    
+    &:hover:before {
+        margin-top: -1 * $hover-pos;
+    }
+}

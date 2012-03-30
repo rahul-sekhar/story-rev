@@ -10,7 +10,7 @@ $(document).ready(function() {
         height: 600,
         autoOpen:false
     });
-    //$bookInfoDialog.closest('.ui-dialog').css('position', 'absolute');
+    
     var $closeButton = $('<a href="#" class="close-button">Close</a>').click(function(e) {
         e.preventDefault();
         $bookInfoDialog.dialog('close');
@@ -328,9 +328,9 @@ $(document).ready(function() {
         var old_number = parseInt($number.text(), 10);
         
         var saveNumber = function() {
-            var number = parseInt($textBox.val(), 10);
+            var number = parseInt($textbox.val(), 10);
             if (!number || number < 0) number = 1;
-            $textBox.replaceWith($number.text(number));
+            $textbox.replaceWith($number.text(number));
             $this.show();
             
             $.ajax({
@@ -353,11 +353,11 @@ $(document).ready(function() {
             });
         };
         
-        var $textBox = $('<input type="text" name="number" value="' + old_number + '" />')
+        var $textbox = $('<input type="text" name="number" value="' + old_number + '" />')
             .on('blur', saveNumber);
         
-        $number.replaceWith($textBox);
-        $textBox.focus();
+        $number.replaceWith($textbox);
+        $textbox.focus();
         $this.hide();
     });
     
@@ -433,33 +433,5 @@ $(document).ready(function() {
         setTimeout(function() {
             resizeDialog($section, $newSection);
         }, 50);
-    }
-    
-    // Resize a dialog to its contents height by sliding (check again after resizing)
-    function resizeDialog($dialog, $content, resize_overlay, center_dialog, callbackFunction) {
-    
-        if ($dialog.height() != $content.outerHeight()) {
-            
-            if (center_dialog) {
-                var page_top = $(window).scrollTop();
-                var target_top =  page_top + $(window).height() / 2 - $content.outerHeight() / 2 - ($dialog.outerHeight() - $dialog.height()) / 2;
-                
-                if (target_top < (page_top + 10)) target_top = page_top + 10
-                
-                $dialog.closest('.ui-dialog').animate({top: target_top + 'px'}, 500);
-            }
-            
-            $dialog.animate({ height: $content.outerHeight() }, 500, function() {
-                if (resize_overlay)
-                    resizeOverlay();
-                
-                resizeDialog($dialog, $content, resize_overlay, center_dialog, callbackFunction);
-            });
-        }
-        else {
-            if (callbackFunction) {
-                callbackFunction();
-            }
-        }
     }
 });
