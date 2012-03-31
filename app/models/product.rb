@@ -1,7 +1,7 @@
 class Product < ActiveRecord::Base
   default_scope :include => :author
   attr_accessible :title, :author_name, :illustrator_name, :publisher_name, :year, :country_name, :age_from, :age_to,
-                  :keyword_list, :flipkart_id, :amazon_url, :short_description, :product_type_id, :content_type_id,
+                  :collection_list, :flipkart_id, :amazon_url, :short_description, :product_type_id, :content_type_id,
                   :award_attributes, :other_field_attributes, :cover_image_id, :cover_image_url, :language_id
   
   after_initialize :init
@@ -10,7 +10,7 @@ class Product < ActiveRecord::Base
   before_save :check_age_level
   after_create :set_timestamps
   
-  has_and_belongs_to_many :keywords, :join_table => :products_keywords, :uniq => true
+  has_and_belongs_to_many :collections, :join_table => :products_collections, :uniq => true
   belongs_to :author
   belongs_to :illustrator
   belongs_to :publisher
@@ -49,7 +49,7 @@ class Product < ActiveRecord::Base
   end
   
   def self.includes_data
-    includes(:illustrator, :publisher, :keywords, :copies, :product_type, :content_type, :language, :country, :other_fields, { :product_awards => { :award => :award_type }}, :editions => [:format, :publisher])
+    includes(:illustrator, :publisher, :collections, :copies, :product_type, :content_type, :language, :country, :other_fields, { :product_awards => { :award => :award_type }}, :editions => [:format, :publisher])
   end
   
   def self.includes_copies
@@ -159,12 +159,8 @@ class Product < ActiveRecord::Base
       filtered = filtered.where(:product_type_id => p[:product_type].keys)
     end
     
-    if p[:keyword].is_a?(Hash)
-      filtered = filtered.where('"products"."id" IN (SELECT "product_id" FROM "products_keywords" WHERE "keyword_id" IN (' + p[:keyword].keys.join(',') + '))')
-    end
-    
     if p[:collection].present?
-      filtered = filtered.where('"products"."id" IN (SELECT "product_id" FROM "products_themes" WHERE "theme_id" = ?)', p[:collection])
+      filtered = filtered.where('"products"."id" IN (SELECT "product_id" FROM "products_collections" WHERE "collection_id" = ?)', p[:collection])
     end
     
     if p[:publisher].present?
@@ -181,7 +177,7 @@ class Product < ActiveRecord::Base
     end
     
     if p[:illustrator].present?
-      filtered = filtered.where(:illustrator_id => p[:author])
+      filtered = filtered.where(:illustrator_id => p[:illustrator])
     end
     
     if filtered_copies
@@ -307,14 +303,14 @@ class Product < ActiveRecord::Base
     country ? country.name : nil
   end
   
-  def keyword_list
-    keywords.map{ |x| x.name }.join(", ")
+  def collection_list
+    collections.map{ |x| x.name }.join(", ")
   end
-  def keyword_list=(tag_list)
-    self.keywords = Keyword.split_list(tag_list)
+  def collection_list=(tag_list)
+    self.collections = Collection.split_list(tag_list)
   end
-  def keywords_json
-    keywords.to_json({ :only => [:id, :name] })
+  def collections_json
+    collections.to_json({ :only => [:id, :name] })
   end
   
   def award_list
@@ -377,7 +373,7 @@ class Product < ActiveRecord::Base
     self.cover_image = CoverImage.create(:remote_filename_url => url)
   end
   
-  def get_theme_hash
+  def get_collection_hash
     {
       :id => id,
       :title => title,
@@ -397,7 +393,7 @@ class Product < ActiveRecord::Base
       :illustrator_last_name => illustrator.present? ? illustrator.last_name : nil,
       :age_level => age_level,
       :age_from => age_from,
-      :keyword_list => keyword_list,
+      :collection_list => collection_list,
       :award_list => award_list,
       :stock => number_of_copies
     }
@@ -431,8 +427,8 @@ class Product < ActiveRecord::Base
     end
   end
   
-  def in_theme? (theme)
-    theme.product_ids.include?(id)
+  def in_collection? (collection)
+    collection.product_ids.include?(id)
   end
   
   def next_product

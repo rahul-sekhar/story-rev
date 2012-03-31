@@ -19,6 +19,7 @@ var DEFAULTS = {
     headings: false,                // Whether to show headings for each column
     sortable: false,                // Whether the table columns can be sorted
     containCells: false,            // If set to true, the content of each cell is placed in a div with class "container"
+    confirmRemove: true,
     extraParams: {},
     
     columns: [{
@@ -213,6 +214,11 @@ $.ItemTable = function(table, settings) {
         // Remove button handling
         $table.on("click", ".remove-link", function(e) {
             var $tr = $(this).closest('tr');
+            
+            if (settings.confirmRemove) {
+                if (!confirm("Are you sure you want to remove this item?")) return;
+            }
+            
             $.blockUI({
                 message: $.blockUI.loadingMessage,
                 css: $.blockUI.loadingCss

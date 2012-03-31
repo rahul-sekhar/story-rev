@@ -34,7 +34,7 @@
                 :as => :select,
                 :collection => ProductType.all
                 %>
-    <%= f.input :keyword_list, :label => "Keywords", :input_html => { "data-pre" => @product.keywords_json } %>
+    <%= f.input :collection_list, :label => "Collections", :input_html => { "data-pre" => @product.collections_json } %>
     
     <div class="input">
       <label<%=raw @product.errors[:product_awards].present? ? ' class="error"' : '' %>>Awards</label>

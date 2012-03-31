@@ -39,12 +39,14 @@
             margin-bottom: e(5px, $small-text-size);
         }
         
-        span {
+        a {
             @include alt-heading;
             font-size: e($alt-heading-size, $small-text-size);
             text-transform:none;
             font-style:normal;
             margin-left: e(5px, $alt-heading-size);
+            border:none;
+            @include link($text-color, lighten($text-color, 20));
         }
     }
     
@@ -108,7 +110,7 @@
         margin-top: e(20px);
     }
     
-    .awards, .keywords {
+    .awards, .collections {
         float:right;
         width: e(150px);
         margin-left: e(60px);
@@ -120,7 +122,11 @@
         
         p {
             @include small-text;
-            color: $book-info-color-2;
+            
+            a {
+                border:none;
+                @include link($book-info-color-2, lighten($book-info-color-2, 20));
+            }
         }
     }
     
@@ -128,7 +134,7 @@
         margin-bottom: e(20px);
     }
     
-    .keywords {
+    .collections {
         margin-top: e(40px);
         margin-bottom: e(20px);
     }

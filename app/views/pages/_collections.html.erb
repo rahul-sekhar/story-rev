@@ -1,0 +1,51 @@
+<% @stocked_products ||= Product.unscoped.where(:in_stock => true) %>
+<% @stocked_product_ids ||= @stocked_products.map{|x| x.id} %>
+
+<section id="collections">
+  <h3>Collections</h3>
+  <div class="list">
+    <ul class="primary">
+      <li><%= link_to "All books", switch_collection_path, :class => params[:collection].blank? ? "current" : nil %></li>
+      <% Collection.where('"collections"."id" IN (SELECT collection_id FROM products_collections WHERE product_id IN (?))', @stocked_product_ids).order(:name).each do |x| %>
+        <li><%= link_to x.name, switch_collection_path(:collection => x.id), :class => params["collection"] == x.id.to_s ? "current" : nil  %></li>
+      <% end %>
+    </ul>
+    
+    <h4>Publishers</h4>
+    <ul>
+    <% Publisher.where(:id => @stocked_products.map{|x| x.publisher_id}).order(:name).each do |x| %>
+      <li>
+        <%= link_to x.name, switch_collection_path(:publisher => x.id), :class => params["publisher"] == x.id.to_s ? "current" : nil  %>
+      </li>
+    <% end %>
+    </ul>
+    
+    <h4>Awards</h4>
+    <ul>
+    <% Award.joins(:award_type).order('"award_types"."name"').where('"awards"."id" IN (SELECT award_id FROM products_awards WHERE product_id IN (?))', @stocked_product_ids).each do |x| %>
+      <li>
+        <%= link_to x.full_name, switch_collection_path(:award => x.id), :class => params["award"] == x.id.to_s ? "current" : nil  %>
+      </li>
+    <% end %>
+    </ul>
+  
+    <h4>Authors</h4>
+    <ul>
+    <% Author.order("last_name, first_name").where(:id => @stocked_products.map{|x| x.author_id}).each do |x| %>
+      <li>
+        <%= link_to x.full_name, switch_collection_path(:author => x.id), :class => params["author"] == x.id.to_s ? "current" : nil  %>
+      </li>
+    <% end %>
+    </ul>
+    
+    
+    <h4>Illustrators</h4>
+    <ul>
+    <% Illustrator.order("last_name, first_name").where(:id => @stocked_products.map{|x| x.illustrator_id}).each do |x| %>
+      <li>
+        <%= link_to x.full_name, switch_collection_path(:illustrator => x.id), :class => params["illustrator"] == x.id.to_s ? "current" : nil  %>
+      </li>
+    <% end %>
+    </ul>
+  </div>
+</section>

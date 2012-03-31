@@ -10,7 +10,7 @@ module ApplicationHelper
     require "addressable/uri"
     uri = Addressable::URI.new
     
-    filters = %w[condition price content_type product_type keyword collection age_to age_from search type format sort price_range price_from price_to]
+    filters = %w[condition price content_type product_type collection age_to age_from search type format sort price_range price_from price_to]
     
     filter_params = {}
     filters.each do |f|
@@ -20,6 +20,10 @@ module ApplicationHelper
     new_params = filter_params.merge(new_params)
     uri.query_values = new_params
     request.url.split("?")[0] + "?" + uri.query + (element_id ? "##{element_id}" : "")
+  end
+  
+  def switch_collection_path(new_params = {})
+    store_path({:anchor => "products"}.merge(new_params))
   end
   
   # The more info menu items

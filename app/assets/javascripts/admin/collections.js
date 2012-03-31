@@ -1,35 +1,32 @@
 $(document).ready(function() {
     var $body = $('body');
-    if (!$body.hasClass('themes')) return;
+    if (!$body.hasClass('collections')) return;
     
     // Convert the tables to editable ones
-    var $themeTable = $('#theme-table')
-    $themeTable.itemTable({
-        objectName: 'theme',
-        addLinkText: 'Add Theme',
+    var $collectionTable = $('#collection-table')
+    $collectionTable.itemTable({
+        objectName: 'collection',
+        addLinkText: 'Add Collection',
         selectable: true,
         columns: [
-            {
-                name: 'Icon',
-                field: 'icon_url',
-                type: 'image',
-                image_id_field: 'icon_id',
-                image_url: '/admin/theme_icons.json',
-                raw: 'icon_data_json',
-                class_name: 'icon'
-            },
             {
                 name: 'Name',
                 field: 'name',
                 class_name: 'name'
             },
+            {
+                name: 'Priority',
+                field: 'priority',
+                class_name: 'priority',
+                numeric: true
+            }
         ]
     });
     
-    // When the theme table changes, construct a product table for that theme
-    var $themeLink = $('<a href="#" class="select-link">Select books</a>');
-    var $productTable = $('#theme-product-table');
-    $themeTable.on("selectionChange", function(e, id) {
+    // When the collection table changes, construct a product table for that collection
+    var $collectionLink = $('<a href="#" class="select-link">Select books</a>');
+    var $productTable = $('#collection-product-table');
+    $collectionTable.on("selectionChange", function(e, id) {
         $productTable.empty();
         if (!id) {
             $productTable.parent().next('.select-container').remove();
@@ -37,7 +34,7 @@ $(document).ready(function() {
         }
         
         $productTable.itemTable({
-            url: '/admin/themes/' + id + '/products',
+            url: '/admin/collections/' + id + '/products',
             objectName: 'product',
             initialLoad: true,
             selectable: false,
@@ -72,17 +69,17 @@ $(document).ready(function() {
             ]
         });
         
-        $themeLink.insertAfter($productTable.parent())
+        $collectionLink.insertAfter($productTable.parent())
             .wrap('<p class="select-container"></p>');
     });
     
     // Build the dialog for selecting books
-    var $dialog = $('<section id="select-theme-books"></section>');
+    var $dialog = $('<section id="select-collection-books"></section>');
     $('<a href="#" class="close-button"></a>').click(function(e) {
         $.unblockUI();
         
         // Refresh the products table
-        $themeTable.trigger("selectionChange", $themeTable.itemTable("getSelected"));
+        $collectionTable.trigger("selectionChange", $collectionTable.itemTable("getSelected"));
         
         e.preventDefault();
     }).appendTo($dialog);
@@ -99,11 +96,11 @@ $(document).ready(function() {
         loaded = true;
         $dialogTableWrapper.unblock();
         
-        // Set the table row class for books that are in the theme
-        $dialogTable.find('.ticked-link').closest('tr').addClass('in_theme');
+        // Set the table row class for books that are in the collection
+        $dialogTable.find('.ticked-link').closest('tr').addClass('in_collection');
     });
     
-    // Handle the clicking of links to add books to a theme
+    // Handle the clicking of links to add books to a collection
     $dialogTable.on('click', '.ticked-link,.add-link', function(e) {
         e.preventDefault();
         
@@ -114,7 +111,7 @@ $(document).ready(function() {
             .addClass('loading-link')
             .data('val', 'loading');
         $td.attr('title', getTooltip('loading'));
-        var url = '/admin/themes/' + $dialogTable.data('themeId') + '/products';
+        var url = '/admin/collections/' + $dialogTable.data('collectionId') + '/products';
         var product_id = $clicked.closest('tr').data('id');
         
         if (oldVal) {
@@ -132,14 +129,14 @@ $(document).ready(function() {
             type: 'POST',
             success: function(data) {
                 $clicked.removeClass()
-                    .addClass(data.in_theme ? 'ticked-link' : 'add-link')
-                    .data('val', data.in_theme);
-                $td.attr('title', getTooltip(data.in_theme));
+                    .addClass(data.in_collection ? 'ticked-link' : 'add-link')
+                    .data('val', data.in_collection);
+                $td.attr('title', getTooltip(data.in_collection));
                 
-                if (data.in_theme)
-                    $clicked.closest('tr').addClass('in_theme');
+                if (data.in_collection)
+                    $clicked.closest('tr').addClass('in_collection');
                 else
-                    $clicked.closest('tr').removeClass('in_theme');
+                    $clicked.closest('tr').removeClass('in_collection');
             },
             error: function(data) {
                 $clicked.removeClass().addClass(oldVal ? 'ticked-link' : 'add-link');
@@ -153,22 +150,22 @@ $(document).ready(function() {
         if (data == "loading")
             return 'Loading...';
         else
-            return data ? 'Remove from theme' : 'Add to theme'
+            return data ? 'Remove from collection' : 'Add to collection'
     }
     
     // Show the book selection dialog when the select book link is clicked
-    $('#theme-product-table-wrapper').on('click', '.select-link', function(e) {
+    $('#collection-product-table-wrapper').on('click', '.select-link', function(e) {
         e.preventDefault();
         
-        // Get the selected theme
-        var id = $themeTable.itemTable("getSelected");
+        // Get the selected collection
+        var id = $collectionTable.itemTable("getSelected");
         if (!id) return;
         
-        $dialogTable.data('themeId', id);
+        $dialogTable.data('collectionId', id);
         
         // Set up the table
         $dialogTable.itemTable({
-            url: '/admin/themes/' + id + '/products?all_products=1',
+            url: '/admin/collections/' + id + '/products?all_products=1',
             objectName: 'product',
             initialLoad: true,
             selectable: false,
@@ -207,9 +204,9 @@ $(document).ready(function() {
                     class_name: 'awards'
                 },
                 {
-                    name: 'Keywords',
-                    field: 'keyword_list',
-                    class_name: 'keywords'
+                    name: 'Collections',
+                    field: 'collection_list',
+                    class_name: 'collections'
                 },
                 {
                     name:'Stock',
@@ -225,8 +222,8 @@ $(document).ready(function() {
                     noHeading:true
                 },
                 {
-                    name: 'In Theme',
-                    field: 'in_theme',
+                    name: 'In Collection',
+                    field: 'in_collection',
                     class_name: 'has-button',
                     type: 'html',
                     noHeading:true,

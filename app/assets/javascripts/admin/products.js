@@ -185,7 +185,7 @@ $(document).ready(function() {
     $('#product_illustrator_name').tokenInput("/admin/illustrators.json", singleAutocompleteSettings);
     $('#product_publisher_name').tokenInput("/admin/publishers.json", singleAutocompleteSettings);
     $('#product_country_name').tokenInput("/admin/countries.json", singleAutocompleteSettings);
-    $('#product_keyword_list').tokenInput("/admin/keywords.json", tagAutocompleteSettings);
+    $('#product_collection_list').tokenInput("/admin/collections.json", tagAutocompleteSettings);
     $('#product_product_tag_list').tokenInput("/admin/product_tags.json", tagAutocompleteSettings);
     
     // Function to handle adding options to select lists

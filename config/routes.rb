@@ -48,17 +48,14 @@ StoryRev::Application.routes.draw do
     resources :authors
     resources :illustrators
     resources :publishers
-    resources :keywords
     resources :product_types
     resources :content_types
     resources :formats
     resources :countries
     resources :languages
-    resources :themes do
-      resources :products, :controller => "theme_products"
-      put :update_products
+    resources :collections do
+      resources :products, :controller => "collection_products"
     end
-    resources :theme_icons
     resources :award_types do
       resources :awards
     end

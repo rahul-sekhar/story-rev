@@ -1,4 +1,4 @@
-.themes {
+.collections {
     .table {
         float:left;
     }
@@ -7,10 +7,10 @@
         height: e(200px);
     }
     
-    $theme-table-width: 220px;
-    #theme-table-wrapper {
+    $collection-table-width: 220px;
+    #collection-table-wrapper {
         .table-container {
-            width: e($theme-table-width);
+            width: e($collection-table-width);
             min-width:0;
         }
         
@@ -58,10 +58,10 @@
         }
     }
     
-    #theme-product-table-wrapper {
+    #collection-product-table-wrapper {
         margin-left: 20px;
         .table-container {
-            width: e($content-width - $theme-table-width - 20px - 4px);
+            width: e($content-width - $collection-table-width - 20px - 4px);
             min-width:0;
         }
         
@@ -76,7 +76,7 @@
     
     // Dialog box
     
-    #select-theme-books {
+    #select-collection-books {
         @include clearfix;
         height:100%;
         width:100%;
@@ -95,7 +95,7 @@
             width:100%;
         }
         
-        .awards .container, .keywords .container {
+        .awards .container, .collections .container {
             max-width: e(150px, $small-text-size);
         }
         
@@ -103,7 +103,7 @@
             color: $light-text-color;
         }
         
-        .in_theme td{
+        .in_collection td{
             color: $text-color;
             font-weight:bold;
         }

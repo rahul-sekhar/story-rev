@@ -1,0 +1,31 @@
+<% content_for :top_nav do %>
+  <li class="current">
+    <%= link_to "Collections", admin_collections_path %>
+  </li>
+  
+  <% if admin? %>
+    <li>
+      <%= link_to "Passwords", admin_roles_path %>
+    </li>
+  <% end %>
+<% end %>
+
+<div class="table-wrapper" id="collection-table-wrapper">
+  <div class="table-container">
+    <table id="collection-table" data-url="<%= admin_collections_path %>">
+      <% @collections.each do |c| %>
+        <tr data-id="<%= c.id %>">
+          <td class="name" data-val="<%= c.name %>"><%= c.name %></td>
+          <td class="priority" data-val="<%= c.priority %>"><%= c.priority %></td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+</div>
+
+<div class="table-wrapper" id="collection-product-table-wrapper">
+  <div class="table-container">
+    <table id="collection-product-table">
+    </table>
+  </div>
+</div>

@@ -9,12 +9,5 @@ class Admin::CronController < Admin::ApplicationController
         i.destroy
       end
     end
-    
-    @theme_icons = ThemeIcon.includes(:theme).all
-    @theme_icons.each do |i|
-      if (i.theme_id.blank? && ((Date.today.day - i.created_at.day) > 1))
-        i.destroy
-      end
-    end
   end
 end

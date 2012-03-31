@@ -10,16 +10,3 @@
     </li>
   <% end %>
 </ul>
-
-<h2>Theme Icons</h2>
-<ul>
-  <% @theme_icons.each do |i| %>
-    <li>
-      <em>Image Id:</em> <%= i.id %><br />
-      <em>Name:</em> <%= link_to i.file_info[:name], i.file_info[:url] %> (<%= number_to_human_size(i.file_info[:size]) %>)<br />
-      <em>Created on:</em> <%= i.created_at %><br />
-      <em>Theme:</em> <%= i.theme_id.present? ? i.theme.name : "No Theme" %>
-      <% if i.destroyed? %><br /><strong>DELETED</strong><% end %>
-    </li>
-  <% end %>
-</ul>
