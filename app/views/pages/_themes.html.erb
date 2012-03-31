@@ -1,0 +1,9 @@
+<section id="collections">
+  <h3>Collections</h3>
+  <ul>
+    <li><%= link_to "All books", filter_url({}), :class => params[:collection].blank? ? "current" : nil %></li>
+    <% Theme.all.each do |x| %>
+      <li><%= link_to x.name, filter_url(:collection => x.id), :class => params[:collection] == x.id ? "current" : nil  %></li>
+    <% end %>
+  </ul>
+</section>

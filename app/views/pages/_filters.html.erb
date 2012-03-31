@@ -1,4 +1,5 @@
 <section id="filters">
+  <h3>Browse</h3>
   <%= form_tag store_path, :method => :get do %>
     <input type="hidden" name="sort" value="<%= params[:sort] %>" />
     <input type="hidden" name="publisher" value="<%= params[:publisher] %>" />
@@ -73,7 +74,7 @@
     <ul>
     <% Publisher.order(:name).each do |x| %>
       <li>
-        <%= link_to p.name, filter_url(:publisher => x.id), :class => params[:publisher] == x.id ? "current" : nil  %>
+        <%= link_to x.name, filter_url(:publisher => x.id), :class => params[:publisher] == x.id ? "current" : nil  %>
       </li>
     <% end %>
     </ul>

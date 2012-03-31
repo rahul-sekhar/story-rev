@@ -1,4 +1,7 @@
+
 <%= render "filters" %>
+
+<%= render "themes" %>
 
 <section id="products">
   <p class="sort">
@@ -7,6 +10,6 @@
       <%=raw sort_array.map {|x| link_to x, filter_url(:sort => x), :class => params[:sort] == x ? "current" : nil }.join(' | ') %>
   </p>
   <%= render :partial => "products/cover", :collection => @products, :as => :product %>
+  
+  <%= paginate @products %>
 </section>
-
-<%= paginate @products %>
