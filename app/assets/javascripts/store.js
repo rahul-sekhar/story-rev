@@ -11,8 +11,21 @@ $(document).ready(function() {
     var $hoverUsed = $('<p class="used">used copies start at <span class="amount"></span>').appendTo($hoverInfo);
     var $hoverNew = $('<p class="new">new copies start at <span class="amount"></span>').appendTo($hoverInfo);
     var $hoverMoreInfo = $('<a href="#" class="product-link">more info</a>').appendTo($hoverInfo);
+    $hoverInfo.hide().appendTo($body);
     
+    function setProductHover() {
+        $('#products .cover').hoverIntent(function(e) {
+                $hoverInfo.hide().css({
+                    top: e.pageY,
+                    left: e.pageX
+                }).fadeIn();
+            },
+            function() {
+                $hoverInfo.fadeOut('fast');
+            });
+    }
     
+    setProductHover();
     
     // Handle product information popups
     var $bookInfoDialog = $('<section id="book-info-dialog" class="dialog"></section>');
