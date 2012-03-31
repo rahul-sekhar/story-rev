@@ -1,11 +1,15 @@
 <p class="sort" data-current="<%= params[:sort] %>">
     sort by
-      <% sort_array = %w[random date title author age price] %>
-      <%=raw sort_array.map {|x| link_to x, sort_url(x), :class => params[:sort] == x ? "current" : nil }.join(' | ') %>
-  </p>
+    <% sort_array = %w[random date title author age price] %>
+    <%=raw sort_array.map {|x| link_to x, sort_url(x), :class => params[:sort] == x ? "current" : nil }.join(' | ') %>
+</p>
 
 <div class="covers">
-  <%= render :partial => "products/cover", :collection => @products, :as => :product %>
+    <% if @products.length > 0 %>
+        <%= render :partial => "products/cover", :collection => @products, :as => :product %>
+    <% else %>
+        <p class="no-results">No books were found...</p>
+    <% end %>
 </div>
 
 <%= paginate @products %>

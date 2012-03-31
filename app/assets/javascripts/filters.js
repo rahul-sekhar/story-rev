@@ -28,7 +28,9 @@ $(document).ready(function() {
         var $prev = $link.closest('.sort').find('.current:first').removeClass('current');
         $link.addClass('current');
         
-        getProducts(this.href, null, null, function() {
+        getProducts(this.href, null, function() {
+            clearFilters();
+        }, function() {
             $link.removeClass('current');
             $prev.addClass('current');
         })
@@ -43,7 +45,9 @@ $(document).ready(function() {
         var $prev = $collections.find('.current:first').removeClass('current');
         $link.addClass('current');
         
-        getProducts(this.href, null, null, function() {
+        getProducts(this.href, null, function() {
+            clearFilters();
+        }, function() {
             $link.removeClass('current');
             $prev.addClass('current');
         })
@@ -75,6 +79,12 @@ $(document).ready(function() {
         clearTimeout(typingTimer);
         typingTimer = setTimeout(filtersChanged, doneTypingInterval);
     });
+    
+    //Function to clear all the filters
+    function clearFilters() {
+        $filters.find('input[type=text]').val('');
+        $filters.find('input[type=checkbox]').prop('checked', false);
+    }
     
     
     // Function to get the current sorted state
@@ -172,6 +182,8 @@ $(document).ready(function() {
         popped = true
         if ( initialPop ) return
         
-        getProducts(location.href, null, null, null, true)
+        getProducts(location.href, null, function() {
+            clearFilters();
+        }, null, true)
     });
 });
