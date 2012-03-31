@@ -20,6 +20,16 @@
       <input type="text" name="search" value="<%= params[:search] %>" />
     </div>
     
+    <label>Used or New</label>
+    <ul>
+      <li>
+        <%= filter_box "type", "new" %> <span>New books</span>
+      </li>
+      <li>
+        <%= filter_box "type", "used" %> <span>Used books</span>
+      </li>
+    </ul>
+    
     <label>Book types</label>
     <ul>
     <% @stocked_products ||= Product.unscoped.where(:in_stock => true) %>
@@ -30,16 +40,6 @@
         <span><%= x.name %></span>
       </li>
     <% end %>
-    </ul>
-    
-    <label>Used or New</label>
-    <ul>
-      <li>
-        <%= filter_box "type", "new" %> <span>New books</span>
-      </li>
-      <li>
-        <%= filter_box "type", "used" %> <span>Used books</span>
-      </li>
     </ul>
     
     <label>Fiction/Non-fiction</label>

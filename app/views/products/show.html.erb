@@ -16,7 +16,7 @@
   <div class="creators">
     <p class="author">by <%= link_to @product.author_name, switch_collection_path(:author => @product.author_id) %></p>
     
-    <% if @product.illustrator.present? %>
+    <% if @product.illustrator.present? && @product.illustrator_name != @product.author_name %>
       <p class="illustrator">illustrated by <%= link_to @product.illustrator_name, switch_collection_path(:illustrator => @product.illustrator_id) %></p>
     <% end %>
   </div>

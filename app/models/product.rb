@@ -268,7 +268,7 @@ class Product < ActiveRecord::Base
   end
   
   def creators
-    "#{author_name}#{illustrator.present? ? " and #{illustrator_name}" : ""}"
+    "#{author_name}#{illustrator.present? && illustrator_name != author_name ? " and #{illustrator_name}" : ""}"
   end
   
   def author_name=(name)

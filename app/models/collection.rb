@@ -6,6 +6,7 @@ class Collection< ActiveRecord::Base
   validates :name, :length => { :maximum => 200 }, :presence => true, :uniqueness => { :case_sensitive => false }
   
   scope :prioritised, order("priority DESC")
+  scope :visible, where("priority >= 0")
   
   def get_hash
     {

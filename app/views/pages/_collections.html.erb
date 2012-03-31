@@ -6,7 +6,7 @@
   <div class="list">
     <ul class="primary">
       <li><%= link_to "All books", switch_collection_path, :class => params[:collection].blank? ? "current" : nil %></li>
-      <% Collection.where('"collections"."id" IN (SELECT collection_id FROM products_collections WHERE product_id IN (?))', @stocked_product_ids).order(:name).each do |x| %>
+      <% Collection.prioritised.visible.where('"collections"."id" IN (SELECT collection_id FROM products_collections WHERE product_id IN (?))', @stocked_product_ids).order(:name).each do |x| %>
         <li><%= link_to x.name, switch_collection_path(:collection => x.id), :class => params["collection"] == x.id.to_s ? "current" : nil  %></li>
       <% end %>
     </ul>

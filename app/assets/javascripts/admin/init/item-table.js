@@ -19,7 +19,9 @@ var DEFAULTS = {
     headings: false,                // Whether to show headings for each column
     sortable: false,                // Whether the table columns can be sorted
     containCells: false,            // If set to true, the content of each cell is placed in a div with class "container"
-    confirmRemove: true,
+    confirmRemove: true,            // Whether to confirm before deleting a row
+    removeNameCol: 'auto',          // The column that contains the name of the object to be shown in the confirmation message on removal
+                                    // If set to auto, this picks the column that has the name "Name" or "Title"
     extraParams: {},
     
     columns: [{
@@ -102,6 +104,17 @@ $.ItemTable = function(table, settings) {
     if (settings.selectable) {
         $table.on("click", "tr", function(e) {
             select_item($(this));
+        });
+    }
+    
+    // Find removeNameCol if it is set to auto
+    if (settings.removeNameCol == 'auto') {
+        settings.removeNameCol = false;
+        $.each(settings.columns, function(i,v) {
+            if (v.name == "Name" || v.name == "Title") {
+                settings.removeNameCol = i;
+                return false;
+            }
         });
     }
     
@@ -216,7 +229,11 @@ $.ItemTable = function(table, settings) {
             var $tr = $(this).closest('tr');
             
             if (settings.confirmRemove) {
-                if (!confirm("Are you sure you want to remove this item?")) return;
+                var message = "Are you sure you want to remove this " + settings.objectName + "?"
+                if (settings.removeNameCol) {
+                    message += " \n[" + settings.columns[settings.removeNameCol].name + " - " + $tr.find('td:eq(' + settings.removeNameCol + ')').text() + "]";
+                }
+                if (!confirm(message)) return;
             }
             
             $.blockUI({

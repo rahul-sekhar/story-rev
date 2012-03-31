@@ -69,6 +69,7 @@
     
     .details {
         clear:left;
+        margin-top: e(40px);
     }
     
     .copies {
@@ -135,6 +136,7 @@
     }
     
     .collections {
+        text-transform: lowercase;
         margin-top: e(40px);
         margin-bottom: e(20px);
     }

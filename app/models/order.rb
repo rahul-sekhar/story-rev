@@ -128,6 +128,8 @@ class Order < ActiveRecord::Base
       end
     end
     
+    postage += 10 if postage > 0 # First book shipping charge is 20
+    
     self.total_amount = total + postage
     self.postage_amount = postage
   end

@@ -10,6 +10,9 @@ $(document).ready(function() {
         addable: false,
         columns: [
             {
+                name: 'Order ID'
+            },
+            {
                 name: 'Name'
             },
             {
