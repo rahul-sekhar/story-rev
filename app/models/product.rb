@@ -84,11 +84,11 @@ class Product < ActiveRecord::Base
     
     if p[:search].present?
       sqlSearch = "%#{SqlHelper::escapeWildcards(p[:search].downcase)}%"
-      filtered = filtered.includes(:illustrator, :publisher)
+      filtered = filtered.includes(:illustrator)
         .where("LOWER(title) LIKE ? OR
                LOWER(authors.first_name || ' ' || authors.last_name) LIKE ? OR
-               LOWER(illustrators.first_name || ' ' || illustrators.last_name) LIKE ? OR
-               LOWER(publishers.name) LIKE ?", sqlSearch, sqlSearch, sqlSearch, sqlSearch)
+               LOWER(illustrators.first_name || ' ' || illustrators.last_name) LIKE ?",
+               sqlSearch, sqlSearch, sqlSearch)
     end
     
     if p[:age_from].present? && p[:age_from].to_i > 0
@@ -109,10 +109,10 @@ class Product < ActiveRecord::Base
       copies = copies.where(:condition_rating => p[:condition].keys)
     end
     
+    price_conditions = []
+    data_array = []
+    
     if p[:price].is_a?(Hash)
-      filtered_copies = true
-      price_conditions = []
-      data_array = []
       p[:price].keys.each do |range|
         a = range.split("-").map{|x| x.to_i}
         if a.length == 2
@@ -124,8 +124,29 @@ class Product < ActiveRecord::Base
           data_array << a[0]
         end
       end
+    end
       
-      copies = copies.where(price_conditions.join(" OR "), data_array)
+    if p[:price_range].present? && p[:price_range]
+      from = p[:price_from].to_i
+      to = p[:price_to].to_i
+      logger.info("FROM: #{from}, TO: #{to}")
+      if from > 0 && to > 0
+        price_conditions << "price BETWEEN ? AND ?"
+        data_array << from
+        data_array << to
+        
+      elsif from > 0
+        price_conditions << "price > ?"
+        data_array << from
+      elsif to > 0
+        price_conditions << "price < ?"
+        data_array << to
+      end
+    end
+    
+    if price_conditions.present?
+      filtered_copies = true
+      copies = copies.where(price_conditions.join(" OR "), *data_array)
     end
     
     if p[:format].is_a?(Hash)
@@ -133,9 +154,25 @@ class Product < ActiveRecord::Base
       editions = editions.where(:format_id => p[:format].keys)
     end
     
+    if p[:collection].present?
+      filtered = filtered.where('"products"."id" IN (SELECT "product_id" FROM "products_themes" WHERE "theme_id" = ?)', p[:collection])
+    end
+    
     if p[:publisher].present?
       filtered_copies = true
       editions = editions.joins(:product).where("editions.publisher_id = ? OR products.publisher_id = ?", p[:publisher], p[:publisher])
+    end
+    
+    if p[:award].present?
+      filtered = filtered.where(:id => ProductAward.where(:award_id => p[:award]).map {|x| x.product_id})
+    end
+    
+    if p[:author].present?
+      filtered = filtered.where(:author_id => p[:author])
+    end
+    
+    if p[:illustrator].present?
+      filtered = filtered.where(:illustrator_id => p[:author])
     end
     
     if filtered_copies

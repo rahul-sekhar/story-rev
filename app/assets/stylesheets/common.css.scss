@@ -31,10 +31,10 @@ $wrapper-width: 900px;
     
     li {
         float:left;
-        @include large-alt-text;
+        @include heading;
         @include inner-link($text-color, lighten($text-color, 20));
-        line-height: e(45px, $large-alt-text-size);
-        margin-left: e(20px, $large-alt-text-size);
+        line-height: e(45px, $heading-size);
+        margin-left: e(15px, $heading-size);
         
         a {
             border-bottom: none;
@@ -223,15 +223,14 @@ a {
 }
 
 h2 {
-    @include very-large-heading;
-    margin-bottom: e(10px);
+    @include large-heading;
+    margin-bottom: e(10px, $large-heading-size);
     margin-left: e(-1px);
 }
 
 h3 {
     @include heading;
-    margin-top: e(40px, $heading-size);
-    margin-bottom: e(10px, $heading-size);
+    margin-bottom: e(20px, $heading-size);
 }
 
 // Image alt text styling
@@ -352,11 +351,11 @@ table {
 }
 
 .button {
-    @include smaller-heading;
+    @include button-text;
     @include inline-block;
-    line-height: e(30px, $smaller-heading-size);
-    height: e(30px, $smaller-heading-size);
-    padding: 0 e(15px, $smaller-heading-size);
+    line-height: e(30px, $button-text-size);
+    height: e(30px, $button-text-size);
+    padding: 0 e(15px, $button-text-size);
     @include rounded-corners(5px);
     @include link ($color-a4, $color-a4);
     color: $color-a4;

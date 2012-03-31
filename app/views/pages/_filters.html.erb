@@ -5,25 +5,23 @@
     <input type="hidden" name="publisher" value="<%= params[:publisher] %>" />
     
     <label>Search</label>
-    <div class="search">
+    <div class="search container">
       <input type="text" name="search" value="<%= params[:search] %>" />
     </div>
     
     <label>Used or New</label>
     <ul>
       <li>
-        <%= filter_box "type", "new" %>
-        New books
+        <%= filter_box "type", "new" %> <span>New books</span>
       </li>
       <li>
-        <%= filter_box "type", "used" %>
-        Used books
+        <%= filter_box "type", "used" %> <span>Used books</span>
       </li>
     </ul>
     
     <label>Age</label>
-    <div class="age">
-      <input type="text" name="age_from" value="<%= params[:age_from] %>"/> to <input type="text" name="age_to" value="<%= params[:age_to] %>" />
+    <div class="age container">
+      <input type="text" name="age_from" value="<%= params[:age_from] %>"/> <span>to</span> <input type="text" name="age_to" value="<%= params[:age_to] %>" />
     </div>
     
     <label>Condition</label>
@@ -31,52 +29,107 @@
     <% 5.downto(1).each do |c| %>
       <li>
         <%= filter_box "condition", c %>
-        <span class="rating"><%= render "shared/rating", :rating => c %></span>
-        <%= Copy.condition_to_words(c) %>
+        <div class="condition"><span><%= Copy.condition_to_words(c) %></span>
+        <span class="rating"><%= render "shared/rating", :rating => c %></div>
       </li>
     <% end %>
     </ul>
     
-    <label>Price</label>
-    <ul>
-      <%  %>
-      <li>
-        <%= filter_box "price", "-50" %>
-        Below Rs. 50
-      </li>
-      <li>
-        <%= filter_box "price", "50-100" %>
-        Rs. 50 to Rs. 100
-      </li>
-      <li>
-        <%= filter_box "price", "100-150" %>
-        Rs. 100 to Rs. 150
-      </li>
-      <li>
-        <%= filter_box "price", "150-" %>
-        Above Rs. 150
-      </li>
-    </ul>
     
     <label>Formats</label>
     <ul>
     <% Format.order(:name).each do |f| %>
       <li>
         <%= filter_box "format", f.id %>
-        <%= f.name %>
+        <span><%= f.name %></span>
       </li>
     <% end %>
     </ul>
     
-    <%= submit_tag ("Apply") %>
     
-    <label>Publishers</label>
-    <ul>
-    <% Publisher.order(:name).each do |x| %>
+    <label>Price</label>
+    <ul class="price">
+      <li class="range">
+        <span>Rs.</span><input type="text" name="price_from" value="<%= params["price_from"] %>"/> <span>to</span> <input type="text" name="price_to" value="<%= params["price_to"] %>" />
+      </li>
       <li>
-        <%= link_to x.name, filter_url(:publisher => x.id), :class => params[:publisher] == x.id ? "current" : nil  %>
+        <%= filter_box "price", "-50" %>
+        <span>less than Rs. 50</span>
       </li>
-    <% end %>
+      <li>
+        <%= filter_box "price", "50-100" %>
+        <span>Rs. 50 &ndash; Rs. 100</span>
+      </li>
+      <li>
+        <%= filter_box "price", "100-200" %>
+        <span>Rs. 100 &ndash; Rs. 200 </span>
+      </li>
+      <li>
+        <%= filter_box "price", "200-500" %>
+        <span>Rs. 200 &ndash; Rs. 500 </span>
+      </li>
+      <li>
+        <%= filter_box "price", "500-" %>
+        <span>more than Rs. 500</span>
+      </li>
     </ul>
+    
+    <div class="submit-container">
+      <%= submit_tag ("Apply"), :class => "submit" %>
+    </div>
+    
   <% end %>
+  
+  <label>Publishers</label>
+  <ul class="list">
+  <% Publisher.order(:name).each do |x| %>
+    <li>
+      <% if params["publisher"] == x.id.to_s %>
+        <%= link_to "#{x.name} [x]", filter_url({}), :class =>  "current" %>
+      <% else %>
+        <%= link_to x.name, filter_url(:publisher => x.id) %>
+      <% end %>
+    </li>
+  <% end %>
+  </ul>
+  
+  <label>Awards</label>
+  <ul class="list">
+  <% Award.joins(:award_type).order('"award_types"."name"').each do |x| %>
+    <li>
+      <% if params["award"] == x.id.to_s %>
+        <%= link_to "#{x.full_name} [x]", filter_url({}), :class =>  "current" %>
+      <% else %>
+        <%= link_to x.full_name, filter_url(:award => x.id) %>
+      <% end %>
+    </li>
+  <% end %>
+  </ul>
+
+  <label>Authors</label>
+  <ul class="list">
+  <% Author.order("last_name, first_name").each do |x| %>
+    <li>
+      <% if params["author"] == x.id.to_s %>
+        <%= link_to "#{x.full_name} [x]", filter_url({}), :class =>  "current" %>
+      <% else %>
+        <%= link_to x.full_name, filter_url(:author => x.id) %>
+      <% end %>
+    </li>
+  <% end %>
+  </ul>
+  
+  
+  <label>Illustrators</label>
+  <ul class="list">
+  <% Illustrator.order("last_name, first_name").each do |x| %>
+    <li>
+      <% if params["illustrator"] == x.id.to_s %>
+        <%= link_to "#{x.full_name} [x]", filter_url({}), :class =>  "current" %>
+      <% else %>
+        <%= link_to x.full_name, filter_url(:illustrator => x.id) %>
+      <% end %>
+    </li>
+  <% end %>
+  </ul>
 </section>

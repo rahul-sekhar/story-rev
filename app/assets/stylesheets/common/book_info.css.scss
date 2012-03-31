@@ -26,6 +26,10 @@
         margin-bottom:e(5px, $small-text-size);
     }
     
+    h3 {
+        @include alt-heading;
+        margin-top: e(40px, $alt-heading-size);
+    }
     
     
     .creators {
@@ -36,11 +40,11 @@
         }
         
         span {
-            @include heading;
-            font-size: e($heading-size, $small-text-size);
+            @include alt-heading;
+            font-size: e($alt-heading-size, $small-text-size);
             text-transform:none;
             font-style:normal;
-            margin-left: e(5px, $heading-size);
+            margin-left: e(5px, $alt-heading-size);
         }
     }
     

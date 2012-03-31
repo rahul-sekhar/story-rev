@@ -1,18 +1,161 @@
 .store {
     #filters {
         float:left;
-        width: e(175px);
+        width: e(160px);
+        margin-top: e(10px);
+        padding-left:e(15px);
+        text-transform: lowercase;
+        
+        label {
+            @include smaller-text;
+            font-weight:bold;
+            line-height: e(20px, $smaller-text-size);
+            clear:both;
+        }
+        
+        ul, .container {
+            border-top: 1px solid $color-a5;
+            padding-top: e(5px);
+            margin-bottom: e(20px);
+            @include clearfix;
+        }
+        
+        
+        .search, .age, .price {
+            input {
+                border:1px solid $color-a5;
+                @include rounded-corners(3px);
+                @include smaller-text;
+                padding: 2px 5px;
+                height: e(16px, $smaller-text-size);
+            }
+        }
+        
+        li, .container {
+            line-height: e(20px, $smaller-text-size);
+            clear:left;
+            
+            input {
+                float:left;
+            }
+            
+            span {
+                @include smaller-text;
+                float:left;
+                margin-left: e(5px, $smaller-text-size);
+            }
+        }
+        
+        .age {
+            input {
+                width: e(15px, $smaller-text-size);
+                margin-right: e(10px, $smaller-text-size);
+            }
+            
+            span {
+                margin-right: e(10px, $smaller-text-size);
+                margin-left:0;
+                line-height: e(22px, $smaller-text-size);
+            }
+        }
+        
+        .condition {
+            margin-bottom: e(10px);
+            float:left;
+            
+            .star {
+                margin: 0;
+            }
+            
+            .rating {
+                display:block;
+                clear:left;
+                margin-left: e(-1px, $smaller-text-size);
+            }
+        }
+        
+        .price {
+            text-transform: none;
+            
+            input {
+                width: e(25px, $smaller-text-size);
+                margin-right: e(5px, $smaller-text-size);
+            }
+            
+            .range {
+                margin-top: e(5px);
+                margin-bottom: e(10px);
+                @include clearfix;
+                padding-left: e(10px);
+                span {
+                    line-height: e(24px, $smaller-text-size);
+                    margin-right: e(5px, $smaller-text-size);
+                    margin-left:0;
+                }
+            }
+        }
+        
+        .submit-container {
+            text-align:center;
+            margin-bottom: e(30px);
+        }
+        
+        ul.list {
+            max-height: e(200px);
+            overflow: auto;
+            li {
+                @include smaller-text;
+                line-height: 120%;
+                margin: e(6px, $smaller-text-size) 0;
+                
+                a {
+                    @include link ($text-color, lighten($text-color, 20));
+                    border:none;
+                    
+                    &.current {
+                        font-weight: bold;
+                    }
+                }
+            }
+        }
     }
     
     #collections {
         float:right;
+        margin-top: e(10px);
+        width: e(180px);
         
+        h3 {
+            text-align: right;
+            margin-bottom: e(10px, $heading-size);
+        }
+        
+        ul {
+            background-color: $color-a7;
+            min-height: e(700px);
+            padding: e(20px);
+            text-transform:lowercase;
+        }
+        
+        li {
+            @include smaller-text;
+            margin-bottom: e(10px, $smaller-text-size);
+            a {
+                @include link ($text-color, lighten($text-color, 20));
+                border:none;
+                
+                &.current {
+                    font-weight: bold;
+                }
+            }
+        }
     }
     
     #products {
         @include clearfix;
         width: e((100px + 20px) * 4 + 10px);
-        margin-left: e(215px);
+        margin-left: e(40px);
+        float:left;
         
         .cover-container {
             margin-right: e(20px);
@@ -82,17 +225,17 @@
         h2 {
             text-transform:uppercase;
             float:left;
-            margin-bottom: e(20px, $very-large-heading-size);
+            margin-bottom: e(20px, $large-heading-size);
         }
         
         .order-button {
             float:right;
-            margin-right: e(10px, $smaller-heading-size);
+            margin-right: e(10px, $button-text-size);
         }
         
         #empty-button {
             float: right;
-            margin-right: e(20px, $smaller-heading-size);
+            margin-right: e(20px, $button-text-size);
         }
         
         .container {

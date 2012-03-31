@@ -84,7 +84,7 @@
     }
     
     .button {
-        margin: e(20px, $smaller-heading-size) 0 0 e(20px, $smaller-heading-size);
+        margin: e(20px, $button-text-size) 0 0 e(20px, $button-text-size);
         clear:left;
         float:right;
         cursor: pointer;
@@ -292,7 +292,7 @@
         }
         
         h2 {
-            margin-bottom: e(30px, $very-large-heading-size);
+            margin-bottom: e(30px, $large-heading-size);
         }
         
         table {

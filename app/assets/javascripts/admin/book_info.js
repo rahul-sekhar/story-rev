@@ -17,7 +17,7 @@ $(document).ready(function() {
     
     $('body').on('click', '.zoom-link', function(e) {
         e.preventDefault();
-        var url = '/products/' + $(this).data('id') || $(this).closest('tr').data('id');
+        var url = '/products/' + ($(this).data('id') || $(this).closest('tr').data('id'));
         
         if (extClick(e)) {
             window.open(url);

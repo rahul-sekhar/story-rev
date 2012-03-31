@@ -3,7 +3,7 @@
   <ul>
     <li><%= link_to "All books", filter_url({}), :class => params[:collection].blank? ? "current" : nil %></li>
     <% Theme.all.each do |x| %>
-      <li><%= link_to x.name, filter_url(:collection => x.id), :class => params[:collection] == x.id ? "current" : nil  %></li>
+      <li><%= link_to x.name, filter_url(:collection => x.id), :class => params["collection"] == x.id.to_s ? "current" : nil  %></li>
     <% end %>
   </ul>
 </section>

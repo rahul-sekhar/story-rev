@@ -1,5 +1,5 @@
 class Award < ActiveRecord::Base
-  default_scope :order => "created_at ASC", :include => :award_type
+  default_scope :include => :award_type
   belongs_to :award_type
   has_many :product_awards, :dependent => :destroy
   

@@ -7,12 +7,17 @@
         @include very-large-heading;
         margin-bottom: e(10px);
         margin-left: e(-1px);
+        text-transform: none;
     }
     
     h3 {
         @include heading;
         margin-top: e(40px, $heading-size);
         margin-bottom: e(10px, $heading-size);
+    }
+    
+    .cart {
+        display:none;
     }
 }
 

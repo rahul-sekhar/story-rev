@@ -14,6 +14,11 @@ $heading-size: 14px;
     word-spacing: 2px;
 }
 
+$alt-heading-size: $heading-size;
+@mixin alt-heading {
+    @include heading;
+}
+
 $small-heading-size: 12px;
 @mixin small-heading {
     @include heading;
@@ -26,10 +31,11 @@ $large-heading-size: 16px;
     font-size: e($large-heading-size);
 }
 
-$very-large-heading-size: 24px;
+$very-large-heading-size: 26px;
 @mixin very-large-heading {
-    font-family: Quicksand, sans-serif;
+    font-family: Copse, sans-serif;
     font-size: e($very-large-heading-size);
+    font-weight:normal;
     color: $text-color;
 }
 

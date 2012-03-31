@@ -6,11 +6,11 @@ module ApplicationHelper
     request.url.split("?")[0] + "?" + new_params.map{ |k,v| "#{k}=#{v}" }.join("&") + (element_id ? "##{element_id}" : "")
   end
   
-  def filter_url(new_params, element_id = nil)
+  def filter_url(new_params, element_id = "products")
     require "addressable/uri"
     uri = Addressable::URI.new
     
-    filters = %w[condition price age_to age_from search type format sort]
+    filters = %w[condition price age_to age_from search type format sort price_range price_from price_to]
     
     filter_params = {}
     filters.each do |f|

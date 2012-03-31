@@ -3,24 +3,36 @@ $link-color: $color-d1;
 $link-hover-color: lighten($color-d1, 20);
 $error-color: $color-c1;
 
-$heading-size: 14px;
+$heading-size: 17px;
 @mixin heading {
-    font-family: Quicksand, sans-serif;
-    text-transform: uppercase;
+    font-family: Copse, sans-serif;
+    font-weight:normal;
+    text-transform: lowercase;
     font-size: e($heading-size);
     color: $text-color;
 }
 
-$smaller-heading-size: 13px;
-@mixin smaller-heading {
-    @include heading;
-    font-size: e($smaller-heading-size);
+$button-text-size: 13px;
+@mixin button-text {
+    font-family: Quicksand, sans-serif;
+    text-transform: uppercase;
+    color: $text-color;
+    font-size: e($button-text-size);
 }
 
-$very-large-heading-size: 24px;
-@mixin very-large-heading {
+$alt-heading-size: 14px;
+@mixin alt-heading {
     font-family: Quicksand, sans-serif;
-    font-size: e($very-large-heading-size);
+    text-transform: uppercase;
+    color: $text-color;
+    font-size: e($alt-heading-size);
+}
+
+$large-heading-size: 26px;
+@mixin large-heading {
+    font-family: Copse, sans-serif;
+    font-size: e($large-heading-size);
+    font-weight:normal;
     color: $text-color;
 }
 

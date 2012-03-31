@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>Story Revolution<%= @title.present? ? " - #{@title}" : "" %></title>
-  <link href='http://fonts.googleapis.com/css?family=Arvo|Quicksand:700' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Copse|Arvo|Quicksand:700' rel='stylesheet' type='text/css'>
   <%= stylesheet_link_tag    "application" %>
   <%= javascript_include_tag "application" %>
   <%= csrf_meta_tags %>
@@ -16,7 +16,8 @@
     <nav class="navigation">
       <ul>
         <li class="store"><%= link_to "Bookstore", store_path %></li>
-        <li class="more-url"><%= link_to "Learn More", store_path(:anchor => "page-footer") %></li>
+        <li class="about-url"><%= link_to "About Us", "#" %></li>
+        <li class="help-url"><%= link_to "Help", "#" %></li>
       </ul>
       
       <%= link_to "Shopping Cart (#{shopping_cart.items})", shopping_cart_path,
