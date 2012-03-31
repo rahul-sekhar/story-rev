@@ -444,10 +444,12 @@ class Product < ActiveRecord::Base
   end
   
   def used_copy_min_price
-    copies.select{|x| x.new_copy = false}.map{|x| x.price}.min
+    price = copies.select{|x| x.new_copy == false}.map{|x| x.price}.min.to_i
+    return price > 0 ? RupeeHelper.to_rupee(price) : nil
   end
   
   def new_copy_min_price
-    copies.select{|x| x.new_copy = true}.map{|x| x.price}.min
+    price = copies.select{|x| x.new_copy == true}.map{|x| x.price}.min.to_i
+    return price > 0 ? RupeeHelper.to_rupee(price) : nil
   end
 end

@@ -208,6 +208,7 @@
         margin-bottom: e(30px);
         padding: e(10px);
         @include box-shadow(3px 3px 10px -3px #333);
+        border: 1px solid $color-a5;
     }
     
     p.loading-large {
@@ -381,6 +382,60 @@
     
     #hover-info {
         position:absolute;
-        background-color: grey;
+        background-color: $color-a4;
+        width: e(300px);
+        border: 1px solid $color-a5;
+        padding: e(10px) e(15px);
+        @include clearfix;
+        @include box-shadow(3px 3px 10px -3px #999);
+        
+        h3 {
+            text-transform: none;
+            color: $color-c1;
+            font-size: e(16px);
+            margin-bottom: e(5px, 16px);
+        }
+        
+        .creators {
+            @include alt-text;
+            font-size: e(11px);
+        }
+        
+        .title-box {
+            float:left;
+            max-width: e(300px - 60px);
+        }
+        
+        .age {
+            @include alt-heading;
+            font-size: e(12px);
+            float:right;
+            margin:0;
+        }
+        
+        .amount {
+            font-weight: bold
+        }
+        
+        .description, .used, .new {
+            clear:both;
+            @include small-text;
+            line-height: 130%;
+        }
+        
+        .description {
+            margin-bottom: e(20px, $small-text-size);
+        }
+        
+        .used, .new {
+            margin-bottom: e(5px, $small-text-size);
+            float:left;
+        }
+        
+        .product-link {
+            @include small-alt-text;
+            float:right;
+            @include link;
+        }
     }
 }

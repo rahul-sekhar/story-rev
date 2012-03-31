@@ -3,26 +3,100 @@ $(document).ready(function() {
     if (!$body.hasClass('store')) return;
     
     // Handle hover popups
-    var $hoverInfo = $('<div id="hover-info"></div>');
-    var $hoverTitle = $('<h3></h3>').appendTo($hoverInfo);
-    var $hoverCreators = $('<p class="creators"></p>').appendTo($hoverInfo);
+    var $hoverInfo = $('<div id="hover-info"></div>').append('<div class="title-box"></div>');
+    var $hoverTitle = $('<h3></h3>').appendTo($hoverInfo.find('.title-box'));
+    var $hoverCreators = $('<p class="creators"></p>').appendTo($hoverInfo.find('.title-box'));
     var $hoverAge = $('<p class="age"></p>').appendTo($hoverInfo);
     var $hoverDesc = $('<p class="description"></p>').appendTo($hoverInfo);
-    var $hoverUsed = $('<p class="used">used copies start at <span class="amount"></span>').appendTo($hoverInfo);
     var $hoverNew = $('<p class="new">new copies start at <span class="amount"></span>').appendTo($hoverInfo);
+    var $hoverNewAmount = $hoverNew.find('.amount');
+    var $hoverUsed = $('<p class="used">used copies start at <span class="amount"></span>').appendTo($hoverInfo);
+    var $hoverUsedAmount = $hoverUsed.find('.amount');
     var $hoverMoreInfo = $('<a href="#" class="product-link">more info</a>').appendTo($hoverInfo);
     $hoverInfo.hide().appendTo($body);
     
     function setProductHover() {
-        $('#products .cover').hoverIntent(function(e) {
-                $hoverInfo.hide().css({
-                    top: e.pageY,
-                    left: e.pageX
-                }).fadeIn();
-            },
-            function() {
-                $hoverInfo.fadeOut('fast');
-            });
+        $('#products .cover').hover(function(e) {
+            var $book = $(this).data('mouseX', e.pageX).data('mouseY', e.pageY);
+            $book.data('hover', true);
+            if ($hoverInfo.is(':visible')) {
+                $book.on('mousemove', trackCursor);
+                $hoverInfo.stop().fadeOut('fast',function() {
+                    showHover ($book);
+                });
+            }
+            else {
+                showHover($book);
+            }
+            
+        },
+        function() {
+            $(this).data('hover', false);
+            setTimeout(checkHover, 200);
+        });
+    }
+    
+    function trackCursor(e) {
+        $(this).data('mouseX', e.pageX).data('mouseY', e.pageY);
+    }
+    
+    var $window = $(window);
+    
+    function showHover($book, x, y) {
+        $hoverTitle.text($book.data('title'));
+        $hoverCreators.text($book.data('creators'));
+        $hoverAge.text($book.data('age-level'));
+        $hoverDesc.text($book.data('description'));
+        
+        if ($book.data('new-copy-min-price')) {
+            $hoverNewAmount.text($book.data('new-copy-min-price'));
+            $hoverNew.show();
+        }
+        else {
+            $hoverNew.hide();
+        }
+        
+        if ($book.data('used-copy-min-price')) {
+            $hoverUsedAmount.text($book.data('used-copy-min-price'));
+            $hoverUsed.show();
+        }
+        else {
+            $hoverUsed.hide();
+        }
+        
+        $hoverMoreInfo.attr('href', $book.find('.product-link:first').attr('href'));
+        
+        $hoverInfo.data('link', $book);
+        $hoverInfo.off('mouseenter mouseleave');
+        $hoverInfo.on('mouseenter', function() {
+            $book.data('hover', true);
+        }).on('mouseleave', function() {
+            $book.data('hover', false);
+            setTimeout(checkHover, 200); 
+        });
+        
+        var top = $book.data('mouseY') + 10;
+        if ((top + $hoverInfo.outerHeight()) > ($window.scrollTop() + $window.height())) {
+            top = top - 15 - $hoverInfo.outerHeight();
+        }
+        var left = $book.data('mouseX') + 10;
+        if ((left + $hoverInfo.outerWidth()) > ($window.scrollLeft() + $window.width())) {
+            left = left - 15 - $hoverInfo.outerWidth();
+        }
+        
+        $hoverInfo.css({
+            opacity: 1,
+            top: top + 'px',
+            left: left + 'px'
+        }).fadeIn();
+        
+        $book.off('mousemove');
+    }
+    
+    function checkHover() {
+        if (!$hoverInfo.data('link').data('hover')) {
+            $hoverInfo.fadeOut();
+        }
     }
     
     setProductHover();
