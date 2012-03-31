@@ -32,12 +32,12 @@ $wrapper-width: 900px;
     li {
         float:left;
         @include heading;
-        @include inner-link($text-color, lighten($text-color, 20));
         line-height: e(45px, $heading-size);
         margin-left: e(15px, $heading-size);
         
         a {
             border-bottom: none;
+            @include link;
         }
         
         &:not(:first-child):before {
@@ -70,7 +70,9 @@ $wrapper-width: 900px;
 }
 
 .store #page-header .store, .blog #page-header .blog {
-    @include inner-link($color-c1, $color-c1);
+    a {
+        @include link($text-color, $text-color);
+    }
 }
 
 

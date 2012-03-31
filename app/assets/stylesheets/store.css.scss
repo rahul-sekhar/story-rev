@@ -167,6 +167,18 @@
             clear:both;
             float:right;
         }
+        
+        .sort {
+            color: $color-a6;
+            a {
+                @include link($color-a6, lighten($color-a6, 20));
+                border:none;
+            }
+            
+            a.current {
+                @include link($color-d1, $color-d1);
+            }
+        }
     }
     
     .back-button {
