@@ -7,7 +7,7 @@
   <p class="sort">
     sort by
       <% sort_array = %w[random date title author age price] %>
-      <%=raw sort_array.map {|x| link_to x, filter_url(:sort => x), :class => params[:sort] == x ? "current" : nil }.join(' | ') %>
+      <%=raw sort_array.map {|x| link_to x, sort_url(x), :class => params[:sort] == x ? "current" : nil }.join(' | ') %>
   </p>
   <%= render :partial => "products/cover", :collection => @products, :as => :product %>
   

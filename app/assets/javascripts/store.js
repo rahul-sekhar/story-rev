@@ -16,24 +16,23 @@ $(document).ready(function() {
     $hoverInfo.hide().appendTo($body);
     
     function setProductHover() {
-        $('#products .cover').hover(function(e) {
-            var $book = $(this).data('mouseX', e.pageX).data('mouseY', e.pageY);
-            $book.data('hover', true);
-            if ($hoverInfo.is(':visible')) {
-                $book.on('mousemove', trackCursor);
-                $hoverInfo.stop().fadeOut('fast',function() {
-                    showHover ($book);
-                });
-            }
-            else {
-                showHover($book);
-            }
-            
-        },
-        function() {
-            $(this).data('hover', false);
-            setTimeout(checkHover, 200);
-        });
+        $('#products .cover').on('mousemove', trackCursor)
+            .hoverIntent(function(e) {
+                var $book = $(this).data('hover', true);
+                if ($hoverInfo.is(':visible')) {
+                    $hoverInfo.stop().fadeOut('fast',function() {
+                        showHover ($book);
+                    });
+                }
+                else {
+                    showHover($book);
+                }
+                
+            },
+            function() {
+                $(this).data('hover', false);
+                setTimeout(checkHover, 100);
+            });
     }
     
     function trackCursor(e) {
@@ -72,7 +71,7 @@ $(document).ready(function() {
             $book.data('hover', true);
         }).on('mouseleave', function() {
             $book.data('hover', false);
-            setTimeout(checkHover, 200); 
+            setTimeout(checkHover, 100); 
         });
         
         var top = $book.data('mouseY') + 10;
@@ -89,8 +88,6 @@ $(document).ready(function() {
             top: top + 'px',
             left: left + 'px'
         }).fadeIn();
-        
-        $book.off('mousemove');
     }
     
     function checkHover() {

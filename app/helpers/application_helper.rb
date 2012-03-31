@@ -6,6 +6,12 @@ module ApplicationHelper
     request.url.split("?")[0] + "?" + new_params.map{ |k,v| "#{k}=#{v}" }.join("&") + (element_id ? "##{element_id}" : "")
   end
   
+  def sort_url(param)
+    new_params = request.query_parameters.merge({:sort => param})
+    new_params.delete(:page)
+    store_path(new_params, :anchor => "products")
+  end
+  
   def filter_url(new_params, element_id = "products")
     require "addressable/uri"
     uri = Addressable::URI.new
