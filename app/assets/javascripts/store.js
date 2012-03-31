@@ -2,6 +2,18 @@ $(document).ready(function() {
     var $body = $('body');
     if (!$body.hasClass('store')) return;
     
+    // Handle hover popups
+    var $hoverInfo = $('<div id="hover-info"></div>');
+    var $hoverTitle = $('<h3></h3>').appendTo($hoverInfo);
+    var $hoverCreators = $('<p class="creators"></p>').appendTo($hoverInfo);
+    var $hoverAge = $('<p class="age"></p>').appendTo($hoverInfo);
+    var $hoverDesc = $('<p class="description"></p>').appendTo($hoverInfo);
+    var $hoverUsed = $('<p class="used">used copies start at <span class="amount"></span>').appendTo($hoverInfo);
+    var $hoverNew = $('<p class="new">new copies start at <span class="amount"></span>').appendTo($hoverInfo);
+    var $hoverMoreInfo = $('<a href="#" class="product-link">more info</a>').appendTo($hoverInfo);
+    
+    
+    
     // Handle product information popups
     var $bookInfoDialog = $('<section id="book-info-dialog" class="dialog"></section>');
     $bookInfoDialog.dialog({

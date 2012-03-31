@@ -11,6 +11,7 @@ class Copy < ActiveRecord::Base
   has_one :stock
   
   validates :accession_id, :presence => true, :uniqueness => true
+  validates :copy_number, :presence => true, :numericality => { :only_integer => true }
   validates :condition_rating, :numericality => { :only_integer => true, :greater_than_or_equal_to => 0, :less_than_or_equal_to => 5 }
   validates :price, :numericality => { :only_integer => true }
   
@@ -67,21 +68,13 @@ class Copy < ActiveRecord::Base
   end
   
   def set_accession_id
-    self.accession_id = find_accession_id
+    self.copy_number ||= find_copy_number
+    self.accession_id ||= "#{product.accession_id}-#{copy_number}"
   end
   
-  def find_accession_id
-    base_acc = product.accession_id
-    return accession_id if accession_id.to_s[0,9] == base_acc
-    
-    last_copy = Copy.where('accession_id LIKE ?', "#{base_acc}%").order("accession_id DESC").first
-    
-    if last_copy.present?
-      new_acc = last_copy.accession_id[10,3].to_i + 1
-      "#{base_acc}-#{"%03d" % new_acc}"
-    else
-      "#{base_acc}-001"
-    end
+  def find_copy_number
+    last_copy = product.copies.where("copy_number IS NOT NULL").order("copy_number DESC").limit(1).first
+    return last_copy.present? ? last_copy.copy_number.to_i + 1 : 1
   end
   
   def product

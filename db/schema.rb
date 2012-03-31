@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120330154305) do
+ActiveRecord::Schema.define(:version => 20120331094305) do
 
   create_table "admin_roles", :force => true do |t|
     t.string   "name"
@@ -26,10 +26,8 @@ ActiveRecord::Schema.define(:version => 20120330154305) do
     t.string   "last_name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "accession_id"
   end
 
-  add_index "authors", ["accession_id"], :name => "index_authors_on_accession_id", :unique => true
   add_index "authors", ["last_name", "first_name"], :name => "index_authors_on_last_name_and_first_name"
 
   create_table "award_types", :force => true do |t|
@@ -70,10 +68,12 @@ ActiveRecord::Schema.define(:version => 20120330154305) do
     t.boolean  "new_copy"
     t.boolean  "limited_copies"
     t.integer  "number"
+    t.integer  "copy_number"
   end
 
-  add_index "copies", ["accession_id"], :name => "index_copies_on_accession_id", :unique => true
+  add_index "copies", ["accession_id"], :name => "index_copies_on_accession_id"
   add_index "copies", ["condition_rating"], :name => "index_copies_on_condition_rating"
+  add_index "copies", ["copy_number"], :name => "index_copies_on_copy_number"
   add_index "copies", ["edition_id"], :name => "index_copies_on_edition_id"
   add_index "copies", ["in_stock"], :name => "index_copies_on_in_stock"
   add_index "copies", ["limited_copies"], :name => "index_copies_on_limited_copies"
@@ -217,7 +217,6 @@ ActiveRecord::Schema.define(:version => 20120330154305) do
     t.string   "flipkart_id"
     t.string   "amazon_url"
     t.text     "short_description"
-    t.string   "accession_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "in_stock"
@@ -229,9 +228,10 @@ ActiveRecord::Schema.define(:version => 20120330154305) do
     t.integer  "language_id"
     t.integer  "product_type_id"
     t.integer  "content_type_id"
+    t.integer  "accession_id"
   end
 
-  add_index "products", ["accession_id"], :name => "index_products_on_accession_id", :unique => true
+  add_index "products", ["accession_id"], :name => "index_products_on_accession_id"
   add_index "products", ["age_from", "age_to"], :name => "index_products_on_age_from_and_age_to"
   add_index "products", ["author_id"], :name => "index_products_on_author_id"
   add_index "products", ["book_date"], :name => "index_products_on_book_date"

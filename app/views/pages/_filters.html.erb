@@ -2,7 +2,18 @@
   <h3>Browse</h3>
   <%= form_tag store_path, :method => :get do %>
     <input type="hidden" name="sort" value="<%= params[:sort] %>" />
-    <input type="hidden" name="publisher" value="<%= params[:publisher] %>" />
+    <% if params[:publisher].present? %>
+      <input type="hidden" name="publisher" value="<%= params[:publisher] %>" />
+    <% end %>
+    <% if params[:author].present? %>
+      <input type="hidden" name="author" value="<%= params[:author] %>" />
+    <% end %>
+    <% if params[:illustrator].present? %>
+      <input type="hidden" name="illustrator" value="<%= params[:illustrator] %>" />
+    <% end %>
+    <% if params[:award].present? %>
+      <input type="hidden" name="award" value="<%= params[:award] %>" />
+    <% end %>
     
     <label>Search</label>
     <div class="search container">

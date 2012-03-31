@@ -1,6 +1,5 @@
 class Product < ActiveRecord::Base
-  default_scope includes(:author)
-  
+  default_scope :include => :author
   attr_accessible :title, :author_name, :illustrator_name, :publisher_name, :year, :country_name, :age_from, :age_to,
                   :keyword_list, :flipkart_id, :amazon_url, :short_description, :product_type_id, :content_type_id,
                   :award_attributes, :other_field_attributes, :cover_image_id, :cover_image_url, :language_id
@@ -34,7 +33,7 @@ class Product < ActiveRecord::Base
   validates :year, :numericality => { :only_integer => true, :greater_than => 1000, :less_than => 2100 }, :allow_blank => true
   validates :flipkart_id, :length => { :maximum => 40 }
   validates :amazon_url, :length => { :maximum => 200 }
-  validates :accession_id, :presence => true, :uniqueness => true
+  validates :accession_id, :presence => true, :uniqueness => true, :numericality => { :only_integer => true }
   
   validates_associated :author
   validates_associated :illustrator
@@ -66,11 +65,11 @@ class Product < ActiveRecord::Base
     when "title"
       order(:title)
     when "author"
-      order('"authors"."last_name", "authors"."first_name"')
+      order('"auth"."last_name", "auth"."first_name"')
     when "age"
       order("age_from")
     when "price"
-      order("(SELECT MIN(price) FROM editions INNER JOIN copies ON editions.id = copies.edition_id WHERE editions.product_id = products.id)")
+      joins("LEFT JOIN editions AS ed ON ed.product_id = products.id LEFT JOIN copies AS cop ON cop.edition_id = ed.id").group("products.id").order("MIN(cop.price)")
     else
       self.scoped
     end
@@ -85,9 +84,10 @@ class Product < ActiveRecord::Base
     if p[:search].present?
       sqlSearch = "%#{SqlHelper::escapeWildcards(p[:search].downcase)}%"
       filtered = filtered
-        .where('LOWER(title) LIKE ? OR
-               author_id IN (SELECT "authors"."id" FROM "authors" WHERE LOWER(first_name || \' \' || last_name) LIKE ?) OR
-               illustrator_id IN (SELECT "illustrators"."id" FROM "illustrators" WHERE LOWER(first_name || \' \' || last_name) LIKE ?)',
+        .joins('LEFT JOIN illustrators AS ill ON ill.id = products.illustrator_id')
+        .where('LOWER(products.title) LIKE ? OR
+               LOWER(auth.first_name || \' \' || auth.last_name) LIKE ? OR
+               LOWER(ill.first_name || \' \' || ill.last_name) LIKE ?',
                sqlSearch, sqlSearch, sqlSearch)
     end
     
@@ -237,23 +237,12 @@ class Product < ActiveRecord::Base
   end
   
   def set_accession_id
-    self.accession_id = find_accession_id
+    self.accession_id ||= find_accession_id
   end
   
   def find_accession_id
-    if author.present?
-      author.convert_full_name
-      author_acc = author.find_accession_id
-      return accession_id if accession_id.to_s[0,5] == author_acc
-      
-      last_product = Product.where('accession_id LIKE ?', "#{author_acc}%").order("accession_id DESC").first
-      if last_product.present?
-        new_acc = last_product.accession_id[6,3].to_i + 1
-        "#{author_acc}-#{"%03d" % new_acc}"
-      else
-        "#{author_acc}-001"
-      end
-    end
+    last_product = Product.where("accession_id IS NOT NULL").order("accession_id DESC").limit(1).first
+    return last_product.present? ? last_product.accession_id.to_i + 1 : 1
   end
   
   def build_empty_fields
@@ -283,7 +272,7 @@ class Product < ActiveRecord::Base
   end
   
   def creators
-    "#{author_name}#{illustrator.present? ? " #{illustrator_name}" : ""}"
+    "#{author_name}#{illustrator.present? ? " and #{illustrator_name}" : ""}"
   end
   
   def author_name=(name)
