@@ -10,7 +10,7 @@ module ApplicationHelper
     require "addressable/uri"
     uri = Addressable::URI.new
     
-    filters = %w[condition price age_to age_from search type format sort price_range price_from price_to]
+    filters = %w[condition price content_type product_type keyword collection age_to age_from search type format sort price_range price_from price_to]
     
     filter_params = {}
     filters.each do |f|

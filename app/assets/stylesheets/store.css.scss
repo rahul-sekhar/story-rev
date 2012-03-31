@@ -100,6 +100,10 @@
             margin-bottom: e(30px);
         }
         
+        ul.limit {
+            max-height: e(200px);
+        }
+        
         ul.list {
             max-height: e(200px);
             overflow: auto;
