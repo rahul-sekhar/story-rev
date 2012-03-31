@@ -1,0 +1,11 @@
+<p class="sort" data-current="<%= params[:sort] %>">
+    sort by
+      <% sort_array = %w[random date title author age price] %>
+      <%=raw sort_array.map {|x| link_to x, sort_url(x), :class => params[:sort] == x ? "current" : nil }.join(' | ') %>
+  </p>
+
+<div class="covers">
+  <%= render :partial => "products/cover", :collection => @products, :as => :product %>
+</div>
+
+<%= paginate @products %>

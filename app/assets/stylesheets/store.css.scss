@@ -163,6 +163,21 @@
         padding-top: e(20px);
         float:left;
         
+        .covers {
+            position:relative;
+            @include clearfix;
+        }
+        
+        .ajax-content {
+            @include clearfix;
+        }
+        
+        .js-remove {
+            position:absolute;
+            left:0;
+            top:0;
+        }
+        
         .cover-container {
             margin-right: e(20px);
             margin-bottom: e(20px);

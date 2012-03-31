@@ -122,7 +122,6 @@ $(document).ready(function() {
         $textbox.focus();
         $this.hide();
     }).on('itemRemove', function(e, data) {
-        console.log(data);
         updateOrderAmount(data);
     });
     
@@ -220,7 +219,7 @@ $(document).ready(function() {
         
         var saveEdit = function() {
             var text = $textbox.val();
-            console.log(text);
+            
             $.ajax ({
                 url: '/admin/orders/' + curr_id,
                 method: 'POST',

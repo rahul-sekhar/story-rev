@@ -29,7 +29,7 @@ module ApplicationHelper
   end
   
   def switch_collection_path(new_params = {})
-    store_path({:anchor => "products"}.merge(new_params))
+    store_path({:anchor => "products", :sort => params[:sort]}.merge(new_params))
   end
   
   # The more info menu items

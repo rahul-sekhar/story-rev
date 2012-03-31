@@ -29,10 +29,11 @@ $(document).ready(function() {
                 }
                 
             },
-            function() {
-                $(this).data('hover', false);
-                setTimeout(checkHover, 100);
-            });
+            function() {}
+        ).on('mouseleave', function() {
+            $(this).data('hover', false);
+            setTimeout(checkHover, 100);
+        });
     }
     
     function trackCursor(e) {
@@ -91,7 +92,7 @@ $(document).ready(function() {
     }
     
     function checkHover() {
-        if (!$hoverInfo.data('link').data('hover')) {
+        if ($hoverInfo.data('link') && !$hoverInfo.data('link').data('hover')) {
             $hoverInfo.fadeOut();
         }
     }

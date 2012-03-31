@@ -5,6 +5,10 @@
     max-width: e(600px);
     @include clearfix;
     
+    h2 {
+        font-size: e(24px);
+    }
+    
     .cover-section {
         float:left;
         margin: 0 e(30px) e(40px) 0;
