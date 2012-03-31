@@ -282,6 +282,10 @@ class Product < ActiveRecord::Base
     end
   end
   
+  def creators
+    "#{author_name}#{illustrator.present? ? " #{illustrator_name}" : ""}"
+  end
+  
   def author_name=(name)
     self.author = name.present? ? (Author.name_is(name) || Author.new({ :full_name => name })) : nil
   end
@@ -448,5 +452,13 @@ class Product < ActiveRecord::Base
   
   def previous_product
     Product.where('"products"."created_at" < ?', created_at).order('"products"."created_at" DESC').limit(1).first || Product.limit(1).order('"products"."created_at" DESC').first
+  end
+  
+  def used_copy_min_price
+    copies.select{|x| x.new_copy = false}.map{|x| x.price}.min
+  end
+  
+  def new_copy_min_price
+    copies.select{|x| x.new_copy = true}.map{|x| x.price}.min
   end
 end

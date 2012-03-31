@@ -11,7 +11,9 @@
     
     <label>Book types</label>
     <ul>
-    <% ProductType.order(:name).each do |x| %>
+    <% @stocked_products = Product.unscoped.where(:in_stock => true) %>
+    <% @stocked_product_ids = @stocked_products.map{|x| x.id} %>
+    <% ProductType.where(:id => @stocked_products.map{|x| x.product_type_id}).order(:name).each do |x| %>
       <li>
         <%= filter_box "book_type", x.id %>
         <span><%= x.name %></span>
@@ -41,7 +43,7 @@
     
     <label>Keywords</label>
     <ul class="limit">
-    <% Keyword.order(:name).each do |x| %>
+    <% Keyword.where('"keywords"."id" IN (SELECT keyword_id FROM products_keywords WHERE product_id IN (?))', @stocked_product_ids).order(:name).each do |x| %>
       <li>
         <%= filter_box "keyword", x.id %>
         <span><%= x.name %></span>
@@ -68,7 +70,8 @@
     
     <label>Formats</label>
     <ul>
-    <% Format.order(:name).each do |f| %>
+    <% @stocked_editions = Edition.where('"editions"."id" IN (SELECT edition_id FROM copies WHERE copies.in_stock = TRUE)') %>
+    <% Format.where(:id => @stocked_editions.map{|x| x.format_id}).order(:name).each do |f| %>
       <li>
         <%= filter_box "format", f.id %>
         <span><%= f.name %></span>
@@ -112,7 +115,7 @@
   
   <label>Publishers</label>
   <ul class="list">
-  <% Publisher.where('id IN (SELECT publisher_id FROM products)').order(:name).each do |x| %>
+  <% Publisher.where(:id => @stocked_products.map{|x| x.publisher_id}).order(:name).each do |x| %>
     <li>
       <% if params["publisher"] == x.id.to_s %>
         <%= link_to "#{x.name} [x]", filter_url({}), :class =>  "current" %>
@@ -125,7 +128,7 @@
   
   <label>Awards</label>
   <ul class="list">
-  <% Award.joins(:award_type).order('"award_types"."name"').each do |x| %>
+  <% Award.joins(:award_type).order('"award_types"."name"').where('"awards"."id" IN (SELECT award_id FROM products_awards WHERE product_id IN (?))', @stocked_product_ids).each do |x| %>
     <li>
       <% if params["award"] == x.id.to_s %>
         <%= link_to "#{x.full_name} [x]", filter_url({}), :class =>  "current" %>
@@ -138,7 +141,7 @@
 
   <label>Authors</label>
   <ul class="list">
-  <% Author.order("last_name, first_name").each do |x| %>
+  <% Author.order("last_name, first_name").where(:id => @stocked_products.map{|x| x.author_id}).each do |x| %>
     <li>
       <% if params["author"] == x.id.to_s %>
         <%= link_to "#{x.full_name} [x]", filter_url({}), :class =>  "current" %>
@@ -152,7 +155,7 @@
   
   <label>Illustrators</label>
   <ul class="list">
-  <% Illustrator.order("last_name, first_name").each do |x| %>
+  <% Illustrator.order("last_name, first_name").where(:id => @stocked_products.map{|x| x.illustrator_id}).each do |x| %>
     <li>
       <% if params["illustrator"] == x.id.to_s %>
         <%= link_to "#{x.full_name} [x]", filter_url({}), :class =>  "current" %>

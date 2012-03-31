@@ -101,11 +101,11 @@
         }
         
         ul.limit {
-            max-height: e(200px);
+            max-height: e(120px);
         }
         
         ul.list {
-            max-height: e(200px);
+            max-height: e(120px);
             overflow: auto;
             li {
                 @include smaller-text;

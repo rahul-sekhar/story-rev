@@ -6,7 +6,7 @@ class PagesController < ApplicationController
     
     params[:sort] = "date" if !params[:sort]
     
-    @products = Product.stocked.includes_cover.filter(params)
+    @products = Product.stocked.includes_cover.includes(:copies).filter(params)
     
     @products = @products.sort_by_param(params[:sort])
     
