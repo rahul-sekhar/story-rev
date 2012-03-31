@@ -20,7 +20,7 @@ gem 'nokogiri'
 gem 'amazon-ecs'
 gem 'terminator'
 gem 'valid_email', :require => 'valid_email/email_validator'
-gem 'thinking-sphinx', '2.0.10'
+gem 'addressable'
 
 gem 'capistrano'
 gem 'bcrypt-ruby', '~> 3.0.0', :require => "bcrypt"

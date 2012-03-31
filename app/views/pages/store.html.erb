@@ -1,26 +1,11 @@
-<section id="sidebar">
-  <article class="feature">
-    <h3>Lorem ipsum dolor sit amet</h3>
-    
-    <p>Suspendisse eu tellus nibh, non consequat mauris. Quisque pretium ipsum
-    eget velit elementum tempor. Aliquam vel leo vel enim tempus ultrices. Etiam
-    consequat ante id purus volutpat ullamcorper. In gravida, ligula et pharetra
-    aliquam, ipsum risus fringilla mi, in hendrerit ligula sem eget leo. Donec
-    blandit cursus nulla id accumsan.</p>
-  </article>
-  
-  <article class="feature">
-    <h3>Quisque pellentesque iaculis nulla non</h3>
-    
-    <p>Morbi quis lectus in diam rhoncus ultricies vitae vitae metus. Integer id
-    nibh arcu. Pellentesque commodo neque fringilla metus semper nec tempus
-    nulla placerat. Sed facilisis ultricies imperdiet.</p>
-  </article>
-</section>
-
 <%= render "filters" %>
 
 <section id="products">
+  <p class="sort">
+    sort by
+      <% sort_array = %w[random date title author age price] %>
+      <%=raw sort_array.map {|x| link_to x, filter_url(:sort => x), :class => params[:sort] == x ? "current" : nil }.join(' | ') %>
+  </p>
   <%= render :partial => "products/cover", :collection => @products, :as => :product %>
 </section>
 

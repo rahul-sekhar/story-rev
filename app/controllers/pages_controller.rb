@@ -4,7 +4,13 @@ class PagesController < ApplicationController
     @class = "store"
     @title = "Store"
     
-    @products = Product.stocked.includes_cover.filter(params).page(params[:page]).per(20)
+    params[:sort] = "date" if !params[:sort]
+    
+    @products = Product.stocked.includes_cover.filter(params)
+    
+    @products = @products.sort_by_param(params[:sort])
+    
+    @products = @products.page(params[:page]).per(20)
     
     @themes = Theme.all
   end

@@ -24,7 +24,7 @@
   <div class="age_year">
     <% if @product.age_from.present? %>
       <p class="age">May be appropriate for
-      <span><%=raw @product.age_to.present? ? "ages #{@product.age_from} &ndash; #{@product.age_to}" : "age #{@product.age_from}" %></span>
+      <span><%=raw @product.age_to.present? && (@product.age_to != @product.age_from) ? "ages #{@product.age_from} &ndash; #{@product.age_to}" : "age #{@product.age_from}" %></span>
       <span class="sidenote">(and up)</span>
     <% end %>
     

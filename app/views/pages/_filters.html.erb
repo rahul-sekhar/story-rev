@@ -1,5 +1,30 @@
 <section id="filters">
   <%= form_tag store_path, :method => :get do %>
+    <input type="hidden" name="sort" value="<%= params[:sort] %>" />
+    <input type="hidden" name="publisher" value="<%= params[:publisher] %>" />
+    
+    <label>Search</label>
+    <div class="search">
+      <input type="text" name="search" value="<%= params[:search] %>" />
+    </div>
+    
+    <label>Used or New</label>
+    <ul>
+      <li>
+        <%= filter_box "type", "new" %>
+        New books
+      </li>
+      <li>
+        <%= filter_box "type", "used" %>
+        Used books
+      </li>
+    </ul>
+    
+    <label>Age</label>
+    <div class="age">
+      <input type="text" name="age_from" value="<%= params[:age_from] %>"/> to <input type="text" name="age_to" value="<%= params[:age_to] %>" />
+    </div>
+    
     <label>Condition</label>
     <ul>
     <% 5.downto(1).each do |c| %>
@@ -15,23 +40,42 @@
     <ul>
       <%  %>
       <li>
-        <%= filter_box "price", "-10" %>
-        Below Rs. 10
+        <%= filter_box "price", "-50" %>
+        Below Rs. 50
       </li>
       <li>
-        <%= filter_box "price", "10-20" %>
-        Rs. 10 to Rs. 20
+        <%= filter_box "price", "50-100" %>
+        Rs. 50 to Rs. 100
       </li>
       <li>
-        <%= filter_box "price", "20-30" %>
-        Rs. 20 to Rs. 30
+        <%= filter_box "price", "100-150" %>
+        Rs. 100 to Rs. 150
       </li>
       <li>
-        <%= filter_box "price", "30-" %>
-        Above Rs. 30
+        <%= filter_box "price", "150-" %>
+        Above Rs. 150
       </li>
     </ul>
     
+    <label>Formats</label>
+    <ul>
+    <% Format.order(:name).each do |f| %>
+      <li>
+        <%= filter_box "format", f.id %>
+        <%= f.name %>
+      </li>
+    <% end %>
+    </ul>
+    
     <%= submit_tag ("Apply") %>
+    
+    <label>Publishers</label>
+    <ul>
+    <% Publisher.order(:name).each do |x| %>
+      <li>
+        <%= link_to p.name, filter_url(:publisher => x.id), :class => params[:publisher] == x.id ? "current" : nil  %>
+      </li>
+    <% end %>
+    </ul>
   <% end %>
 </section>

@@ -6,6 +6,22 @@ module ApplicationHelper
     request.url.split("?")[0] + "?" + new_params.map{ |k,v| "#{k}=#{v}" }.join("&") + (element_id ? "##{element_id}" : "")
   end
   
+  def filter_url(new_params, element_id = nil)
+    require "addressable/uri"
+    uri = Addressable::URI.new
+    
+    filters = %w[condition price age_to age_from search type format sort]
+    
+    filter_params = {}
+    filters.each do |f|
+      filter_params[f.to_sym] = params[f] if params[f].present?
+    end
+    
+    new_params = filter_params.merge(new_params)
+    uri.query_values = new_params
+    request.url.split("?")[0] + "?" + uri.query + (element_id ? "##{element_id}" : "")
+  end
+  
   # The more info menu items
   def more_nav_links
     {

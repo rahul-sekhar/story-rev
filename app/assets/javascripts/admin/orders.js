@@ -389,7 +389,15 @@ $(document).ready(function() {
         $searchBox.tokenInput("reset");
         
         $.blockUI({
-            message: $addDialog
+            message: $addDialog,
+            css: { 
+                width:          '40%', 
+                top:            '10%', 
+                left:           '30%', 
+                textAlign:      'left', 
+                backgroundColor:'#fff', 
+                padding:        '20px'
+            }
         });
     });
     

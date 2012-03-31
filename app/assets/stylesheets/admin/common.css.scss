@@ -236,8 +236,8 @@ table {
 
 td, th {
     @include small-text;
-    line-height: e(20px, $small-text-size);
-    padding: 0 e(10px, $small-text-size);
+    line-height: 150%;
+    padding: e(2px, $small-text-size) e(10px, $small-text-size);
     cursor:default;
 }
 
