@@ -28,7 +28,7 @@ $(document).ready(function() {
         var $prev = $link.closest('.sort').find('.current:first').removeClass('current');
         $link.addClass('current');
         
-        getProducts(this.href, null, function() {
+        getProducts(this.href, null, null, function() {
             $link.removeClass('current');
             $prev.addClass('current');
         })
@@ -43,10 +43,37 @@ $(document).ready(function() {
         var $prev = $collections.find('.current:first').removeClass('current');
         $link.addClass('current');
         
-        getProducts(this.href, null, function() {
+        getProducts(this.href, null, null, function() {
             $link.removeClass('current');
             $prev.addClass('current');
         })
+    });
+    
+    var filterCache;
+    
+    // Filters
+    var $filters = $('#filters');
+    var $filterForm = $filters.find('form:first');
+    
+    function filtersChanged() {
+        var data = $filterForm.serializeObject();
+        var params = $filterForm.serialize();
+        if (filterCache == params) return;
+        
+        filterCache = params;
+        getProducts($collections.find('.current:first').attr('href'), data, null, null, true);
+    }
+    
+    $filters.find('.submit-container, .params').remove();
+    $filters.on('change', 'input[type=checkbox]', filtersChanged);
+    
+    // Filters - textboxes
+    var typingTimer;
+    var doneTypingInterval = 300;
+    
+    $filters.find('input[type=text]').keyup(function(){
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(filtersChanged, doneTypingInterval);
     });
     
     
@@ -61,7 +88,7 @@ $(document).ready(function() {
     var $coversLoading = $('<p class="loading-large"><img alt="" src="/images/loading2.gif" /><br />Loading...</p>');
     var prev_xhr;
     
-    function getProducts(url, success, error, no_pushstate) {
+    function getProducts(url, data, success, error, no_pushstate) {
         // Cancel any pending requests
         if (prev_xhr) prev_xhr.abort();
         
@@ -81,11 +108,15 @@ $(document).ready(function() {
             .appendTo($covers)
             .fadeIn();
         
+        var params = {ajax: true};
+        if (data)
+            $.extend(params, data);
+        
         var xhr = $.ajax({
             url: url,
             type: 'GET',
             dataType: 'html',
-            data: {ajax: true},
+            data: params,
             success: function(data) {
                 var $newCovers = $('.covers', data)
                     .removeClass()
@@ -141,6 +172,6 @@ $(document).ready(function() {
         popped = true
         if ( initialPop ) return
         
-        getProducts(location.href, null, null, true)
+        getProducts(location.href, null, null, null, true)
     });
 });

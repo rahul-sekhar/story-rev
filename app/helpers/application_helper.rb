@@ -6,9 +6,16 @@ module ApplicationHelper
     request.url.split("?")[0] + "?" + new_params.map{ |k,v| "#{k}=#{v}" }.join("&") + (element_id ? "##{element_id}" : "")
   end
   
-  def sort_url(param)
-    new_params = request.query_parameters.merge({:sort => param})
-    new_params.delete(:page)
+  def sort_url(param)   
+    filters = %w[condition price content_type product_type collection age_to age_from search
+    type format price_from price_to author illustrator publisher award]
+    
+    filter_params = {}
+    filters.each do |f|
+      filter_params[f.to_sym] = params[f] if params[f].present?
+    end
+    
+    new_params = filter_params.merge({:sort => param})
     store_path(new_params, :anchor => "products")
   end
   
