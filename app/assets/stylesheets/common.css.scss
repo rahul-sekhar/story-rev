@@ -254,8 +254,8 @@ table {
 
 // Cover image
 .cover-container {
-    width:100px;
-    height:150px;
+    max-width:100px;
+    max-height:150px;
     
     .blank-cover {
         width:100px;
@@ -268,16 +268,12 @@ table {
             display:block;
             border-bottom:none;
             position:relative;
-            
-            &:hover p {
-                color: $color-a2;
-            }
         }
         
         p {
-            @include small-text;
+            @include smaller-text;
             text-align:center;
-            line-height:e(16px, $small-text-size);
+            line-height:e(16px, $smaller-text-size);
             @include word-wrap;
             color: $color-a4;
             position:absolute;
@@ -291,6 +287,7 @@ table {
             &.title {
                 top:15px;
                 max-height:88px;
+                font-weight:bold;
             }
             
             &.author {

@@ -6,7 +6,17 @@
 
 <div class="covers">
     <% if @products.length > 0 %>
-        <%= render :partial => "products/cover", :collection => @products, :as => :product %>
+        <div class="row">
+        <% i = 0 %>
+        <% @products.each do |p| %>
+            <% i += 1 %>
+            <%= render "products/cover", :product => p %>
+            <% if i % 4 == 0 %>
+        </div>
+        <div class="row">
+            <% end %>
+        <% end %>
+        </div>
     <% else %>
         <p class="no-results">No books were found...</p>
     <% end %>
