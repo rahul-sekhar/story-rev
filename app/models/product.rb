@@ -155,8 +155,8 @@ class Product < ActiveRecord::Base
       filtered = filtered.where(:content_type_id => [p[:content_type].keys.first, 3])
     end
     
-    if p[:product_type].is_a?(Hash)
-      filtered = filtered.where(:product_type_id => p[:product_type].keys)
+    if p[:book_type].is_a?(Hash)
+      filtered = filtered.where(:product_type_id => p[:book_type].keys)
     end
     
     if p[:collection].present?

@@ -18,4 +18,9 @@ class PagesController < ApplicationController
     @section = params[:section]
     render :layout => "ajax"
   end
+  
+  def email
+    OrderMailer.test_email.deliver
+    redirect_to root_url
+  end
 end

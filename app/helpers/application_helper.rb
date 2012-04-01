@@ -16,14 +16,14 @@ module ApplicationHelper
     end
     
     new_params = filter_params.merge({:sort => param})
-    store_path(new_params, :anchor => "products")
+    root_path(new_params, :anchor => "products")
   end
   
   def filter_url(new_params, element_id = "products")
     require "addressable/uri"
     uri = Addressable::URI.new
     
-    filters = %w[condition price content_type product_type collection age_to age_from search type format sort price_range price_from price_to]
+    filters = %w[condition price content_type book_type collection age_to age_from search type format sort price_range price_from price_to]
     
     filter_params = {}
     filters.each do |f|
@@ -36,7 +36,7 @@ module ApplicationHelper
   end
   
   def switch_collection_path(new_params = {})
-    store_path({:anchor => "products", :sort => params[:sort]}.merge(new_params))
+    root_path({:anchor => "products", :sort => params[:sort]}.merge(new_params))
   end
   
   # The more info menu items

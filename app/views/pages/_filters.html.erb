@@ -1,6 +1,6 @@
 <section id="filters">
   <h3>Browse</h3>
-  <%= form_tag store_path, :method => :get do %>
+  <%= form_tag root_path, :method => :get do %>
     <div class="params">
       <input type="hidden" name="sort" value="<%= params[:sort] %>" />
       <% if params[:publisher].present? %>
