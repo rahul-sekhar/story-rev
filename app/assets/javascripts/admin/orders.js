@@ -407,7 +407,8 @@ $(document).ready(function() {
     var initId = $ordersTable.data('init-select');
     if (initId) {
         $ordersTable.find('tr.selected').removeClass('selected');
-        $ordersTable.find('tr[data-id=' + initId + ']').addClass('selected');
+        var $selectedRow = $ordersTable.find('tr[data-id=' + initId + ']').addClass('selected');
+        $ordersTable.parent().scrollTop($selectedRow.position().top);
         $ordersTable.trigger("selectionChange", initId);
     }
     

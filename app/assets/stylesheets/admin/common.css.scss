@@ -223,6 +223,7 @@ table {
 }
 
 .table-container {
+    position:relative;
     float:left;
     @include rounded-corners(5px);
     border:1px solid $color-e1;
