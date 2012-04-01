@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+  </head>
+  <body>
+    <p>An order has been made (Order #<%= @order.id %>)</p>
+    
+    <p><%= link_to "View the order", pending_admin_orders_url(:selected_order_id => @order.id) %></p>
+  </body>
+</html>

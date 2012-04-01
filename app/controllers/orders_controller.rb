@@ -27,6 +27,7 @@ class OrdersController < ApplicationController
     if (@order.complete?)
       @order.finalise
       OrderMailer.delay.confirmation(@order)
+      OrderMailer.delay.notify_owner(@order)
       render "confirmation", :layout => params[:ajax] ? "ajax" : true
     else
       render "new", :layout => params[:ajax] ? "ajax" : true
