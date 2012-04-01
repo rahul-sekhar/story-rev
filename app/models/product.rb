@@ -91,12 +91,16 @@ class Product < ActiveRecord::Base
                sqlSearch, sqlSearch, sqlSearch)
     end
     
-    if p[:age_from].present? && p[:age_from].to_i > 0
-      filtered = filtered.where("age_to > ? OR (age_to IS NULL AND age_from > ?)", p[:age_from].to_i, p[:age_from].to_i)
-    end
+    age_from = p[:age_from].to_i
+    age_to = p[:age_to].to_i
     
-    if p[:age_to].present? && p[:age_to].to_i > 0
-      filtered = filtered.where("age_from < ? AND age_from IS NOT NULL", p[:age_to].to_i)
+    if age_from > 0 && age_to > 0
+      filtered = filtered.where("(age_to >= ? AND age_from <= ?) OR (age_from IS NULL AND age_to BETWEEN ? AND ?) OR (age_to IS NULL AND age_from BETWEEN ? AND ?)", age_from, age_to, age_from, age_to, age_from, age_to)
+    else
+      age = [age_from, age_to].max
+      if age > 0
+        filtered = filtered.where("(age_to <= ? AND age_from >= ?) OR (age_from IS NULL AND age_to = ?) OR (age_to IS NULL AND age_from = ?)", age, age, age, age)
+      end
     end
     
     if p[:type].is_a?(Hash) && p[:type][:new] != p[:type][:used]
