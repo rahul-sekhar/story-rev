@@ -6,8 +6,16 @@ Items:
 <%= oc.copy.product.title %> (by <%= oc.copy.product.author_name %>) - <%= oc.number %> copies - Rs. <%= oc.copy.price %>
 <% end %>
 
-Postage: Rs. <%= @order.postage_ammount %>
+Postage: Rs. <%= @order.postage_amount %>
 Total: Rs. <%= @order.total_amount %>
+
+<% case @order.payment_method.to_i
+  when 1
+%>Bank Details:
+
+<% when 2 %>Address to mail cheque to:
+
+<% end %>
 
 <%= @order.delivery_text %>
 <% if @order.delivery_method == 2 %><%= @order.pickup_point_text %><% end %>

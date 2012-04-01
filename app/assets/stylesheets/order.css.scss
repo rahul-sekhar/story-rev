@@ -34,10 +34,10 @@
         
         li {
             float:left;
-            @include heading;
+            @include alt-heading;
             color: $color-a4;
-            line-height:e(40px, $heading-size);
-            margin-right:e(10px, $heading-size);
+            line-height:e(40px, $alt-heading-size);
+            margin-right:e(10px, $alt-heading-size);
             
             &.current {
                 color: $color-b1;

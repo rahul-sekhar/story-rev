@@ -10,24 +10,24 @@
       <tfoot>
         <tr>
           <td colspan="2"></td>
-          <td><p><strong>Postage:</strong> <%= RupeeHelper.to_rupee(@order.postage_amount) %></td>
+          <td style="padding:0 2em; text-align:right;"><p><strong>Postage:</strong> <%= RupeeHelper.to_rupee(@order.postage_amount) %></td>
         </tr>
         <tr>
           <td colspan="2"></td>
-          <td><p><strong>Total:</strong> <%= RupeeHelper.to_rupee(@order.total_amount) %></td>
+          <td style="padding:0 2em; text-align:right;"><p><strong>Total:</strong> <%= RupeeHelper.to_rupee(@order.total_amount) %></td>
         </tr>
       </tfoot>
       <tbody>
         <% @order.order_copies.each do |oc| %>
         <tr>
-          <td>
-            <p><%= oc.copy.product.title %></p>
+          <td style="padding:0 2em; min-width: 10em;">
+            <p><strong><%= oc.copy.product.title %></strong></p>
             <p style="font-style:italic"><%= oc.copy.product.creators %></p>
           </td>
-          <td>
+          <td style="padding:0 2em;">
             <p><%= oc.number %> copies</p>
           </td>
-          <td>
+          <td style="padding:0 2em; text-align:right;">
             <p><%= RupeeHelper.to_rupee(oc.copy.price) %></p>
           </td>
         </tr>
@@ -35,7 +35,17 @@
       </tbody>
     </table>
     
-    <p><strong>Delivery:</strong> <%= @order.delivery_name %></p>
+    <% case @order.payment_method.to_i
+      when 1
+    %>
+      <p>Bank Details:</p>
+  
+    <% when 2 %>
+      <p>Address to mail cheque to:</p>
+  
+    <% end %>
+    
+    <p><%= @order.delivery_text %></p>
     <% if @order.delivery_method == 2 %>
       <p><%= @order.pickup_point_text %></p>
     <% end %>

@@ -47,7 +47,15 @@
   
   <p>The total amount payable is <strong><%= RupeeHelper.to_rupee(@order.total_amount) %></strong></p>
   
-  <%= render "payment_details", :order => @order %>
+  <% case @order.payment_method.to_i
+    when 1
+  %>
+    <p>Bank Details:</p>
+
+  <% when 2 %>
+    <p>Address to mail cheque to:</p>
+
+  <% end %>
   
   
   <p>We will <%= @order.delivery_method == 1 ? "post your books" : "get in touch with you about delivery" %> once we
