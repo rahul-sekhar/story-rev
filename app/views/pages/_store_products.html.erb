@@ -1,4 +1,4 @@
-<p class="sort" data-current="<%= params[:sort] %>">
+<p class="sort" data-current="<%= params[:sort] %>" data-collection="<%= get_collection %>">
     sort by
     <% sort_array = %w[random date title author age price] %>
     <%=raw sort_array.map {|x| link_to x, sort_url(x), :class => params[:sort] == x ? "current" : nil }.join(' | ') %>

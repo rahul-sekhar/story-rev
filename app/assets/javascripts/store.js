@@ -99,6 +99,9 @@ $(document).ready(function() {
     
     setProductHover();
     
+    // Set up the hover state when a refreshed event is triggered on the products section
+    $('#products').on('productsRefreshed', setProductHover)
+    
     // Handle product information popups
     var $bookInfoDialog = $('<section id="book-info-dialog" class="dialog"></section>');
     $bookInfoDialog.dialog({

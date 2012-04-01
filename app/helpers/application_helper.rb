@@ -39,6 +39,17 @@ module ApplicationHelper
     root_path({:anchor => "products", :sort => params[:sort]}.merge(new_params))
   end
   
+  def get_collection
+    collections = %w[collection author illustrator publisher award]
+    
+    collections.each do |c|
+      if params[c].present?
+        return "#{c}-#{params[c]}"
+      end
+    end
+    return "collections-all"
+  end
+  
   # The more info menu items
   def more_nav_links
     {

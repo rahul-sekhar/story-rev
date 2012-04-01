@@ -84,12 +84,18 @@ $(document).ready(function() {
     function clearFilters() {
         $filters.find('input[type=text]').val('');
         $filters.find('input[type=checkbox]').prop('checked', false);
+        filterCache = null
     }
     
     
     // Function to get the current sorted state
     function getSort() {
         return $products.find('.sort').data('current');
+    }
+    
+    // Function to get the current collection id
+    function getCollectionId() {
+        return $products.find('.sort').data('collection');
     }
     
     
@@ -139,7 +145,7 @@ $(document).ready(function() {
                 $newCovers.fadeIn();
                 setTimeout(function() {
                     $covers.height($newCovers.height());
-                }, 50);
+                }, 100);
                 
                 $products.find('.pagination,.sort').remove().end()
                     .prepend($('.sort', data))
@@ -147,13 +153,22 @@ $(document).ready(function() {
                 
                 // Update collection URL with the new sort by parameter
                 if (getSort()) {
-                    $collections.find('a').fragment({sort: getSort()});
+                    $collections.find('a').each(function() {
+                        this.href = this.href.replace(/sort=\w*/, "sort=" + getSort());
+                    });
                 }
                 
-                if (!no_pushstate) {
+                // Select the correct collection item
+                $collections.find('.current').removeClass('current');
+                $collections.find('#' + getCollectionId() + ' a').addClass('current');
+                
+                if (!no_pushstate && Modernizr.history) {
                     // Add url to the browser history
-                    history.pushState(null, null, url);
+                    history.pushState(data, null, url);
                 }
+                
+                // Trigger an event so product hover info is refreshed
+                $products.trigger("productsRefreshed");
                 
                 if (success) success();
             },
@@ -182,8 +197,45 @@ $(document).ready(function() {
         popped = true
         if ( initialPop ) return
         
-        getProducts(location.href, null, function() {
+        // Restore popped state
+        var data = e.originalEvent.state;
+        
+        if (data) {
+            var $newCovers = $('.covers', data)
+                .removeClass()
+                .addClass("ajax-content")
+                .hide();
+            
+            $covers.empty().append($newCovers);
+            $newCovers.fadeIn();
+            setTimeout(function() {
+                $covers.height($newCovers.height());
+            }, 100);
+            
+            $products.find('.pagination,.sort').remove().end()
+                .prepend($('.sort', data))
+                .append($('.pagination', data));
+            
+            console.log(getCollectionId())
+            // Select the correct collection item
+            $collections.find('.current').removeClass('current').hide().show();
+            $collections.find('#' + getCollectionId() + ' a').addClass('current').hide().show();
+            
             clearFilters();
-        }, null, true)
+            
+            // Update collection URL with the new sort by parameter
+            if (getSort()) {
+                $collections.find('a').each(function() {
+                    this.href = this.href.replace(/sort=\w*/, "sort=" + getSort());
+                });
+            }
+            
+            $products.trigger("productsRefreshed");
+        }
+        else {
+           getProducts(location.href, null, function() {
+                clearFilters();
+            }, null, true)
+        }
     });
 });

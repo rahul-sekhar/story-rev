@@ -92,11 +92,11 @@ class Product < ActiveRecord::Base
     end
     
     if p[:age_from].present? && p[:age_from].to_i > 0
-      filtered = filtered.where("age_from > ?", p[:age_from].to_i)
+      filtered = filtered.where("age_to > ? OR (age_to IS NULL AND age_from > ?)", p[:age_from].to_i, p[:age_from].to_i)
     end
     
     if p[:age_to].present? && p[:age_to].to_i > 0
-      filtered = filtered.where("age_to < ?", p[:age_to].to_i)
+      filtered = filtered.where("age_from < ? AND age_from IS NOT NULL", p[:age_to].to_i)
     end
     
     if p[:type].is_a?(Hash) && p[:type][:new] != p[:type][:used]

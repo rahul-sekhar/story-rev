@@ -1,7 +1,8 @@
 class OrderMailer < ActionMailer::Base
-  default from: "aragornhasufel@gmail.com"
+  default from: "\"Story Revolution\" <contact@storyrevolution.in>"
   
-  def test_email
-    mail(:to => "sekhar.rahul@gmail.com", :subject => "Testing out!")
+  def confirmation(order)
+    @order = order
+    mail(:to => "\"#{@order.name}\" <#{@order.email}>", :subject => "Order confirmation")
   end
 end
