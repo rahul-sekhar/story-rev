@@ -3,7 +3,7 @@ Thank you for ordering from story revolution! Your order number is #<%= @order.i
 Items:
 ======
 <% @order.order_copies.each do |oc| %>
-<%= oc.copy.product.title %> (by <%= oc.copy.product.author_name %>) - <%= pluralize (oc.number, 'copy') %> - Rs. <%= oc.copy.price %>
+<%= oc.copy.product.title %> (by <%= oc.copy.product.author_name %>) - <%= pluralize(oc.number, 'copy') %> - Rs. <%= oc.copy.price %>
 <% end %>
 
 Postage: Rs. <%= @order.postage_amount %>
