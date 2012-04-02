@@ -10,4 +10,12 @@ class Admin::IllustratorsController < Admin::ApplicationController
     end
   end
   
+  def update
+    @illustrator = Illustrator.find(params[:id])
+    if @illustrator.update_attributes(params[:illustrator])
+      render :json => { :success => true }
+    else
+      render :json => @illustrator.errors.full_messages, :status => :unprocessable_entity
+    end
+  end
 end

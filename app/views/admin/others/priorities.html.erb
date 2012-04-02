@@ -1,0 +1,73 @@
+<% content_for :top_nav do %>
+  <li>
+    <%= link_to "Collections", admin_collections_path %>
+  </li>
+  
+  <% if admin? %>
+    <li>
+      <%= link_to "Passwords", admin_roles_path %>
+    </li>
+  <% end %>
+  
+  <li class="current">
+    <%= link_to "Priorites", admin_priorities_path %>
+  </li>
+<% end %>
+
+<div class="column">
+  <h2>Collections</h2>
+  <ul class="collections">
+    <% @collections.each do |x| %>
+      <li data-id="<%= x.id %>" data-name="<%= x.name %>" data-priority="<%= x.priority %>">
+        <%= x.priority %> - <%= x.name %> <%= link_to "[change]", "#", :class => "change-link" %>
+      </li>
+    <% end %>
+  </ul>
+  
+  <h2>Categories</h2>
+  <ul class="product_types">
+    <% @product_types.each do |x| %>
+      <li data-id="<%= x.id %>" data-name="<%= x.name %>" data-priority="<%= x.priority %>">
+        <%= x.priority %> - <%= x.name %> <%= link_to "[change]", "#", :class => "change-link" %>
+      </li>
+    <% end %>
+  </ul>
+  
+  <h2>Awards</h2>
+  <ul class="award_types">
+    <% @awards.each do |x| %>
+      <li data-id="<%= x.id %>" data-name="<%= x.name %>" data-priority="<%= x.priority %>">
+        <%= x.priority %> - <%= x.name %>  <%= link_to "[change]", "#", :class => "change-link" %>
+      </li>
+    <% end %>
+  </ul>
+  
+  <h2>Illustrators</h2>
+  <ul class="illustrators">
+    <% @illustrators.each do |x| %>
+      <li data-id="<%= x.id %>" data-name="<%= x.full_name %>" data-priority="<%= x.priority %>">
+        <%= x.priority %> - <%= x.full_name %>  <%= link_to "[change]", "#", :class => "change-link" %>
+      </li>
+    <% end %>
+  </ul>
+  
+  <h2>Publishers</h2>
+  <ul class="publishers">
+    <% @publishers.each do |x| %>
+      <li data-id="<%= x.id %>" data-name="<%= x.name %>" data-priority="<%= x.priority %>">
+        <%= x.priority %> - <%= x.name %>  <%= link_to "[change]", "#", :class => "change-link" %>
+      </li>
+    <% end %>
+  </ul>
+</div>
+
+<div class="column">
+  <h2>Authors</h2>
+  <ul class="authors">
+    <% @authors.each do |x| %>
+      <li data-id="<%= x.id %>" data-name="<%= x.full_name %>" data-priority="<%= x.priority %>">
+        <%= x.priority %> - <%= x.full_name %>  <%= link_to "[change]", "#", :class => "change-link" %>
+      </li>
+    <% end %>
+  </ul>
+</div>

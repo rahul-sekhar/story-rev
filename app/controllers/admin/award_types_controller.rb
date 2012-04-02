@@ -11,4 +11,12 @@ class Admin::AwardTypesController < Admin::ApplicationController
     end
   end
   
+  def update
+    @award_type = AwardType.find(params[:id])
+    if @award_type.update_attributes(params[:award_type])
+      render :json => { :success => true }
+    else
+      render :json => @award_type.errors.full_messages, :status => :unprocessable_entity
+    end
+  end
 end

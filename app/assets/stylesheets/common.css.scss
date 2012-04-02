@@ -254,7 +254,7 @@ table {
 
 // Cover image
 .cover-container {
-    max-width:100px;
+    width:100px;
     max-height:150px;
     
     .blank-cover {
@@ -293,6 +293,7 @@ table {
             &.author {
                 bottom:15px;
                 max-height:32px;
+                font-size: e(11px);
             }
         }
     }
@@ -327,6 +328,10 @@ table {
     
     &.empty:before {
         margin-top: -16px;
+    }
+    
+    &.grey:before {
+        margin-top: -32px;
     }
 }
 

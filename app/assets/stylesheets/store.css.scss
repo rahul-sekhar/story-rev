@@ -2,102 +2,120 @@
     #filters {
         float:left;
         width: e(160px);
-        margin-top: e(10px);
         padding-left:e(15px);
         text-transform: lowercase;
         
-        label {
+        input.text {
+            border:1px solid $color-a5;
+            @include rounded-corners(3px);
             @include smaller-text;
-            font-weight:bold;
-            line-height: e(20px, $smaller-text-size);
-            clear:both;
+            padding: 2px 5px;
+            height: e(16px, $smaller-text-size);
+            @include placeholder-color($color-a6);
         }
         
-        ul, .container {
-            border-top: 1px solid $color-a5;
-            padding-top: e(5px);
-            margin-bottom: e(20px);
+        #search-submit {
+            float:left;
+            margin-left: 5px;
+        }
+        
+        .submit {
+            width: e(28px, $smaller-text-size);
+            border:none;
+            background-color: $color-a2;
+            @include rounded-corners(5px);
+            @include smaller-text;
+            text-transform:lowercase;
+            height: e(22px, $smaller-text-size);
+            color: $color-a4;
+            cursor:pointer;
+            
+            &:hover {
+                background-color: lighten($color-a2, 5);
+            }
+        }
+        
+        .search {
+            margin-bottom: e(30px);
             @include clearfix;
-        }
-        
-        
-        .search, .age, .price {
-            input {
-                border:1px solid $color-a5;
-                @include rounded-corners(3px);
-                @include smaller-text;
-                padding: 2px 5px;
-                height: e(16px, $smaller-text-size);
-            }
-        }
-        
-        li, .container {
-            line-height: e(20px, $smaller-text-size);
-            clear:left;
             
-            input {
-                float:left;
+            h3 {
+                margin-bottom: e(8px, $heading-size);
             }
             
-            span {
-                @include smaller-text;
+            .text {
+                width: 67%;
                 float:left;
-                margin-left: e(5px, $smaller-text-size);
+            }
+        }
+        
+        ul {
+            margin-bottom: e(20px);
+            
+            li {
+                @include smaller-text;
+                
+                .submit, .text {
+                    font-size: 1em;
+                }
+            }
+            a {
+                @include link ($text-color, lighten($text-color, 20));
+                border:none;
+            }
+            .current {
+                font-weight:bold;
+                color: $color-c1;
+            }
+            a.current {
+                @include link ($color-c1, $color-c1);
             }
         }
         
         .age {
-            input {
-                width: e(15px, $smaller-text-size);
-                margin-right: e(10px, $smaller-text-size);
-            }
-            
-            span {
-                margin-right: e(10px, $smaller-text-size);
-                margin-left:0;
-                line-height: e(22px, $smaller-text-size);
+            .text {
+                width: e(18px, $smaller-text-size);
             }
         }
         
-        .condition {
-            margin-bottom: e(10px);
-            float:left;
-            
-            .star {
-                margin: 0;
+        .age, .price {
+            .text {
+                padding: 2px 3px;
             }
             
-            .rating {
-                display:block;
-                clear:left;
-                margin-left: e(-1px, $smaller-text-size);
+            .submit {
+                width: e(24px, $smaller-text-size);
+                margin-left: e(5px, $smaller-text-size);
             }
+        }
+        
+        .rating {
+            clear:left;
+            margin-left: -2px;
+            padding: e(3px) 0;
+            @include clearfix;
+            
+            &:hover .star.grey:before {
+                margin-top: -16px;
+            }
+        }
+        
+        .rs {
+            text-transform:none;
+        }
+        
+        .custom {
+            margin-top: e(5px, $smaller-text-size);
         }
         
         .price {
-            text-transform: none;
-            
-            input {
-                width: e(25px, $smaller-text-size);
-                margin-right: e(5px, $smaller-text-size);
+            .text {
+                width: e(24px, $smaller-text-size);
             }
             
-            .range {
-                margin-top: e(5px);
-                margin-bottom: e(10px);
-                @include clearfix;
-                padding-left: e(10px);
-                span {
-                    line-height: e(24px, $smaller-text-size);
-                    margin-right: e(5px, $smaller-text-size);
-                    margin-left:0;
-                }
+            .to {
+                margin-left: 2px;
             }
-        }
-        
-        .submit-container {
-            text-align:center;
-            margin-bottom: e(30px);
         }
     }
     
@@ -114,42 +132,29 @@
         h4 {
             @include smaller-text;
             font-weight:bold;
-            line-height: e(20px, $smaller-text-size);
-            clear:both;
+            margin-bottom: e(3px, $smaller-text-size);
         }
         
-        .list {
+        div {
             background-color: $color-a7;
             min-height: e(700px);
             padding: e(20px);
             padding-right: e(10px);
-            text-transform:lowercase;
         }
         
         ul {
-            max-height: e(120px);
-            padding-right: e(10px);
-            overflow: auto;
-            border-top: 1px solid $color-a5;
-            padding-top: e(5px);
             margin-bottom: e(20px);
-            @include clearfix;
-            
-            &.primary {
-                padding-top: 0;
-                border: none;
-            }
         }
         
         li {
             @include smaller-text;
-            margin-bottom: e(10px, $smaller-text-size);
             a {
                 @include link ($text-color, lighten($text-color, 20));
                 border:none;
                 
                 &.current {
-                    font-weight: bold;
+                    @include link($color-c1, $color-c1);
+                    font-weight:bold;
                 }
             }
         }
@@ -201,8 +206,19 @@
                 border:none;
             }
             
-            a.current {
-                @include link($color-d1, $color-d1);
+            .current {
+                @include link($color-c1, $color-c1);
+                font-weight:bold;
+            }
+            
+            .asc {
+                padding-right: 12px;
+                background: url('/images/sort-arrow-asc.png') no-repeat right center;
+            }
+            
+            .desc {
+                padding-right: 12px;
+                background: url('/images/sort-arrow-desc.png') no-repeat right center;
             }
         }
     }

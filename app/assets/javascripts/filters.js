@@ -2,6 +2,15 @@ $(document).ready(function() {
     var $body = $('body');
     if (!$body.hasClass('store')) return;
     
+    $('#search-submit').hover(function() {
+        $(this).attr('src', '/images/search-hover.png');
+    }, function() {
+        $(this).attr('src', '/images/search.png');
+    });
+    
+    return;
+
+
     var $products = $('#products');
     
     // Pagination links

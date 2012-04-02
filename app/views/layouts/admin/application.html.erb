@@ -16,9 +16,7 @@
     <nav id="side-nav">
       <ul>
         <li><%= link_to "Books", search_admin_products_path %></li>
-        <% if admin? %>
-          <li><%= link_to "Orders", pending_admin_orders_path %></li>
-        <% end %>
+        <li><%= link_to "Orders", pending_admin_orders_path %></li>
         <li><%= link_to "Others", admin_collections_path %></li>
         <li><%= link_to "Logout", admin_logout_path %></li>
       </ul>

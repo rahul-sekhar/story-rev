@@ -10,4 +10,12 @@ class Admin::PublishersController < Admin::ApplicationController
     end
   end
   
+  def update
+    @publisher = Publisher.find(params[:id])
+    if @publisher.update_attributes(params[:publisher])
+      render :json => { :success => true }
+    else
+      render :json => @publisher.errors.full_messages, :status => :unprocessable_entity
+    end
+  end
 end

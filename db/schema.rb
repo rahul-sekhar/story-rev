@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120401094048) do
+ActiveRecord::Schema.define(:version => 20120402030558) do
 
   create_table "admin_roles", :force => true do |t|
     t.string   "name"
@@ -26,17 +26,21 @@ ActiveRecord::Schema.define(:version => 20120401094048) do
     t.string   "last_name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "priority",   :default => 0
   end
 
   add_index "authors", ["last_name", "first_name"], :name => "index_authors_on_last_name_and_first_name"
+  add_index "authors", ["priority"], :name => "index_authors_on_priority"
 
   create_table "award_types", :force => true do |t|
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "priority",   :default => 0
   end
 
   add_index "award_types", ["name"], :name => "index_award_types_on_name", :unique => true
+  add_index "award_types", ["priority"], :name => "index_award_types_on_priority"
 
   create_table "awards", :force => true do |t|
     t.integer  "award_type_id"
@@ -151,9 +155,11 @@ ActiveRecord::Schema.define(:version => 20120401094048) do
     t.string   "last_name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "priority",   :default => 0
   end
 
   add_index "illustrators", ["last_name", "first_name"], :name => "index_illustrators_on_last_name_and_first_name"
+  add_index "illustrators", ["priority"], :name => "index_illustrators_on_priority"
 
   create_table "languages", :force => true do |t|
     t.string   "name"
@@ -220,9 +226,11 @@ ActiveRecord::Schema.define(:version => 20120401094048) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "priority",   :default => 0
   end
 
   add_index "product_types", ["name"], :name => "index_product_types_on_name"
+  add_index "product_types", ["priority"], :name => "index_product_types_on_priority"
 
   create_table "products", :force => true do |t|
     t.string   "title"
@@ -284,9 +292,11 @@ ActiveRecord::Schema.define(:version => 20120401094048) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "priority",   :default => 0
   end
 
   add_index "publishers", ["name"], :name => "index_publishers_on_name", :unique => true
+  add_index "publishers", ["priority"], :name => "index_publishers_on_priority"
 
   create_table "shopping_carts", :force => true do |t|
     t.datetime "created_at"

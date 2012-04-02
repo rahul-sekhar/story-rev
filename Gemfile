@@ -20,7 +20,6 @@ gem 'nokogiri'
 gem 'amazon-ecs'
 gem 'terminator'
 gem 'valid_email', :require => 'valid_email/email_validator'
-gem 'addressable'
 gem 'delayed_job_active_record'
 gem 'daemons'
 

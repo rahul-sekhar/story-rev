@@ -3,51 +3,60 @@
 
 <section id="collections">
   <h3>Collections</h3>
-  <div class="list">
-    <ul class="primary">
-      <li id="collections-all"><%= link_to "All books", switch_collection_path, :class => params[:collection].blank? ? "current" : nil %></li>
-      <% Collection.prioritised.visible.where('"collections"."id" IN (SELECT collection_id FROM products_collections WHERE product_id IN (?))', @stocked_product_ids).order(:name).each do |x| %>
-        <li id="collection-<%= x.id %>">
-          <%= link_to x.name, switch_collection_path(:collection => x.id), :class => params["collection"] == x.id.to_s ? "current" : nil  %>
+  <div>
+    
+    <ul>
+      <li>
+        <%= link_to "All books", collection_path(:all, nil), :class => no_base? ? "current" : nil %>
+      </li>
+      <li>
+        <%= collection_link "New additions", :recent, 1 %>
+      </li>
+    </ul>
+    
+    <h4>Themes</h4>
+    <ul>
+      <% @collections.each do |x| %>
+        <li>
+          <%= collection_link x.name, :collection, x.id %>
+        </li>
+      <% end %>
+    </ul>
+    
+    <h4>Awards</h4>
+    <ul>
+      <% @awards.each do |x| %>
+        <li>
+          <%= collection_link x.name, :award, x.id %>
         </li>
       <% end %>
     </ul>
     
     <h4>Publishers</h4>
     <ul>
-    <% Publisher.where(:id => @stocked_products.map{|x| x.publisher_id}).order(:name).each do |x| %>
-      <li id="publisher-<%= x.id %>">
-        <%= link_to x.name, switch_collection_path(:publisher => x.id), :class => params["publisher"] == x.id.to_s ? "current" : nil  %>
-      </li>
-    <% end %>
+      <% @publishers.each do |x| %>
+        <li>
+          <%= collection_link x.name, :publisher, x.id %>
+        </li>
+      <% end %>
     </ul>
     
-    <h4>Awards</h4>
-    <ul>
-    <% Award.joins(:award_type).order('"award_types"."name"').where('"awards"."id" IN (SELECT award_id FROM products_awards WHERE product_id IN (?))', @stocked_product_ids).each do |x| %>
-      <li id="award-<%= x.id %>">
-        <%= link_to x.full_name, switch_collection_path(:award => x.id), :class => params["award"] == x.id.to_s ? "current" : nil  %>
-      </li>
-    <% end %>
-    </ul>
-  
     <h4>Authors</h4>
     <ul>
-    <% Author.order("last_name, first_name").where(:id => @stocked_products.map{|x| x.author_id}).each do |x| %>
-      <li id="author-<%= x.id %>">
-        <%= link_to x.full_name, switch_collection_path(:author => x.id), :class => params["author"] == x.id.to_s ? "current" : nil  %>
-      </li>
-    <% end %>
+      <% @authors.each do |x| %>
+        <li>
+          <%= collection_link x.full_name, :author, x.id %>
+        </li>
+      <% end %>
     </ul>
-    
     
     <h4>Illustrators</h4>
     <ul>
-    <% Illustrator.order("last_name, first_name").where(:id => @stocked_products.map{|x| x.illustrator_id}).each do |x| %>
-      <li id="illustrator-<%= x.id %>">
-        <%= link_to x.full_name, switch_collection_path(:illustrator => x.id), :class => params["illustrator"] == x.id.to_s ? "current" : nil  %>
-      </li>
-    <% end %>
+      <% @illustrators.each do |x| %>
+        <li>
+          <%= collection_link x.full_name, :illustrator, x.id %>
+        </li>
+      <% end %>
     </ul>
   </div>
 </section>

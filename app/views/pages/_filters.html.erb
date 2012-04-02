@@ -1,118 +1,73 @@
 <section id="filters">
-  <h3>Browse</h3>
-  <%= form_tag root_path, :method => :get do %>
-    <div class="params">
-      <input type="hidden" name="sort" value="<%= params[:sort] %>" />
-      <% if params[:publisher].present? %>
-        <input type="hidden" name="publisher" value="<%= params[:publisher] %>" />
-      <% end %>
-      <% if params[:author].present? %>
-        <input type="hidden" name="author" value="<%= params[:author] %>" />
-      <% end %>
-      <% if params[:illustrator].present? %>
-        <input type="hidden" name="illustrator" value="<%= params[:illustrator] %>" />
-      <% end %>
-      <% if params[:award].present? %>
-        <input type="hidden" name="award" value="<%= params[:award] %>" />
-      <% end %>
-    </div>
-    
-    <label>Search</label>
-    <div class="search container">
-      <input type="text" name="search" autocomplete="off" value="<%= params[:search] %>" />
-    </div>
-    
-    <label>Used or New</label>
-    <ul>
-      <li>
-        <%= filter_box "type", "new" %> <span>New books</span>
-      </li>
-      <li>
-        <%= filter_box "type", "used" %> <span>Used books</span>
-      </li>
-    </ul>
-    
-    <label>Book types</label>
-    <ul>
-    <% @stocked_products ||= Product.unscoped.where(:in_stock => true) %>
-    <% @stocked_product_ids ||= @stocked_products.map{|x| x.id} %>
-    <% ProductType.where(:id => @stocked_products.map{|x| x.product_type_id}).order(:name).each do |x| %>
-      <li>
-        <%= filter_box "book_type", x.id %>
-        <span><%= x.name %></span>
-      </li>
+  <div class="search">
+    <h3>Search all</h3>
+    <%= form_tag root_path, :method => :get do %>
+      <%= text_field_tag :search, params[:search], :placeholder => "title / author", :autocomplete => "off", :class => "text" %>
+      <input type="image" src="/images/search.png" alt="Go"  id="search-submit" />
     <% end %>
-    </ul>
-    
-    <label>Fiction/Non-fiction</label>
+  </div>
+  
+  <h3>Filters</h3>  
     <ul>
-    <% ContentType.limit(2).order(:id).each do |x| %>
-      <li>
-        <%= filter_box "content_type", x.id %>
-        <span><%= x.name %></span>
-      </li>
-    <% end %>
+      <li><%= filter_link "All books", :type, nil %></li>
+      <li><%= filter_link "New books", :type, "new" %></li>
+      <li><%= filter_link "Used books", :type, "used" %></li>
     </ul>
     
-    <label>Age</label>
-    <div class="age container">
-      <input type="text" name="age_from" autocomplete="off" value="<%= params[:age_from] %>"/> <span>to</span> <input type="text" name="age_to" autocomplete="off" value="<%= params[:age_to] %>" />
-    </div>
-    
-    <label>Condition</label>
     <ul>
-    <% 5.downto(1).each do |c| %>
-      <li>
-        <%= filter_box "condition", c %>
-        <div class="condition"><span><%= Copy.condition_to_words(c) %></span>
-        <span class="rating"><%= render "shared/rating", :rating => c %></div>
-      </li>
-    <% end %>
+      <li><%= filter_link "All categories", :category, nil %></li>
+      <% @product_types.each do |x| %>
+        <li><%= filter_link x.name, :category, x.id %></li>
+      <% end %>
     </ul>
     
+    <ul class="age">
+      <li><%= filter_link "All ages", :age, nil %></li>
+      <%= form_tag filter_path(:age, nil), :method => :get do %>
+        <li class="custom">
+          <span<%= class_if params[:age].present?, "current" %>>Age</span>
+          <%= text_field_tag :age, params[:age], :autocomplete => "off", :class => "text", :maxlength => 2 %>
+          <%= submit_tag "Ok", :class => "submit" %>
+        </li>
+      <% end %>
+    </ul>
     
-    <label>Formats</label>
     <ul>
-    <% @stocked_editions = Edition.where('"editions"."id" IN (SELECT edition_id FROM copies WHERE copies.in_stock = TRUE)') %>
-    <% Format.where(:id => @stocked_editions.map{|x| x.format_id}).order(:name).each do |f| %>
-      <li>
-        <%= filter_box "format", f.id %>
-        <span><%= f.name %></span>
-      </li>
-    <% end %>
+      <li><%= filter_link "Any condition", :condition, nil %></li>
+      <% 5.downto(3) do |i| %>
+        <li>
+          <a href="<%= filter_path :condition, i %>">
+            <div class="rating">
+            <% i.times do %>
+              <span class="star<%= params[:condition].to_i == i ? "" : " grey" %>">*</span>
+            <% end %>
+            </div>
+          </a>
+        </li>
+      <% end %>
     </ul>
     
+    <ul>
+      <li><%= filter_link "All formats", :format, nil %></li>
+      <% @formats.each do |x| %>
+        <li><%= filter_link x.name, :format, x.id %></li>
+      <% end %>
+    </ul>
     
-    <label>Price</label>
     <ul class="price">
-      <li class="range">
-        <span>Rs.</span><input type="text" name="price_from" autocomplete="off" value="<%= params["price_from"] %>"/> <span>to</span> <input type="text" name="price_to" autocomplete="off" value="<%= params["price_to"] %>" />
-      </li>
-      <li>
-        <%= filter_box "price", "-50" %>
-        <span>less than Rs. 50</span>
-      </li>
-      <li>
-        <%= filter_box "price", "50-100" %>
-        <span>Rs. 50 &ndash; Rs. 100</span>
-      </li>
-      <li>
-        <%= filter_box "price", "100-200" %>
-        <span>Rs. 100 &ndash; Rs. 200 </span>
-      </li>
-      <li>
-        <%= filter_box "price", "200-500" %>
-        <span>Rs. 200 &ndash; Rs. 500 </span>
-      </li>
-      <li>
-        <%= filter_box "price", "500-" %>
-        <span>more than Rs. 500</span>
-      </li>
+      <li><%= link_to("Any price", filter_path(:price, nil), :class => ((params[:price].blank? && params[:price_from].blank? && params[:price_to].blank?) ? "current" : nil)) %></li>
+      <li><%= filter_link "Less than #{RupeeHelper.to_rupee_span(50)}".html_safe, :price, "-50" %></li>
+      <li><%= filter_link "#{RupeeHelper.to_rupee_span(50)} &ndash; #{RupeeHelper.to_rupee_span(100)}".html_safe, :price, "50-100" %></li>
+      <li><%= filter_link "#{RupeeHelper.to_rupee_span(100)} &ndash; #{RupeeHelper.to_rupee_span(200)}".html_safe, :price, "100-200" %></li>
+      <li><%= filter_link "More than #{RupeeHelper.to_rupee_span(200)}".html_safe, :price, "200-" %></li>
+      <%= form_tag filter_path(:age, nil), :method => :get do %>
+        <li class="custom">
+          <span<%= class_if (params[:price_from].present? || params[:price_to].present?), "current" %>>Custom</span>
+          <%= text_field_tag :price_from, params[:price_from], :autocomplete => "off", :class => "text", :maxlength => 3 %>
+          <span class="to">to</span>
+          <%= text_field_tag :price_to, params[:price_to], :autocomplete => "off", :class => "text", :maxlength => 3 %>
+          <%= submit_tag "Ok", :class => "submit" %>
+        </li>
+      <% end %>
     </ul>
-    
-    <div class="submit-container">
-      <%= submit_tag ("Apply"), :class => "submit" %>
-    </div>
-    
-  <% end %>
 </section>

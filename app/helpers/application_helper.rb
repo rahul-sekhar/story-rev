@@ -6,48 +6,106 @@ module ApplicationHelper
     request.url.split("?")[0] + "?" + new_params.map{ |k,v| "#{k}=#{v}" }.join("&") + (element_id ? "##{element_id}" : "")
   end
   
-  def sort_url(param)   
-    filters = %w[condition price content_type product_type collection age_to age_from search
-    type format price_from price_to author illustrator publisher award]
-    
-    filter_params = {}
-    filters.each do |f|
-      filter_params[f.to_sym] = params[f] if params[f].present?
+  def sort_params
+    %w[sort_by desc]
+  end
+  
+  def base_filters
+    %w[search collection recent author illustrator publisher award]
+  end
+  
+  def filters
+    %w[condition category age type format price price_from price_to]
+  end
+  
+  def no_base?
+    base_filters.each do |f|
+      return false if params[f].present?
     end
-    
-    new_params = filter_params.merge({:sort => param})
-    root_path(new_params, :anchor => "products")
+    return true
   end
   
-  def filter_url(new_params, element_id = "products")
-    require "addressable/uri"
-    uri = Addressable::URI.new
+  def sort_path(name)
+    link_params = {}
     
-    filters = %w[condition price content_type book_type collection age_to age_from search type format sort price_range price_from price_to]
-    
-    filter_params = {}
-    filters.each do |f|
-      filter_params[f.to_sym] = params[f] if params[f].present?
-    end
-    
-    new_params = filter_params.merge(new_params)
-    uri.query_values = new_params
-    request.url.split("?")[0] + "?" + uri.query + (element_id ? "##{element_id}" : "")
-  end
-  
-  def switch_collection_path(new_params = {})
-    root_path({:anchor => "products", :sort => params[:sort]}.merge(new_params))
-  end
-  
-  def get_collection
-    collections = %w[collection author illustrator publisher award]
-    
-    collections.each do |c|
-      if params[c].present?
-        return "#{c}-#{params[c]}"
+    base_filters.each do |f|
+      if params[f].present?
+        link_params[f] = params[f]
+        break
       end
     end
-    return "collections-all"
+    
+    filters.each do |f|
+      if params[f].present?
+        link_params[f] = params[f]
+      end
+    end
+    
+    if (params[:sort_by].to_s == name.to_s) && params[:desc].blank? && name.to_s != "random"
+      link_params[:desc] = 1
+    end
+    
+    link_params[:sort_by] = name
+    root_path(link_params, :anchor => "products")
+  end
+  
+  def collection_path(name, val)
+    link_params = {}
+    
+    sort_params.each do |s|
+      link_params[s] = params[s] if params[s].present?
+    end
+    
+    link_params[name] = val if val
+    root_path(link_params, :anchor => "products")
+  end
+  
+  def filter_path(name, val)
+    link_params = {}
+    
+    sort_params.each do |s|
+      link_params[s] = params[s] if params[s].present?
+    end
+    
+    base_filters.each do |f|
+      if params[f].present?
+        link_params[f] = params[f]
+        break
+      end
+    end
+    
+    filters.each do |f|
+      next if (name.to_s == "price" && %w[price_from price_to].include?(f))
+      if (f != name.to_s) && params[f].present?
+        link_params[f] = params[f]
+      end
+    end
+    
+    link_params[name] = val if val
+    
+    root_path(link_params, :anchor => "products")
+  end
+  
+  def sort_link(name)
+    attr = name unless name == "date"
+    klass = nil
+    
+    if (params[:sort_by].to_s == attr.to_s)
+      klass = "current"
+      klass += params[:desc].blank? ? " asc" : " desc" unless name.to_s == "random"
+    end
+    
+    link_to(name, sort_path(attr), :class => klass)
+  end
+  
+  def collection_link(text, name, val)
+    val = val.to_s if val.is_a? Integer
+    link_to(text, collection_path(name, val), :class => (params[name] == val ? "current" : nil))
+  end
+  
+  def filter_link(text, name, val)
+    val = val.to_s if val.is_a? Integer
+    link_to(text, filter_path(name, val), :class => (params[name] == val ? "current" : nil))
   end
   
   # The more info menu items

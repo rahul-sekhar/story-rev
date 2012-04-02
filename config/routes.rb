@@ -21,6 +21,8 @@ StoryRev::Application.routes.draw do
     post "login" => "sessions#create"
     get "clear_images" => "cron#image_cron"
     
+    get "priorities" => "others#priorities", :as => "priorities"
+    
     resources :products do
       resources :editions do
         resources :copies

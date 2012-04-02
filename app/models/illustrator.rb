@@ -9,4 +9,6 @@ class Illustrator < ActiveRecord::Base
   
   before_save :convert_full_name
   
+  scope :prioritised, order("priority DESC")
+  scope :visible, where("priority > 0")
 end

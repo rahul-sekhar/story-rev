@@ -8,4 +8,13 @@ class Admin::AuthorsController < Admin::ApplicationController
       end
     end
   end
+  
+  def update
+    @author = Author.find(params[:id])
+    if @author.update_attributes(params[:author])
+      render :json => { :success => true }
+    else
+      render :json => @author.errors.full_messages, :status => :unprocessable_entity
+    end
+  end
 end

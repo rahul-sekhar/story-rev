@@ -8,4 +8,7 @@ class Author < ActiveRecord::Base
   has_many :products, :dependent => :destroy
   
   validates :full_name, :length => { :maximum => 150 }, :presence => true
+  
+  scope :prioritised, order("priority DESC")
+  scope :visible, where("priority > 0")
 end

@@ -11,4 +11,6 @@ class AwardType < ActiveRecord::Base
     end
   end
   
+  scope :prioritised, order("priority DESC")
+  scope :visible, where("priority > 0")
 end

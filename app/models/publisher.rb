@@ -4,6 +4,9 @@ class Publisher < ActiveRecord::Base
   
   validates :name, :length => { :maximum => 150 }, :presence => true
   
+  scope :prioritised, order("priority DESC")
+  scope :visible, where("priority > 0")
+  
   def self.name_like(data)
     where("LOWER(name) like ?", "%#{SqlHelper::escapeWildcards(data.downcase)}%")
   end
