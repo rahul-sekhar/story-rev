@@ -47,7 +47,7 @@ class Copy < ActiveRecord::Base
         :accession_id => accession_id,
         :price => price,
         :formatted_price => formatted_price,
-        :condition_description => condition_description,
+        :condition_description => get_condition_description,
         :condition_rating => condition_rating,
         :new_copy => new_copy
       }
@@ -89,18 +89,22 @@ class Copy < ActiveRecord::Base
     RupeeHelper::to_rupee(price)
   end
   
+  def get_condition_description
+    condition_description.present? ? condition_description : Copy.condition_to_words(condition_rating)
+  end
+  
   def self.condition_to_words(condition)
     case condition
     when 1
-      "acceptable"
+      "Acceptable"
     when 2
-      "acceptable"
+      "Acceptable"
     when 3
-      "good"
+      "Good"
     when 4
-      "excellent"
+      "Excellent"
     when 5
-      "like new"
+      "Like new"
     end
   end
 end

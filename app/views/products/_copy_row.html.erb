@@ -5,7 +5,7 @@
   <% if c.new_copy %>
     <td class="spacer"></td>
   <% else %>
-    <td title="<%= c.condition_description %>">
+    <td title="<%= c.get_condition_description %>">
       <%= render "shared/rating", :rating => c.condition_rating %>
     </td>
   <% end %>

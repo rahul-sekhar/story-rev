@@ -23,7 +23,7 @@
             <%= c.edition.format_name %>
           </p>
           <% unless c.new_copy %>
-            <div class="rating" title="<%= c.condition_description %>">
+            <div class="rating" title="<%= c.get_condition_description %>">
               <%= render "shared/rating", :rating => c.condition_rating %>
             </p>
           <% end %>
@@ -72,7 +72,7 @@
           <%= c.edition.format_name %>
         </p>
         
-        <p class="rating" title="<%= c.condition_description %>">
+        <p class="rating" title="<%= c.get_condition_description %>">
           <%= render "shared/rating", :rating => c.condition_rating %>
         </p>
         

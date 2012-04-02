@@ -31,7 +31,7 @@
             <p class="format" title="<%= c.edition.publisher_name %>">
               <%= c.edition.format_name %>
             </p>
-            <div class="rating" title="<%= c.condition_description %>">
+            <div class="rating" title="<%= c.get_condition_description %>">
               <%= render "shared/rating", :rating => c.condition_rating %>
             </p>
           </td>
