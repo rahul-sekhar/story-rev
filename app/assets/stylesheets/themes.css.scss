@@ -12,6 +12,15 @@ $heading-size: 17px;
     color: $text-color;
 }
 
+$small-heading-size: 14px;
+@mixin small-heading {
+    font-family: Copse, sans-serif;
+    font-weight:normal;
+    font-size: e($small-heading-size);
+    line-height: 150%;
+    color: $color-a8;
+}
+
 $button-text-size: 13px;
 @mixin button-text {
     font-family: Quicksand, sans-serif;

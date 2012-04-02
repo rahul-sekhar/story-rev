@@ -11,7 +11,7 @@ module ApplicationHelper
   end
   
   def base_filters
-    %w[search collection recent author illustrator publisher award]
+    %w[search collection recent award_winning]
   end
   
   def filters
@@ -21,9 +21,11 @@ module ApplicationHelper
   def filter_name (name, val)
     case name.to_s
     when "search"
-      "Search (#{val})"
+      "Search \"#{val}\""
     when "recent"
-      "New Additions"
+      "Newest Additions"
+    when "award_winning"
+      "Award winning"
     when "collection"
       Collection.find_by_id(val).name || ""
     when "author"

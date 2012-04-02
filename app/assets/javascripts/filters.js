@@ -13,16 +13,9 @@ $(document).ready(function() {
     // Pagination links
     $products.on('click', '.pagination a', function(e) {
         if (extClick(e)) return;
-        e.preventDefault();
+        e.preventDefault();;
         
-        var $link = $(this);
-        var $prev = $link.closest('.pagination').find('.current:first').removeClass('current');
-        $link.addClass('current');
-        
-        getProducts(this.href, null, function() {
-            $link.removeClass('current');
-            $prev.addClass('current');
-        })
+        getProducts(this.href);
     });
     
     // Sorting links
@@ -48,6 +41,7 @@ $(document).ready(function() {
             prevClass = $prev.attr('class');
             $prev.removeClass('current asc desc');
             $link.addClass('current asc');
+            if ($link.text == "random") $link.removeClass('asc');
         }
         
         getProducts(this.href, null, null, function() {
@@ -294,19 +288,23 @@ $(document).ready(function() {
             var $ul = $li.closest('ul');
             var params = {}
             
-            if ($ul.hasClass('primary')) {
-                if ($li.hasClass('recent')) {
-                    params['recent'] = '1';
-                    if (data.base == "recent" && data.base_val) {
-                        $link.addClass('current');
-                    }
-                }
-                else if (!data.base) {
+            if ($li.hasClass('recent')) {
+                params['recent'] = '1';
+                if (data.base == "recent" && data.base_val) {
                     $link.addClass('current');
                 }
             }
-            else {
-                params[$ul.data('base')] = $li.data('val');
+            else if ($li.hasClass('award_winning')) {
+                params['award_winning'] = '1';
+                if (data.base == "award_winning" && data.base_val) {
+                    $link.addClass('current');
+                }
+            }
+            else if ($li.hasClass('all') && !data.base) {
+                $link.addClass('current');
+            }
+            else if($li.data('val')) { 
+                params['collection'] = $li.data('val');
             }
             
             $.extend(params, base_params);
@@ -314,7 +312,8 @@ $(document).ready(function() {
             $link.attr('href', '/?' + $.param(params) + '#products');
         });
         
-        $collections.find('ul[data-base=' + data.base + '] li[data-val=' + data.base_val + ']').children('a').addClass('current');
+        if (data.base == 'collection')
+            $collections.find('li[data-val=' + data.base_val + ']').children('a').addClass('current');
         
         // Search form
         $searchForm.find('input[type=hidden]').remove();

@@ -1,50 +1,33 @@
 <footer id="page-footer">
   
-  <section id="more-info">
-    
-    <nav class="navigation">
-      <h2>More</h2>
-      <ul>
-        <% more_nav_links.each do |name,text| %>
-          <li<%= class_if (more_nav_selected == name), "selected" %>/>
-            <%= link_to text, current_url({ :info => name }, "page-footer"), "data-section" => name %>
-          </li>
+  <div class="container">
+    <section id="contact">
+      <h3>Get In Touch</h3>
+      <p class="email obf">cont<span>to.prevent.spam</span>act@storyrev<span>no.spam.</span>olution.in</p>
+      <p class="phone">9632385904 or 9900271565</p>
+      <p class="facebook">Like us on <a href="https://www.facebook.com/pages/Story-Revolution/199843171022/">facebook</a></p>
+    </section>
+      
+    <section id="subscribe">
+      <h3>Subscribe</h3>
+      
+      <p>Would you like to be notified when we get new books?</p>
+      
+      <%= form_tag subscribe_path, :method => :post, :id => "subscribe-form" do %>
+      <div class="email">
+        <input type="text" name="email" id="subscribe-email" placeholder="email address" />
+        <% if params[:subscribed] %>
+          <img src="/images/ticked-button.png" alt="Subscribed" id="email-subscribed" />
+        <% else %>
+          <input type="image" src="/images/ok-button.png" alt="Ok"  id="subscribe-email-submit" />
         <% end %>
-      </ul>
-    </nav>
-    
-    <article class="content">
-      <%= render "shared/more-info", :section => more_nav_selected %>
-    </article>
-    
-    <div id="designed-by">
-      <p>Website by <a href="http://www.kairi.in">kairi</a></p>
-    </div>
-    
+      </div>
+      <% end %>
+    </section>
+  </div>
+  
+  <section id="credit">
+    <p>Website by our little design firm <a href="http://kairi.in">kairi</a></p>
   </section>
-  
-  
-  <section id="subscribe">
-    <h2>Subscribe</h2>
-    
-    <p>Would you like to be notified when we get new books?
-    
-    <div class="email">
-      <input type="text" name="email" id="subscribe-email" placeholder="email address" />
-      <input type="image" src="/images/tick-button.png" alt="OK"  id="subscribe-email-submit" />
-    </div>
-  </section>
-  
-  
-  <section id="contact">
-    <h2>Get in Touch</h2>
-    
-    <p class="email_obf">story<span>to.prevent.spam</span>revolution@<span>no.spam.</span>gmail.com</p>
-    
-    <p>9632385904 or 9900271565</p>
-  </section>
-  
-  
-  
   
 </footer>

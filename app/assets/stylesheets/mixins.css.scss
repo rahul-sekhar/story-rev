@@ -36,7 +36,7 @@
     overflow:hidden;
     
     &:before {
-        content:url('/images/icons.png');
+        content:url($url);
         @include inline-block;
         font-size:0;
         line-height:0;

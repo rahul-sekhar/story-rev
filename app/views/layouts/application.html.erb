@@ -9,27 +9,14 @@
 </head>
 <body<%= class_if @class, @class %>>
 
+<%= render "shared/header" %>
+
 <div id="wrapper">
-  
-  <header id="page-header">
-    <img src="/images/header.png" alt="" />
-    <nav class="navigation">
-      <ul>
-        <li class="store"><%= link_to "Bookstore", root_path %></li>
-        <li class="about-url"><%= link_to "About Us", "#" %></li>
-        <li class="help-url"><%= link_to "Help", "#" %></li>
-      </ul>
-      
-      <%= link_to "Shopping Cart (#{shopping_cart.items})", shopping_cart_path,
-        :id=>"shopping-cart-link",
-        :class => shopping_cart.items > 0 ? "full" : nil
-      %>
-    </nav>
-  </header>
-  
   <%= yield %>
-  
 </div>
+
+<%= render "shared/footer" %>
+
 
 </body>
 </html>

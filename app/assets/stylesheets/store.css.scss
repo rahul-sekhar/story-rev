@@ -1,8 +1,9 @@
 .store {
     #filters {
         float:left;
-        width: e(160px);
-        padding-left:e(15px);
+        width: e(170px);
+        margin-top: e(60px);
+        margin-left:e(40px);
         text-transform: lowercase;
         
         input.text {
@@ -44,7 +45,7 @@
             }
             
             .text {
-                width: 67%;
+                width: e(80px, $smaller-text-size);
                 float:left;
             }
         }
@@ -94,15 +95,10 @@
             margin-left: -2px;
             padding: e(3px) 0;
             @include clearfix;
-            
-            &:hover .star:before {
-                margin-top: -16px;
-            }
         }
         
-        .current .rating .star:before {
-            margin-top: 0px;
-        }
+        a:hover .star:before {margin-top: -16px;}
+        a.current .rating .star:before {margin-top: 0px;}
         
         .custom {
             margin-top: e(5px, $smaller-text-size);
@@ -121,51 +117,56 @@
     
     #collections {
         float:right;
-        margin-top: e(10px);
-        width: e(180px);
-        
-        h3 {
-            text-align: right;
-            margin-bottom: e(10px, $heading-size);
-        }
-        
-        h4 {
-            @include smaller-text;
-            font-weight:bold;
-            margin-bottom: e(3px, $smaller-text-size);
-        }
-        
-        div {
-            background-color: $color-a7;
-            min-height: e(700px);
-            padding: e(20px);
-            padding-right: e(10px);
-        }
+        margin-top: e(60px);
+        width: e(130px);
+        margin-right: e(40px);
         
         ul {
-            margin-bottom: e(20px);
+            margin:0;
+            border-bottom: 1px solid $color-a7;
         }
         
         li {
-            @include smaller-text;
-            a {
-                @include link ($text-color, lighten($text-color, 20));
-                border:none;
-                
-                &.current {
-                    @include link($color-c1, $color-c1);
-                    font-weight:bold;
-                }
-            }
+            border-bottom: 1px solid $color-a7;
+            @include small-heading;
+            padding: e(7px, $small-heading-size) 0;
+            clear:left;
+            @include clearfix;
+        }
+        
+        a {
+            border:none;
+            @include link($color-a8, lighten($color-a8, 20));
+            display:block;
+            padding: e(6px, $small-heading-size) e(8px, $small-heading-size);
+            margin-left: e(-10px, $small-heading-size);
+            float:left;
+        }
+        
+        a.current {
+            background: $color-g1 url('/images/brown-texture.jpg');
+            color: $color-a4;
         }
     }
     
+    $products-width: (100px + 20px) * 4 + 10px;
+    
     .applied-filters {
         @include clearfix;
-        background-color: $color-a7;
-        padding: e(10px) e(15px);
+        border-top: 1px solid $color-a7;
+        border-bottom: 1px solid $color-a7;
+        width: e($products-width - 30px);
+        padding: e(7px) 0;
         text-transform:lowercase;
-        margin-bottom: e(10px);
+        font-weight:bold;
+        margin-bottom: e(20px);
+        color: $color-a8;
+        float:left;
+        
+        a {
+            @include link($color-f1, lighten($color-f1, 20));
+            border:none;
+        }
         
         li {
             float:left;
@@ -186,12 +187,39 @@
         }
     }
     
+    .sort {
+        margin-top: e(60px, $text-size);
+        margin-bottom: e(20px, $text-size);
+        
+        span {
+            font-weight:bold;
+            color: $color-a8;
+        }
+        
+        a {
+            @include link($color-f1, lighten($color-f1, 20));
+            border:none;
+        }
+        
+        .current {
+            font-weight:bold;
+        }
+        
+        .asc {
+            padding-right: 12px;
+            background: url('/images/sort-arrow-asc.png') no-repeat right center;
+        }
+        
+        .desc {
+            padding-right: 12px;
+            background: url('/images/sort-arrow-desc.png') no-repeat right center;
+        }
+    }
+
     #products {
         @include clearfix;
-        width: e((100px + 20px) * 4 + 10px);
-        margin-left: e(40px);
-        margin-top: e(-20px);
-        padding-top: e(20px);
+        width: e($products-width);
+        margin: 0 auto;
         float:left;
         
         .covers {
@@ -223,28 +251,24 @@
         .pagination {
             clear:both;
             float:right;
-        }
-        
-        .sort {
-            color: $color-a6;
-            a {
-                @include link($color-a6, lighten($color-a6, 20));
-                border:none;
+            margin-right: e(20px, $text-size);
+            @include text;
+            color: $color-a8;
+            text-transform:lowercase;
+            letter-spacing: 1px;
+            
+            span {
+                margin-left: e(5px, $text-size);
             }
             
-            .current {
-                @include link($color-c1, $color-c1);
+            .current, .page-word {
                 font-weight:bold;
             }
             
-            .asc {
-                padding-right: 12px;
-                background: url('/images/sort-arrow-asc.png') no-repeat right center;
-            }
-            
-            .desc {
-                padding-right: 12px;
-                background: url('/images/sort-arrow-desc.png') no-repeat right center;
+            a {
+                @include link($color-f1, lighten($color-f1, 20));
+                border-bottom: none;
+                font-weight:normal;
             }
         }
     }

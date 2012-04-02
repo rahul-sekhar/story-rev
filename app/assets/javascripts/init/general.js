@@ -102,26 +102,25 @@ $(document).ready(function() {
     });
     
     // Email obfuscation [delay for a second in case that helps to prevent spam]
-    var $emailLinks = $('.email_obf');
+    var $emailLinks = $('.email.obf');
     if ($emailLinks.length) {
         setTimeout(function() {
-            
             // Email obfuscator script 2.1 by Tim Williams, University of Arizona
             // Random encryption key feature by Andrew Moulden, Site Engineering Ltd
             // This code is freeware provided these four comment lines remain intact
             // A wizard to generate this code is at http://www.jottings.com/obfuscator/
-            coded = "2avini8Qv4baEv3@WhLE4.Pvh"
-            key = "7wjzyc2dJeNCHZhLiBD59MAv4S0tFnPugY86G1UXKExsfIpRQTkmar3qbWOVol"
-            shift = coded.length;
-            link = "";
+            coded = "M9mKCMK@SK9w6wAn9TeKE9m.Em"
+            key = "Y6BAtxdLrPqMoukOnaT7EV83pIX142Kj0HwsGy9eFzmC5UDcgZNJvQlfibRhWS"
+            shift=coded.length
+            link=""
             for (i=0; i<coded.length; i++) {
                 if (key.indexOf(coded.charAt(i))==-1) {
-                    ltr = coded.charAt(i);
-                    link += (ltr);
+                    ltr = coded.charAt(i)
+                    link += (ltr)
                 }
                 else {     
-                    ltr = (key.indexOf(coded.charAt(i)) - shift+key.length) % key.length;
-                    link += (key.charAt(ltr));
+                ltr = (key.indexOf(coded.charAt(i))-shift+key.length) % key.length
+                link += (key.charAt(ltr))
                 }
             }
             

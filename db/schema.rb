@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120402030558) do
+ActiveRecord::Schema.define(:version => 20120402214810) do
 
   create_table "admin_roles", :force => true do |t|
     t.string   "name"
@@ -141,6 +141,12 @@ ActiveRecord::Schema.define(:version => 20120402030558) do
   add_index "editions", ["product_id"], :name => "index_editions_on_product_id"
   add_index "editions", ["publisher_id"], :name => "index_editions_on_publisher_id"
   add_index "editions", ["raw_isbn"], :name => "index_editions_on_raw_isbn"
+
+  create_table "email_subscriptions", :force => true do |t|
+    t.string   "email"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "formats", :force => true do |t|
     t.string   "name"

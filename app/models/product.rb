@@ -92,6 +92,10 @@ class Product < ActiveRecord::Base
       filtered = filtered.where("products.id IN (?)", new_books.map{ |x| x.id })
     end
     
+    if p[:award_winning].present?
+      filtered = filtered.where("products.id IN (?)", ProductAward.all.map{ |x| x.product_id })
+    end
+    
     if p[:search].present?
       sqlSearch = "%#{SqlHelper::escapeWildcards(p[:search].downcase)}%"
       filtered = filtered

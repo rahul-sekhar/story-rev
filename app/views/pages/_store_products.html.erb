@@ -17,7 +17,7 @@
 <% end %>
 
 <p class="sort">
-    sort by
+    <span>sort by</span>
     <% sort_array = %w[random date title author age price] %>
     <%= sort_array.map {|x| sort_link(x) }.join(' | ').html_safe %>
 </p>

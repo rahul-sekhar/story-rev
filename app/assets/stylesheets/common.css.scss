@@ -14,64 +14,109 @@ $wrapper-width: 900px;
 // Header
 
 #page-header {
-    text-align:center;
-    margin-top: e(50px);
-    margin-bottom: e(40px);
+    background: $color-f2 url('/images/green-texture.jpg');
+    @include box-shadow(0 0 5px 1px $color-a1);
+    height: e(275px);
+    position:relative;
     
-    .navigation {
-        border-top: 1px solid $color-a5;
-        border-bottom: 1px solid $color-a5;
-        @include clearfix;
-        margin: e(20px) 0;
+    .layer {
+        position:absolute;
+        @include box-shadow(0 0 5px 1px #333);
+        width:100%;
+        height: e(175px);
+        top:0;
+        left:0;
+        background: $color-e2 url('/images/purple-texture.jpg');
     }
     
-    ul {
-        float:left;
+    .container {
+        margin:0 auto;
+        width: e(960px);
+        height:100%;
+        position:relative;
+        z-index: 1;
     }
     
-    li {
-        float:left;
-        @include heading;
-        line-height: e(45px, $heading-size);
-        margin-left: e(15px, $heading-size);
+    h1 {
+        width: 788px;
+        height: 209px;
+        background: url('/images/title.png') no-repeat center;
+        font: 0/0 a;
+        text-shadow: none;
+        color: transparent;
+        margin-left: 10px;
+    }
+    
+    hgroup h3 {
+        @include image-replacement (0, 322px, 26px, '/images/caption.png');
+        position:absolute;
+        color: $color-b3;
+        bottom: e(20px, $heading-size);
+        margin:0;
+        left: e(75px, $heading-size);
+    }
+    
+    .navigation ul{
+        position:absolute;
+        right:0;
+        bottom:e(5px);
         
-        a {
-            border-bottom: none;
-            @include link;
+        li {
+            @include heading;
+            font-size: e(16px);
+            float:left;
+            a {
+                @include link ($color-b4, $color-b3);
+                display:block;
+                line-height: e(70px, 16px);
+                padding-left: e(85px, 16px);
+                min-width: e(80px, 16px);
+                margin-right: e(10px, 16px);
+                background: url('/images/nav-icons.png') no-repeat left 0px;
+                border:none;
+            }
         }
         
-        &:not(:first-child):before {
-            content: "";
-            width:6px;
-            height:45px;
-            float:left;
-            margin-right: e(20px, $large-alt-text-size);
-            background: url('/images/icons.png') no-repeat 0px -220px;
+        .about-link a{
+            background-position: left -70px;
+        }
+        
+        .help-link a{
+            background-position: left -140px;
         }
     }
     
     #shopping-cart-link {
-        float:right;
-        @include text;
+        position:absolute;
         display:block;
-        line-height: e(45px, $text-size);
-        @include link;
-        border-bottom: none;
+        height: 126px;
+        width: 53px;
+        padding: 5px 16px;
+        text-align: center;
+        background: url('/images/cart-button.png') no-repeat 0 0;
+        border:none;
+        top:0;
+        right:e(40px);
+        @include text;
+        font-size: 15px;
         text-transform:lowercase;
-        background: url('/images/icons.png') no-repeat 0px 12px;
-        padding-left: e(35px, $text-size);
-        margin-right: e(20px, $text-size);
+        color: $color-a4;
         
-        &:hover {background-position: 0px -48px;}
+        span {
+            margin-top: e(8px, 18px);
+            display:block;
+            font-size: e(18px, 15px);
+        }
         
-        &.full {background-position: 0px -108px;}
-        &.full:hover {background-position: 0px -168px;}
+        &:hover {
+            background-position: -83px 0;
+        }
     }
 }
 
-.store #page-header .store, .blog #page-header .blog {
+.store #page-header .store-link, .about #page-header .about-link, .help #page-header .help-link {
     a {
-        @include link($text-color, $text-color);
+        @include link($color-b3, $color-b3);
     }
 }
 
@@ -82,128 +127,98 @@ $wrapper-width: 900px;
 
 #page-footer {
     clear:both;
-    @include rounded-corners (10px);
-    background-color: $color-a1;
+    margin-top: e(120px);
+    background: $color-e2 url('/images/purple-texture.jpg');
     @include clearfix;
-    padding: e(50px) 0 e(10px) 0;
-    margin: e(40px) 0;
+    text-transform:lowercase;
     
-    h2 {
-        @include stitched-heading;
+    .container {
+        margin: 0 auto;
+        width: e(960px);
+        padding-top: e(30px);
+        @include clearfix;
     }
     
-    #more-info {
+    #contact, #subscribe {
         float:left;
-        
-        h2 {
-            padding-left: 10px;
-            padding-right: e(20px, $heading-size);
-            width:e(110px - 30px - 10px, $heading-size);
+        width: e(350px);
+        margin-left: e(90px);
+    }
+    
+    h3 {
+        color: $color-b2;
+        float:left;
+    }
+    
+    p {
+        margin-left: e(130px, $text-size);
+        color: $color-a4;
+    }
+    
+    a {
+        @include link($color-f2, lighten($color-f2, 20));
+        border-bottom: none;
+    }
+    
+    #contact {
+        .email, .phone, .facebook {
+            line-height: e(20px, $text-size);
+            background: url('/images/icons.png') no-repeat left -780px;
+            padding-left: e(35px, $text-size);
         }
         
-        .navigation {
-            float:left;
-            text-align:right;
-            margin-left: e(30px);
-            width:e(110px);
-            
-            li {
-                @include text;
-                line-height:120%;
-                margin-top: e(20px);
-                text-transform:lowercase;
-                
-                a {
-                    border-bottom: none;
-                    @include link ($color-a4, darken($color-a4, 10));
-                    
-                    &:before {
-                        content: '> ';
-                    }
-                }
-                
-                &.selected {
-                    @include inner-link (darken($color-a4,10), darken($color-a4,10));
-                }
-            }
-        }
-        
-        .content {
-            margin-left:e(200px);
-            background-color:$color-a2;
-            width: e(290px);
-            height: e(270px);
-            @include rounded-corners(5px);
-            padding: e(20px) e(30px);
-            border:1px dashed #FDDF71;
-            position:relative;
-            
-            .ajax-content {
-                position:absolute;
-                width: e(290px);
-                height: e(270px);
-                left: e(30px);
-                top: e(20px);
-            }
-            
-            h3 {display:none;}
-            
-            p {
-                @include small-alt-text;
-                margin-top: e(10px, $small-alt-text-size);
-                margin-bottom: e(20px, $small-alt-text-size);
-            }
-        }
-        
-        #designed-by {
-            float:right;
-            @include inner-link ($color-a2, lighten($color-a2, 10));
-            
-            p {
-                color: $color-a2;
-                @include smaller-text;
-                text-transform:lowercase;
-                margin-top: e(10px, $smaller-text-size);
-            }
+        .phone {background-position:left -840px}
+        .facebook {background-position:left -900px}
+    }
+    
+    #subscribe {
+        p {
+            margin-left: e(110px, $text-size);
+            width: e(180px, $text-size);
         }
     }
     
-    #subscribe, #contact {
-        float:right;
-        clear:right;
-        width:e(275px);
-        
-        margin-top: e(50px);
-        
-        h2 {
-            width:e(180px - 30px - 11px, $heading-size);
-            margin-bottom: e(10px, $heading-size);
-            margin-left: e(-5px, $heading-size);
-        }
+    #subscribe-email {
+        @include small-text;
+        border:1px solid $color-a5;
+        @include placeholder-color($color-a6);
+        @include rounded-corners(3px);
+        padding: 6px 10px;
+        width: e(150px, $small-text-size);
+        margin-left: e(110px, $small-text-size);
+        float:left;
+    }
+    
+    #subscribe-email-submit {
+        float:left;
+        margin-left: e(10px);
+    }
+    
+    #email-subscribed {
+        float:left;
+        margin-left: e(10px);
+    }
+    
+    #credit {
+        clear:both;
+        width:100%;
+        background-color: #fff;
+        padding-top: e(5px);
+        padding-bottom: e(20px);
         
         p {
-            max-width: e(200px, $text-size);
-            color: white;
-            margin-bottom: e(10px, $text-size);
-            
-            @include inner-link ($color-a4, darken($color-a4, 10));
+            @include smaller-text;
+            margin-bottom: 0;
+            width: e(900px, $smaller-text-size);
+            margin:0 auto;
+            text-align:right;
+            color: $text-color;
+            letter-spacing: 1px;
         }
         
-        #subscribe-email {
-            height:30px;
-            @include small-text;
-            line-height: e(30px, $small-text-size);
-            border:1px solid $color-a5;
-            @include rounded-corners(5px);
-            width:e(155px, $small-text-size);
-            padding:0 e(10px, $small-text-size);
-            float:left;
-        }
-        
-        #subscribe-email-submit {
-            margin-left: e(20px);
-            display:block;
-            float:left;
+        a {
+            @include link ($color-f1, lighten($color-f1, 20));
+            border-bottom: 1px dotted;
         }
     }
 }
@@ -248,7 +263,7 @@ table {
 }
 
 // Obfuscate email addresses from parsers with invisible spans of text
-.email_obf span {
+.email.obf span {
     display:none;
 }
 

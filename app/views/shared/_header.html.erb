@@ -1,0 +1,20 @@
+<header id="page-header">
+  <div class="container">
+    <hgroup>
+      <h1>Story Revolution</h1>
+      <h3>Hand-picked books for young people</h3>
+    </hgroup>
+    <nav class="navigation">
+      <ul>
+        <li class="store-link"><%= link_to "Bookstore", root_path %></li>
+        <li class="about-link"><%= link_to "About Us", "#" %></li>
+        <li class="help-link"><%= link_to "Help", "#" %></li>
+      </ul>
+      
+      <%= link_to "Your Cart <span class=\"number\">#{shopping_cart.items}</span>".html_safe, shopping_cart_path,
+        :id=>"shopping-cart-link"
+      %>
+    </nav>
+  </div>
+  <div class="layer"></div>
+</header>

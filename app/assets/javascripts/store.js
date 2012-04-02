@@ -492,7 +492,7 @@ $(document).ready(function() {
     
     // Function to update the shopping cart item count
     function updateShoppingCartCount(count) {
-        $shoppingCartLink.text('Shopping Cart (' + count + ')');
+        $shoppingCartLink.html('Your Cart <span class="number">' + count + '</span>');
     }
     
     // To refresh a dialogs HTML
