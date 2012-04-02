@@ -65,11 +65,11 @@ module ApplicationHelper
     end
     
     if price_from.to_i > 0 && price_to.to_i > 0
-      "Price - #{RupeeHelper.to_rupee(price_from)} to #{RupeeHelper.to_rupee(price_to)}"
+      "Price - #{RupeeHelper.to_rupee_span(price_from)} to #{RupeeHelper.to_rupee_span(price_to)}".html_safe
     elsif price_from.to_i > 0
-      "Price - more than #{RupeeHelper.to_rupee(price_from)}"
+      "Price - more than #{RupeeHelper.to_rupee_span(price_from)}".html_safe
     else
-      "Price - less than #{RupeeHelper.to_rupee(price_to)}"
+      "Price - less than #{RupeeHelper.to_rupee_span(price_to)}".html_safe
     end
   end
   
@@ -77,6 +77,7 @@ module ApplicationHelper
     base_filters.each do |f|
       return f if params[f].present?
     end
+    return nil
   end
   
   def applied_filters

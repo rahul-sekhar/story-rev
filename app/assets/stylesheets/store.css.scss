@@ -100,10 +100,6 @@
             }
         }
         
-        .rs {
-            text-transform:none;
-        }
-        
         .custom {
             margin-top: e(5px, $smaller-text-size);
         }
@@ -157,6 +153,31 @@
                     font-weight:bold;
                 }
             }
+        }
+    }
+    
+    .applied-filters {
+        @include clearfix;
+        background-color: $color-a7;
+        padding: e(10px) e(15px);
+        text-transform:lowercase;
+        
+        li {
+            float:left;
+            @include text;
+            margin-right: e(5px, $text-size);
+        }
+        
+        li.filter:before {
+            content: ">";
+            margin-right: e(5px, $text-size);
+        }
+        
+        .clear-link {
+            @include small-text;
+            @include link;
+            @include link-image-replacement(540px, 600px);
+            float:right;
         }
     }
     
