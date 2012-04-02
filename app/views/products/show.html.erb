@@ -14,10 +14,10 @@
   <h2><%= @product.title %></h2>
   
   <div class="creators">
-    <p class="author">by <%= link_to @product.author_name, switch_collection_path(:author => @product.author_id) %></p>
+    <p class="author">by <%= link_to @product.author_name, collection_path(:author, @product.author_id) %></p>
     
     <% if @product.illustrator.present? && @product.illustrator_name != @product.author_name %>
-      <p class="illustrator">illustrated by <%= link_to @product.illustrator_name, switch_collection_path(:illustrator => @product.illustrator_id) %></p>
+      <p class="illustrator">illustrated by <%= link_to @product.illustrator_name, collection_path(:illustrator, @product.illustrator_id) %></p>
     <% end %>
   </div>
   
@@ -68,14 +68,14 @@
     <% if @product.product_awards.length > 0 %>
       <div class="awards">
         <h3>Awards</h3>
-        <p><%=raw @product.product_awards.map{|x| link_to(x.full_name, switch_collection_path(:award => x.award_id)) }.join(', ') %></p>
+        <p><%=raw @product.product_awards.map{|x| link_to(x.full_name, collection_path(:award, x.award.award_type_id)) }.join(', ') %></p>
       </div>
     <% end %>
     
     <% if @product.collections.length > 0 %>
       <div class="collections">
         <h3>Collections</h3>
-        <p><%=raw @product.collections.map{|x| link_to(x.name, switch_collection_path(:collection => x.id)) }.join(', ') %></p>
+        <p><%=raw @product.collections.map{|x| link_to(x.name, collection_path(:collection, x.id)) }.join(', ') %></p>
       </div>
     <% end %>
     

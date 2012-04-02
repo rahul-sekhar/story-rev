@@ -4,56 +4,55 @@
 <section id="collections">
   <h3>Collections</h3>
   <div>
-    
-    <ul>
-      <li>
+    <ul class="primary">
+      <li class="all">
         <%= link_to "All books", collection_path(:all, nil), :class => get_base.nil? ? "current" : nil %>
       </li>
-      <li>
+      <li class="recent">
         <%= collection_link "New additions", :recent, 1 %>
       </li>
     </ul>
     
     <h4>Themes</h4>
-    <ul>
+    <ul data-base="collection">
       <% @collections.each do |x| %>
-        <li>
+        <li data-val="<%= x.id %>">
           <%= collection_link x.name, :collection, x.id %>
         </li>
       <% end %>
     </ul>
     
     <h4>Awards</h4>
-    <ul>
+    <ul data-base="award">
       <% @awards.each do |x| %>
-        <li>
+        <li data-val="<%= x.id %>">
           <%= collection_link x.name, :award, x.id %>
         </li>
       <% end %>
     </ul>
     
     <h4>Publishers</h4>
-    <ul>
+    <ul data-base="publisher">
       <% @publishers.each do |x| %>
-        <li>
+        <li data-val="<%= x.id %>">
           <%= collection_link x.name, :publisher, x.id %>
         </li>
       <% end %>
     </ul>
     
     <h4>Authors</h4>
-    <ul>
+    <ul data-base="author">
       <% @authors.each do |x| %>
-        <li>
+        <li data-val="<%= x.id %>">
           <%= collection_link x.full_name, :author, x.id %>
         </li>
       <% end %>
     </ul>
     
     <h4>Illustrators</h4>
-    <ul>
+    <ul data-base="illustrator">
       <% @illustrators.each do |x| %>
-        <li>
+        <li data-val="<%= x.id %>">
           <%= collection_link x.full_name, :illustrator, x.id %>
         </li>
       <% end %>

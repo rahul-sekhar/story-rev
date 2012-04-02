@@ -99,30 +99,31 @@ class Product < ActiveRecord::Base
     end
     
     if p[:collection].present?
-      filtered = filtered.where('products.id IN (SELECT product_id FROM products_collections WHERE collection_id = ?)', p[:collection])
+      filtered = filtered.where('products.id IN (SELECT product_id FROM products_collections WHERE collection_id = ?)', p[:collection].to_i)
     end
     
     if p[:publisher].present?
       filtered_copies = true
-      editions = editions.joins(:product).where("products.publisher_id = ?", p[:publisher])
+      editions = editions.joins(:product).where("products.publisher_id = ?", p[:publisher].to_i)
     end
     
     if p[:award].present?
-      awards = Award.where(:award_type_id => p[:award])
+      awards = Award.where(:award_type_id => p[:award].to_i)
       product_awards = ProductAward.where(:award_id => awards.map{ |x| x.id })
       filtered = filtered.where("products.id IN (?)", product_awards.map{ |x| x.product_id })
     end
     
     if p[:author].present?
-      filtered = filtered.where(:author_id => p[:author])
+      filtered = filtered.where(:author_id => p[:author].to_i)
     end
     
     if p[:illustrator].present?
-      filtered = filtered.where(:illustrator_id => p[:illustrator])
+      filtered = filtered.where(:illustrator_id => p[:illustrator].to_i)
     end
     
     if p[:age].present?
-      filtered = filtered.where("age_from <= ? AND age_to >= ? OR (age_from IS NULL AND age_to = ?) OR (age_to IS NULL AND age_from = ?)", p[:age], p[:age], p[:age], p[:age])
+      age = p[:age].to_i
+      filtered = filtered.where("age_from <= ? AND age_to >= ? OR (age_from IS NULL AND age_to = ?) OR (age_to IS NULL AND age_from = ?)", age, age, age, age)
     end
     
     if p[:type].present?
@@ -132,7 +133,7 @@ class Product < ActiveRecord::Base
     
     if p[:condition].present?
       filtered_copies = true
-      copies = copies.where("condition_rating >= ?", p[:condition])
+      copies = copies.where("condition_rating >= ?", p[:condition].to_i)
     end
     
     price_from = nil
@@ -167,11 +168,11 @@ class Product < ActiveRecord::Base
     
     if p[:format].present?
       filtered_copies = true
-      editions = editions.where(:format_id => p[:format])
+      editions = editions.where(:format_id => p[:format].to_i)
     end
     
     if p[:category].present?
-      filtered = filtered.where(:product_type_id => p[:category])
+      filtered = filtered.where(:product_type_id => p[:category].to_i)
     end
     
     if filtered_copies

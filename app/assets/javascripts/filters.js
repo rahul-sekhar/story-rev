@@ -7,9 +7,6 @@ $(document).ready(function() {
     }, function() {
         $(this).attr('src', '/images/search.png');
     });
-    
-    return;
-
 
     var $products = $('#products');
     
@@ -34,15 +31,29 @@ $(document).ready(function() {
         e.preventDefault();
         
         var $link = $(this);
-        var $prev = $link.closest('.sort').find('.current:first').removeClass('current');
-        $link.addClass('current');
+        var $prev = null;
+        var thisClass = $link.attr('class');
+        var prevClass;
         
-        getProducts(this.href, null, function() {
-            clearFilters();
-        }, function() {
-            $link.removeClass('current');
-            $prev.addClass('current');
-        })
+        if ($link.hasClass("current")) {
+            if ($link.text() != "random") {
+                if ($link.hasClass("asc"))
+                    $link.removeClass("asc").addClass("desc");
+                else
+                    $link.removeClass("desc").addClass("asc");
+            }
+        }
+        else {
+            $prev = $link.closest('.sort').find('.current:first')
+            prevClass = $prev.attr('class');
+            $prev.removeClass('current asc desc');
+            $link.addClass('current asc');
+        }
+        
+        getProducts(this.href, null, null, function() {
+            $link.attr('class', thisClass);
+            if ($prev) $prev.attr('class', prevClass);
+        }, true)
     });
     
     // Collections
@@ -54,58 +65,93 @@ $(document).ready(function() {
         var $prev = $collections.find('.current:first').removeClass('current');
         $link.addClass('current');
         
-        getProducts(this.href, null, function() {
-            clearFilters();
-        }, function() {
+        getProducts(this.href, null, null, function() {
             $link.removeClass('current');
             $prev.addClass('current');
         })
     });
     
-    var filterCache;
+    // Clear filters button
+    $products.on('click', '.clear-link', function(e) {
+        e.preventDefault();
+        
+        var $link = $(this);
+        $link.closest('.applied-filters').fadeOut();
+        getProducts(this.href)
+    });
+    
+    // Search box
+    var $searchForm = $('#search-form').submit(function(e) {
+        e.preventDefault();
+        
+        getProducts('/?' + $(this).serialize());
+    });
     
     // Filters
-    var $filters = $('#filters');
-    var $filterForm = $filters.find('form:first');
+    $filters = $('#filters');
+    $filters.find('.submit').remove();
     
-    function filtersChanged() {
-        var data = $filterForm.serializeObject();
-        var params = $filterForm.serialize();
-        if (filterCache == params) return;
+    $filters.on('click', 'a', function(e) {
+        if (extClick(e)) return;
+        e.preventDefault();
         
-        filterCache = params;
-        getProducts($collections.find('.current:first').attr('href'), data, null, null, true);
-    }
-    
-    $filters.find('.submit-container, .params').remove();
-    $filters.on('change', 'input[type=checkbox]', filtersChanged);
+        var $link = $(this);
+        var $prev = $link.closest('ul').find('.current:first').removeClass('current');
+        $link.addClass('current');
+        
+        getProducts(this.href, null, null, function() {
+            $link.removeClass('current');
+            $prev.addClass('current');
+        })
+    });
     
     // Filters - textboxes
     var typingTimer;
     var doneTypingInterval = 300;
     
-    $filters.find('input[type=text]').keyup(function(){
+    var $ageText = $filters.find('.age input[type=text]').keyup(function(){
         clearTimeout(typingTimer);
-        typingTimer = setTimeout(filtersChanged, doneTypingInterval);
+        typingTimer = setTimeout(ageChanged, doneTypingInterval);
     });
     
-    //Function to clear all the filters
-    function clearFilters() {
-        $filters.find('input[type=text]').val('');
-        $filters.find('input[type=checkbox]').prop('checked', false);
-        filterCache = null
+    function ageChanged() {
+        var $ul = $ageText.closest('ul');
+        var $prev = $ul.find('.current:first').removeClass('current');
+        if ($ageText.val()) {
+            $ageText.siblings('span').addClass('current');
+        }
+        else {
+            $ul.find('li:first a').addClass('current');
+        }
+        
+        getProducts('/?' + $ageText.closest('form').serialize(), null, null, function() {
+            $ul.find('.current:first').removeClass('current');
+            $prev.addClass('current');
+        })
     }
     
+    var $priceText = $filters.find('.price input[type=text]').keyup(function(){
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(priceChanged, doneTypingInterval);
+    });
     
-    // Function to get the current sorted state
-    function getSort() {
-        return $products.find('.sort').data('current');
+    function priceChanged() {
+        var $ul = $priceText.closest('ul');
+        var $prev = $ul.find('.current:first').removeClass('current');
+        if ($priceText.val()) {
+            $priceText.parent('li').find('span:first').addClass('current');
+        }
+        else {
+            $ul.find('li:first a').addClass('current');
+        }
+        
+        getProducts('/?' + $priceText.closest('form').serialize(), null, null, function() {
+            $ul.find('.current:first').removeClass('current');
+            $prev.addClass('current');
+        })
     }
     
-    // Function to get the current collection id
-    function getCollectionId() {
-        return $products.find('.sort').data('collection');
-    }
+    var $searchText = $('#search');
     
     
     // Function to handle getting filtered data and replacing the product list
@@ -140,10 +186,13 @@ $(document).ready(function() {
         var xhr = $.ajax({
             url: url,
             type: 'GET',
-            dataType: 'html',
+            dataType: 'json',
             data: params,
             success: function(data) {
-                var $newCovers = $('.covers', data)
+                
+                html = data.html
+                
+                var $newCovers = $('.covers', html)
                     .removeClass()
                     .addClass("ajax-content")
                     .hide();
@@ -156,20 +205,13 @@ $(document).ready(function() {
                     $covers.height($newCovers.height());
                 }, 100);
                 
-                $products.find('.pagination,.sort').remove().end()
-                    .prepend($('.sort', data))
-                    .append($('.pagination', data));
+                $products.find('.pagination,.sort,.applied-filters').remove().end()
+                    .prepend($('.sort', html))
+                    .prepend($('.applied-filters', html))
+                    .append($('.pagination', html));
                 
-                // Update collection URL with the new sort by parameter
-                if (getSort()) {
-                    $collections.find('a').each(function() {
-                        this.href = this.href.replace(/sort=\w*/, "sort=" + getSort());
-                    });
-                }
-                
-                // Select the correct collection item
-                $collections.find('.current').removeClass('current');
-                $collections.find('#' + getCollectionId() + ' a').addClass('current');
+                updateCollections(data);
+                updateFilters(data);
                 
                 if (!no_pushstate && Modernizr.history) {
                     // Add url to the browser history
@@ -210,7 +252,9 @@ $(document).ready(function() {
         var data = e.originalEvent.state;
         
         if (data) {
-            var $newCovers = $('.covers', data)
+            html = data.html
+            
+            var $newCovers = $('.covers', html)
                 .removeClass()
                 .addClass("ajax-content")
                 .hide();
@@ -221,30 +265,137 @@ $(document).ready(function() {
                 $covers.height($newCovers.height());
             }, 100);
             
-            $products.find('.pagination,.sort').remove().end()
-                .prepend($('.sort', data))
-                .append($('.pagination', data));
+            $products.find('.pagination,.sort,.applied-filters').remove().end()
+                .prepend($('.sort', html))
+                .prepend($('.applied-filters', html))
+                .append($('.pagination', html));
             
-            console.log(getCollectionId())
-            // Select the correct collection item
-            $collections.find('.current').removeClass('current').hide().show();
-            $collections.find('#' + getCollectionId() + ' a').addClass('current').hide().show();
-            
-            clearFilters();
-            
-            // Update collection URL with the new sort by parameter
-            if (getSort()) {
-                $collections.find('a').each(function() {
-                    this.href = this.href.replace(/sort=\w*/, "sort=" + getSort());
-                });
-            }
-            
+            updateCollections(data);
+            updateFilters(data);
+                
             $products.trigger("productsRefreshed");
         }
         else {
-           getProducts(location.href, null, function() {
-                clearFilters();
-            }, null, true)
+           getProducts(location.href, null, null, true)
         }
     });
+    
+    function updateCollections(data) {
+    
+        var base_params = {}
+        if (data.sort_by) base_params['sort_by'] = data.sort_by
+        if (data.desc) base_params['desc'] = data.desc
+        
+        $collections.find('.current').removeClass('current');
+        
+        $collections.find('a').each(function(){
+            var $link = $(this);
+            var $li = $link.closest('li');
+            var $ul = $li.closest('ul');
+            var params = {}
+            
+            if ($ul.hasClass('primary')) {
+                if ($li.hasClass('recent')) {
+                    params['recent'] = '1';
+                    if (data.base == "recent" && data.base_val) {
+                        $link.addClass('current');
+                    }
+                }
+                else if (!data.base) {
+                    $link.addClass('current');
+                }
+            }
+            else {
+                params[$ul.data('base')] = $li.data('val');
+            }
+            
+            $.extend(params, base_params);
+            
+            $link.attr('href', '/?' + $.param(params) + '#products');
+        });
+        
+        $collections.find('ul[data-base=' + data.base + '] li[data-val=' + data.base_val + ']').children('a').addClass('current');
+        
+        // Search form
+        $searchForm.find('input[type=hidden]').remove();
+        $.each(base_params, function(k, v) {
+            $searchForm.append('<input type="hidden" name="' + k +'" value="' + v + '" />');
+        });
+        
+        // Clear search box
+        if (data.base != "search") $searchText.val('');
+    }
+    
+    var $ageForm = $ageText.closest('form');
+    var $priceForm = $priceText.closest('form');
+    
+    function updateFilters(data) {
+        var base_params = {}
+        if (data.sort_by) base_params['sort_by'] = data.sort_by
+        if (data.desc) base_params['desc'] = data.desc
+        
+        // Update links
+        $filters.find('.current').removeClass('current');
+        $filters.find('a').each(function() {
+            var $link = $(this);
+            var $li = $link.closest('li');
+            var $ul = $li.closest('ul');
+            var name = $ul.data('name');
+            var val = $li.data('val');
+            var params = $.extend({}, base_params, data.filters);
+            
+            if (data.filters[name] == val) {
+                $link.addClass('current');
+            }
+            
+            if (name == "price") {
+                delete params["price_to"];
+                delete params["price_from"];
+            }
+            
+            delete params[name]
+            if (val) params[name] = val
+            $link.attr('href', '/?' + $.param(params) + '#products');
+        });
+        
+        // Age form
+        var age_params = $.extend({}, base_params, data.filters);
+        delete age_params["age"];
+        $ageForm.find('input[type=hidden]').remove();
+        
+        $.each(age_params, function(k,v) {
+            $ageForm.append('<input type="hidden" name="' + k +'" value="' + v + '" />');
+        });
+        
+        if (!data.filters["age"]) {
+            $ageText.val('');
+        }
+        else {
+            $ageText.siblings('span').addClass('current');
+        }
+        
+        // Price form
+        var price_params = $.extend({}, base_params, data.filters);
+        delete price_params["price"];
+        delete price_params["price_from"];
+        delete price_params["price_to"];
+        $priceForm.find('input[type=hidden]').remove();
+        $.each(price_params, function(k,v) {
+            $priceForm.append('<input type="hidden" name="' + k +'" value="' + v + '" />');
+        });
+        if (!data.filters["price_from"]) {
+            $priceText.filter('#price_from').val('');
+        }
+        else {
+            $priceForm.find('span:first').addClass('current')
+                .closest('ul').find('a.current').removeClass('current');
+        }
+        if (!data.filters["price_to"]) {
+            $priceText.filter('#price_to').val('');
+        }
+        else {
+            $priceForm.find('span:first').addClass('current')
+                .closest('ul').find('a.current').removeClass('current');
+        }
+    }
 });

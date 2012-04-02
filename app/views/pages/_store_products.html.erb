@@ -16,7 +16,7 @@
     </div>
 <% end %>
 
-<p class="sort" data-current="<%= params[:sort] %>">
+<p class="sort">
     sort by
     <% sort_array = %w[random date title author age price] %>
     <%= sort_array.map {|x| sort_link(x) }.join(' | ').html_safe %>

@@ -73,6 +73,15 @@ module ApplicationHelper
     end
   end
   
+  def filter_list
+    list = {}
+    filters.each do |f|
+      list[f] = params[f] if params[f].present?
+    end
+    
+    return list
+  end
+  
   def get_base
     base_filters.each do |f|
       return f if params[f].present?
@@ -113,7 +122,7 @@ module ApplicationHelper
     root_path(link_params, :anchor => "products")
   end
   
-  def collection_path(name, val)
+  def collection_params(name, val)
     link_params = {}
     
     sort_params.each do |s|
@@ -121,7 +130,11 @@ module ApplicationHelper
     end
     
     link_params[name] = val if val
-    root_path(link_params, :anchor => "products")
+    return link_params
+  end
+  
+  def collection_path(name, val)
+    root_path(collection_params(name, val), :anchor => "products")
   end
   
   def filter_params(name, val)

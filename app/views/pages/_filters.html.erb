@@ -1,27 +1,30 @@
 <section id="filters">
   <div class="search">
     <h3>Search all</h3>
-    <%= form_tag root_path, :method => :get do %>
+    <%= form_tag root_path, :method => :get, :id => "search-form" do %>
+        <% collection_params(:search, nil).each do |k,v| %>
+          <input type="hidden" name="<%= k %>" value="<%= v %>" />
+        <% end %>
       <%= text_field_tag :search, params[:search], :placeholder => "title / author", :autocomplete => "off", :class => "text" %>
       <input type="image" src="/images/search.png" alt="Go"  id="search-submit" />
     <% end %>
   </div>
   
   <h3>Filters</h3>  
-    <ul>
+    <ul data-name="type">
       <li><%= filter_link "All books", :type, nil %></li>
-      <li><%= filter_link "New books", :type, "new" %></li>
-      <li><%= filter_link "Used books", :type, "used" %></li>
+      <li data-val="new"><%= filter_link "New books", :type, "new" %></li>
+      <li data-val="used"><%= filter_link "Used books", :type, "used" %></li>
     </ul>
     
-    <ul>
+    <ul data-name="category">
       <li><%= filter_link "All categories", :category, nil %></li>
       <% @product_types.each do |x| %>
-        <li><%= filter_link x.name, :category, x.id %></li>
+        <li data-val="<%= x.id %>"><%= filter_link x.name, :category, x.id %></li>
       <% end %>
     </ul>
     
-    <ul class="age">
+    <ul class="age" data-name="age">
       <li><%= filter_link "All ages", :age, nil %></li>
       <%= form_tag root_path(:anchor => "products"), :method => :get do %>
         <% filter_params(:age, nil).each do |k,v| %>
@@ -35,14 +38,14 @@
       <% end %>
     </ul>
     
-    <ul>
+    <ul data-name="condition">
       <li><%= filter_link "Any condition", :condition, nil %></li>
       <% 5.downto(3) do |i| %>
-        <li>
-          <a href="<%= filter_path :condition, i %>">
+        <li data-val="<%= i %>">
+          <a href="<%= filter_path :condition, i %>"<%= class_if (params[:condition].to_i == i), "current" %>>
             <div class="rating">
             <% i.times do %>
-              <span class="star<%= params[:condition].to_i == i ? "" : " grey" %>">*</span>
+              <span class="star grey">*</span>
             <% end %>
             </div>
           </a>
@@ -50,19 +53,19 @@
       <% end %>
     </ul>
     
-    <ul>
+    <ul data-name="format">
       <li><%= filter_link "All formats", :format, nil %></li>
       <% @formats.each do |x| %>
-        <li><%= filter_link x.name, :format, x.id %></li>
+        <li data-val="<%= x.id %>"><%= filter_link x.name, :format, x.id %></li>
       <% end %>
     </ul>
     
-    <ul class="price">
+    <ul class="price" data-name="price">
       <li><%= link_to("Any price", filter_path(:price, nil), :class => ((params[:price].blank? && params[:price_from].blank? && params[:price_to].blank?) ? "current" : nil)) %></li>
-      <li><%= filter_link "Less than #{RupeeHelper.to_rupee_span(50)}".html_safe, :price, "-50" %></li>
-      <li><%= filter_link "#{RupeeHelper.to_rupee_span(50)} &ndash; #{RupeeHelper.to_rupee_span(100)}".html_safe, :price, "50-100" %></li>
-      <li><%= filter_link "#{RupeeHelper.to_rupee_span(100)} &ndash; #{RupeeHelper.to_rupee_span(200)}".html_safe, :price, "100-200" %></li>
-      <li><%= filter_link "More than #{RupeeHelper.to_rupee_span(200)}".html_safe, :price, "200-" %></li>
+      <li data-val="-50"><%= filter_link "Less than #{RupeeHelper.to_rupee_span(50)}".html_safe, :price, "-50" %></li>
+      <li data-val="50-100"><%= filter_link "#{RupeeHelper.to_rupee_span(50)} &ndash; #{RupeeHelper.to_rupee_span(100)}".html_safe, :price, "50-100" %></li>
+      <li data-val="100-200"><%= filter_link "#{RupeeHelper.to_rupee_span(100)} &ndash; #{RupeeHelper.to_rupee_span(200)}".html_safe, :price, "100-200" %></li>
+      <li data-val="200-500"><%= filter_link "More than #{RupeeHelper.to_rupee_span(200)}".html_safe, :price, "200-" %></li>
       <%= form_tag root_path(:anchor => "products"), :method => :get do %>
         <% filter_params(:price, nil).each do |k,v| %>
           <input type="hidden" name="<%= k %>" value="<%= v %>" />

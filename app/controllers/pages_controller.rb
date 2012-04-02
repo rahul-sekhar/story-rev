@@ -1,4 +1,5 @@
 class PagesController < ApplicationController
+  include ApplicationHelper
   
   def store
     @class = "store"
@@ -9,7 +10,7 @@ class PagesController < ApplicationController
     @products = Product.stocked.includes_cover.joins("LEFT JOIN authors AS auth ON products.author_id = auth.id").includes(:copies, :illustrator).filter(params).sort_by_param(params[:sort_by],params[:desc]).page(params[:page]).per(28)
     
     if params[:ajax].present?
-      render "ajax_store", :layout => "ajax"
+      render :json => ajax_params
     else
       get_collection_lists
     end
@@ -35,5 +36,17 @@ class PagesController < ApplicationController
     @publishers = Publisher.prioritised.visible.where(:id => stocked_books.map{ |x| x.publisher_id })
     @authors = Author.prioritised.visible.where(:id => stocked_books.map{ |x| x.author_id })
     @illustrators = Illustrator.prioritised.visible.where(:id => stocked_books.map{|x| x.illustrator_id})
+  end
+  
+  def ajax_params
+    
+    {
+      :html => render_to_string(:action => "ajax_store", :layout => "ajax"),
+      :sort_by => params[:sort_by],
+      :desc => params[:desc],
+      :base => get_base,
+      :base_val => params[get_base],
+      :filters => filter_list
+    }
   end
 end

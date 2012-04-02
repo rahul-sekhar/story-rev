@@ -16,6 +16,8 @@ $(document).ready(function() {
     $hoverInfo.hide().appendTo($body);
     
     function setProductHover() {
+        $hoverInfo.hide();
+        
         $('#products .cover').on('mousemove', trackCursor)
             .hoverIntent(function(e) {
                 var $book = $(this).data('hover', true);

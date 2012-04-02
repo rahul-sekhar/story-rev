@@ -95,9 +95,13 @@
             padding: e(3px) 0;
             @include clearfix;
             
-            &:hover .star.grey:before {
+            &:hover .star:before {
                 margin-top: -16px;
             }
+        }
+        
+        .current .rating .star:before {
+            margin-top: 0px;
         }
         
         .custom {
@@ -161,6 +165,7 @@
         background-color: $color-a7;
         padding: e(10px) e(15px);
         text-transform:lowercase;
+        margin-bottom: e(10px);
         
         li {
             float:left;
