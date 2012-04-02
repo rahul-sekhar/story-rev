@@ -18,6 +18,7 @@
     background: $color-f1 url('/images/green-texture.jpg');
     @include box-shadow(0 0 5px 1px $color-a1);
     height: e(275px);
+    margin-bottom: e(20px);
     position:relative;
     
     .layer {
