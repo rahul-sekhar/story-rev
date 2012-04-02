@@ -84,7 +84,7 @@ class Product < ActiveRecord::Base
     if p[:recent].present?
       new_books = Product.unscoped.select("products.id, products.in_stock, content_type_id, language_id, MAX(e.created_at) as ed_date")
           .joins("INNER JOIN editions AS e ON e.product_id = products.id INNER JOIN copies as c ON c.edition_id = e.id WHERE c.in_stock = TRUE")
-          .group("products.id").order("ed_date DESC").limit(28)
+          .group("products.id, products.in_stock, content_type_id, language_id").order("ed_date DESC").limit(28)
       filtered = filtered.where("products.id IN (?)", new_books.map{ |x| x.id })
     end
     
