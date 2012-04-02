@@ -331,8 +331,9 @@ $(document).ready(function() {
     
     function updateFilters(data) {
         var base_params = {}
-        if (data.sort_by) base_params['sort_by'] = data.sort_by
-        if (data.desc) base_params['desc'] = data.desc
+        if (data.sort_by) base_params['sort_by'] = data.sort_by;
+        if (data.desc) base_params['desc'] = data.desc;
+        if (data.base) base_params[data.base] = data.base_val;
         
         // Update links
         $filters.find('.current').removeClass('current');

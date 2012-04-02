@@ -9,6 +9,6 @@ class Author < ActiveRecord::Base
   
   validates :full_name, :length => { :maximum => 150 }, :presence => true
   
-  scope :prioritised, order("priority DESC")
+  scope :prioritised, order("priority DESC, last_name, first_name")
   scope :visible, where("priority > 0")
 end

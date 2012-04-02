@@ -4,7 +4,7 @@ class Publisher < ActiveRecord::Base
   
   validates :name, :length => { :maximum => 150 }, :presence => true
   
-  scope :prioritised, order("priority DESC")
+  scope :prioritised, order("priority DESC, name")
   scope :visible, where("priority > 0")
   
   def self.name_like(data)
