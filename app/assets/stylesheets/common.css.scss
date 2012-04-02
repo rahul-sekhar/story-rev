@@ -2,13 +2,14 @@
  ********* Layout **********
  ***************************/
 
-$wrapper-width: 900px;
 #wrapper {
-    width: e($wrapper-width);
+    min-width: e(900px);
+    max-width: e(1000px);
     margin: 0 auto;
     @include clearfix;
     min-height: 100%;
     padding: 0px e(30px);
+    position:relative;
 }
 
 // Header

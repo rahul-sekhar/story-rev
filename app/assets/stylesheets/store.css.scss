@@ -1,9 +1,9 @@
 .store {
     #filters {
-        float:left;
+        position:absolute;
         width: e(170px);
-        margin-top: e(60px);
-        margin-left:e(40px);
+        top: e(60px);
+        left:e(40px);
         text-transform: lowercase;
         
         input.text {
@@ -116,10 +116,10 @@
     }
     
     #collections {
-        float:right;
-        margin-top: e(60px);
+        position:absolute;
+        top: e(60px);
         width: e(130px);
-        margin-right: e(40px);
+        right: e(40px);
         
         ul {
             margin:0;
@@ -148,6 +148,7 @@
             color: $color-a4;
         }
     }
+    
     
     $products-width: (100px + 20px) * 4 + 10px;
     
@@ -220,7 +221,6 @@
         @include clearfix;
         width: e($products-width);
         margin: 0 auto;
-        float:left;
         
         .covers {
             position:relative;
@@ -229,7 +229,7 @@
         
         .row {
             @include clearfix;
-            clear:left;
+            float:left;
         }
         
         .ajax-content {
