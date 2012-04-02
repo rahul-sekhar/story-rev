@@ -600,7 +600,7 @@ $(document).ready(function() {
     var $ageGoogleLink = $('<a href=#" class="google-link ext">[google]</a>');
     var $awardGoogleLink = $('<a href=#" class="google-link ext">[google]</a>');
     var $ageTo = $('#product_age_to');
-    var $awardList = $('#award-field-list');
+    var $awardListContainer = $('#award-field-list');
     
     $productTitle.add($authorNameInput).change(function() {
         var title = $productTitle.val();
@@ -613,7 +613,7 @@ $(document).ready(function() {
                 .insertAfter($ageTo);
             
             $awardGoogleLink.attr('href', 'http://www.google.com/search?q=' + encodeURIComponent('"' + title + '" ' + author_name + ' award'))
-                .appendTo($awardList);
+                .appendTo($awardListContainer);
         }
     });
     

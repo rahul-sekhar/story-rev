@@ -24,11 +24,6 @@
       <%= f.label :age_to, "to", :class => "inline" + ( @product.errors[:age_to].present? ? " error" : "" ) %>
       <%= f.input_field :age_to, :maxlength => 2, :as => :string %>
     </div>
-    <%= f.input :content_type_id,
-                :as => :select,
-                :collection => ContentType.all,
-                :include_blank => false
-                %>
     <%= f.input :product_type_id,
                 :label => "Book type",
                 :as => :select,
