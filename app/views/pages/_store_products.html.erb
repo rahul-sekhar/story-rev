@@ -1,7 +1,16 @@
-<% unless no_filters? %>
+<% if applied_filters.present? || get_base.present? %>
     <div class="applied-filters">
         <ul>
-            <li><%= collection_link filter_name(get_base, params[:get_base]), get_base, params[:get_base] %></li>
+            <li><%= collection_link filter_name(get_base, params[get_base]), get_base, params[get_base] %></li>
+            <% price_done = false %>
+            <% applied_filters.each do |f| %>
+                <% if !%w[price price_from price_to].include?(f.to_s) %>
+                    <li class="filter"><%= filter_name(f, params[f]) %></li>
+                <% elsif !price_done %>
+                    <li class="filter"><%= price_name %></li>
+                    <% price_done = true %>
+                <% end %>
+            <% end %>
         </ul>
     </div>
 <% end %>

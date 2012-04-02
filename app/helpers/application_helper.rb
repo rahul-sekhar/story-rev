@@ -35,13 +35,13 @@ module ApplicationHelper
     when "award"
       AwardType.find_by_id(val).name || ""
     when "condition"
-      "Condition - #{val}#{val.to_i == 5 ? "" : " or above"}"
+      "Condition - #{val} stars#{val.to_i == 5 ? "" : " or above"}"
     when "category"
       ProductType.find_by_id(val).name || ""
     when "age"
-      "Age #{age}"
+      "Age #{val}"
     when "type"
-      type == "new" ? "New books" : "Used books"
+      val == "new" ? "New books" : "Used books"
     when "format"
       Format.find_by_id(val).name || ""
     else
@@ -49,30 +49,27 @@ module ApplicationHelper
     end
   end
     
-  def price_name(price, price_from, price_to)
-    if price_from.present? || price_to.present?
-      if price_from.to_i > 0 && price_to.to_i > 0
-        "Price - #{RupeeHelper.to_rupee()}"
-      elsif price_from.to_i > 0
-    else
-    price_from = nil
-    price_to = nil
+  def price_name
+    price = params[:price]
+    price_from = params[:price_from]
+    price_to = params[:price_to]
     
-    if p[:price_from].present?
-      price_from = p[:price_from].to_i
-    end
-    if p[:price_to].present?
-      price_to = p[:price_to].to_i
-    end
-    
-    if p[:price].present? && p[:price_from].blank? && p[:price_to].blank?
-      a = p[:price].split("-").map{|x| x.to_i}
+    if price.present? && price_from.blank? && price_to.blank?
+      a = price.split("-").map{|x| x.to_i}
       if a.length == 2
         price_from = a.min
         price_to = a.max
       else
         price_from = a[0]
       end
+    end
+    
+    if price_from.to_i > 0 && price_to.to_i > 0
+      "Price - #{RupeeHelper.to_rupee(price_from)} to #{RupeeHelper.to_rupee(price_to)}"
+    elsif price_from.to_i > 0
+      "Price - more than #{RupeeHelper.to_rupee(price_from)}"
+    else
+      "Price - less than #{RupeeHelper.to_rupee(price_to)}"
     end
   end
   
@@ -82,12 +79,13 @@ module ApplicationHelper
     end
   end
   
-  def no_filters?
-    return false if get_base.present?
+  def applied_filters
+    result = []
+    
     filters.each do |f|
-      return false if params[f].present?
+      result << f if params[f].present?
     end
-    return true
+    return result
   end
   
   def sort_path(name)
