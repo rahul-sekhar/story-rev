@@ -7,7 +7,7 @@
     
     <ul>
       <li>
-        <%= link_to "All books", collection_path(:all, nil), :class => no_base? ? "current" : nil %>
+        <%= link_to "All books", collection_path(:all, nil), :class => get_base.nil? ? "current" : nil %>
       </li>
       <li>
         <%= collection_link "New additions", :recent, 1 %>

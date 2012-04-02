@@ -1,6 +1,10 @@
-<div class="applied-filters">
-    
-</div>
+<% unless no_filters? %>
+    <div class="applied-filters">
+        <ul>
+            <li><%= collection_link filter_name(get_base, params[:get_base]), get_base, params[:get_base] %></li>
+        </ul>
+    </div>
+<% end %>
 
 <p class="sort" data-current="<%= params[:sort] %>">
     sort by
