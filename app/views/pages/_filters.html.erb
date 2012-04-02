@@ -23,7 +23,10 @@
     
     <ul class="age">
       <li><%= filter_link "All ages", :age, nil %></li>
-      <%= form_tag filter_path(:age, nil), :method => :get do %>
+      <%= form_tag root_path(:anchor => "products"), :method => :get do %>
+        <% filter_params(:age, nil).each do |k,v| %>
+          <input type="hidden" name="<%= k %>" value="<%= v %>" />
+        <% end %>
         <li class="custom">
           <span<%= class_if params[:age].present?, "current" %>>Age</span>
           <%= text_field_tag :age, params[:age], :autocomplete => "off", :class => "text", :maxlength => 2 %>
@@ -60,7 +63,10 @@
       <li><%= filter_link "#{RupeeHelper.to_rupee_span(50)} &ndash; #{RupeeHelper.to_rupee_span(100)}".html_safe, :price, "50-100" %></li>
       <li><%= filter_link "#{RupeeHelper.to_rupee_span(100)} &ndash; #{RupeeHelper.to_rupee_span(200)}".html_safe, :price, "100-200" %></li>
       <li><%= filter_link "More than #{RupeeHelper.to_rupee_span(200)}".html_safe, :price, "200-" %></li>
-      <%= form_tag filter_path(:price, nil), :method => :get do %>
+      <%= form_tag root_path(:anchor => "products"), :method => :get do %>
+        <% filter_params(:price, nil).each do |k,v| %>
+          <input type="hidden" name="<%= k %>" value="<%= v %>" />
+        <% end %>
         <li class="custom">
           <span<%= class_if (params[:price_from].present? || params[:price_to].present?), "current" %>>Custom</span>
           <%= text_field_tag :price_from, params[:price_from], :autocomplete => "off", :class => "text", :maxlength => 3 %>

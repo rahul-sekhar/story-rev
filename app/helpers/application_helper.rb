@@ -123,7 +123,7 @@ module ApplicationHelper
     root_path(link_params, :anchor => "products")
   end
   
-  def filter_path(name, val)
+  def filter_params(name, val)
     link_params = {}
     
     sort_params.each do |s|
@@ -146,7 +146,11 @@ module ApplicationHelper
     
     link_params[name] = val if val
     
-    root_path(link_params, :anchor => "products")
+    return link_params
+  end
+  
+  def filter_path(name, val)
+    root_path(filter_params(name, val), :anchor => "products")
   end
   
   def sort_link(name)
