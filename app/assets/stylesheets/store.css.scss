@@ -97,8 +97,8 @@
             @include clearfix;
         }
         
-        a:hover .star:before {margin-top: -16px;}
-        a.current .rating .star:before {margin-top: 0px;}
+        a:hover .star.grey:before {margin-top: -16px;}
+        a.current .star.grey:before {margin-top: 0px;}
         
         .custom {
             margin-top: e(5px, $smaller-text-size);
