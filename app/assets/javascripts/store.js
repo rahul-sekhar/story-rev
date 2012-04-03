@@ -1,4 +1,5 @@
 $(document).ready(function() {
+    if (isOldIE()) return;
     var $body = $('body');
     if (!$body.hasClass('store')) return;
     

@@ -1,4 +1,6 @@
 $(document).ready(function() {
+    if (isOldIE()) return;
+    
     $('#subscribe-email-submit').hover(function() {
         $(this).attr('src', '/images/ok-button-hover.png');
     }, function() {

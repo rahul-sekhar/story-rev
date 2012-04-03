@@ -64,11 +64,15 @@ $.fn.serializeObject = function()
     return o;
 };
 
+function isOldIE() {
+    return ($.browser.msie  && parseInt($.browser.version, 10) <= 7)
+}
+
 // Resize a dialog to its contents height by sliding (check again after resizing)
 function resizeDialog($dialog, $content, resize_overlay, center_dialog, callbackFunction) {
     
     // Handle IE seperately for now
-    if ($.browser.msie  && parseInt($.browser.version, 10) === 8) {
+    if ($.browser.msie  && parseInt($.browser.version, 10) <= 8) {
          if (center_dialog) {
             var page_top = $(window).scrollTop();
             var target_top =  page_top + $(window).height() / 2 - $content.outerHeight() / 2 - ($dialog.outerHeight() - $dialog.height()) / 2;
@@ -115,6 +119,7 @@ function resizeDialog($dialog, $content, resize_overlay, center_dialog, callback
 
 $(document).ready(function() {
     var $body = $('body');
+    if (isOldIE()) return;
     
     // Handle external links
     $body.on('click', 'a.ext', function(e) {
