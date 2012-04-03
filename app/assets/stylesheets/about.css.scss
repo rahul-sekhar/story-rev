@@ -4,10 +4,6 @@ body.about {
         margin-top: e(30px, $heading-size);
     }
     
-    #page-header {
-        margin-bottom: e(80px);
-    }
-    
     p {
         max-width: e(370px, $text-size);
     }
@@ -16,12 +12,12 @@ body.about {
         margin-left: e(120px);
     }
     
-    li {
+    #wrapper li {
         @include text;
         font-weight:bold;
     }
     
-    ul {
+    #wrapper ul {
         margin-bottom: e(20px);
     }
     
@@ -48,7 +44,7 @@ body.help {
         margin-left: e(70px);
     }
     
-    ul {
+    #wrapper ul {
         li {
             @include text;
         }

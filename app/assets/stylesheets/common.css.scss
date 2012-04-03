@@ -427,6 +427,7 @@ table {
 }
 
 .note {
+    @include smaller-text;
     color: $color-a1;
 }
 
