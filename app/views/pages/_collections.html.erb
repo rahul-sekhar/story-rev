@@ -2,6 +2,7 @@
 <% @stocked_product_ids ||= @stocked_products.map{|x| x.id} %>
 
 <section id="collections">
+  
   <ul>
     <li class="all">
       <%= link_to "All books", collection_path(:all, nil), :class => get_base.nil? ? "current" : nil %>

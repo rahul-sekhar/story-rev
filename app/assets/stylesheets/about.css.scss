@@ -1,0 +1,76 @@
+body.about {
+    h3 {
+        text-transform:none;
+        margin-top: e(30px, $heading-size);
+    }
+    
+    #page-header {
+        margin-bottom: e(80px);
+    }
+    
+    p {
+        max-width: e(370px, $text-size);
+    }
+    
+    .story, .what {
+        margin-left: e(120px);
+    }
+    
+    li {
+        @include text;
+        font-weight:bold;
+    }
+    
+    ul {
+        margin-bottom: e(20px);
+    }
+    
+    .who {
+        position:absolute;
+        top: 0;
+        right: e(100px);
+        
+        p {
+            max-width: e(250px, $text-size);
+        }
+    }
+}
+
+body.help {
+    h3 {
+        text-transform:none;
+        margin-top: e(30px, $heading-size);
+    }
+    
+    .column {
+        float:left;
+        width: e(260px);
+        margin-left: e(70px);
+    }
+    
+    ul {
+        li {
+            @include text;
+        }
+        
+        margin-bottom: e(20px);
+    }
+    
+    strong {
+        float:left;
+    }
+    
+    .and {
+        float:left;
+        margin-left: e(10px);
+    }
+    
+    .rating {
+        float:left;
+        margin-left: e(10px);
+    }
+    
+    p {
+        clear:left;
+    }
+}

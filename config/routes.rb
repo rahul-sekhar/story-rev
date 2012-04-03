@@ -12,6 +12,9 @@ StoryRev::Application.routes.draw do
   put "shopping_cart" => "shopping_carts#update"
   get "update_cart" => "shopping_carts#update", :as => "update_cart"
   
+  get "about" => "pages#about"
+  get "help" => "pages#help"
+  
   post "subscribe" => "pages#subscribe"
   
   # Admin routes  

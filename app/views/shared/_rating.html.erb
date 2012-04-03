@@ -1,7 +1,11 @@
+<% no ||= false %>
+
 <% rating.times do %>
   <span class="star">*</span>
 <% end %>
 
+<% unless no %>
 <% (5 - rating).times do %>
   <span class="empty star"></span>
+<% end %>
 <% end %>

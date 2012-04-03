@@ -17,6 +17,16 @@ class PagesController < ApplicationController
     end
   end
   
+  def about
+    @title = "About"
+    @class = "about"
+  end
+  
+  def help
+    @title = "Help"
+    @class = "help"
+  end
+  
   def subscribe
     if params[:email].present?
       @email = params[:email]
