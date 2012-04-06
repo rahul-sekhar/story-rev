@@ -432,10 +432,16 @@ table {
 }
 
 // Error messages
+.ie {
+    margin-bottom: 7px;
+    @include smaller-text;
+}
+
 .error {
     color: $error-color;
     font-weight:bold;
 }
+
 
 // Rupee
 .rs {
