@@ -273,6 +273,8 @@ table {
 .cover-container {
     width:100px;
     max-height:150px;
+    // background-color or border
+
     
     img {
         border:none;
@@ -325,6 +327,7 @@ table {
 .cover {
     @include box-shadow(3px -1px 5px $color-a2);
     border:1px solid $color-a5;
+    
     
     img {
         max-width:100px;
