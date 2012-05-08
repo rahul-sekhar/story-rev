@@ -9,6 +9,10 @@ group :assets do
   gem 'uglifier', '>= 1.0.3'
 end
 
+group :developent do
+  gem 'rvm-capistrano'
+end
+
 gem 'jquery-rails'
 gem 'sanitize'
 gem 'yaml_db'
