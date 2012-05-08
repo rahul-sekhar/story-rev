@@ -1,17 +1,27 @@
-# Ignore bundler config
-/.bundle
+# Design folder
+/design
 
-# Ignore the default SQLite database.
-/db/*.sqlite3
+# Symlinks - shared uploaded data
+/public/images/books
+
+# Sensitive config files
+/config/database.yml
+/config/settings.yml
+
+# Ignore database backups
+/db/data.yml
 
 # Ignore all logfiles and tempfiles.
 /log/*.log
 /tmp
 
-# Ignore database backups
-/db/data.yml
+# Local config files
+config/settings.local.yml
+config/settings/*.local.yml
+config/environments/*.local.yml
 
-# Specific folders to this project
-/design
-/public/images/books
-/public/images/themes
+# Ignore bundler config
+/.bundle
+
+# Ignore the default SQLite database.
+/db/*.sqlite3
