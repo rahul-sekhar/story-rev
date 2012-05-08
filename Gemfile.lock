@@ -148,6 +148,7 @@ PLATFORMS
 DEPENDENCIES
   amazon-ecs
   bcrypt-ruby (~> 3.0.0)
+  capistrano
   carrierwave
   daemons
   delayed_job_active_record
