@@ -8,6 +8,9 @@
 /log/*.log
 /tmp
 
+# Ignore database backups
+/db/data.yml
+
 # Specific folders to this project
 /design
 /public/images/books
