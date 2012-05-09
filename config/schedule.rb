@@ -25,6 +25,6 @@ every 1.day, :at => '4:00 am' do
   rake "backups:create:remote:daily"
 end
 
-every :thursday, :at => '4:30 am' do
+every :thursday, :at => '4:00 am' do
   rake "backups:create:remote:weekly"
 end
