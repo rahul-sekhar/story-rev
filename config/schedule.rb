@@ -19,7 +19,7 @@
 
 # Learn more: http://github.com/javan/whenever
 
-set :output, "#{RAILS_ROOT}/log/cron.log"
+set :output, "log/cron.log"
 
 every 1.day, :at => '4:00 am' do
   rake "backups:create:remote:daily"
