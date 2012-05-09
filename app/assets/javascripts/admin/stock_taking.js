@@ -16,7 +16,7 @@ $(document).ready(function() {
             {
                 name: 'Acc No.',
                 field: 'accession_id',
-                sort_by: 'accession_id',
+                sort_by: 'accession_id_sortable',
                 default_sort: 'desc'
             },
             {

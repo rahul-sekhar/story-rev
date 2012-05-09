@@ -3,7 +3,19 @@ class ShoppingCart < ActiveRecord::Base
   
   has_many :shopping_cart_copies, :dependent => :destroy, :include => :copy
   has_many :copies, :through => :shopping_cart_copies, :as => :copy
-  has_one :order
+  has_one :order, :dependent => :destroy
+  
+  def self.clear_old
+    cleared = 0
+    cleared_orders = 9
+    ShoppingCart.where("updated_at < current_timestamp - INTERVAL '14 days'").each do |x|
+      cleared_orders += 1 if x.order.present?
+      x.destroy
+      cleared += 1
+    end
+    
+    puts "Cleared #{cleared} shopping carts & #{cleared_orders} linked orders"
+  end
   
   def add_copy=(copy_id)
     self.shopping_cart_copies.build(:copy_id => copy_id) unless copy_ids.include? copy_id.to_i

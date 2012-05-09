@@ -34,6 +34,16 @@ class Order < ActiveRecord::Base
   scope :complete, where(:step => 5)
   
   
+  def self.clear_old
+    cleared = 0
+    Order.where("step <> 5 AND updated_at < current_timestamp - INTERVAL '7 days'").each do |x|
+      x.destroy
+      cleared += 1
+    end
+    
+    puts "Cleared #{cleared} orders"
+  end
+  
   def init
     self.step ||= 1
     self.delivery_method ||= 1

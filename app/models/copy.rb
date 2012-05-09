@@ -28,13 +28,18 @@ class Copy < ActiveRecord::Base
     self.limited_copies = false if limited_copies.nil?
     self.number ||= 0
     self.condition_rating ||= 3
-  end 
+  end
+  
+  def accession_id_sortable
+    "#{accession_id.to_i}.#{copy_number}".to_f
+  end
   
   def get_hash
     if new_copy
       return {
         :id => id,
         :accession_id => accession_id,
+        :accession_id_sortable => accession_id_sortable,
         :price => price,
         :formatted_price => formatted_price,
         :new_copy => new_copy,
@@ -45,6 +50,7 @@ class Copy < ActiveRecord::Base
       return {
         :id => id,
         :accession_id => accession_id,
+        :accession_id_sortable => accession_id_sortable,
         :price => price,
         :formatted_price => formatted_price,
         :condition_description => get_condition_description,
