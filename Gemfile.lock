@@ -33,6 +33,10 @@ GEM
       nokogiri (~> 1.4)
       ruby-hmac (~> 0.3)
     arel (2.2.3)
+    aws-s3 (0.6.2)
+      builder
+      mime-types
+      xml-simple
     bcrypt-ruby (3.0.1)
     builder (3.0.0)
     capistrano (2.12.0)
@@ -43,6 +47,7 @@ GEM
       net-ssh-gateway (>= 1.1.0)
     carrierwave (0.5.8)
       activesupport (~> 3.0)
+    chronic (0.6.7)
     daemons (1.1.8)
     delayed_job (3.0.2)
       activesupport (~> 3.0)
@@ -142,6 +147,10 @@ GEM
     valid_email (0.0.4)
       activemodel
       mail
+    whenever (0.7.3)
+      activesupport (>= 2.3.4)
+      chronic (~> 0.6.3)
+    xml-simple (1.1.1)
     yaml_db (0.2.3)
 
 PLATFORMS
@@ -149,6 +158,7 @@ PLATFORMS
 
 DEPENDENCIES
   amazon-ecs
+  aws-s3
   bcrypt-ruby (~> 3.0.0)
   carrierwave
   daemons
@@ -167,4 +177,5 @@ DEPENDENCIES
   terminator
   uglifier (>= 1.0.3)
   valid_email
+  whenever
   yaml_db

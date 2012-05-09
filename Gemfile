@@ -27,5 +27,7 @@ gem 'valid_email', :require => 'valid_email/email_validator'
 gem 'delayed_job_active_record'
 gem 'daemons'
 gem 'rails_config'
+gem 'whenever'
+gem 'aws-s3'
 
 gem 'bcrypt-ruby', '~> 3.0.0', :require => "bcrypt"
