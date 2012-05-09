@@ -257,6 +257,9 @@ $(document).ready(function() {
         if (extClick(e)) return;
         e.preventDefault();
         
+        if ($(this).hasClass('disabled')) return;
+        $shoppingCartSection.find(".button,.remove-link,.edit-link").addClass("disabled");
+        
         if ($shoppingCartSection.find('.unavailable').length > 0) {
             var message = "Some copies in your shopping cart are now unavailable. These copies will not be included in the order.";
             displayNotice(message, "Continue", openOrderDialog)
@@ -312,6 +315,8 @@ $(document).ready(function() {
         var $form = $(this);
         if ($form.is('#cancel-order') && !$form.closest('.ui-dialog').length) return;
         e.preventDefault();
+        
+        $orderDialog.find("input[type=submit]").prop("disabled", true);
         
         if ($form.is('#cancel-order')) {
             $orderDialog.dialog("close");
@@ -412,11 +417,19 @@ $(document).ready(function() {
     var $shoppingCartSection = $('#shopping-cart');
     var $shoppingCartSectionDialog = $shoppingCartSection.add($shoppingCartDialog);
     $shoppingCartSectionDialog.on('click', '#empty-button', function(e) {
+        if ($(this).hasClass('disabled')) {
+            e.preventDefault();
+            return;
+        }
         handleShoppingCartButton(e, { empty: true });
     });
     
     // Handle 'remove from cart' links
     $shoppingCartSectionDialog.on('click', '.remove-link', function(e) {
+        if ($(this).hasClass('disabled')) {
+            e.preventDefault();
+            return;
+        }
         var copy_id = $(this).closest("tr").data("id");
         handleShoppingCartButton(e, { remove_copy: copy_id });
     });
@@ -424,6 +437,7 @@ $(document).ready(function() {
     // Handle changing the number of copies
     $shoppingCartSectionDialog.on('click', '.edit-link', function(e) {
         e.preventDefault();
+        if ($(this).hasClass('disabled')) return;
         
         var $this = $(this);
         var copy_id = $this.closest("tr").data("id");
@@ -468,6 +482,8 @@ $(document).ready(function() {
     function handleShoppingCartButton(e, params, successFunction) {
         if (extClick(e)) return;
         e.preventDefault();
+        
+        $shoppingCartSection.find(".button,.remove-link,.edit-link").addClass("disabled");
         
         var $removedHtml = dialogShowLoading($shoppingCartSection, $shoppingCartLoading, 'Shopping Cart');
         

@@ -46,9 +46,8 @@ function closeOtherDialogs(id) {
     });
 }
 
-// Plguin to serialize to a JSON object
-$.fn.serializeObject = function()
-{
+// Plugin to serialize to a JSON object
+$.fn.serializeObject = function() {
     var o = {};
     var a = this.serializeArray();
     $.each(a, function() {
