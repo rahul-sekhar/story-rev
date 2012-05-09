@@ -13,11 +13,11 @@ namespace :backups do
           Rake::Task['backups:cleanup'].invoke
           
           puts "- Cleaning up remote daily backups"
-          daily_backups = AWS::S3::Bucket.objects(AppSettings['s3_backups_bucket'], :prefix => 'daily').map {|x| x.key}.sort{ |x,y| y <=> x }
+          daily_backups = AWS::S3::Bucket.objects(app_settings['s3_backups_bucket'], :prefix => 'daily').map {|x| x.key}.sort{ |x,y| y <=> x }
           if daily_backups.length > num_remote
             puts "- Keeping #{num_remote} out of #{daily_backups.length} remote backups"
             daily_backups[num_remote..(daily_backups.length - 1)].each do |key|
-              AWS::S3::S3Object.delete key, AppSettings['s3_backups_bucket']
+              AWS::S3::S3Object.delete key, app_settings['s3_backups_bucket']
             end
           else
             puts "- No old remote backups to clean up"
@@ -42,13 +42,13 @@ namespace :backups do
           filename = create_local_backup
           puts "- Copying the backup to Amazon S3"
           
-          AWS::S3::DEFAULT_HOST.replace AppSettings['aws_domain']
+          AWS::S3::DEFAULT_HOST.replace app_settings['aws_domain']
           AWS::S3::Base.establish_connection!(
-            :access_key_id     => AppSettings['aws_access_key_id'],
-            :secret_access_key => AppSettings['aws_secret_access_key']
+            :access_key_id     => app_settings['aws_access_key_id'],
+            :secret_access_key => app_settings['aws_secret_access_key']
           )
           
-          AWS::S3::S3Object.store("#{folder_name}/#{filename}", open("backups/#{filename}"), AppSettings['s3_backups_bucket'])
+          AWS::S3::S3Object.store("#{folder_name}/#{filename}", open("backups/#{filename}"), app_settings['s3_backups_bucket'])
           
           puts "- Done!"
           return filename
@@ -60,14 +60,14 @@ namespace :backups do
       Rake::Task['db:data:dump'].invoke
       puts "- Storing the database and shared assets in the backups folder"
       filename = "bak.#{Time.now.to_i}.tar.gz"
-      sh "tar czhf backups/#{filename} db/data.yml #{AppSettings['shared_assets'].join(" ")}"
+      sh "tar czhf backups/#{filename} db/data.yml #{app_settings['shared_assets'].join(" ")}"
       return filename
     end
   end
       
   task :cleanup do
     backup_files = %x[ls -xt backups].split(" ")
-    num_local_backups = AppSettings['num_local_backups']
+    num_local_backups = app_settings['num_local_backups']
     if backup_files.length > num_local_backups
       puts "- Keeping #{num_local_backups} out of #{backup_files.length} backups"
       system "rm #{backup_files[num_local_backups..(backup_files.length - 1)].map{ |x| "backups/#{x}"}.join(" ")}"
@@ -77,7 +77,7 @@ namespace :backups do
   end
 end
 
-def AppSettings
-  @AppSettings ||= YAML::load(File.open("config/settings.yml"))
+def app_settings
+  @app_settings ||= YAML::load(File.open("config/settings.yml"))
 end
   
