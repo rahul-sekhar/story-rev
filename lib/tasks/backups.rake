@@ -9,30 +9,30 @@ namespace :backups do
           num_remote = 7
           
           filename = create_remote_backup("daily")
-          puts "- Cleaning up local backups"
+          print_msg "Cleaning up local backups"
           Rake::Task['backups:cleanup'].invoke
           
-          puts "- Cleaning up remote daily backups"
+          print_msg "Cleaning up remote daily backups"
           daily_backups = AWS::S3::Bucket.objects(app_settings['s3_backups_bucket'], :prefix => 'daily').map {|x| x.key}.sort{ |x,y| y <=> x }
           if daily_backups.length > num_remote
-            puts "- Keeping #{num_remote} out of #{daily_backups.length} remote backups"
+            print_msg "Keeping #{num_remote} out of #{daily_backups.length} remote backups"
             daily_backups[num_remote..(daily_backups.length - 1)].each do |key|
               AWS::S3::S3Object.delete key, app_settings['s3_backups_bucket']
             end
           else
-            puts "- No old remote backups to clean up"
+            print_msg "No old remote backups to clean up"
           end
         end
         
         task :weekly do
           filename = create_remote_backup("weekly")
-          puts "- Removing the local copy"
+          print_msg "Removing the local copy"
           system "rm backups/#{filename}"
         end
         
         task :forced do
           filename = create_remote_backup("forced")
-          puts "- Removing the local copy"
+          print_msg "Removing the local copy"
           system "rm backups/#{filename}"
         end
         
@@ -40,7 +40,7 @@ namespace :backups do
           require 'aws/s3'
           
           filename = create_local_backup
-          puts "- Copying the backup to Amazon S3"
+          print_msg "Copying the backup to Amazon S3"
           
           AWS::S3::DEFAULT_HOST.replace app_settings['aws_domain']
           AWS::S3::Base.establish_connection!(
@@ -50,15 +50,15 @@ namespace :backups do
           
           AWS::S3::S3Object.store("#{folder_name}/#{filename}", open("backups/#{filename}"), app_settings['s3_backups_bucket'])
           
-          puts "- Done!"
+          print_msg "Done!"
           return filename
         end
     end
     
     def create_local_backup
-      puts "- Creating a database copy"
+      print_msg "Creating a database copy"
       Rake::Task['db:data:dump'].invoke
-      puts "- Storing the database and shared assets in the backups folder"
+      print_msg "Storing the database and shared assets in the backups folder"
       filename = "bak.#{Time.now.to_i}.tar.gz"
       sh "tar czhf backups/#{filename} db/data.yml #{app_settings['shared_assets'].join(" ")}"
       return filename
@@ -69,15 +69,19 @@ namespace :backups do
     backup_files = %x[ls -xt backups].split(" ")
     num_local_backups = app_settings['num_local_backups']
     if backup_files.length > num_local_backups
-      puts "- Keeping #{num_local_backups} out of #{backup_files.length} backups"
+      print_msg "Keeping #{num_local_backups} out of #{backup_files.length} backups"
       system "rm #{backup_files[num_local_backups..(backup_files.length - 1)].map{ |x| "backups/#{x}"}.join(" ")}"
     else
-      puts "- No old backups to clean up"
+      print_msg "No old backups to clean up"
     end
   end
 end
 
 def app_settings
   @app_settings ||= YAML::load(File.open("config/settings.yml"))
+end
+
+def print_msg(message)
+  puts "#{Time.now.strftime("%T")} - #{message}"
 end
   

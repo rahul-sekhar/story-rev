@@ -21,6 +21,8 @@
 
 set :output, "log/cron.log"
 
+job_type :runner,  "cd :path && bundle exec rails runner -e :environment ':task' :output"
+
 # Daily backup
 every 1.day, :at => '4:00 am' do
   rake "backups:create:remote:daily"
@@ -32,7 +34,7 @@ every :friday, :at => '4:30 am' do
 end
 
 # Cron jobs
-every :thursday, :at => '4:30 am' do
+every :thursday, :at => '9:40 am' do
   runner "CoverImage.clear_old"
   runner "ShoppingCart.clear_old"
   runner "Order.clear_old"
