@@ -9,7 +9,7 @@ class CoverImage < ActiveRecord::Base
   
   def self.clear_old
     cleared = 0
-    CoverImage.inclues(:product).where("updated_at < current_timestamp - INTERVAL '1 day'").each do |i|
+    CoverImage.includes(:product).where("updated_at < current_timestamp - INTERVAL '1 day'").each do |i|
       if i.product_id.blank?
         puts "Deleted: #{i.file_info[:name]} (#{i.file_info[:size]}) \t\t [#{i.created_at}]"
         i.destroy
