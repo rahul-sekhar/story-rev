@@ -47,21 +47,16 @@
   
   <p>The total amount payable is <strong><%= RupeeHelper.to_rupee(@order.total_amount) %></strong></p>
   
-  <% case @order.payment_method.to_i
-    when 1
-  %>
-    <p>Our bank account details are:</p>
-    <p>SHALINI SEKHAR<br />
-    Indian Overseas Bank Banashankari 2nd Stage, Bangalore<br />
-    Account number: 129801000006584<br />
-    IFSC Code: IOBA0001298<p>
+  <p>Our bank account details are:</p>
+  <p>SHALINI SEKHAR<br />
+  Indian Overseas Bank Banashankari 2nd Stage, Bangalore<br />
+  Account number: 129801000006584<br />
+  IFSC Code: IOBA0001298<p>
   
-  <% when 2 %>
-    <p>The address to send a cheque to is,</p>
-      <p>#93, 30th cross road<br />
-      Banashankari 2nd stage<br />
-      Bangalore - 560070</p>
-  <% end %>
+  <p>Cheques should be addressed to Shalini Sekhar, <strong>NOT</strong> Story Revolution. The address to send a cheque to is,</p>
+  <p>#93, 30th cross road<br />
+  Banashankari 2nd stage<br />
+  Bangalore - 560070</p>
   
   
   <p>We will <%= @order.delivery_method == 1 ? "post your books" : "get in touch with you about delivery" %> once we
