@@ -1,0 +1,5 @@
+# Application configuration settings
+shared_assets: [ public/images/books ]
+s3_backups_bucket: story-rev-backups
+aws_domain: s3-ap-southeast-1.amazonaws.com
+num_local_backups: 5

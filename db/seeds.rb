@@ -4,7 +4,7 @@ Admin::Role.all.each {|x| x.destroy }
 
 ar = Admin::Role.new
 ar.name = "admin"
-ar.password = Settings.default_admin_pass
+ar.password = Rails.configuration.sensitive['default_admin_pass']
 if (ar.save(:validate => false))
   puts "Created: 'admin'"
 else
@@ -13,7 +13,7 @@ end
 
 ar = Admin::Role.new
 ar.name = "team"
-ar.password = Settings.default_team_pass
+ar.password = Rails.configuration.sensitive['default_team_pass']
 if (ar.save(:validate => false))
   puts "Created: 'team'"
 else
@@ -27,11 +27,7 @@ PickupPoint.all.each { |x| x.destroy }
 
 pickup_points = [
   "Banashankari 2nd Stage",
-  "RMV Extension",
-  "Jayanagar",
-  "Thalagattapura, Kanakapura road",
-  "Palace Grounds",
-  "Nandi Gardens"
+  "Jayanagar"
 ]
 
 pickup_points.each do |p|

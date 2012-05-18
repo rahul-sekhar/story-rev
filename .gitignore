@@ -5,8 +5,7 @@
 /public/images/books
 
 # Sensitive config files
-/config/database.yml
-/config/settings.yml
+/config/sensitive.yml
 
 # Ignore backups
 /backups

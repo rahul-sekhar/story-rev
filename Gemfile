@@ -26,7 +26,6 @@ gem 'terminator'
 gem 'valid_email', :require => 'valid_email/email_validator'
 gem 'delayed_job_active_record'
 gem 'daemons'
-gem 'rails_config'
 gem 'whenever'
 gem 'aws-s3'
 

@@ -44,8 +44,8 @@ namespace :backups do
           
           AWS::S3::DEFAULT_HOST.replace app_settings['aws_domain']
           AWS::S3::Base.establish_connection!(
-            :access_key_id     => app_settings['aws_access_key_id'],
-            :secret_access_key => app_settings['aws_secret_access_key']
+            :access_key_id     => sensitive_settings['aws_access_key_id'],
+            :secret_access_key => sensitive_settings['aws_secret_access_key']
           )
           
           AWS::S3::S3Object.store("#{folder_name}/#{filename}", open("backups/#{filename}"), app_settings['s3_backups_bucket'])
@@ -78,7 +78,11 @@ namespace :backups do
 end
 
 def app_settings
-  @app_settings ||= YAML::load(File.open("config/settings.yml"))
+  @app_settings ||= YAML::load_file("config/settings.yml")
+end
+
+def sensitive_settings
+  @sensitive_settings ||= YAML::load_file("config/sensitive.yml")
 end
 
 def print_msg(message)

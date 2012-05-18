@@ -42,7 +42,7 @@
   <% end %>
   
   <% if @product.copies.new_copies.stocked.length > 0 %>
-  <h3>New Copies</h3>
+  <h3>Buy New Copies</h3>
   <table class="copies new-copies">
     <% @product.copies.new_copies.stocked.each do |c| %>
       <%= render "copy_row", :c => c %>
@@ -51,7 +51,7 @@
   <% end %>
   
   <% if @product.copies.used_copies.stocked.length > 0 %>
-  <h3>Used Copies</h3>
+  <h3>Buy Used Copies</h3>
   <table class="copies used-copies">
     <% @product.copies.used_copies.stocked.each do |c| %>
       <%= render "copy_row", :c => c %>

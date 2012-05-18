@@ -5,7 +5,7 @@ development:
   database: story-rev_development
   pool: 5
   username: story-rev
-  password: PASSWORD
+  password: <%= Rails.configuration.sensitive['db_pass'] %>
 
 production:
   adapter: postgresql
@@ -13,4 +13,4 @@ production:
   database: story-rev_production
   pool: 5
   username: story-rev
-  password: PASSWORD
+  password: <%= Rails.configuration.sensitive['db_pass'] %>
