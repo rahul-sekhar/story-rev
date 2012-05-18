@@ -25,27 +25,18 @@ job_type :runner,  "cd :path && bundle exec rails runner -e :environment ':task'
 
 # Daily backup
 every 1.day, :at => '4:00 am' do
-  print_msg "Beginning daily backup"
   rake "backups:create:remote:daily"
-  print_msg "Done"
 end
 
 # Weekly backup
 every :friday, :at => '4:30 am' do
-  print_msg "Beginning weekly backup"
   rake "backups:create:remote:weekly"
-  print_msg "Done"
 end
 
 # Cron jobs
 every :thursday, :at => '4:30 am' do
-  print_msg "Beginning garbage collection jobs"
   runner "CoverImage.clear_old"
   runner "ShoppingCart.clear_old"
   runner "Order.clear_old"
-  print_msg "Done"
 end
 
-def print_msg(message)
-  puts "** [#{Time.now.strftime("%d-%m-%y %T")}] #{message} **"
-end

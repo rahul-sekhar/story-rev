@@ -86,6 +86,6 @@ def sensitive_settings
 end
 
 def print_msg(message)
-  puts "#{Time.now.strftime("%T")} - #{message}"
+  puts "#{Time.now.strftime("%d-%m-%y %T")} - #{message}"
 end
   
