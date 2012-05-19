@@ -53,7 +53,7 @@
   <% if @product.copies.used_copies.stocked.length > 0 %>
   <h3>Buy Used Copies</h3>
   <table class="copies used-copies">
-    <% @product.copies.used_copies.stocked.each do |c| %>
+    <% Copy.filter_unique(@product.copies.used_copies.stocked).each do |c| %>
       <%= render "copy_row", :c => c %>
     <% end %>
   </table>

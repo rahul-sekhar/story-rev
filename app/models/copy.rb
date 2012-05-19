@@ -30,6 +30,21 @@ class Copy < ActiveRecord::Base
     self.condition_rating ||= 3
   end
   
+  def self.filter_unique(src_copies)
+    result = []
+    src_copies.each do |c|
+      unique = true
+      result.each do |r|
+        if (c.edition_id == r.edition_id) && (c.price == r.price) && (c.condition_rating == r.condition_rating)
+          unique = false
+          break
+        end
+      end
+      result << c if unique
+    end
+    return result
+  end
+  
   def accession_id_sortable
     "#{accession_id.to_i}.#{copy_number}".to_f
   end
