@@ -2,9 +2,9 @@
 development:
   adapter: postgresql
   encoding: unicode
-  database: story-rev-demo_development
+  database: story-rev_development
   pool: 5
-  username: story-rev-demo
+  username: story-rev
   password: <%= Rails.configuration.sensitive['db_pass'] %>
 
 production:
