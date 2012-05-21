@@ -4,3 +4,4 @@ aws_access_key_id: KEY
 aws_secret_access_key: KEY
 email_pass: PASS
 db_pass: PASS
+scm_pass: PASS
