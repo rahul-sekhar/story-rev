@@ -8,6 +8,6 @@ class OrderMailer < ActionMailer::Base
   
   def notify_owner(order)
     @order = order
-    mail(:from => "\"#{@order.name}\" <#{@order.email}>", :to => "\"Story Revolution\" <contact@storyrevolution.in>", :subject => "Story Revolution Order")
+    mail(:from => "\"#{@order.name}\" <#{@order.email}>", :to => "\"Story Revolution\" <contact@storyrevolution.in>", :subject => "Story Revolution Demo App Order")
   end
 end

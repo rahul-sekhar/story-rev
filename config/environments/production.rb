@@ -55,7 +55,7 @@ StoryRev::Application.configure do
   # the I18n.default_locale when a translation can not be found)
   config.i18n.fallbacks = true
   
-  config.action_mailer.default_url_options = { :host => "storyrevolution.in" }
+  config.action_mailer.default_url_options = { :host => "storyrevolution.kairi.in" }
 
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
