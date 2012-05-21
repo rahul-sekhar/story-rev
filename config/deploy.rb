@@ -65,9 +65,13 @@ namespace :db do
   
   desc "Export the database from the local machine to the remote server"
   task :export_to_remote, :roles => :app do
+    puts "* creating a backup of the remote system database"
+    run "cd #{current_path} && RAILS_ENV=production rake db:data:dump"
+    run "mv -f #{current_path}/db/data.yml #{current_path}/db/data.yml.bak"
+    puts "* copying the local database to the remote system"
     system "rake db:data:dump"
     upload "db/data.yml", "#{current_path}/db/data.yml"
-    puts "* exporting the database"
+    puts "* loading the database to the remote system"
     run "cd #{current_path} && RAILS_ENV=production rake db:data:load"
     puts "* done!"
   end
@@ -103,9 +107,16 @@ namespace :shared_assets  do
   end
   
   desc "Import shared objects from the remote server to the local machine"
-  task :import, :roles => :app do
+  task :import_from_remote, :roles => :app do
     shared_asset_paths.each do |link|
       system "rsync -rP #{user}@#{host_name}:#{shared_path}/#{link} #{link}/.."
+    end
+  end
+  
+  desc "Export shared objects from the local machine to the remote server"
+  task :export_to_remote, :roles => :app do
+    shared_asset_paths.each do |link|
+      system "rsync -rP #{link} #{user}@#{host_name}:#{shared_path}/#{link}/.."
     end
   end
 end
