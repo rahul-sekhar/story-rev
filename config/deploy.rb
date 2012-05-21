@@ -7,6 +7,7 @@ set :rvm_type, :system
 require "bundler/capistrano"
 
 set :application, "story-rev-demo"
+set :branch, "demo-app"
 
 default_run_options[:pty] = true
 set :repository,  "git@github.com:rahul-sekhar/story-rev.git"
