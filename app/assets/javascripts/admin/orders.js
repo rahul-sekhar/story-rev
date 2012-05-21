@@ -2,6 +2,7 @@ $(document).ready(function() {
     var $body = $('body');
     if (!$body.hasClass('orders')) return;
     
+    // Table settings for the list of orders
     var $ordersTable = $('#orders-table');
     $ordersTable.itemTable({
         url: '/admin/orders',
@@ -30,6 +31,7 @@ $(document).ready(function() {
         ]
     });
     
+    // Handle checkboxes on the order list
     $ordersTable.on('click', 'input', function(e) {
         var $this = $(this);
         $this.prop('disabled', true);
@@ -55,6 +57,7 @@ $(document).ready(function() {
         });
     });
     
+    // Handle checkboxes in the copies list for each order
     var curr_id;
     var $orderInfo = $('#order-info');
     var $copiesTable = $orderInfo.find('table').on('click', '.ticked', function(e) {
@@ -80,6 +83,7 @@ $(document).ready(function() {
                 $this.prop('disabled', false);
             }
         });
+    // And handle editing each copy
     }).on('click', '.edit-link', function(e) {
         e.preventDefault();
         
@@ -125,6 +129,7 @@ $(document).ready(function() {
         updateOrderAmount(data);
     });
     
+    // Handle changing the order information when an order is selected from the list
     $ordersTable.on("selectionChange", function(e, id) {
         $orderInfo.hide();
         curr_id = id;
@@ -142,6 +147,11 @@ $(document).ready(function() {
                 .find(".pickup").text(data.pickup_point_text).end()
                 .find(".total span").text(data.total_amount).end()
                 .find(".postage span").text(data.postage_amount).end()
+                .find(".postage-expenditure")
+                    .data("value", data.postage_expenditure_val)
+                    .find("span").text(data.postage_expenditure).end()
+                    .end()
+                .find(".notes pre").text(data.notes).end()
                 .show();
                 
                 // Update the copies table
@@ -212,13 +222,17 @@ $(document).ready(function() {
         });
     });
     
-    $orderInfo.find('.comments .edit-link').click(function() {
+    // Handle editing postage expenditure
+    $orderInfo.find('.postage-expenditure .edit-link').click(function(e) {
+        e.preventDefault();
+        
         var $this = $(this);
-        var $pre = $this.siblings('pre');
-        var $textbox = $('<textarea></textarea>').text($pre.text());
+        var $container = $this.parent();
+        var $span = $this.siblings('span');
+        var $textbox = $('<input type="text" />').val($container.data("value"));
         
         var saveEdit = function() {
-            var text = $textbox.val();
+            var val = $textbox.val();
             
             $.ajax ({
                 url: '/admin/orders/' + curr_id,
@@ -226,11 +240,53 @@ $(document).ready(function() {
                 data: {
                     _method: 'PUT',
                     order: {
-                        other_info: text
+                        postage_expenditure: val
                     }
                 },
                 success: function(data) {
+                    $textbox.replaceWith($span.text(data.postage_expenditure));
+                    $container.data("value", data.postage_expenditure_val);
+                    $this.show();
+                },
+                error: function(data) {
+                    $textbox.replaceWith($span);
+                    $this.show();
+                }
+            })
+        }
+        
+        $textbox.blur(saveEdit);
+        $span.replaceWith($textbox);
+        $this.hide();
+        $textbox.focus();
+    });
+    
+    // Handle editing order comments
+    $orderInfo.find('.comments .edit-link, .notes .edit-link').click(function(e) {
+        e.preventDefault();
+        
+        var $this = $(this);
+        var $container = $this.parent();
+        var $pre = $this.siblings('pre');
+        var $textbox = $('<textarea></textarea>').text($pre.text());
+        var param_name;
+        param_name = ($container.hasClass("comments")) ? "other_info" : "notes";
+        
+        var saveEdit = function() {
+            var text = $textbox.val();
+            var order_params = {};
+            order_params[param_name] = text;
+            
+            $.ajax ({
+                url: '/admin/orders/' + curr_id,
+                method: 'POST',
+                data: {
+                    _method: 'PUT',
+                    order: order_params
+                },
+                success: function(data) {
                     $textbox.replaceWith($pre.text(text));
+                    $container.height("auto");
                     $this.show();
                 },
                 error: function(data) {
@@ -241,6 +297,7 @@ $(document).ready(function() {
         }
         
         $textbox.blur(saveEdit);
+        $container.height($container.height());
         $pre.replaceWith($textbox);
         $this.hide();
         $textbox.focus();

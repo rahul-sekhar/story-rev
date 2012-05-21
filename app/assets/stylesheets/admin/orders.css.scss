@@ -55,27 +55,41 @@
             span {
                 font-weight: normal;
             }
+            
+            .edit-link {
+                @include edit-button;
+                @include inline-block;
+                margin-left: e(7px, $small-text-size);
+            }
+            
+            input {
+                float:none;
+                font-size: 1em;
+                width: e(40px, $small-text-size);
+                height: e(20px, $small-text-size);
+                margin-left: e(15px, $small-text-size);
+            }
         }
         
         .info {
             float:left;
-            width: e(250px);
+            width: e(270px);
+            height:100%;
             margin-top: e(30px);
         }
         
-        .comments {
-            float:left;
+        .comments, .notes {
+            float:right;
             border: 1px dotted $color-e1;
-            width: e(350px);
-            min-height: e(160px);
-            margin-top: e(30px);
+            width: e(400px);
+            min-height: e(60px);
             padding: e(15px) e(20px);
             margin-bottom: e(40px);
             position:relative;
             
             textarea {
-                width:  e(340px, $small-text-size);
-                min-height: e(160px, $small-text-size);
+                width:  e(390px, $small-text-size);
+                min-height: e(60px, $small-text-size);
                 height: 100%;
             }
             
@@ -95,6 +109,7 @@
             @include small-text;
             margin-bottom: e(10px, $small-text-size);
             line-height: e(20px, $small-text-size);
+            @include word-wrap;
         }
         
         .email {

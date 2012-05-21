@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120402214810) do
+ActiveRecord::Schema.define(:version => 20120520073331) do
 
   create_table "admin_roles", :force => true do |t|
     t.string   "name"
@@ -197,8 +197,11 @@ ActiveRecord::Schema.define(:version => 20120402214810) do
     t.boolean  "paid"
     t.boolean  "packaged"
     t.boolean  "posted"
+    t.integer  "postage_expenditure"
+    t.text     "notes"
   end
 
+  add_index "orders", ["created_at"], :name => "index_orders_on_created_at"
   add_index "orders", ["email"], :name => "index_orders_on_email"
   add_index "orders", ["name"], :name => "index_orders_on_name"
   add_index "orders", ["pickup_point_id"], :name => "index_orders_on_pickup_point_id"

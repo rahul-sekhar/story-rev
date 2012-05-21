@@ -13,7 +13,7 @@ class Admin::OrdersController < Admin::ApplicationController
   end
   
   def create
-    @order = Order.new(params[:order])
+    @order = Order.new(params[:order], :as => :admin)
     @order.step = 5
     @order.pickup_point_id ||= 0
     
@@ -41,10 +41,10 @@ class Admin::OrdersController < Admin::ApplicationController
       params[:order].delete(:add_copy)
     end
     
-    if @order.update_attributes(params[:order])
+    if @order.update_attributes(params[:order], :as => :admin)
       respond_to do |f|
         f.html { redirect_to pending_admin_orders_path(:selected_order_id => @order.id), :notice => "Order saved - it's order number is #{@order.id}" }
-        f.json { render :json => @order.amount_hash }
+        f.json { render :json => @order.get_hash }
       end
     else
       respond_to do |f|
@@ -68,11 +68,7 @@ class Admin::OrdersController < Admin::ApplicationController
   def show
     @order = Order.find(params[:id])
     
-    if params[:amount].present?
-      render :json => @order.amount_hash
-    else
-      render :json => @order.get_hash
-    end
+    render :json => @order.get_hash
   end
   
   def destroy

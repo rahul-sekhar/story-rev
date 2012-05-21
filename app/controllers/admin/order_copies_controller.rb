@@ -10,7 +10,7 @@ class Admin::OrderCopiesController < Admin::ApplicationController
     if @order_copy.update_attributes(params[:order_copy])
       @order_copy.order.save
       
-      render :json => @order_copy.order.amount_hash
+      render :json => @order_copy.order.get_hash
     else
       render :json => @order_copy.errors.full_messages, :status => :unprocessable_entity
     end
@@ -22,6 +22,6 @@ class Admin::OrderCopiesController < Admin::ApplicationController
     @order_copy.destroy
     @order_copy.order.save
     
-    render :json => @order_copy.order.amount_hash
+    render :json => @order_copy.order.get_hash
   end
 end

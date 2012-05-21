@@ -27,11 +27,11 @@ class Admin::ApplicationController < ActionController::Base
   end
   
   def admin?
-    (@admin_role == "admin")
+    (admin_role == "admin")
   end
   
   def team?
-    (@admin_role == "team")
+    (admin_role == "team")
   end
   
   def require_login

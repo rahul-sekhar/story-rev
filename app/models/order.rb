@@ -5,7 +5,9 @@ class Order < ActiveRecord::Base
   
   attr_accessible :next_step, :delivery_method, :pickup_point_id, :other_pickup,
     :payment_method, :name, :email, :phone, :address, :city, :pin_code, :other_info,
-    :confirmed, :paid, :packaged, :posted
+    :confirmed, :paid, :packaged, :posted, :as => [:default, :admin]
+  
+  attr_accessible :postage_expenditure, :notes, :as => [:admin]
   
   attr_reader :next_step, :out_of_stock
   attr_writer :out_of_stock
@@ -15,6 +17,8 @@ class Order < ActiveRecord::Base
   
   belongs_to :pickup_point
   belongs_to :shopping_cart
+  
+  validates :postage_expenditure, :numericality => { :only_integer => true }
   
   # Delivery_method (step 1)
   # 1 - Speed Post
@@ -48,6 +52,7 @@ class Order < ActiveRecord::Base
     self.step ||= 1
     self.delivery_method ||= 1
     self.payment_method ||= 1
+    self.postage_expenditure ||= 0
     
     self.confirmed = false if confirmed.nil?
     self.paid = false if paid.nil?
@@ -173,6 +178,7 @@ class Order < ActiveRecord::Base
     self.shopping_cart.shopping_cart_copies = []
     self.shopping_cart_id = nil
     self.confirmed = true
+    self.created_at = DateTime.now
     save
   end
   
@@ -246,25 +252,25 @@ class Order < ActiveRecord::Base
     RupeeHelper.to_rupee(total_amount || 0)
   end
   
+  def formatted_postage_expenditure
+    RupeeHelper.to_rupee(postage_expenditure || 0)
+  end
+  
   def get_hash
     {
       :name => name,
       :email => email,
-      :address => full_address,
-      :phone => phone,
-      :other_info => other_info,
+      :address => full_address || "",
+      :phone => phone || "",
+      :other_info => other_info || "",
       :payment_text => payment_text,
       :delivery_text => delivery_text,
-      :pickup_point_text => pickup_point_text,
+      :pickup_point_text => pickup_point_text || "",
       :postage_amount => formatted_postage_amount,
-      :total_amount => formatted_total_amount
-    }
-  end
-  
-  def amount_hash
-    {
-      :postage_amount => formatted_postage_amount,
-      :total_amount => formatted_total_amount
+      :total_amount => formatted_total_amount,
+      :postage_expenditure => formatted_postage_expenditure,
+      :postage_expenditure_val => postage_expenditure,
+      :notes => notes || ""
     }
   end
   

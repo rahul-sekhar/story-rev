@@ -47,6 +47,7 @@ StoryRev::Application.routes.draw do
         get 'pending'
       end
     end
+    resources :transactions
     resources :copies
     resources :new_copies
     resources :cover_images
