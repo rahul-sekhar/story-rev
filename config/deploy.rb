@@ -78,6 +78,12 @@ namespace :db do
     run "cd #{current_path} && RAILS_ENV=production rake db:seed"
     puts "* done!"
   end
+  
+  desc "Load the schema"
+  task :schema_load, :roles => :app do
+    run "cd #{current_path} && RAILS_ENV=production rake db:schema:load"
+    puts "* done!"
+  end
 end
 
 
