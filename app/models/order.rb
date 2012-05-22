@@ -2,6 +2,7 @@ class Order < ActiveRecord::Base
   after_initialize :init
   after_validation :change_step_if_invalid
   before_save :remove_unecessary_fields, :refresh_if_incomplete, :calculate_total
+  after_save :check_transactions
   
   attr_accessible :next_step, :delivery_method, :pickup_point_id, :other_pickup,
     :payment_method, :name, :email, :phone, :address, :city, :pin_code, :other_info,
@@ -14,6 +15,7 @@ class Order < ActiveRecord::Base
   
   has_many :order_copies, :dependent => :destroy, :include => :copy
   has_many :copies, :through => :order_copies, :as => :copy
+  has_many :transactions
   
   belongs_to :pickup_point
   belongs_to :shopping_cart
@@ -53,11 +55,43 @@ class Order < ActiveRecord::Base
     self.delivery_method ||= 1
     self.payment_method ||= 1
     self.postage_expenditure ||= 0
+  end
+  
+  def check_transactions
+    return if step < 5
     
-    self.confirmed = false if confirmed.nil?
-    self.paid = false if paid.nil?
-    self.packaged = false if packaged.nil?
-    self.posted = false if posted.nil?
+    # Build or update the transactions for the order if it has been paid
+    if paid
+      order_trans = self.transactions.where(:transaction_category_id => 1).first || self.transactions.build(:transaction_category_id => 1)
+      order_trans.credit = total_amount
+      order_trans.other_party = name
+      order_trans.payment_method_id = payment_method
+      order_trans.account = ConfigData.access.default_account
+      order_trans.date = paid_date
+      order_trans.notes = notes
+      order_trans.save
+      
+      # Build, update or delete the postage expenditure transaction depending on whether it is present
+      if postage_expenditure.present? && postage_expenditure > 0
+        postage_trans = self.transactions.where(:transaction_category_id => 2).first || self.transactions.build(:transaction_category_id => 2)
+        postage_trans.debit = postage_expenditure
+        postage_trans.other_party = name
+        order_trans.payment_method_id = payment_method
+        order_trans.account = ConfigData.access.default_account
+        order_trans.date = paid_date
+        order_trans.notes = notes
+      else
+        self.transactions.where(:transaction_category_id => 2).each do |x|
+          x.destroy
+        end
+      end
+    
+    # Delete any linked transactions if the order has not been paid
+    else
+      self.transactions.each do |x|
+        x.destroy
+      end
+    end
   end
   
   def change_step_if_invalid
@@ -178,7 +212,6 @@ class Order < ActiveRecord::Base
     self.shopping_cart.shopping_cart_copies = []
     self.shopping_cart_id = nil
     self.confirmed = true
-    self.created_at = DateTime.now
     save
   end
   
@@ -296,5 +329,39 @@ class Order < ActiveRecord::Base
     oc = self.order_copies.build
     oc.copy = copy
     oc.save
+  end
+  
+  # Set the confirmed, paid, packed, posted dates when the properties are set as boolean values
+  def confirmed=(val)
+    self.confirmed_date ||= val ? DateTime.now : nil
+  end
+  
+  def paid=(val)
+    self.paid_date ||= val ? DateTime.now : nil
+  end
+  
+  def packaged=(val)
+    self.posted_date ||= val ? DateTime.now : nil
+  end
+  
+  def posted=(val)
+    self.posted_date ||= val ? DateTime.now : nil
+  end
+  
+  # Return the dates as boolean values depending on whether they exist or not
+  def confirmed
+    confirmed_date.present?
+  end
+  
+  def paid
+    paid_date.present?
+  end
+  
+  def posted
+    posted_date.present?
+  end
+  
+  def packaged
+    packaged_date.present?
   end
 end
