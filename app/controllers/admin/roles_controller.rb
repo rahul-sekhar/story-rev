@@ -1,5 +1,6 @@
 class Admin::RolesController < Admin::ApplicationController
-
+  before_filter :require_admin
+  
   def index
     @class = "passwords"
     @title = "Passwords"
