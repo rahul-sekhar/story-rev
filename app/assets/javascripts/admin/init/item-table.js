@@ -286,6 +286,13 @@ $.ItemTable = function(table, settings) {
             
             $th.wrapInner('<div class="container"></div>');
         });
+	
+	if (settings.editable) {
+	    $('<th><div class="container"></div></th>').appendTo($headings);
+	}
+	if (settings.removable) {
+	    $('<th><div class="container"></div></th>').appendTo($headings);
+	}
         
         $headings.prependTo($table);
     }
@@ -401,7 +408,7 @@ $.ItemTable = function(table, settings) {
     // Private functions
     
     function restripe() {
-        $table.find('tr').removeClass('alt').filter(':odd').addClass('alt');
+        $table.find('tr:not(.headings)').removeClass('alt').filter(':odd').addClass('alt');
         if (settings.numbered) {
             renumber();
         }
@@ -731,12 +738,12 @@ $.ItemTable = function(table, settings) {
             var $b = $(b);
             
             if ($a.data('sortBy') == null)
-                return order == "asc" ? -1 : 1;
-            if ($b.data('sortBy') == null)
                 return order == "asc" ? 1 : -1;
+            if ($b.data('sortBy') == null)
+                return order == "asc" ? -1 : 1;
             return $a.data('sortBy') > $b.data('sortBy') ?
-                order == "asc" ? -1 : 1
-                : order == "asc" ? 1 : -1;
+                order == "asc" ? 1 : -1
+                : order == "asc" ? -1 : 1;
         }, function() {
            return this.parentNode; 
         });
@@ -760,7 +767,7 @@ $.ItemTable = function(table, settings) {
                 $th.children('.container').append($sortArrow);
                 
                 return false;
-            }td
+            }
         });
     }
     
@@ -777,7 +784,7 @@ $.ItemTable = function(table, settings) {
                 .removeClass('sorting');
             
             $th.addClass('sorting');
-            sort_order = "desc";
+            sort_order = "asc";
         }
         
         $sortArrow.removeClass('asc')

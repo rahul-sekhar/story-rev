@@ -47,7 +47,6 @@ StoryRev::Application.routes.draw do
         get 'pending'
       end
     end
-    resources :transactions
     resources :copies
     resources :new_copies
     resources :cover_images
@@ -66,5 +65,13 @@ StoryRev::Application.routes.draw do
       resources :awards
     end
     resources :roles
+    resources :transactions do
+      collection do
+        get 'summarised'
+      end
+    end
+    resources :transaction_categories
+    resources :payment_methods
+    resources :accounts
   end
 end

@@ -99,8 +99,8 @@ else
     default_account = Account.where("id <> ?", config.cash_account.id).first
     puts "Setting default account to - #{default_account.name}"
   else
-    puts "Creating a default account named 'Default Account'"
-    default_account = Account.create(:name => "Default Account")
+    puts "Creating a default account named 'Default'"
+    default_account = Account.create(:name => "Default")
   end
   config.default_account = default_account
 end

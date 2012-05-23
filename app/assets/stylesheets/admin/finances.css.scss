@@ -1,0 +1,23 @@
+.finances {
+    .table-wrapper, .table-container, table {
+        width:100%;
+        float:none;
+    }
+    
+    .table-container {
+        height: e(400px);
+    }
+    
+    td, th {
+        &.date {
+            width: e(75px, $small-text-size);
+            padding-right:0;
+        }
+        
+        &.amount {
+            min-width: e(50px, $small-text-size);
+            text-align:right;
+            padding-left:0;
+        }
+    }
+}

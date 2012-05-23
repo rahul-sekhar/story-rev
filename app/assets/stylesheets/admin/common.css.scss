@@ -292,7 +292,8 @@ td {
 }
 
 th {
-    color: $color-a1;
+    color: $color-g1;
+    padding: e(10px, $small-text-size) e(10px, $small-text-size);
     
     &.sortable {
         cursor: pointer;
@@ -345,8 +346,8 @@ tr {
         background-color: $color-b3;
     }
     
-    &.headings:hover {
-        background-color: #fff;
+    &.headings, &.headings:hover {
+        background-color: $color-e3;
     }
 }
 

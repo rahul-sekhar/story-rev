@@ -1,0 +1,28 @@
+<% content_for :top_nav do %>
+  <li>
+    <%= link_to "Summary", summarised_admin_transactions_path %>
+  </li>
+  
+  <li class="current">
+    <%= link_to "Details", admin_transactions_path %>
+  </li>
+<% end %>
+
+<div class="table-wrapper">
+  <div class="table-container">
+    <table id="transactions-table" data-init-select="<%= params[:selected_id] %>">
+      <% @transactions.each do |x| %>
+        <tr data-id="<%= x.id %>">
+          <td class="date" data-sort-by="<%= x.timestamp %>"><%= x.formatted_date %></td>
+          <td data-sort-by="<%= x.transaction_category_name %>"><%= x.transaction_category_name %></td>
+          <td data-sort-by="<%= x.other_party %>"><%= x.other_party %></td>
+          <td data-sort-by="<%= x.payment_method_name %>"><%= x.payment_method_name %></td>
+          <td data-sort-by="<%= x.account_name %>"><%= x.account_name %></td>
+          <td><%= x.notes %></td>
+          <td class="amount" data-sort-by="<%= x.credit %>"><%= x.formatted_credit %></td>
+          <td class="amount" data-sort-by="<%= x.debit%>"><%= x.formatted_debit %></td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+</div>
