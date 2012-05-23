@@ -4,15 +4,20 @@ class CreateFinancesTables < ActiveRecord::Migration
   
   def change
     change_table :orders do |t|
-      t.remove :confirmed, :paid, :packaged, :posted
+      t.rename :postage_expenditure, :postage_expenditure_tmp
+      t.rename :payment_method, :payment_method_id
       
       t.datetime  :confirmed_date
       t.datetime  :paid_date
       t.datetime  :packaged_date
       t.datetime  :posted_date
+      t.integer :postage_transaction_id
+      t.integer :transaction_id
     end
     add_index :orders, :confirmed_date
     add_index :orders, :paid_date
+    add_index :orders, :postage_transaction_id
+    add_index :orders, :transaction_id
     
     Order.reset_column_information
     Order.all.each do |o|
@@ -23,8 +28,11 @@ class CreateFinancesTables < ActiveRecord::Migration
       o.save
     end
     
+    change_table :orders do |t|
+      t.remove :confirmed, :paid, :packaged, :posted
+    end
+    
     create_table :transactions do |t|
-      t.integer :order_id
       t.integer :credit
       t.integer :debit
       t.string :other_party
@@ -36,7 +44,6 @@ class CreateFinancesTables < ActiveRecord::Migration
       t.text :notes
       t.timestamps
     end
-    add_index :transactions, :order_id
     add_index :transactions, :other_party
     add_index :transactions, :date
     add_index :transactions, :off_record

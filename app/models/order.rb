@@ -2,10 +2,10 @@ class Order < ActiveRecord::Base
   after_initialize :init
   after_validation :change_step_if_invalid
   before_save :remove_unecessary_fields, :refresh_if_incomplete, :calculate_total
-  after_save :check_transactions
+  after_save :check_transaction
   
   attr_accessible :next_step, :delivery_method, :pickup_point_id, :other_pickup,
-    :payment_method, :name, :email, :phone, :address, :city, :pin_code, :other_info,
+    :payment_method_id, :name, :email, :phone, :address, :city, :pin_code, :other_info,
     :confirmed, :paid, :packaged, :posted, :as => [:default, :admin]
   
   attr_accessible :postage_expenditure, :notes, :as => [:admin]
@@ -20,18 +20,20 @@ class Order < ActiveRecord::Base
   belongs_to :pickup_point
   belongs_to :shopping_cart
   
-  validates :postage_expenditure, :numericality => { :only_integer => true }
+  belongs_to :transaction, :dependent => :destroy
+  belongs_to :postage_transaction, :class_name => "Transaction", :dependent => :destroy
   
-  # Delivery_method (step 1)
+  # Delivery method (step 1)
   # 1 - Speed Post
   # 2 - Pickup Point
   validates :delivery_method, :inclusion => { :in => [1,2], :message => "must be chosen" }, :presence => true
   validates :pickup_point_id, :numericality => { :only_integer => true }, :if => :pickup_delivery?
   
-  # Delivery_method (step 2)
+  # Payment method (step 2)
   # 1 - Online bank transfer
   # 2 - Cheque
-  validates :payment_method, :inclusion => { :in => [1,2], :message => "must be chosen" }, :presence => true, :unless => :below_step_2?
+  # 3 - Cash
+  validates :payment_method_id, :inclusion => { :in => [1,2,3], :message => "must be chosen" }, :presence => true, :unless => :below_step_2?
   
   #Details (step 3)
   validates :name, :presence => :true, :unless => :below_step_3?
@@ -53,45 +55,8 @@ class Order < ActiveRecord::Base
   def init
     self.step ||= 1
     self.delivery_method ||= 1
-    self.payment_method ||= 1
+    self.payment_method_id ||= 1
     self.postage_expenditure ||= 0
-  end
-  
-  def check_transactions
-    return if step < 5
-    
-    # Build or update the transactions for the order if it has been paid
-    if paid
-      order_trans = self.transactions.where(:transaction_category_id => 1).first || self.transactions.build(:transaction_category_id => 1)
-      order_trans.credit = total_amount
-      order_trans.other_party = name
-      order_trans.payment_method_id = payment_method
-      order_trans.account = ConfigData.access.default_account
-      order_trans.date = paid_date
-      order_trans.notes = notes
-      order_trans.save
-      
-      # Build, update or delete the postage expenditure transaction depending on whether it is present
-      if postage_expenditure.present? && postage_expenditure > 0
-        postage_trans = self.transactions.where(:transaction_category_id => 2).first || self.transactions.build(:transaction_category_id => 2)
-        postage_trans.debit = postage_expenditure
-        postage_trans.other_party = name
-        order_trans.payment_method_id = payment_method
-        order_trans.account = ConfigData.access.default_account
-        order_trans.date = paid_date
-        order_trans.notes = notes
-      else
-        self.transactions.where(:transaction_category_id => 2).each do |x|
-          x.destroy
-        end
-      end
-    
-    # Delete any linked transactions if the order has not been paid
-    else
-      self.transactions.each do |x|
-        x.destroy
-      end
-    end
   end
   
   def change_step_if_invalid
@@ -101,7 +66,7 @@ class Order < ActiveRecord::Base
     
     if attr_invalid?(:delivery_method) || attr_invalid?(:pickup_point_id)
       valid_step = 1
-    elsif attr_invalid?(:payment_method)
+    elsif attr_invalid?(:payment_method_id)
       valid_step = 2
     elsif attr_invalid?(:name) || attr_invalid?(:email)
       valid_step = 3
@@ -116,6 +81,55 @@ class Order < ActiveRecord::Base
     errors[attr].present?
   end
   
+  def check_transaction
+    return if step < 5
+    
+    # Build or update the transactions for the order if it has been paid
+    if paid
+      trans = self.transaction || self.build_transaction
+      trans.update_attributes({
+        :credit => total_amount
+        :other_party => name
+        :payment_method_id => payment_method_id
+        :account => payment_method_id == 3 ? ConfigData.access.cash_account : ConfigData.access.default_account
+        :date => paid_date
+        :notes => notes
+      })
+      trans.save
+    end
+    
+    # Delete any linked transactions if the order has not been paid
+    else
+      self.transaction.destroy if transaction.present?
+    end
+  end
+  
+  
+  def postage_expenditure=(amount)
+    if postage_transaction.present?
+      if !amount || amount.to_i == 0
+        self.postage_transaction.destroy
+      else
+        postage_transaction.credit = 0
+        postage_transaction.debit = amount
+        self.postage_transaction.save
+      end
+    elsif amount.to_i > 0
+      trans = self.build_postage_transaction({
+        :transaction_category_id => 2,
+        :debit => amount,
+        :other_party => name,
+        :payment_method_id => 3,
+        :account => ConfigData.access.cash_account,
+        :date => DateTime.now
+      })
+      trans.save
+    end
+  end
+  
+  def postage_expenditure
+    postage_transaction.present? ? postage_transaction.debit || 0 : 0
+  end
   
   def next_step=(n)
     self.step = n.to_i

@@ -69,4 +69,75 @@ lang = Language.new(:name => "English")
 lang.id = 1
 lang.save
 
+puts "\nCreating default accounts and setting config data"
+puts "=================================================="
+
+if ConfigData.access.cash_account.present?
+  puts "Cash account already exists - #{ConfigData.access.cash_account.name}"
+else
+  cash_account = Account.find_by_name("Cash")
+  if cash_account
+    puts "Cash account named 'Cash' already exists, using it"
+  else
+    puts "Creating a cash account named 'Cash'"
+    cash_account = Account.create(:name => "Cash")
+  end
+  ConfigData.access.cash_account = cash_account
+end
+
+if ConfigData.access.default_account.present?
+  puts "Default account already exists - #{ConfigData.access.default_account.name}"
+else
+  if Account.count > 1
+    default_account = Account.where("id <> ?", ConfigData.access.cash_account_id)
+    puts "Setting default account to - #{default_account.name}"
+  else
+    puts "Creating a default account named 'Default Account'"
+    default_account = Account.create(:name => "Default Account")
+  end
+  ConfigData.access.default_account = default_account
+end
+
+puts "\nCreating payment methods"
+puts "========================="
+
+methods = ["Bank transfer", "Cheque", "Cash"]
+
+puts "Clearing first three methods"
+PaymentMethod.where(:id => (1..3)).all.each {|x| x.destroy}
+PaymentMethod.where(:name => methods).all.each {|x| x.destroy}
+
+i = 0
+methods.each do |x|
+  i += 1
+  method = PaymentMethod.new(:name => x)
+  method.id = i
+  if method.save
+    puts "Created: #{x} [id: #{i}]"
+  else
+    puts "Failed: #{x}"
+  end
+end
+
+puts "\nCreating transaction categories"
+puts "================================"
+
+categories = ["Online order", "Postage expenditure"]
+
+puts "Clearing first two methods"
+TransactionCategory.where(:id => (1..2)).all.each {|x| x.destroy}
+TransactionCategory.where(:name => categories).all.each {|x| x.destroy}
+
+i = 0
+categories.each do |x|
+  i += 1
+  category = TransactionCategory.new(:name => x)
+  category.id = i
+  if category.save
+    puts "Created: #{x} [id: #{i}]"
+  else
+    puts "Failed: #{x}"
+  end
+end
+
 puts "Done"
