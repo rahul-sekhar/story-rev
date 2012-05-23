@@ -1,4 +1,4 @@
-class TransactionCategory < ActiveRecord::Base
+class Transaction < ActiveRecord::Base
   after_initialize :init
   before_save :check_data
   
@@ -7,8 +7,8 @@ class TransactionCategory < ActiveRecord::Base
   belongs_to :payment_method
   
   has_one :order
+  has_one :postage_order, :class_name => "Order", :foreign_key => :postage_transaction_id
   
-  validates :name, :length => { :maximum => 120 }, :presence => true, :uniqueness => { :case_sensitive => false }
   validates :account_id, :presence => true
   
   def init
@@ -19,5 +19,6 @@ class TransactionCategory < ActiveRecord::Base
   def check_data
     self.date = DateTime.now if date.nil?
     self.off_record = transaction_category.off_record if transaction_category.present?
+    return nil
   end
 end

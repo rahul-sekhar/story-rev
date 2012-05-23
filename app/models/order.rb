@@ -1,8 +1,7 @@
 class Order < ActiveRecord::Base
   after_initialize :init
   after_validation :change_step_if_invalid
-  before_save :remove_unecessary_fields, :refresh_if_incomplete, :calculate_total
-  after_save :check_transaction
+  before_save :remove_unecessary_fields, :refresh_if_incomplete, :calculate_total, :check_transaction
   
   attr_accessible :next_step, :delivery_method, :pickup_point_id, :other_pickup,
     :payment_method_id, :name, :email, :phone, :address, :city, :pin_code, :other_info,
@@ -19,6 +18,7 @@ class Order < ActiveRecord::Base
   
   belongs_to :pickup_point
   belongs_to :shopping_cart
+  belongs_to :payment_method
   
   belongs_to :transaction, :dependent => :destroy
   belongs_to :postage_transaction, :class_name => "Transaction", :dependent => :destroy
@@ -57,6 +57,8 @@ class Order < ActiveRecord::Base
     self.delivery_method ||= 1
     self.payment_method_id ||= 1
     self.postage_expenditure ||= 0
+    
+    self.payment_method_id = 1 if step == 2 && payment_method_id > 2
   end
   
   def change_step_if_invalid
@@ -88,15 +90,15 @@ class Order < ActiveRecord::Base
     if paid
       trans = self.transaction || self.build_transaction
       trans.update_attributes({
-        :credit => total_amount
-        :other_party => name
-        :payment_method_id => payment_method_id
-        :account => payment_method_id == 3 ? ConfigData.access.cash_account : ConfigData.access.default_account
-        :date => paid_date
+        :credit => total_amount,
+        :other_party => name,
+        :payment_method_id => payment_method_id,
+        :transaction_category_id => 1,
+        :account => payment_method_id == 3 ? ConfigData.access.cash_account : ConfigData.access.default_account,
+        :date => paid_date,
         :notes => notes
       })
       trans.save
-    end
     
     # Delete any linked transactions if the order has not been paid
     else
@@ -106,16 +108,22 @@ class Order < ActiveRecord::Base
   
   
   def postage_expenditure=(amount)
+    if (amount && !amount.to_s.is_i?)
+      self.errors.messages[:postage_expenditure] = " must be a number"
+      return false
+    end
+    
     if postage_transaction.present?
       if !amount || amount.to_i == 0
         self.postage_transaction.destroy
+        self.postage_transaction = nil
       else
         postage_transaction.credit = 0
         postage_transaction.debit = amount
         self.postage_transaction.save
       end
     elsif amount.to_i > 0
-      trans = self.build_postage_transaction({
+      self.create_postage_transaction({
         :transaction_category_id => 2,
         :debit => amount,
         :other_party => name,
@@ -123,12 +131,11 @@ class Order < ActiveRecord::Base
         :account => ConfigData.access.cash_account,
         :date => DateTime.now
       })
-      trans.save
     end
   end
   
   def postage_expenditure
-    postage_transaction.present? ? postage_transaction.debit || 0 : 0
+    postage_transaction.present? ? postage_transaction.debit.to_i || 0 : 0
   end
   
   def next_step=(n)
@@ -160,7 +167,7 @@ class Order < ActiveRecord::Base
   end
   
   def number_of_copies
-    order_copies.map{|x| x.number}.inject(:+)
+    order_copies.map{|x| x.number}.inject(:+).to_i
   end
   
   def refresh_if_incomplete
@@ -260,12 +267,7 @@ class Order < ActiveRecord::Base
   end
   
   def payment_name
-    case delivery_method.to_i
-    when 1
-      "bank transfer"
-    when 2
-      "cheque"
-    end
+    payment_method.name.downcase
   end
   
   def pickup_point_text
@@ -316,7 +318,7 @@ class Order < ActiveRecord::Base
       :postage_amount => formatted_postage_amount,
       :total_amount => formatted_total_amount,
       :postage_expenditure => formatted_postage_expenditure,
-      :postage_expenditure_val => postage_expenditure,
+      :postage_expenditure_val => postage_expenditure == 0 ? nil : postage_expenditure,
       :notes => notes || ""
     }
   end
@@ -347,19 +349,19 @@ class Order < ActiveRecord::Base
   
   # Set the confirmed, paid, packed, posted dates when the properties are set as boolean values
   def confirmed=(val)
-    self.confirmed_date ||= val ? DateTime.now : nil
+    self.confirmed_date = (val && val!= "false") ? confirmed_date || DateTime.now : nil
   end
   
   def paid=(val)
-    self.paid_date ||= val ? DateTime.now : nil
+    self.paid_date = (val && val != "false") ? paid_date || DateTime.now : nil
   end
   
   def packaged=(val)
-    self.posted_date ||= val ? DateTime.now : nil
+    self.packaged_date = (val && val != "false") ? packaged_date || DateTime.now : nil
   end
   
   def posted=(val)
-    self.posted_date ||= val ? DateTime.now : nil
+    self.posted_date = (val && val != "false") ? posted_date || DateTime.now : nil
   end
   
   # Return the dates as boolean values depending on whether they exist or not

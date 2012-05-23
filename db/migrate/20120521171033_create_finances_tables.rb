@@ -4,7 +4,7 @@ class CreateFinancesTables < ActiveRecord::Migration
   
   def change
     change_table :orders do |t|
-      t.rename :postage_expenditure, :postage_expenditure_tmp
+      t.remove :postage_expenditure
       t.rename :payment_method, :payment_method_id
       
       t.datetime  :confirmed_date

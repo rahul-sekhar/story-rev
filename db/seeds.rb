@@ -67,13 +67,20 @@ Language.where(:name => "English").each {|x| x.destroy}
 
 lang = Language.new(:name => "English")
 lang.id = 1
-lang.save
+
+if lang.save
+  puts "Done"
+else
+  puts "Failed"
+end
 
 puts "\nCreating default accounts and setting config data"
 puts "=================================================="
 
-if ConfigData.access.cash_account.present?
-  puts "Cash account already exists - #{ConfigData.access.cash_account.name}"
+config = ConfigData.access
+
+if config.cash_account.present?
+  puts "Cash account already exists - #{config.cash_account.name}"
 else
   cash_account = Account.find_by_name("Cash")
   if cash_account
@@ -82,21 +89,23 @@ else
     puts "Creating a cash account named 'Cash'"
     cash_account = Account.create(:name => "Cash")
   end
-  ConfigData.access.cash_account = cash_account
+  config.cash_account = cash_account
 end
 
-if ConfigData.access.default_account.present?
-  puts "Default account already exists - #{ConfigData.access.default_account.name}"
+if config.default_account.present?
+  puts "Default account already exists - #{config.default_account.name}"
 else
   if Account.count > 1
-    default_account = Account.where("id <> ?", ConfigData.access.cash_account_id)
+    default_account = Account.where("id <> ?", config.cash_account.id).first
     puts "Setting default account to - #{default_account.name}"
   else
     puts "Creating a default account named 'Default Account'"
     default_account = Account.create(:name => "Default Account")
   end
-  ConfigData.access.default_account = default_account
+  config.default_account = default_account
 end
+
+config.save
 
 puts "\nCreating payment methods"
 puts "========================="

@@ -5,7 +5,7 @@ class Admin::CollectionProductsController < Admin::ApplicationController
     @collection = Collection.find(params[:collection_id])
     if params[:all_products].present?
       collection_product_ids = @collection.product_ids
-      render :json => Product.includes_data.all.map {|x| x.get_list_hash.merge ({ :in_collection => collection_product_ids.include?(x.id) }) }
+      render :json => Product.includes_data.includes_copies.all.map {|x| x.get_list_hash.merge ({ :in_collection => collection_product_ids.include?(x.id) }) }
     else
       render :json => @collection.products.includes_copies.map { |x| x.get_collection_hash }
     end
