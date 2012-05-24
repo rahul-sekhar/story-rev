@@ -69,6 +69,8 @@ StoryRev::Application.routes.draw do
     resources :transactions do
       collection do
         get 'summarised'
+        get 'sales_data'
+        get 'profit_data'
       end
     end
     resources :transaction_categories do
