@@ -40,14 +40,14 @@ class Transaction < ActiveRecord::Base
   end
   
   def transaction_category_name
-    transaction_category.name
+    transaction_category && transaction_category.name
   end
   
   def payment_method_name
-    payment_method.name
+    payment_method && payment_method.name
   end
   
   def account_name
-    account.name
+    account && account.name
   end
 end

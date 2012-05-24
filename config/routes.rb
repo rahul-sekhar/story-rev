@@ -25,7 +25,8 @@ StoryRev::Application.routes.draw do
     get "login" => "sessions#new", :as => "login"
     post "login" => "sessions#create"
     
-    get "priorities" => "others#priorities", :as => "priorities"
+    get "priorities" => "pages#priorities", :as => "priorities"
+    get "finances_config" => "pages#finances_config", :as => "finances_config"
     
     resources :products do
       resources :editions do
@@ -70,8 +71,13 @@ StoryRev::Application.routes.draw do
         get 'summarised'
       end
     end
-    resources :transaction_categories
+    resources :transaction_categories do
+      get "toggle_record"
+    end
     resources :payment_methods
-    resources :accounts
+    resources :accounts do
+      get "to_cash"
+      get "to_default"
+    end
   end
 end

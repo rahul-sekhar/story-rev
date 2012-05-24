@@ -20,21 +20,21 @@ else
   puts "Failed: 'team'"
 end
 
-puts "\nCreating pickup points"
-puts "======================"
-puts "Clearing old points"
-PickupPoint.all.each { |x| x.destroy }
-
-pickup_points = [
-  "Banashankari 2nd Stage",
-  "Jayanagar"
-]
-
-pickup_points.each do |p|
-  if PickupPoint.create(:name => p)
-    puts "Created: #{p}"
-  else
-    puts "Failed: #{p}"
+if (PickupPoint.count == 0)
+  puts "\nCreating pickup points"
+  puts "======================"
+  
+  pickup_points = [
+    "Banashankari 2nd Stage",
+    "Jayanagar"
+  ]
+  
+  pickup_points.each do |p|
+    if PickupPoint.create(:name => p)
+      puts "Created: #{p}"
+    else
+      puts "Failed: #{p}"
+    end
   end
 end
 
@@ -44,7 +44,7 @@ puts "======================"
 content_types = %w[Fiction Non-fiction In-between]
 
 puts "Clearing first three types"
-ContentType.where(:id => (1..3)).all.each {|x| x.destroy}
+ContentType.where(:id => (1..3)).all.each {|x| x.delete}
 ContentType.where(:name => content_types).all.each {|x| x.destroy}
 
 i = 0
@@ -58,11 +58,13 @@ content_types.each do |c|
     puts "Failed: #{c}"
   end
 end
+puts "Resetting primary key sequence"
+SqlHelper.reset_primary_key(ContentType)
 
 puts "\nCreating English as the default language"
 puts "========================================"
 
-Language.where(:id => 1).each {|x| x.destroy}
+Language.where(:id => 1).each {|x| x.delete}
 Language.where(:name => "English").each {|x| x.destroy}
 
 lang = Language.new(:name => "English")
@@ -113,7 +115,7 @@ puts "========================="
 methods = ["Bank transfer", "Cheque", "Cash"]
 
 puts "Clearing first three methods"
-PaymentMethod.where(:id => (1..3)).all.each {|x| x.destroy}
+PaymentMethod.where(:id => (1..3)).all.each {|x| x.delete}
 PaymentMethod.where(:name => methods).all.each {|x| x.destroy}
 
 i = 0
@@ -127,6 +129,8 @@ methods.each do |x|
     puts "Failed: #{x}"
   end
 end
+puts "Resetting primary key sequence"
+SqlHelper.reset_primary_key(PaymentMethod)
 
 puts "\nCreating transaction categories"
 puts "================================"
@@ -134,7 +138,7 @@ puts "================================"
 categories = ["Online order", "Postage expenditure"]
 
 puts "Clearing first two methods"
-TransactionCategory.where(:id => (1..2)).all.each {|x| x.destroy}
+TransactionCategory.where(:id => (1..2)).all.each {|x| x.delete}
 TransactionCategory.where(:name => categories).all.each {|x| x.destroy}
 
 i = 0
@@ -148,5 +152,8 @@ categories.each do |x|
     puts "Failed: #{x}"
   end
 end
+
+puts "Resetting primary key sequence"
+SqlHelper.reset_primary_key(TransactionCategory)
 
 puts "Done"

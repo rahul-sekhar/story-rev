@@ -147,20 +147,22 @@
     h2 {
         margin-bottom: e(10px, $heading-size);
     }
-    ul {
-        margin-bottom: e(30px);
-    }
-    li {
-        @include smaller-text;
-        
-        a {
-            font-size: e(10px, $smaller-text-size);
-            margin-left: e(10px, 10px);
-        }
-    }
     
     .column {
         float:left;
         width: 50%;
+        
+        ul {
+            margin-bottom: e(30px);
+        }
+        
+        li {
+            @include smaller-text;
+            
+            a {
+                font-size: e(10px, $smaller-text-size);
+                margin-left: e(10px, 10px);
+            }
+        }
     }
 }

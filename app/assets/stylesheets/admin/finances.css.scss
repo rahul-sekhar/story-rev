@@ -20,4 +20,42 @@
             padding-left:0;
         }
     }
+    
+    h2 {
+        margin-bottom: e(10px, $heading-size);
+    }
+    
+    .data-list {
+        margin-bottom: e(30px);
+        
+        li {
+            @include smaller-text;
+            
+            .manage-link {
+                text-transform: lowercase;
+                font-size: e(10px, $smaller-text-size);
+                margin-left: e(10px, 10px);
+                visibility:hidden;
+            }
+            
+            &:hover .manage-link {
+                visibility:visible;
+            }
+            
+            &.add a {
+                @include add-caption-button;
+            }
+        }
+    }
+    
+    &.config {
+        .input.string{
+            float:left;
+        }
+        
+        .submit {
+            margin-top: e(15px, $heading-size);
+            margin-left: e(20px, $heading-size);
+        }
+    }
 }

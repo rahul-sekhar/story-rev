@@ -9,6 +9,10 @@ class TransactionCategory < ActiveRecord::Base
     self.off_record = false if off_record.nil?
   end
   
+  def toggle_record
+    self.off_record = !off_record
+  end
+  
   def self.name_is(data)
     where("LOWER(name) = ?", data.downcase)
   end
