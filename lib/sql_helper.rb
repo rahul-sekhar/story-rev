@@ -6,4 +6,8 @@ module SqlHelper
       data.gsub('\\', '\\\\\\\\').gsub('%', '\\%').gsub('_', '\\_')
     end
   end
+  
+  def self.reset_primary_key(klass)
+    ActiveRecord::Base.connection.reset_pk_sequence!(klass.table_name)
+  end
 end

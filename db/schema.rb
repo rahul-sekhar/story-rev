@@ -11,7 +11,15 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120520073331) do
+ActiveRecord::Schema.define(:version => 20120523060659) do
+
+  create_table "accounts", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "accounts", ["name"], :name => "index_accounts_on_name"
 
   create_table "admin_roles", :force => true do |t|
     t.string   "name"
@@ -60,6 +68,11 @@ ActiveRecord::Schema.define(:version => 20120520073331) do
   end
 
   add_index "collections", ["name"], :name => "index_keywords_on_name", :unique => true
+
+  create_table "config_data", :force => true do |t|
+    t.integer "default_account_id"
+    t.integer "cash_account_id"
+  end
 
   create_table "content_types", :force => true do |t|
     t.string   "name"
@@ -180,7 +193,7 @@ ActiveRecord::Schema.define(:version => 20120520073331) do
     t.integer  "shopping_cart_id"
     t.integer  "delivery_method"
     t.integer  "pickup_point_id"
-    t.integer  "payment_method"
+    t.integer  "payment_method_id"
     t.text     "other_pickup"
     t.string   "name"
     t.string   "email"
@@ -193,20 +206,25 @@ ActiveRecord::Schema.define(:version => 20120520073331) do
     t.integer  "total_amount"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "confirmed"
-    t.boolean  "paid"
-    t.boolean  "packaged"
-    t.boolean  "posted"
-    t.integer  "postage_expenditure"
     t.text     "notes"
+    t.datetime "confirmed_date"
+    t.datetime "paid_date"
+    t.datetime "packaged_date"
+    t.datetime "posted_date"
+    t.integer  "postage_transaction_id"
+    t.integer  "transaction_id"
   end
 
+  add_index "orders", ["confirmed_date"], :name => "index_orders_on_confirmed_date"
   add_index "orders", ["created_at"], :name => "index_orders_on_created_at"
   add_index "orders", ["email"], :name => "index_orders_on_email"
   add_index "orders", ["name"], :name => "index_orders_on_name"
+  add_index "orders", ["paid_date"], :name => "index_orders_on_paid_date"
   add_index "orders", ["pickup_point_id"], :name => "index_orders_on_pickup_point_id"
+  add_index "orders", ["postage_transaction_id"], :name => "index_orders_on_postage_transaction_id"
   add_index "orders", ["shopping_cart_id"], :name => "index_orders_on_shopping_cart_id"
   add_index "orders", ["step"], :name => "index_orders_on_step"
+  add_index "orders", ["transaction_id"], :name => "index_orders_on_transaction_id"
 
   create_table "orders_copies", :force => true do |t|
     t.integer "order_id"
@@ -224,6 +242,14 @@ ActiveRecord::Schema.define(:version => 20120520073331) do
   end
 
   add_index "other_fields", ["product_id"], :name => "index_other_fields_on_product_id"
+
+  create_table "payment_methods", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "payment_methods", ["name"], :name => "index_payment_methods_on_name"
 
   create_table "pickup_points", :force => true do |t|
     t.string   "name"
@@ -336,5 +362,35 @@ ActiveRecord::Schema.define(:version => 20120520073331) do
   end
 
   add_index "theme_icons", ["theme_id"], :name => "index_theme_icons_on_theme_id"
+
+  create_table "transaction_categories", :force => true do |t|
+    t.string   "name"
+    t.boolean  "off_record", :default => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "transaction_categories", ["name"], :name => "index_transaction_categories_on_name"
+
+  create_table "transactions", :force => true do |t|
+    t.integer  "credit"
+    t.integer  "debit"
+    t.string   "other_party"
+    t.integer  "payment_method_id"
+    t.integer  "transaction_category_id"
+    t.integer  "account_id"
+    t.boolean  "off_record",              :default => false
+    t.datetime "date"
+    t.text     "notes"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "transactions", ["account_id"], :name => "index_transactions_on_account_id"
+  add_index "transactions", ["date"], :name => "index_transactions_on_date"
+  add_index "transactions", ["off_record"], :name => "index_transactions_on_off_record"
+  add_index "transactions", ["other_party"], :name => "index_transactions_on_other_party"
+  add_index "transactions", ["payment_method_id"], :name => "index_transactions_on_payment_method_id"
+  add_index "transactions", ["transaction_category_id"], :name => "index_transactions_on_transaction_category_id"
 
 end

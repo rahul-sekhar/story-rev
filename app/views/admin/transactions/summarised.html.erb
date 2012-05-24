@@ -1,0 +1,10 @@
+<% content_for :top_nav do %>
+  <li class="current">
+    <%= link_to "Summary", summarised_admin_transactions_path %>
+  </li>
+  
+  <li>
+    <%= link_to "Details", admin_transactions_path %>
+  </li>
+<% end %>
+

@@ -1,6 +1,6 @@
 
 <div class="table-container">
-  <table id="orders-table" data-init-select="<%= params[:selected_order_id] %>">
+  <table id="orders-table" data-init-select="<%= params[:selected_id] %>">
     <% @orders.each do |o| %>
       <tr data-id="<%= o.id %>">
         <td><%= o.id %></td>

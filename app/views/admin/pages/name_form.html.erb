@@ -1,0 +1,18 @@
+<% content_for :top_nav do %>
+  <li>
+    <%= link_to "Summary", summarised_admin_transactions_path %>
+  </li>
+  
+  <li>
+    <%= link_to "Details", admin_transactions_path %>
+  </li>
+  
+  <li class="current">
+    <%= link_to "Configure", admin_finances_config_path %>
+  </li>
+<% end %>
+
+<%= simple_form_for [:admin, @item], :defaults => { :required => false, :error => false } do |f| %>
+  <%= f.input :name %>
+  <%= f.submit "Save", :class => "submit" %>
+<% end %>

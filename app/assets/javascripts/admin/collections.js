@@ -181,7 +181,7 @@ $(document).ready(function() {
                     name: 'Title',
                     field: 'title',
                     sort_by: 'title',
-                    default_sort: 'desc'
+                    default_sort: 'asc'
                 },
                 {
                     name: 'Author',

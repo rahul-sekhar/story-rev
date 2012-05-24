@@ -3,7 +3,20 @@ class Admin::OrdersController < Admin::ApplicationController
     @title = "Pending Orders"
     @class = "orders pending"
     
-    @orders = Order.where("step = 5 AND (confirmed = FALSE OR paid = FALSE OR packaged = FALSE OR posted = FALSE)")
+    @orders = Order.includes(:order_copies).where("step = 5 AND (confirmed_date IS NULL OR paid_date IS NULL OR packaged_date IS NULL OR posted_date IS NULL)")
+  end
+  
+  def index
+    @title = "Old Orders"
+    @class = "orders old"
+    
+    @orders = Order.includes(:order_copies).where("step = 5 AND confirmed_date IS NOT NULL AND paid_date IS NOT NULL AND packaged_date IS NOT NULL AND posted_date IS NOT NULL")
+  end
+  
+  def show
+    @order = Order.find(params[:id])
+    
+    render :json => @order.get_hash
   end
   
   def new
@@ -18,7 +31,7 @@ class Admin::OrdersController < Admin::ApplicationController
     @order.pickup_point_id ||= 0
     
     if @order.save
-      redirect_to pending_admin_orders_path(:selected_order_id => @order.id), :notice => "Order created - it's order number is #{@order.id}"
+      redirect_to @order.get_url, :notice => "Order created - it's order number is #{@order.id}"
     else
       @class = "orders new"
       @title = "Add Order"
@@ -43,7 +56,7 @@ class Admin::OrdersController < Admin::ApplicationController
     
     if @order.update_attributes(params[:order], :as => :admin)
       respond_to do |f|
-        f.html { redirect_to pending_admin_orders_path(:selected_order_id => @order.id), :notice => "Order saved - it's order number is #{@order.id}" }
+        f.html { redirect_to @order.get_url, :notice => "Order saved - it's order number is #{@order.id}" }
         f.json { render :json => @order.get_hash }
       end
     else
@@ -56,19 +69,6 @@ class Admin::OrdersController < Admin::ApplicationController
         f.json { render :json => @order.errors.full_messages, :status => :unprocessable_entity }
       end
     end
-  end
-  
-  def index
-    @title = "Old Orders"
-    @class = "orders old"
-    
-    @orders = Order.where("step = 5 AND confirmed = TRUE AND paid = TRUE AND packaged = TRUE AND posted = TRUE")
-  end
-  
-  def show
-    @order = Order.find(params[:id])
-    
-    render :json => @order.get_hash
   end
   
   def destroy

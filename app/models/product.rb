@@ -407,7 +407,7 @@ class Product < ActiveRecord::Base
   end
   
   def number_of_copies
-    copies.stocked.used_copies.length + copies.stocked.new_copies.map {|x| x.number}.inject(:+).to_i
+    copies.select {|x| x.in_stock }.inject(0) { |num, x| num + (x.new_copy ? x.number : 1) }
   end
   
   def check_stock
