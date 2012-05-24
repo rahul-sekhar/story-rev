@@ -10,4 +10,8 @@ class Account < ActiveRecord::Base
   def self.name_like(data)
     where("LOWER(name) LIKE ?", "%#{SqlHelper::escapeWildcards(data.downcase)}%")
   end
+  
+  def balance
+    transactions.inject(0){|balance,x| balance + x.credit - x.debit }
+  end
 end

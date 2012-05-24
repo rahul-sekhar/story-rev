@@ -6,5 +6,54 @@
   <li>
     <%= link_to "Details", admin_transactions_path %>
   </li>
+  
+  <li>
+    <%= link_to "Configure", admin_finances_config_path %>
+  </li>
 <% end %>
 
+<div class="summary">
+  <table>
+    <thead>
+      <tr>
+        <th>Summary</th>
+        <th class="dates"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Income</td>
+        <td class="amount"><%= RupeeHelper.format_rupee(@income) %></td>
+      </tr>
+      
+      <tr>
+        <td>Expenditure</td>
+        <td class="amount"><%= RupeeHelper.format_rupee(@expenditure) %></td>
+      </tr>
+      
+      <tr class="profit">
+        <td>Profit</td>
+        <td class="amount"><%= RupeeHelper.format_rupee(@profit) %></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="accounts">
+  <table>
+    <thead>
+      <tr>
+        <th>Account Balance</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+    <% @accounts.each do |x| %>
+    <tr>
+      <td><%= x.name %></td>
+      <td class="amount"><%= RupeeHelper.format_rupee(x.balance) %></td>
+    </tr>
+  <% end %>
+    </tbody>
+  </table>
+</div>
