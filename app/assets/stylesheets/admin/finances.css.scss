@@ -29,30 +29,78 @@
         margin-bottom: e(10px, $heading-size);
     }
     
-    .data-list {
-        margin-bottom: e(30px);
+    &.summary {
         
-        li {
-            @include smaller-text;
+        .summary, .accounts {
+            float:left;
+        }
+        
+        .accounts {
+            margin-left: e(50px);
+        }
+        
+        table {
+            width:auto;
+        }
+        
+        thead {
+            border-bottom: 1px solid $color-e2;
             
-            .manage-link {
-                text-transform: lowercase;
-                font-size: e(10px, $smaller-text-size);
-                margin-left: e(10px, 10px);
-                visibility:hidden;
+            th {
+                @include heading;
+                color: $color-c2;
+                text-align:right;
+                padding: e(10px, $heading-size) e(10px, $heading-size);
             }
+        }
+        
+        td {
+            text-align:right;
+            color: $color-c2;
+            @include text;
+            padding: e(5px, $text-size) e(10px, $text-size);
+            min-width: e(140px, $text-size);
             
-            &:hover .manage-link {
-                visibility:visible;
+            &.amount {
+                text-align:left;
+                color: $color-a1;
+                min-width: e(100px, $text-size)
             }
-            
-            &.add a {
-                @include add-caption-button;
-            }
+        }
+        
+        .profit td.amount {
+            color: $color-c1;
+        }
+        
+        tr:hover {
+            background-color:transparent;
         }
     }
     
     &.config {
+        .data-list {
+            margin-bottom: e(30px);
+            
+            li {
+                @include smaller-text;
+                
+                .manage-link {
+                    text-transform: lowercase;
+                    font-size: e(10px, $smaller-text-size);
+                    margin-left: e(10px, 10px);
+                    visibility:hidden;
+                }
+                
+                &:hover .manage-link {
+                    visibility:visible;
+                }
+                
+                &.add a {
+                    @include add-caption-button;
+                }
+            }
+        }
+        
         .input.string{
             float:left;
         }

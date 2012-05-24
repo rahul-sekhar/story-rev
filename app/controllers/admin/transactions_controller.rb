@@ -13,6 +13,12 @@ class Admin::TransactionsController < Admin::ApplicationController
     @class = "finances summary"
     
     @transactions = Transaction.all
+    
+    @income = @transactions.map{ |x| x.credit }.inject(:+)
+    @expenditure = @transactions.map{ |x| x.debit }.inject(:+)
+    @profit = @income - @expenditure
+    
+    @accounts = Account.all
   end
   
   def create
