@@ -12,13 +12,17 @@ class Admin::TransactionsController < Admin::ApplicationController
     @title = "Finances Summary"
     @class = "finances summary"
     
-    @transactions = Transaction.all
+    @transactions = Transaction.on_record
     
     @income = @transactions.map{ |x| x.credit }.inject(:+)
     @expenditure = @transactions.map{ |x| x.debit }.inject(:+)
     @profit = @income - @expenditure
     
     @accounts = Account.all
+  end
+  
+  def sales_data
+    render :json => Transaction.sales(params[:format], params[:data_type])
   end
   
   def create

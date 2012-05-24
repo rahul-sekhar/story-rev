@@ -11,6 +11,72 @@ class Transaction < ActiveRecord::Base
   
   validates :account_id, :presence => true
   
+  scope :on_record, where(:off_record => false)
+  
+  # The default data type is income
+  def self.sales(format, data_type)
+    # Make the end date 12 AM of the following day
+    end_date = Date.today + 1.day
+    start_date = end_date - 3.months
+    
+    case format
+    when "yearly"
+      time_period = 1.year
+    when "quarterly"
+      time_period = 3.months
+    when "monthly"
+      time_period = 1.month
+    when "daily"
+      time_period = 1.day
+    else
+      # Default - weekly
+      time_period = 1.week
+    end
+    
+    a = Time.now
+    transactions = Transaction.where(:date => (start_date..end_date)).order("date ASC")
+    i = 0
+    sales_data = []
+    while (end_date - start_date).days > 1.day
+      end_period = start_date + time_period
+      end_period = end_date if end_period > end_date
+      
+      total = 0
+      while (i < transactions.length) do
+        trans = transactions[i]
+        range = (start_date.to_datetime..(end_period.to_datetime - 1.second))
+        break unless range.cover?(trans.date)
+        case data_type
+        when "profits"
+          total += trans.credit - trans.debit
+        else
+          total += trans.credit
+        end
+        i += 1
+      end
+      
+      formatted_total = RupeeHelper.format_rupee(total)
+      formatted_end_period = end_period.strftime("%d-%m-%Y")
+      if format == "daily"
+        formatted_period = start_date.strftime("%b %d, %Y")
+      else
+        formatted_period = "#{start_date.strftime("%b %d, %Y")} to #{(end_period - 1.day).strftime("%b %d, %Y")}"
+      end
+      
+      sales_data << {
+        :date => formatted_end_period,
+        :period => formatted_period,
+        :total => total,
+        :formatted_total => formatted_total
+      }
+      
+      start_date = end_period
+    end
+    a = Time.now - a
+    puts "Time taken - #{a * 1000} ms"
+    sales_data
+  end
+  
   def init
     self.credit ||= 0
     self.debit ||= 0

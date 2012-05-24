@@ -35,6 +35,42 @@
             float:left;
         }
         
+        #graph {
+            height: 400px;
+            margin-bottom: e(20px);
+        }
+        
+        #graph-controls {
+            z-index: 10;
+            position:relative;
+            ul {
+                float:right;
+                margin-left: e(30px);
+            }
+            
+            li {
+                float:left;
+                @include small-text;
+                text-transform:lowercase;
+                margin-left: e(5px, $small-text-size);
+                
+                &.current {
+                    @include inner-link($color-c1, $color-c1);
+                    font-weight:bold;
+                }
+                
+                &:before {
+                    content: '|';
+                    color: $color-a1;
+                    margin-right: e(5px, $small-text-size);
+                }
+                
+                &:first-child:before {
+                    content:none;
+                }
+            }
+        }
+        
         .accounts {
             margin-left: e(50px);
         }

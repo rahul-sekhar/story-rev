@@ -12,6 +12,25 @@
   </li>
 <% end %>
 
+<% content_for :pre_head do %>
+  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<% end %>
+<div id="graph-controls">  
+  <ul class="period">
+    <li data-val="yearly"><a href="#">Yearly</a></li>
+    <li data-val="quarterly"><a href="#">Quarterly</a></li>
+    <li data-val="monthly"><a href="#">Monthly</a></li>
+    <li data-val="weekly" class="current"><a href="#">Weekly</a></li>
+    <li data-val="daily"><a href="#">Daily</a></li>
+  </ul>
+  
+  <ul class="data-type">
+    <li data-val="profits"><a href="#">Profits</a></li>
+    <li data-val="sales" class="current"><a href="#">Sales</a></li>
+  </ul>
+</div>
+<div id="graph"></div>
+
 <div class="summary">
   <table>
     <thead>
