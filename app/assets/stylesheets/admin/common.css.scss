@@ -375,6 +375,11 @@ tr {
         float:left;
         color:white;
         margin-left: e(20px, $text-size);
+        
+        &:disabled {
+            background-color: #CCC;
+            cursor:default;
+        }
     }
     
     .button-container {

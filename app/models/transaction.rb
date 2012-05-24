@@ -50,4 +50,38 @@ class Transaction < ActiveRecord::Base
   def account_name
     account && account.name
   end
+  
+  def short_date
+    date.strftime("%d-%m-%Y")
+  end
+  
+  def short_date=(val)
+    self.date = DateTime.strptime(val, "%d-%m-%Y")
+  end
+  
+  def order_url
+    return order.present? ? order.get_url : nil
+  end
+  
+  def get_hash
+    {
+      :id => id,
+      :formatted_date => formatted_date,
+      :short_date => short_date,
+      :timestamp => timestamp,
+      :transaction_category_name => transaction_category_name,
+      :transaction_category_id => transaction_category_id,
+      :other_party => other_party,
+      :payment_method_name => payment_method_name,
+      :payment_method_id => payment_method_id,
+      :account_name => account_name,
+      :account_id => account_id,
+      :notes => notes,
+      :credit => credit,
+      :formatted_credit => formatted_credit,
+      :debit => debit,
+      :formatted_debit => formatted_debit,
+      :order_url => order_url
+    }
+  end
 end

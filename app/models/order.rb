@@ -380,4 +380,16 @@ class Order < ActiveRecord::Base
   def packaged
     packaged_date.present?
   end
+  
+  # Get the URL for the order
+  def get_url
+    return nil if step != 5
+    
+    # Check to see if the order is pending or completed
+    if (confirmed && paid && packaged && posted)
+      return Rails.application.routes.url_helpers.admin_orders_url(:host => Rails.application.config.default_host, :selected_id => id)
+    else
+      return Rails.application.routes.url_helpers.pending_admin_orders_url(:host => Rails.application.config.default_host, :selected_id => id)
+    end 
+  end
 end

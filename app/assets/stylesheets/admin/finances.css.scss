@@ -19,6 +19,10 @@
             text-align:right;
             padding-left:0;
         }
+        
+        .edit-order-link {
+            @include edit-button;
+        }
     }
     
     h2 {

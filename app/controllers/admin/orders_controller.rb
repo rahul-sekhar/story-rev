@@ -31,7 +31,7 @@ class Admin::OrdersController < Admin::ApplicationController
     @order.pickup_point_id ||= 0
     
     if @order.save
-      redirect_to pending_admin_orders_path(:selected_id => @order.id), :notice => "Order created - it's order number is #{@order.id}"
+      redirect_to @order.get_url, :notice => "Order created - it's order number is #{@order.id}"
     else
       @class = "orders new"
       @title = "Add Order"
@@ -56,7 +56,7 @@ class Admin::OrdersController < Admin::ApplicationController
     
     if @order.update_attributes(params[:order], :as => :admin)
       respond_to do |f|
-        f.html { redirect_to pending_admin_orders_path(:selected_id => @order.id), :notice => "Order saved - it's order number is #{@order.id}" }
+        f.html { redirect_to @order.get_url, :notice => "Order saved - it's order number is #{@order.id}" }
         f.json { render :json => @order.get_hash }
       end
     else

@@ -31,10 +31,10 @@ var DEFAULTS = {
         multilineLabel: false,      // If set to true, the label is given a multi-line class
         
         type: null,                 // If left empty, this defaults to 'text'.
-                                    // other options are: 'autocomplete', 'read_only', 'image',
-                                    // 'rating', 'fixed', 'html', 'boolean'
+                                    // other options are: autocomplete, read_only, image,
+                                    // rating, fixed, html, boolean, dropdown, date
         
-        sourceURL: null,            // Source URL for autocomplete data
+        sourceURL: null,            // Source URL for autocomplete or dropdown data
         
         autocompleteSettings: {},   // Options for an autocomplete field
         
@@ -123,6 +123,10 @@ $.ItemTable = function(table, settings) {
         var $dialog = $('<section class="dialog"></section>').hide().appendTo('body');
         var $dialogForm = $('<form method="POST" action="' + settings.url + '"></form>').appendTo($dialog);
         
+	// Prepare submit and cancel buttons
+	var $submit = $('<input type="submit" class="minor-button" value="Save" />');
+	var $cancel = $('<a href="#" class="minor-button">Cancel</a>');
+	
         // Add inputs for each column
         $.each(settings.columns, function(index, column) {
             if ($.inArray(column.type, ["read_only", "fixed", "custom"]) > -1) return;
@@ -133,8 +137,8 @@ $.ItemTable = function(table, settings) {
         
         // Add submit and cancel buttons
         var $buttonContainer = $('<div class="button-container"></div>').appendTo($dialogForm);
-        var $submit = $('<input type="submit" class="minor-button" value="Save" />').appendTo($buttonContainer);
-        var $cancel = $('<a href="#" class="minor-button">Cancel</a>').click(function(e) {
+        $submit.appendTo($buttonContainer);
+        $cancel.click(function(e) {
             $.unblockUI();
             e.preventDefault();
         }).appendTo($buttonContainer);
@@ -167,6 +171,8 @@ $.ItemTable = function(table, settings) {
                     // Replace row or add a new row
                     if ($tr.length) {
                         $tr.replaceWith($newTr);
+			// Trigger an edit item event
+                        $table.trigger("editRow", data);
                     }
                     else {
                         $newTr.appendTo($table);
@@ -176,6 +182,9 @@ $.ItemTable = function(table, settings) {
                     
                     // Select the added/edited row
                     if (settings.selectable) select_item($newTr);
+		    
+		    // Re sort the table
+		    if (settings.sortable) re_sort();
                     
                     // Restripe the table
                     restripe();
@@ -299,6 +308,7 @@ $.ItemTable = function(table, settings) {
     
     // Add edit and delete buttons to exisiting items
     addManageLinks($table.find('tr:not(.headings)'), settings)
+    $table.trigger("addedManageLinks");
     
     // Add fixed colums to existing rows
     $.each(settings.columns, function(index, column) {
@@ -644,11 +654,62 @@ $.ItemTable = function(table, settings) {
             
             return;
         }
+	
+	// Handle dropdowns
+	if (column.type == "dropdown") {
+	    var $input = $('<select class="dialog-input" name="' + field_name(column) + '" id="' + field_id(column) + '" />')
+		.on("reset", function() {
+		    $input.empty().appendOption('dropdown-loading', 'Loading...');
+	    
+		    // Disable the submit button till the data loads
+		    $submit.prop("disabled", true);
+		    
+		    $.ajaxCall(column.sourceURL, {
+			purr: false,
+			success: function(data) {
+			    $input.empty()
+			    $.each(data, function(i,val) {
+				$input.appendOption(val.id, val.name)
+			    });
+			    $input.val($input.data('fill') || $input.find('option:first').attr('value'));
+			    if (!$dialogForm.find('option[value=dropdown-loading]').length) {
+				$submit.prop("disabled", false);
+			    }
+			}
+		    });
+		})
+		.on("fill", function(e, val) {
+		    $input.data('fill', val);
+		})
+		.on("clear", function(e) {
+		    $input.data('fill', column.default_val);
+		})
+		.appendTo($container);
+	    
+	    return;
+	}
         
         // Handle other types
         var $input = $('<input class="dialog-input" type="text" id="' + field_id(column) + '" name="' + field_name(column) + '" />')
             .attr('autocomplete', 'off')
             .appendTo($container);
+	
+	// Handle date inputs
+	if (column.type == "date") {
+	    $input.datepicker({
+		dateFormat: "dd-mm-yy"
+	    })
+	    .on("fill", function(e, val) {
+                $input.val(val);
+            })
+            .on("clear", function(e) {
+		if (column.default_val == "now") 
+		    $input.val($.datepicker.formatDate('dd-mm-yy', new Date()));
+		else
+		    $input.val(column.default_val);
+            });
+	    return;
+	}
         
         // Handle autocomplete inputs
         if (column.type == "autocomplete") {
@@ -769,6 +830,13 @@ $.ItemTable = function(table, settings) {
                 return false;
             }
         });
+    }
+    
+    // Re-sort
+    function re_sort() {
+	var $th = $table.find('th.sorting');
+	var index = $th.index();
+	sort_by_column(settings.columns[index], index, $th.data('sortOrder'));
     }
     
     // Returns the order to sort by
