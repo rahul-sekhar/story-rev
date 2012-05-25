@@ -24,7 +24,7 @@ class Admin::TransactionsController < Admin::ApplicationController
     @class = "finances summary"
     @first_transaction = Transaction.order("date asc").limit(1).first
     
-    @graph_period = params[:period].present? ? params[:period] : "sales"
+    @graph_period = params[:period].present? ? params[:period] : "weekly"
     @graph_type = params[:type].present? ? params[:type] : "sales"
     
     @date_to = params[:to].present? ? Date.strptime(params[:to], "%d-%m-%Y") : Date.today
