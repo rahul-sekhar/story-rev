@@ -79,6 +79,10 @@ var methods = {
     
     getSelected: function() {
     	return this.data("itemTableObject").getSelected();
+    },
+    
+    reload: function(params) {
+	this.data("itemTableObject").reloadData(params);
     }
 }
 
@@ -365,33 +369,7 @@ $.ItemTable = function(table, settings) {
     
     // Load initial items
     if (settings.initialLoad) {
-        
-        if (settings.blockOnLoad) {
-            $tableContainer.block({
-                message: $.blockUI.loadingMessage,
-                css: $.blockUI.loadingCss,
-                overlayCSS: { 
-                    backgroundColor: 'transparent', 
-                    opacity: 1
-                }
-            });
-        }
-        
-        $.get(settings.url, settings.extraParams, function(data) {
-            $.each(data, function(index, value) {
-                $table.append(createRow(value));
-            });
-            restripe();
-            
-            if (settings.blockOnLoad)
-                $tableContainer.unblock();
-            
-            if (settings.sortable) {
-                sort_by_default_column();
-            }
-            
-            $table.trigger('tableLoad');
-        });
+        reload_data({}, true);
     }
     else if (settings.sortable) {
         sort_by_default_column();
@@ -412,6 +390,10 @@ $.ItemTable = function(table, settings) {
     
     this.getSelected = function() {
         return get_selected();
+    }
+    
+    this.reloadData = function(data) {
+	reload_data(data);
     }
     
     
@@ -790,6 +772,46 @@ $.ItemTable = function(table, settings) {
         $table.find('tr.selected').removeClass('selected');
     }
     
+    // Reload or load table data initially
+    function reload_data(params, initial) {
+	if (!initial) {
+	    $table.find('tr:not(.headings)').remove();
+	}
+	
+	if (settings.blockOnLoad) {
+	    $tableContainer.block({
+		message: $.blockUI.loadingMessage,
+		css: $.blockUI.loadingCss,
+		overlayCSS: { 
+		    backgroundColor: 'transparent', 
+		    opacity: 1
+		}
+	    });
+	}
+	
+	params = params || {};
+	$.extend(params, settings.extraParams);
+	$.get(settings.url, params, function(data) {
+	    $.each(data, function(index, value) {
+		$table.append(createRow(value));
+	    });
+	    
+	    restripe();
+	    
+	    if (settings.blockOnLoad)
+		$tableContainer.unblock();
+	    
+	    if (settings.sortable) {
+		if (initial)
+		    sort_by_default_column();
+		else
+		    re_sort();
+	    }
+	    
+	    $table.trigger('tableLoad', [data]);
+	});
+    };
+    
     // Sorting functions
     function sort_by_column(column, index, order) {
         $table.find('td').filter(function() {
@@ -835,6 +857,7 @@ $.ItemTable = function(table, settings) {
     // Re-sort
     function re_sort() {
 	var $th = $table.find('th.sorting');
+	if ($th.length === 0) return;
 	var index = $th.index();
 	sort_by_column(settings.columns[index], index, $th.data('sortOrder'));
     }

@@ -5,24 +5,51 @@ class Admin::TransactionsController < Admin::ApplicationController
     @title = "Finances Details"
     @class = "finances details"
     
-    @transactions = Transaction.all
+    @first_transaction = Transaction.order("date asc").limit(1).first
+    
+    @date_to = (params[:to] && Date.strptime(params[:to], "%d-%m-%Y")) || Date.today
+    tentative_from = @date_to - 3.months
+    @date_from = (params[:from] && Date.strptime(params[:from], "%d-%m-%Y")) || (@first_transaction.date > tentative_from) ? @first_transaction.date : tentative_from
+    
+    @transactions = Transaction.between(@date_from, @date_to)
+    
+    respond_to do |format|
+      format.html
+      format.json { render :json => @transactions.map { |x| x.get_hash }}
+    end
   end
   
   def summarised
     @title = "Finances Summary"
     @class = "finances summary"
+    @first_transaction = Transaction.order("date asc").limit(1).first
     
-    @transactions = Transaction.on_record
+    @date_to = (params[:to] && Date.strptime(params[:to], "%d-%m-%Y")) || Date.today
+    tentative_from = @date_to - 1.year
+    @date_from = (params[:from] && Date.strptime(params[:from], "%d-%m-%Y")) || (@first_transaction.date > tentative_from) ? @first_transaction.date : tentative_from
     
-    @income = @transactions.map{ |x| x.credit }.inject(:+)
-    @expenditure = @transactions.map{ |x| x.debit }.inject(:+)
+    @transactions = Transaction.on_record.between(@date_from, @date_to)
+    
+    @income = @transactions.inject(0){|total, x| total + x.credit}
+    @expenditure = @transactions.inject(0){|total, x| total + x.debit}
     @profit = @income - @expenditure
     
-    @accounts = Account.all
+    respond_to do |format|
+      format.html {
+        @accounts = Account.all
+      }
+      format.json {
+        render :json => {
+          :income => RupeeHelper.format_rupee(@income),
+          :expenditure => RupeeHelper.format_rupee(@expenditure),
+          :profit => RupeeHelper.format_rupee(@profit)
+        }
+      }
+    end
   end
   
   def sales_data
-    render :json => Transaction.sales(params[:format], params[:data_type])
+    render :json => Transaction.sales(params[:format], params[:data_type], params[:from], params[:to])
   end
   
   def create

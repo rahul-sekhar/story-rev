@@ -1,0 +1,11 @@
+<div id="date-controls" data-first-date="<%= @first_transaction.short_date %>">
+  <span class="from" data-date="<%= @date_from.strftime("%d-%m-%Y") %>">
+    <a href="#" class="date-link"><%= @date_from.strftime("%b %e, %Y") %></a>
+    <span class="datepicker"></span>
+  </span>
+  <span class="mid">&ndash;</span>
+  <span class="to" data-date="<%= @date_to.strftime("%d-%m-%Y") %>">
+    <a href="#" class="date-link"><%= @date_to.strftime("%b %e, %Y") %></a>
+    <span class="datepicker"></span>
+  </span>
+</div>

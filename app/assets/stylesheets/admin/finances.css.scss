@@ -29,6 +29,55 @@
         margin-bottom: e(10px, $heading-size);
     }
     
+    #date-controls {
+        @include small-text;
+        color: $color-f2;
+        margin-bottom: e(10px, $small-text-size);
+        margin-left: e(5px, $small-text-size);
+        
+        .from, .to {
+            position:relative;
+            height: e(15px, $small-text-size);
+            cursor: pointer;
+            .date-link {
+                display:inline-block;
+                color: $color-f2;
+                padding-right: 11px;
+                background: url('/images/sort-arrow-desc.png') no-repeat right 5px;
+                border-bottom:1px solid transparent;
+                
+                &:hover {
+                    color: $color-f2;
+                    border-bottom: 1px dotted $color-f2;
+                }
+            }
+        }
+        
+        // Reduce the highlight from the current date
+        .ui-state-highlight {
+            border: 1px solid #ccc;
+            background: #fff;
+            color: #1c94c4;
+            text-decoration:underline;
+            
+            &.ui-state-active { border: 1px solid #fbd850; background: #ffffff url(/images/jquery-ui/ui-bg_glass_65_ffffff_1x400.png) 50% 50% repeat-x; font-weight: bold; color: #eb8f00; }
+            &.ui-state-hover { border: 1px solid #fbcb09; background: #fdf5ce url(/images/jquery-ui/ui-bg_glass_100_fdf5ce_1x400.png) 50% 50% repeat-x; font-weight: bold; color: #c77405; }    
+        }
+        
+        .mid {
+            margin:0 3px;
+        }
+        
+        .datepicker {
+            position:absolute;
+            left:0;
+            top:14px;
+            font-size: e(16px, $small-text-size);
+            z-index: 5;
+            display:none;
+        }
+    }
+    
     &.summary {
         
         .summary, .accounts {
@@ -38,6 +87,12 @@
         #graph {
             height: 400px;
             margin-bottom: e(20px);
+        }
+        
+        #date-controls {
+            float:left;
+            z-index:10;
+            position:relative;
         }
         
         #graph-controls {
@@ -75,41 +130,43 @@
             margin-left: e(50px);
         }
         
-        table {
-            width:auto;
-        }
-        
-        thead {
-            border-bottom: 1px solid $color-e2;
+        .summary, .accounts {
+            table {
+                width:auto;
+            }
             
-            th {
-                @include heading;
-                color: $color-c2;
+            thead {
+                border-bottom: 1px solid $color-e2;
+                
+                th {
+                    @include heading;
+                    color: $color-c2;
+                    text-align:right;
+                    padding: e(10px, $heading-size) e(10px, $heading-size);
+                }
+            }
+            
+            td {
                 text-align:right;
-                padding: e(10px, $heading-size) e(10px, $heading-size);
+                color: $color-c2;
+                @include text;
+                padding: e(5px, $text-size) e(10px, $text-size);
+                min-width: e(140px, $text-size);
+                
+                &.amount {
+                    text-align:left;
+                    color: $color-a1;
+                    min-width: e(100px, $text-size)
+                }
             }
-        }
         
-        td {
-            text-align:right;
-            color: $color-c2;
-            @include text;
-            padding: e(5px, $text-size) e(10px, $text-size);
-            min-width: e(140px, $text-size);
+            .profit td.amount {
+                color: $color-c1;
+            }
             
-            &.amount {
-                text-align:left;
-                color: $color-a1;
-                min-width: e(100px, $text-size)
+            tr:hover {
+                background-color:transparent;
             }
-        }
-        
-        .profit td.amount {
-            color: $color-c1;
-        }
-        
-        tr:hover {
-            background-color:transparent;
         }
     }
     

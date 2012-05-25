@@ -13,11 +13,21 @@ class Transaction < ActiveRecord::Base
   
   scope :on_record, where(:off_record => false)
   
-  # The default data type is income
-  def self.sales(format, data_type)
+  # Scope for transactions between two dates
+  # 'between_exclusive' excludes the end day
+  def self.between_exclusive(from, to)
+    transactions = Transaction.where("date >= ? AND date < ?", from, to)
+  end
+  # 'between' includes the end day
+  def self.between(from, to)
+    between_exclusive(from, to + 1.day)
+  end
+  
+  # The default data type is sales
+  def self.sales(format, data_type, from, to)
     # Make the end date 12 AM of the following day
-    end_date = Date.today + 1.day
-    start_date = end_date - 3.months
+    end_date = to.present? ? Date.strptime(to, "%d-%m-%Y") : (Date.today + 1.day)
+    start_date = from.present? ? Date.strptime(from, "%d-%m-%Y") : (end_date - 3.months)
     
     case format
     when "yearly"

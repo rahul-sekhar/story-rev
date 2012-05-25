@@ -1,13 +1,23 @@
 $(document).ready(function() {
     var $body = $('body');
-    if (!$body.hasClass('finances')) return;
+    if (!$body.hasClass('finances details')) return;
     
     // Table settings for the list of transactions
     var $transactionsTable = $('#transactions-table');
-    $transactionsTable.on("addedManageLinks", function() {
+    
+    function setOrderTransactionSettings() {
         $transactionsTable.find('tr:not(.headings)[data-order-url]')
             .find('.remove-link').remove().end()
             .find('.edit-link').removeClass('edit-link').addClass('edit-order-link').attr('title', 'Edit Order');
+    }
+    
+    $transactionsTable.on("tableLoad", function(e, data) {
+        $.each(data, function(i, val) {
+            if (val.order_url) $transactionsTable.find('tr[data-id=' + val.id + ']').attr('data-order-url', val.order_url);
+        });
+        setOrderTransactionSettings();
+    }).on("addedManageLinks", function() {
+        setOrderTransactionSettings();
     }).on("click", ".edit-order-link", function(e) {
         e.preventDefault();
         window.location = $(this).closest('tr').data('order-url');
@@ -78,13 +88,90 @@ $(document).ready(function() {
             }
         ]
     });
+    
+    // Initialise the date controls and reload the table on a change of date
+    initDateControls(function(from_date, to_date) {
+        $transactionsTable.itemTable("reload", {
+            from: $.datepicker.formatDate("dd-mm-yy", from_date),
+            to: $.datepicker.formatDate("dd-mm-yy", to_date)
+        });
+    });
 });
 
-google.load('visualization', '1', {'packages':['corechart']});
-google.setOnLoadCallback(function() {
-    initGraph();
-});
+// Function to initialise the date controls
+function initDateControls (dateChangeCallback) {
+    var $dateControls = $('#date-controls');
+    var $fromDate = $dateControls.find('.from');
+    var $toDate = $dateControls.find('.to');
+    
+    var first_date = $.datepicker.parseDate("dd-mm-yy", $dateControls.data("first-date"));
+    var from_date = $.datepicker.parseDate("dd-mm-yy", $fromDate.data("date"));
+    var to_date = $.datepicker.parseDate("dd-mm-yy", $toDate.data("date"));
+    
+    $dateControls.find('.datepicker').datepicker({
+        dateFormat:"M d, yy",
+        gotoCurrent: true,
+        onSelect: function(dateText, inst) {
+            var $this = $(this);
+            var date = $this.datepicker("getDate");
+            var $parent = $this.closest('.from, .to');
+            if ($parent.hasClass("from")) {
+                var option =  "minDate";
+                from_date = date;
+            }
+            else {
+                var option =  "maxDate";
+                to_date = date;
+            }
+            $parent.siblings('.from, .to').find('.datepicker').datepicker("option", option, date);
+            $parent.find('.date-link').text(dateText);
+            $this.fadeOut('fast');
+            
+            // Call the date change callback function
+            dateChangeCallback(from_date, to_date);
+        }
+    });
+    
+    // Set max in min ranges for datepickers
+    $dateControls.find('.from .datepicker')
+        .datepicker("setDate", from_date)
+        .datepicker("option", {
+            minDate: first_date,
+            maxDate: to_date
+        });
+    
+    $toDate.find('.datepicker')
+        .datepicker("setDate", to_date)
+        .datepicker("option", {
+            minDate: from_date,
+            maxDate: new Date()
+        });
+    
+    // Handle showing and hiding datepickers
+    $dateControls.on("click", ".date-link", function(e) {
+        e.preventDefault();
+        var $this = $(this);
+        $this.closest('.from, .to').siblings('.from, .to').find('.datepicker').fadeOut('fast');
+        $this.siblings('.datepicker').fadeToggle();
+    });
+    
+    // Hide datepickers when someone clicks outside them
+    $(document).mouseup(function(e) {
+        if ($dateControls.has(e.target).length === 0) {
+            $dateControls.find('.datepicker').fadeOut('fast');
+        }
+    });
+}
 
+
+if (typeof google !== 'undefined') {
+    google.load('visualization', '1', {'packages':['corechart']});
+    google.setOnLoadCallback(function() {
+        initGraph();
+    });
+}
+
+// Function to initialise the graph and load it's data via ajax
 function initGraph() {
     $(document).ready(function() {
         var $graph = $('#graph');
@@ -101,6 +188,11 @@ function initGraph() {
                     color:'#E6E6E6'
                 }
             },
+            hAxis: {
+                gridlines: {
+                    color:'#E6E6E6'
+                }
+            },
             chartArea: {
                 left:'10%',
                 top:'10%',
@@ -110,20 +202,25 @@ function initGraph() {
         };
         var graph_type = "sales";
         var graph_period = "weekly";
+        var y_axis = "Sales";
+        var x_axis = "Week";
+        var from = "";
+        var to = "";
         
+        // Function to redraw the graph
         function redrawGraph() {
             $.ajaxCall('/admin/transactions/sales_data', {
                 purr: false,
                 data: {
                     format: graph_period,
-                    data_type: graph_type
+                    data_type: graph_type,
+                    from: from,
+                    to: to
                 },
                 success: function(data) {
                     var graph_data = new google.visualization.DataTable();
-                    graph_data.addColumn('date', 'Date');
-                    graph_data.addColumn('number', 'Sales');
-                    
-                    console.log(data);
+                    graph_data.addColumn('date', x_axis);
+                    graph_data.addColumn('number', y_axis);
                         
                     $.each(data, function(i,v) {
                         graph_data.addRow([{v: $.datepicker.parseDate("dd-mm-yy", v.date), f: v.period}, {v: v.total, f: v.formatted_total}]);
@@ -133,6 +230,7 @@ function initGraph() {
             });
         }
         
+        // Change the graph when the user changes period options
         $('#graph-controls .period').on('click', 'a', function(e) {
             e.preventDefault();
             
@@ -140,12 +238,14 @@ function initGraph() {
             if ($li.hasClass("current")) return;
             
             graph_period = $li.data('val');
+            x_axis = $li.data('axis');
             $li.closest('ul').find('.current').removeClass('current');
             $li.addClass('current');
             
             redrawGraph();
         });
         
+        // Change the graph when the user changes graph type options
         $('#graph-controls .data-type').on('click', 'a', function(e) {
             e.preventDefault();
             
@@ -153,12 +253,32 @@ function initGraph() {
             if ($li.hasClass("current")) return;
             
             graph_type = $li.data('val');
+            y_axis = $li.data('axis');
             $li.closest('ul').find('.current').removeClass('current');
             $li.addClass('current');
             
             redrawGraph();
         });
         
+        var $summary = $('.summary:first');
+        // Initialise the date controls and change the page each time they're changed
+        initDateControls(function(from_date, to_date) {
+            from = $.datepicker.formatDate("dd-mm-yy", from_date);
+            to = $.datepicker.formatDate("dd-mm-yy", to_date);
+            
+            $.get('/admin/transactions/summarised', {
+                    from: from,
+                    to: to
+                }, function(data) {
+                    $.each(data, function(key, val) {
+                        $summary.find('.' + key + ' .amount').text(val);
+                    })
+                }, 'json');
+            
+            redrawGraph();
+        });
+        
+        // Draw the inital graph
         redrawGraph();
     });
 }

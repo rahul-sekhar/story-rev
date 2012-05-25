@@ -5,5 +5,5 @@
 //= require_directory ../init
 //= require_directory ./lib
 //= require_directory ./init
-//= require ./finances
+//= require_directory .
 //
