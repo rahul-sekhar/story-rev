@@ -191,7 +191,8 @@ function initGraph() {
             hAxis: {
                 gridlines: {
                     color:'#E6E6E6'
-                }
+                },
+                direction: -1
             },
             chartArea: {
                 left:'10%',
@@ -209,7 +210,7 @@ function initGraph() {
         
         // Function to redraw the graph
         function redrawGraph() {
-            $.ajaxCall('/admin/transactions/sales_data', {
+            $.ajaxCall('/admin/transactions/graph_data', {
                 purr: false,
                 data: {
                     format: graph_period,
@@ -218,13 +219,7 @@ function initGraph() {
                     to: to
                 },
                 success: function(data) {
-                    var graph_data = new google.visualization.DataTable();
-                    graph_data.addColumn('date', x_axis);
-                    graph_data.addColumn('number', y_axis);
-                        
-                    $.each(data, function(i,v) {
-                        graph_data.addRow([{v: $.datepicker.parseDate("dd-mm-yy", v.date), f: v.period}, {v: v.total, f: v.formatted_total}]);
-                    });
+                    var graph_data = new google.visualization.DataTable(data);
                     chart.draw(graph_data, options);
                 }
             });

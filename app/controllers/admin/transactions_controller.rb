@@ -48,8 +48,8 @@ class Admin::TransactionsController < Admin::ApplicationController
     end
   end
   
-  def sales_data
-    render :json => Transaction.sales(params[:format], params[:data_type], params[:from], params[:to])
+  def graph_data
+    render :json => Transaction.graph_data(params[:format], params[:data_type], params[:from], params[:to])
   end
   
   def create
