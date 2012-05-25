@@ -236,44 +236,41 @@ $(document).ready(function() {
         });
     }
     
-    var popped = ('state' in window.history), initialURL = location.href
-    $(window).on('popstate', function(e) {
-        // Ignore inital popstate that some browsers fire on page load
-        var initialPop = !popped && location.href == initialURL
-        popped = true
-        if ( initialPop ) return
-        
-        // Restore popped state
-        var data = e.originalEvent.state;
-        
-        if (data) {
-            html = data.html
+    // Add popstate after a delay, to fix the initial popstate bug
+    setTimeout(function() {
+        $(window).on('popstate', function(e) {
+            // Restore popped state
+            var data = e.originalEvent.state;
             
-            var $newCovers = $('.covers', html)
-                .removeClass()
-                .addClass("ajax-content")
-                .hide();
-            
-            $covers.empty().append($newCovers);
-            $newCovers.fadeIn();
-            setTimeout(function() {
-                $covers.height($newCovers.height());
-            }, 100);
-            
-            $products.find('.pagination,.sort,.applied-filters').remove().end()
-                .prepend($('.sort', html))
-                .prepend($('.applied-filters', html))
-                .append($('.pagination', html));
-            
-            updateCollections(data);
-            updateFilters(data);
+            if (data) {
+                html = data.html
                 
-            $products.trigger("productsRefreshed");
-        }
-        else {
-           getProducts(location.href, null, null, true)
-        }
-    });
+                var $newCovers = $('.covers', html)
+                    .removeClass()
+                    .addClass("ajax-content")
+                    .hide();
+                
+                $covers.empty().append($newCovers);
+                $newCovers.fadeIn();
+                setTimeout(function() {
+                    $covers.height($newCovers.height());
+                }, 100);
+                
+                $products.find('.pagination,.sort,.applied-filters').remove().end()
+                    .prepend($('.sort', html))
+                    .prepend($('.applied-filters', html))
+                    .append($('.pagination', html));
+                
+                updateCollections(data);
+                updateFilters(data);
+                    
+                $products.trigger("productsRefreshed");
+            }
+            else {
+               getProducts(location.href, null, null, true)
+            }
+        });
+    }, 500);
     
     function updateCollections(data) {
     
