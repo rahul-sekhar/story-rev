@@ -91,13 +91,12 @@ class Transaction < ActiveRecord::Base
     transaction_index = 0
     graph_points = 0
     graph_data = []
+    max_points = 60
+    prev_year = end_date.year
     
     # Loop through the transactions
     begin
-      graph_points += 1
-      
       # Find the start date of the current period and the end date of the next period, and the y axis labels
-      range_text = nil
       case period_text
       when "yearly"
         curr_start_date = Date.new(end_date.year)
@@ -106,21 +105,25 @@ class Transaction < ActiveRecord::Base
       when "quarterly"
         curr_start_date = Date.new(end_date.year, end_date.month - 2)
         new_end_date = Date.new((end_date << 3).year, (end_date << 3).month, -1)
-        period_name = "Quarter #{(((curr_start_date.month - 1) / 3) + 1)}, #{curr_start_date.year}"
-        range_text = "#{curr_start_date.strftime("%b %d, %Y")} to #{end_date.strftime("%b %d, %Y")}"
+        period_name = "Quarter #{(((curr_start_date.month - 1) / 3) + 1)}"
       when "monthly"
         curr_start_date = Date.new(end_date.year, end_date.month)
         new_end_date = Date.new((end_date << 1).year, (end_date << 1).month, -1)
-        period_name = "#{Date::MONTHNAMES[curr_start_date.month]}, #{curr_start_date.year}"
+        period_name = "#{Date::MONTHNAMES[curr_start_date.month]}"
       when "daily"
         curr_start_date = end_date
         new_end_date = end_date - 1.day
-        period_name = curr_start_date.strftime("%b %d, %Y")
+        period_name = curr_start_date.strftime("%b %d")
       else
         curr_start_date = Date.commercial(end_date.cwyear, end_date.cweek)
         new_end_date = end_date - 1.week
-        period_name = "Week #{curr_start_date.cweek}, #{curr_start_date.cwyear}"
-        range_text = "#{curr_start_date.strftime("%b %d, %Y")} to #{end_date.strftime("%b %d, %Y")}"
+        period_name = "Week #{curr_start_date.cweek}"
+      end
+      
+      range_text = "#{curr_start_date.strftime("%b %d, %Y")} to #{end_date.strftime("%b %d, %Y")}"
+      # Add the year when either the year changes or it is the last graph point
+      if (period_text != "yearly") && (end_date.year != new_end_date.year || graph_points == max_points || curr_start_date <= start_date)
+        period_name << ", #{(period_text == "weekly") ? curr_start_date.cwyear : curr_start_date.year}"
       end
       
       amount = 0
@@ -155,20 +158,26 @@ class Transaction < ActiveRecord::Base
       formatted_amount = RupeeHelper.format_rupee(amount)
       
       # Add the point to the graph data array
-      y_value = {:v => period_name}
-      x_value = {:v => amount, :f => formatted_amount}
-      graph_data << { :c => [y_value, x_value] }
+      y_value = period_name
+      x_value = { :v => amount, :f => formatted_amount }
+      if period_text == "daily"
+        tooltip = "#{period_name}\n#{x_label}: #{formatted_amount}"
+      else
+        tooltip = "#{period_name}\n#{range_text}\n#{x_label}: #{formatted_amount}"
+      end
+      graph_data << [y_value, x_value, tooltip]
       
       # Prepare the end date for the next cycle
       end_date = new_end_date
+      graph_points += 1
       
-      # Have a maximum of 60 graph points
-    end while (graph_points <= 60 && curr_start_date > start_date)
+    end while (graph_points <= max_points && curr_start_date > start_date)
     
     # Build the graph_data object in a format readable by google charts
     return {
       :cols => [{ :label => y_label, :type => "string" },
-                { :label => x_label, :type => "number" }],
+                { :label => x_label, :type => "number" },
+                { :role => "tooltip", :type => "string" }],
       :rows => graph_data
     }
   end

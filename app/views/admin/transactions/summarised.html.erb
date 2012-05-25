@@ -18,18 +18,17 @@
 
 <%= render "date_controls" %>
 
-<div id="graph-controls">  
+<div id="graph-controls" data-from="<%= params[:from] %>" data-to="<%= params[:to] %>" data-period="<%= @gaph_period %>" data-type="<%= @gaph_type %>">  
   <ul class="period">
-    <li data-val="yearly" data-axis="Years"><a href="#">Yearly</a></li>
-    <li data-val="quarterly" data-axis="Quarters"><a href="#">Quarterly</a></li>
-    <li data-val="monthly" data-axis="Months"><a href="#">Monthly</a></li>
-    <li data-val="weekly" data-axis="Weeks" class="current"><a href="#">Weekly</a></li>
-    <li data-val="daily" data-axis="Days"><a href="#">Daily</a></li>
+    <% %w[yearly quarterly monthly weekly daily].each do |x| %>
+      <li data-val="<%= x %>"<%= class_if (x == @graph_period), "current" %>><a href="#"><%= x.capitalize %></a></li>
+    <% end %>
   </ul>
   
   <ul class="data-type">
-    <li data-val="profits" data-axis="Profits"><a href="#">Profits</a></li>
-    <li data-val="sales" data-axis="Sales" class="current"><a href="#">Sales</a></li>
+  <% %w[profits sales].each do |x| %>
+      <li data-val="<%= x %>"<%= class_if (x == @graph_type), "current" %>><a href="#"><%= x.capitalize %></a></li>
+    <% end %>
   </ul>
 </div>
 <div id="graph"></div>

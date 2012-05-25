@@ -24,9 +24,12 @@ class Admin::TransactionsController < Admin::ApplicationController
     @class = "finances summary"
     @first_transaction = Transaction.order("date asc").limit(1).first
     
-    @date_to = (params[:to] && Date.strptime(params[:to], "%d-%m-%Y")) || Date.today
+    @graph_period = params[:period].present? ? params[:period] : "sales"
+    @graph_type = params[:type].present? ? params[:type] : "sales"
+    
+    @date_to = params[:to].present? ? Date.strptime(params[:to], "%d-%m-%Y") : Date.today
     tentative_from = @date_to - 1.year
-    @date_from = (params[:from] && Date.strptime(params[:from], "%d-%m-%Y")) || (@first_transaction.date > tentative_from) ? @first_transaction.date : tentative_from
+    @date_from = params[:from].present? ? Date.strptime(params[:from], "%d-%m-%Y") : (@first_transaction.date > tentative_from) ? @first_transaction.date : tentative_from
     
     @transactions = Transaction.on_record.between(@date_from, @date_to)
     
@@ -49,7 +52,7 @@ class Admin::TransactionsController < Admin::ApplicationController
   end
   
   def graph_data
-    render :json => Transaction.graph_data(params[:format], params[:data_type], params[:from], params[:to])
+    render :json => Transaction.graph_data(params[:period], params[:type], params[:from], params[:to])
   end
   
   def create

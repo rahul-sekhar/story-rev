@@ -201,55 +201,56 @@ function initGraph() {
                 height:"70%"
             }
         };
-        var graph_type = "sales";
-        var graph_period = "weekly";
-        var y_axis = "Sales";
-        var x_axis = "Week";
-        var from = "";
-        var to = "";
+        
+        var $graphControls = $('#graph-controls');
+        var graph_type = $graphControls.data("type");
+        var graph_period = $graphControls.data("period");
+        var from = $graphControls.data("from");
+        var to = $graphControls.data("from");
         
         // Function to redraw the graph
         function redrawGraph() {
             $.ajaxCall('/admin/transactions/graph_data', {
                 purr: false,
                 data: {
-                    format: graph_period,
-                    data_type: graph_type,
+                    period: graph_period,
+                    type: graph_type,
                     from: from,
                     to: to
                 },
                 success: function(data) {
-                    var graph_data = new google.visualization.DataTable(data);
+                    var graph_data = new google.visualization.DataTable();
+                    $.each(data.cols, function(i, val) {
+                        graph_data.addColumn(val);
+                    });
+                    var target_url = window.location.pathname + '?' + $.param({
+                        from: from,
+                        to: to,
+                        period: graph_period,
+                        type: graph_type
+                    })
+                    
+                    history.replaceState(null, null, target_url);
+                    graph_data.addRows(data.rows);
                     chart.draw(graph_data, options);
                 }
             });
         }
         
-        // Change the graph when the user changes period options
-        $('#graph-controls .period').on('click', 'a', function(e) {
+        // Change the graph when the user changes control options
+        $graphControls.find('.period, .data-type').on('click', 'a', function(e) {
             e.preventDefault();
             
             var $li = $(this).closest('li');
             if ($li.hasClass("current")) return;
+            var $ul = $li.closest('ul');
             
-            graph_period = $li.data('val');
-            x_axis = $li.data('axis');
-            $li.closest('ul').find('.current').removeClass('current');
-            $li.addClass('current');
+            if ($ul.hasClass('period'))
+                graph_period = $li.data('val');
+            else
+                graph_type = $li.data('val');
             
-            redrawGraph();
-        });
-        
-        // Change the graph when the user changes graph type options
-        $('#graph-controls .data-type').on('click', 'a', function(e) {
-            e.preventDefault();
-            
-            var $li = $(this).closest('li');
-            if ($li.hasClass("current")) return;
-            
-            graph_type = $li.data('val');
-            y_axis = $li.data('axis');
-            $li.closest('ul').find('.current').removeClass('current');
+            $ul.find('.current').removeClass('current');
             $li.addClass('current');
             
             redrawGraph();
