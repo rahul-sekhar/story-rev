@@ -7,7 +7,7 @@
     max-width: e(1000px);
     margin: 0 auto;
     @include clearfix;
-    min-height: 100%;
+    min-height: e(920px);
     padding: 0px e(30px);
     position:relative;
 }
