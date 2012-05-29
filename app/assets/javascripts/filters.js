@@ -270,7 +270,7 @@ $(document).ready(function() {
                getProducts(location.href, null, null, true)
             }
         });
-    }, 500);
+    }, 1000);
     
     function updateCollections(data) {
     
