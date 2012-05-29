@@ -24,19 +24,19 @@
       <% end %>
     </ul>
     
+    <%= form_tag root_path(:anchor => "products"), :method => :get do %>
     <ul class="age" data-name="age">
       <li><%= filter_link "All ages", :age, nil %></li>
-      <%= form_tag root_path(:anchor => "products"), :method => :get do %>
-        <% filter_params(:age, nil).each do |k,v| %>
-          <input type="hidden" name="<%= k %>" value="<%= v %>" />
-        <% end %>
-        <li class="custom">
-          <span<%= class_if params[:age].present?, "current" %>>Age</span>
-          <%= text_field_tag :age, params[:age], :autocomplete => "off", :class => "text", :maxlength => 2 %>
-          <%= submit_tag "Ok", :class => "submit" %>
-        </li>
+      <% filter_params(:age, nil).each do |k,v| %>
+        <input type="hidden" name="<%= k %>" value="<%= v %>" />
       <% end %>
+      <li class="custom">
+        <span<%= class_if params[:age].present?, "current" %>>Age</span>
+        <%= text_field_tag :age, params[:age], :autocomplete => "off", :class => "text", :maxlength => 2 %>
+        <%= submit_tag "Ok", :class => "submit" %>
+      </li>
     </ul>
+    <% end %>
     
     <ul data-name="condition">
       <li><%= filter_link "Any condition", :condition, nil %></li>
@@ -47,6 +47,7 @@
             <% i.times do %>
               <span class="star grey">*</span>
             <% end %>
+            </div>
           </a>
         </li>
       <% end %>
@@ -59,23 +60,23 @@
       <% end %>
     </ul>
     
+    <%= form_tag root_path(:anchor => "products"), :method => :get do %>
     <ul class="price" data-name="price">
       <li><%= link_to("Any price", filter_path(:price, nil), :class => ((params[:price].blank? && params[:price_from].blank? && params[:price_to].blank?) ? "current" : nil)) %></li>
       <li data-val="-50"><%= filter_link "Less than #{RupeeHelper.to_rupee_span(50)}".html_safe, :price, "-50" %></li>
       <li data-val="50-100"><%= filter_link "#{RupeeHelper.to_rupee_span(50)} &ndash; #{RupeeHelper.to_rupee_span(100)}".html_safe, :price, "50-100" %></li>
       <li data-val="100-200"><%= filter_link "#{RupeeHelper.to_rupee_span(100)} &ndash; #{RupeeHelper.to_rupee_span(200)}".html_safe, :price, "100-200" %></li>
       <li data-val="200-500"><%= filter_link "More than #{RupeeHelper.to_rupee_span(200)}".html_safe, :price, "200-" %></li>
-      <%= form_tag root_path(:anchor => "products"), :method => :get do %>
-        <% filter_params(:price, nil).each do |k,v| %>
-          <input type="hidden" name="<%= k %>" value="<%= v %>" />
-        <% end %>
-        <li class="custom">
-          <span<%= class_if (params[:price_from].present? || params[:price_to].present?), "current" %>>Custom</span>
-          <%= text_field_tag :price_from, params[:price_from], :autocomplete => "off", :class => "text", :maxlength => 3 %>
-          <span class="to">to</span>
-          <%= text_field_tag :price_to, params[:price_to], :autocomplete => "off", :class => "text", :maxlength => 3 %>
-          <%= submit_tag "Ok", :class => "submit" %>
-        </li>
+      <% filter_params(:price, nil).each do |k,v| %>
+        <input type="hidden" name="<%= k %>" value="<%= v %>" />
       <% end %>
+      <li class="custom">
+        <span<%= class_if (params[:price_from].present? || params[:price_to].present?), "current" %>>Custom</span>
+        <%= text_field_tag :price_from, params[:price_from], :autocomplete => "off", :class => "text", :maxlength => 3 %>
+        <span class="to">to</span>
+        <%= text_field_tag :price_to, params[:price_to], :autocomplete => "off", :class => "text", :maxlength => 3 %>
+        <%= submit_tag "Ok", :class => "submit" %>
+      </li>
     </ul>
+    <% end %>
 </section>

@@ -385,14 +385,14 @@ $(document).ready(function() {
             $priceText.filter('#price_from').val('');
         }
         else {
-            $priceForm.find('span:first').addClass('current')
+            $priceForm.find('.custom span:first').addClass('current')
                 .closest('ul').find('a.current').removeClass('current');
         }
         if (!data.filters["price_to"]) {
             $priceText.filter('#price_to').val('');
         }
         else {
-            $priceForm.find('span:first').addClass('current')
+            $priceForm.find('.custom span:first').addClass('current')
                 .closest('ul').find('a.current').removeClass('current');
         }
     }
