@@ -245,7 +245,15 @@
         .cover-container {
             margin-right: e(20px);
             margin-bottom: e(20px);
+            height: e(150px);
             float:left;
+            position:relative;
+            
+            .cover {
+                position:absolute;
+                bottom:0;
+                left:0; 
+            }
         }
         
         .pagination {
