@@ -1,3 +1,16 @@
+#page-footer {
+    h3 {
+        text-transform: lowercase;
+        margin-top: 0;
+    }
+    
+    p { clear:none; }
+    
+    #credit p {
+        max-width: none;
+    }
+}
+
 body.about {
     h3 {
         text-transform:none;

@@ -210,9 +210,8 @@
         
         p {
             @include smaller-text;
-            margin-bottom: 0;
-            width: e(900px, $smaller-text-size);
             margin:0 auto;
+            padding-right: e(20px, $smaller-text-size);
             text-align:right;
             color: $text-color;
             letter-spacing: 1px;
