@@ -67,7 +67,7 @@ $small-text-size: 11px;
 
 $alt-text-size: 15px;
 @mixin alt-text {
-    font-family: Arvo, Arial, Helvetica, sans-serif;
+    font-family: Copse, Arial, Helvetica, sans-serif;
     font-size: e($alt-text-size);
     line-height: 150%;
     color: $text-color;

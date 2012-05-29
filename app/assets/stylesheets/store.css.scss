@@ -473,6 +473,7 @@
         width: e(300px);
         border: 1px solid $color-a5;
         padding: e(10px) e(15px);
+        z-index:20;
         @include clearfix;
         @include box-shadow(3px 3px 10px -3px #999);
         
