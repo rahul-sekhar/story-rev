@@ -273,7 +273,11 @@ class Order < ActiveRecord::Base
   def pickup_point_text
     return "" if delivery_method != 2
     
-    "Pickup point: #{pickup_point.present? ? pickup_point.name : "#{other_pickup} (other)"}"
+    "Pickup point: #{pickup_point_short_text}"
+  end
+  
+  def pickup_point_short_text
+    pickup_point.present? ? pickup_point.name : "#{other_pickup} (other)"
   end
   
   def payment_text

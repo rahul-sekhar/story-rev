@@ -39,6 +39,17 @@
       </tbody>
     </table>
     
+    <p><%= @order.delivery_text %></p>
+    <% if @order.delivery_method == 2 %>
+      <p><%= @order.pickup_point_text %></p>
+    <% end %>
+    
+    <% if @order.payment_method_id == 3 %>
+      <p>You have chosen to pay by cash when you collect your books from our pick-up point at <%= @order.pickup_point_short_text %></p>
+      
+      <p>You can also pay by bank transfer or cheque:</p>
+    <% end %>
+    
     <p>Our bank account details are:</p>
     <p>SHALINI SEKHAR<br />
     Indian Overseas Bank Banashankari 2nd Stage, Bangalore<br />
@@ -49,11 +60,6 @@
     <p>#93, 30th cross road<br />
     Banashankari 2nd stage<br />
     Bangalore - 560070</p>
-    
-    <p><%= @order.delivery_text %></p>
-    <% if @order.delivery_method == 2 %>
-      <p><%= @order.pickup_point_text %></p>
-    <% end %>
     
     <p>We will <%= @order.delivery_method == 1 ? "post your books" : "get in touch with you about delivery" %> once we
     receive your payment. For help or follow up, please reply to this mail.</p>
