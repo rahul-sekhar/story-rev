@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120523060659) do
+ActiveRecord::Schema.define(:version => 20120531121725) do
 
   create_table "accounts", :force => true do |t|
     t.string   "name"
@@ -147,6 +147,7 @@ ActiveRecord::Schema.define(:version => 20120523060659) do
     t.datetime "updated_at"
     t.string   "raw_isbn"
     t.integer  "publisher_id"
+    t.integer  "language_id",  :default => 1
   end
 
   add_index "editions", ["format_id"], :name => "index_editions_on_format_id"
@@ -285,7 +286,6 @@ ActiveRecord::Schema.define(:version => 20120523060659) do
     t.datetime "book_date"
     t.integer  "publisher_id"
     t.integer  "country_id"
-    t.integer  "language_id"
     t.integer  "product_type_id"
     t.integer  "content_type_id"
     t.integer  "accession_id"
@@ -299,7 +299,6 @@ ActiveRecord::Schema.define(:version => 20120523060659) do
   add_index "products", ["country_id"], :name => "index_products_on_country_id"
   add_index "products", ["illustrator_id"], :name => "index_products_on_illustrator_id"
   add_index "products", ["in_stock"], :name => "index_products_on_in_stock"
-  add_index "products", ["language_id"], :name => "index_products_on_language_id"
   add_index "products", ["product_type_id"], :name => "index_products_on_product_type_id"
   add_index "products", ["publisher_id"], :name => "index_products_on_publisher_id"
   add_index "products", ["title"], :name => "index_products_on_title", :unique => true

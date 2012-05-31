@@ -2,7 +2,7 @@ class Product < ActiveRecord::Base
   default_scope :include => :author
   attr_accessible :title, :author_name, :illustrator_name, :publisher_name, :year, :country_name, :age_from, :age_to,
                   :collection_list, :flipkart_id, :amazon_url, :short_description, :product_type_id, :content_type_id,
-                  :award_attributes, :other_field_attributes, :cover_image_id, :cover_image_url, :language_id
+                  :award_attributes, :other_field_attributes, :cover_image_id, :cover_image_url
   
   after_initialize :init
   before_validation :set_accession_id
@@ -14,7 +14,6 @@ class Product < ActiveRecord::Base
   belongs_to :author
   belongs_to :illustrator
   belongs_to :publisher
-  belongs_to :language
   belongs_to :product_type
   belongs_to :content_type
   belongs_to :country
@@ -27,7 +26,6 @@ class Product < ActiveRecord::Base
   validates :title, :presence => true, :length => { :maximum => 255 }, :uniqueness => true
   validates :author, :presence => true
   validates :content_type, :presence => true
-  validates :language, :presence => true
   validates :age_from, :numericality => { :only_integer => true, :greater_than_or_equal_to => 0, :less_than => 100 }, :allow_blank => true
   validates :age_to, :numericality => { :only_integer => true, :greater_than_or_equal_to => 0, :less_than => 100 }, :allow_blank => true
   validates :year, :numericality => { :only_integer => true, :greater_than => 1000, :less_than => 2100 }, :allow_blank => true
@@ -49,7 +47,7 @@ class Product < ActiveRecord::Base
   end
   
   def self.includes_data
-    includes(:illustrator, :publisher, :collections, :copies, :product_type, :content_type, :language, :country, :other_fields, { :product_awards => { :award => :award_type }}, :editions => [:format, :publisher])
+    includes(:illustrator, :publisher, :collections, :copies, :product_type, :content_type, :country, :other_fields, { :product_awards => { :award => :award_type }}, :editions => [:format, :publisher])
   end
   
   def self.includes_copies
@@ -86,9 +84,9 @@ class Product < ActiveRecord::Base
     copies = Copy.unscoped.stocked
     
     if p[:recent].present?
-      new_books = Product.unscoped.select("products.id, products.in_stock, content_type_id, language_id, MAX(e.created_at) as ed_date")
+      new_books = Product.unscoped.select("products.id, products.in_stock, content_type_id, MAX(e.created_at) as ed_date")
           .joins("INNER JOIN editions AS e ON e.product_id = products.id INNER JOIN copies as c ON c.edition_id = e.id WHERE c.in_stock = TRUE")
-          .group("products.id, products.in_stock, content_type_id, language_id").order("ed_date DESC").limit(28)
+          .group("products.id, products.in_stock, content_type_id").order("ed_date DESC").limit(28)
       filtered = filtered.where("products.id IN (?)", new_books.map{ |x| x.id })
     end
     
@@ -195,12 +193,12 @@ class Product < ActiveRecord::Base
     escaped = SqlHelper::escapeWildcards(query).upcase
     product_array = []
     if fields == "all" && output == "display_target"
-      product_array |= self.select("id, title, in_stock, content_type_id, language_id")
+      product_array |= self.select("id, title, in_stock, content_type_id")
                             .where("UPPER(title) LIKE ?", "%#{escaped}%")
                             .map { |x| {:id => x.id, :name => x.title }}
       
       if (escaped =~ /^[A-Z]-[0-9]/)
-        product_array |= self.select("id, title, accession_id, in_stock, content_type_id, language_id")
+        product_array |= self.select("id, title, accession_id, in_stock, content_type_id")
                               .where('accession_id LIKE ?', "#{escaped}%")
                               .map { |x| {:id => x.id, :name => "#{x.title} - #{x.accession_id}" }}
       elsif (escaped =~ /^[0-9]+$/)
@@ -216,7 +214,6 @@ class Product < ActiveRecord::Base
   def init
     self.in_stock = false if in_stock.nil?
     self.content_type_id ||= 1
-    self.language_id ||= 1
   end
   
   def set_timestamps

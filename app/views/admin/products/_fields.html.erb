@@ -13,11 +13,6 @@
       :label_html => { :class => "multi-line centered" },
       :input_html => { :maxlength => 4 } %>
     <%= f.input :country_name, :label => "Country", :as => :string %>
-    <%= f.input :language_id,
-                :as => :select,
-                :collection => Language.all,
-                :include_blank => false
-                %>
     <div class="input">
       <%= f.label :age_from, "Age level", :class => ( @product.errors[:age_from].present? ? "error" : nil ) %>
       <%= f.input_field :age_from, :maxlength => 2, :as => :string %>

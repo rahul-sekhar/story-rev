@@ -28,6 +28,10 @@
       <span class="sidenote">(and up)</span>
     <% end %>
     
+    <% if @product.publisher.present? %>
+    <p class="publisher">Publisher: <span><%= @product.publisher_name %></span></p>
+  <% end %>
+    
     <% if @product.year.present? %>
       <p class="year">First published in <span><%= @product.year %></span>
     <% end %>

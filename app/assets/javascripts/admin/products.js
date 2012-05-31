@@ -53,6 +53,14 @@ $(document).ready(function() {
                     type: 'autocomplete',
                     sourceURL: '/admin/publishers',
                     default_val: $editionTable.data('publisher')
+                },
+                {
+                    name: 'Language',
+                    field: 'language_name',
+                    type: 'autocomplete',
+                    sourceURL: '/admin/languages',
+                    default_val: 'English',
+                    autocompleteSettings: { searchOnFocus: true }
                 }
             ]
         });
@@ -217,7 +225,6 @@ $(document).ready(function() {
         });
     }
     
-    allowOptionAdding($('#product_language_id'), 'language', '/admin/languages', 'language');
     allowOptionAdding($('#product_content_type_id'), 'content type', '/admin/content_types', 'content_type');
     allowOptionAdding($('#product_product_type_id'), 'product type', '/admin/product_types', 'product_type');
     

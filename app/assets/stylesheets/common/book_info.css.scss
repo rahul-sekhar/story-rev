@@ -77,9 +77,10 @@
     }
     
     .copies {
+        
         td {
             @include smaller-text;
-            padding-right: e(20px, $smaller-text-size);
+            padding-right: e(10px, $smaller-text-size);
             
             &.cart {
                 padding-right:0;
@@ -89,6 +90,14 @@
         
         .format {
             padding-right: e(40px, $smaller-text-size);
+        }
+        
+        .price {
+            width: e(60px, $smaller-text-size);
+        }
+        
+        .rating {
+            width: e(85px, $smaller-text-size);
         }
         
         .spacer {

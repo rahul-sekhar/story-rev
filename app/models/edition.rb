@@ -2,6 +2,7 @@ class Edition < ActiveRecord::Base
   attr_accessible :isbn, :format_name, :publisher_name, :language_name
   
   belongs_to :format
+  belongs_to :language
   belongs_to :product
   belongs_to :publisher
   
@@ -14,12 +15,24 @@ class Edition < ActiveRecord::Base
   
   validates_associated :publisher
   
+  def init
+    self.language_id ||= 1
+  end
+  
   def format_name
     format ? format.name : nil
   end
   
   def format_name=(name)
     self.format = name.present? ? (Format.name_is(name).first || Format.new({ :name => name })) : nil
+  end
+  
+  def language_name
+    language ? language.name : nil
+  end
+  
+  def language_name=(name)
+    self.language = name.present? ? (Language.name_is(name).first || Language.new({ :name => name })) : nil
   end
   
   def publisher_name=(name)
@@ -39,6 +52,7 @@ class Edition < ActiveRecord::Base
       :id => id,
       :format_name => format_name,
       :publisher_name => publisher_name,
+      :language_name => language_name,
       :isbn => isbn
     }
   end
