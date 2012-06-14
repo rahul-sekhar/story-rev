@@ -67,8 +67,10 @@ class Product < ActiveRecord::Base
       order("age_from#{sort_order}")
     when "price"
       joins("LEFT JOIN editions AS ed ON ed.product_id = products.id LEFT JOIN copies AS cop ON cop.edition_id = ed.id").group(columns_list).order("MIN(cop.price)#{sort_order}")
-    else
+    when "date"
       sort_order = sort_order.present? ? "" : " DESC"
+      order("products.book_date#{sort_order}")
+    else
       order("products.book_date#{sort_order}")
     end
   end
@@ -440,12 +442,12 @@ class Product < ActiveRecord::Base
   end
   
   def used_copy_min_price
-    price = copies.select{|x| x.new_copy == false}.map{|x| x.price}.min.to_i
+    price = copies.stocked.select{|x| x.new_copy == false}.map{|x| x.price}.min.to_i
     return price > 0 ? RupeeHelper.to_rupee(price) : nil
   end
   
   def new_copy_min_price
-    price = copies.select{|x| x.new_copy == true}.map{|x| x.price}.min.to_i
+    price = copies.stocked.select{|x| x.new_copy == true}.map{|x| x.price}.min.to_i
     return price > 0 ? RupeeHelper.to_rupee(price) : nil
   end
 end
