@@ -13,6 +13,10 @@ group :developent do
   gem 'rvm-capistrano'
 end
 
+group :test do
+  gem 'turn', '~> 0.8.3', :require => false
+end
+
 gem 'jquery-rails'
 gem 'sanitize'
 gem 'yaml_db'

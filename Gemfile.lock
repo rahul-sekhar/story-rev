@@ -32,6 +32,7 @@ GEM
     amazon-ecs (2.2.4)
       nokogiri (~> 1.4)
       ruby-hmac (~> 0.3)
+    ansi (1.4.2)
     arel (2.2.3)
     aws-s3 (0.6.2)
       builder
@@ -138,6 +139,8 @@ GEM
     treetop (1.4.10)
       polyglot
       polyglot (>= 0.3.1)
+    turn (0.8.3)
+      ansi
     tzinfo (0.3.33)
     uglifier (1.2.4)
       execjs (>= 0.3.0)
@@ -172,6 +175,7 @@ DEPENDENCIES
   sass-rails (= 3.1.5)
   simple_form
   terminator
+  turn (~> 0.8.3)
   uglifier (>= 1.0.3)
   valid_email
   whenever
