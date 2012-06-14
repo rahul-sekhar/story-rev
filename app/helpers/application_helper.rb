@@ -170,7 +170,7 @@ module ApplicationHelper
   end
   
   def sort_link(name)
-    attr = name unless name == "date"
+    attr = name
     klass = nil
     
     if (params[:sort_by].to_s == attr.to_s)

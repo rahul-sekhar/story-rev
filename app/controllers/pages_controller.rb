@@ -5,7 +5,7 @@ class PagesController < ApplicationController
     @class = "store"
     @title = "Store"
     
-    check_price_params
+    check_params
     
     @products = Product.stocked.includes_cover.joins("LEFT JOIN authors AS auth ON products.author_id = auth.id").includes(:copies, :illustrator).filter(params).sort_by_param(params[:sort_by],params[:desc]).page(params[:page]).per(20)
     
@@ -43,8 +43,12 @@ class PagesController < ApplicationController
   
   private
   
-  def check_price_params
+  def check_params
+    # Check the price params
     params.delete(:price) if params[:price_to].present? || params[:price_from].present?
+    
+    # Set the default sort parameter
+    params[:sort_by] = "random" unless params[:sort_by].present?
   end
   
   def get_collection_lists

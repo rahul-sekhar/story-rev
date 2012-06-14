@@ -42,13 +42,13 @@ $(document).ready(function() {
             prevClass = $prev.attr('class');
             $prev.removeClass('current asc desc');
             $link.addClass('current asc');
-            if ($link.text == "random") $link.removeClass('asc');
+            if ($link.text() == "random") $link.removeClass('asc');
         }
         
         getProducts(this.href, null, null, function() {
             $link.attr('class', thisClass);
             if ($prev) $prev.attr('class', prevClass);
-        }, true)
+        });
     });
     
     // Collections
