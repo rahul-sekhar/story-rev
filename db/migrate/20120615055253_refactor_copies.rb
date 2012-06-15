@@ -1,5 +1,5 @@
 class RefactorCopies < ActiveRecord::Migration
-  def change
+  def up
     create_table :used_copies do |t|
       t.integer :edition_id
       t.integer :copy_number
@@ -18,5 +18,9 @@ class RefactorCopies < ActiveRecord::Migration
       t.integer :required_stock
       t.timestamps
     end
+  end
+  
+  def down
+    
   end
 end
