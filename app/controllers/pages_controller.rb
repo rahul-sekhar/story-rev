@@ -7,7 +7,7 @@ class PagesController < ApplicationController
     
     check_params
     
-    @products = Product.stocked.includes_cover.joins("LEFT JOIN authors AS auth ON products.author_id = auth.id").includes(:copies, :illustrator).filter(params).sort_by_param(params[:sort_by],params[:desc]).page(params[:page]).per(20)
+    @books = Book.stocked.includes_cover.joins("LEFT JOIN authors AS auth ON books.author_id = auth.id").includes(:copies, :illustrator).filter(params).sort_by_param(params[:sort_by],params[:desc]).page(params[:page]).per(20)
     
     if params[:ajax].present?
       params.delete :ajax
@@ -52,14 +52,14 @@ class PagesController < ApplicationController
   end
   
   def get_collection_lists
-    stocked_books = Product.unscoped.stocked
+    stocked_books = Book.unscoped.stocked
     stocked_book_ids = stocked_books.map{ |x| x.id }
-    stocked_editions = Edition.unscoped.where( :product_id => stocked_book_ids )
-    stocked_awards = Award.unscoped.where('awards.id IN (SELECT award_id FROM products_awards WHERE product_id IN (?))', stocked_book_ids)
+    stocked_editions = Edition.unscoped.where( :book_id => stocked_book_ids )
+    stocked_awards = Award.unscoped.where('awards.id IN (SELECT award_id FROM books_awards WHERE book_id IN (?))', stocked_book_ids)
     
-    @product_types = ProductType.visible.prioritised.where(:id => stocked_books.map{ |x| x.product_type_id })
+    @book_types = BookType.visible.prioritised.where(:id => stocked_books.map{ |x| x.book_type_id })
     @formats = Format.where(:id => stocked_editions.map{ |x| x.format_id})
-    @collections = Collection.prioritised.visible.where('"collections"."id" IN (SELECT collection_id FROM products_collections WHERE product_id IN (?))', stocked_book_ids)
+    @collections = Collection.prioritised.visible.where('"collections"."id" IN (SELECT collection_id FROM books_collections WHERE book_id IN (?))', stocked_book_ids)
   end
   
   def ajax_params

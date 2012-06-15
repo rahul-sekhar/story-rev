@@ -15,7 +15,6 @@ class AWSInfo
       return objects
     end
     
-    ActiveRecord::Base.logger.info("Moving on")
     res.items.each do |x|
       attrs = x.get_element('ItemAttributes')
       item_title = attrs.get('Title')

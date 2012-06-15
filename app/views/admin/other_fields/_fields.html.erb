@@ -1,6 +1,6 @@
-<% num_desc = product.other_fields.length %>
+<% num_desc = book.other_fields.length %>
 <input type="text" name="description_title" id="description-title"
-       maxlength=200 placeholder="[title required]" value="<%= product.other_fields.first.title %>" />
+       maxlength=200 placeholder="[title required]" value="<%= book.other_fields.first.title %>" />
 <div class="description-content-box">
   <div class="buttons">
     <% num_desc.times do |i| %>
@@ -9,11 +9,11 @@
     <a href="#" class="add">+</a>
   </div>
   <textarea name="description_content" id="description-content"
-    style="height: <%= (num_desc + 1) * 20 %>px"><%= product.other_fields.first.content %></textarea>
+    style="height: <%= (num_desc + 1) * 20 %>px"><%= book.other_fields.first.content %></textarea>
 </div>
 
 <% i = 1 %>
-<% for other_field in product.other_fields %>
+<% for other_field in book.other_fields %>
   <div id="stored-desc-<%= i %>">
   <%= form.simple_fields_for "other_field_attributes[]", other_field do |desc_f| %>
     <%= desc_f.hidden_field :id, :class => "id", :id => nil, :index => nil, :value => desc_f.object.id %>

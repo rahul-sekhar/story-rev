@@ -1,20 +1,20 @@
 <% content_for :top_nav do %>
   <li>
-    <%= link_to "Books", search_admin_products_path %>
+    <%= link_to "Books", search_admin_books_path %>
   </li>
   
   <li>></li>
   <li>
-    <%= link_to "Search", search_admin_products_path %>
+    <%= link_to "Search", search_admin_books_path %>
   </li>
   
   <li>></li>
   <li>
-    <%= link_to "Add", new_admin_product_path %>
+    <%= link_to "Add", new_admin_book_path %>
   </li>
   
   <li class="right current">
-    <%= link_to "Stock-Taking", admin_products_path %>
+    <%= link_to "Stock-Taking", admin_books_path %>
   </li>
 <% end %>
 
@@ -26,8 +26,8 @@
       <% klass = (stocked && alt) ? "alt stocked" : (alt ? "alt" : (stocked ? "stocked" : nil)) %>
       <tr data-id="<%= c.id %>"<%= class_if klass, klass %>>
         <td class="acc" data-sort-by="<%= c.accession_id_sortable %>"><%= c.accession_id %></td>
-        <td data-sort-by="<%= c.product.title %>"><%= c.product.title %></td>
-        <td data-sort-by="<%= c.product.author_name %>"><%= c.product.author_name %></td>
+        <td data-sort-by="<%= c.book.title %>"><%= c.book.title %></td>
+        <td data-sort-by="<%= c.book.author_name %>"><%= c.book.author_name %></td>
         <td><%= c.edition.format_name %></td>
         <td class="rating" data-val="<%= c.condition_rating %>"><%= render "shared/rating", :rating => c.condition_rating %></td>
         <td class="price"><%= RupeeHelper.to_rupee(c.price) %></td>

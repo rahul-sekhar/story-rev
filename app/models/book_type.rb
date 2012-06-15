@@ -1,5 +1,5 @@
-class ProductType < ActiveRecord::Base
-  has_many :products
+class BookType < ActiveRecord::Base
+  has_many :books
   
   validates :name, :length => { :maximum => 100 }, :presence => true, :uniqueness => { :case_sensitive => false }
   

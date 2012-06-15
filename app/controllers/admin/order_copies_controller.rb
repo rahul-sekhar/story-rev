@@ -1,6 +1,6 @@
 class Admin::OrderCopiesController < Admin::ApplicationController
   def index
-    @order_copies = Order.find(params[:order_id]).order_copies.includes(:copy => { :edition => [:product, :format] })
+    @order_copies = Order.find(params[:order_id]).order_copies.includes(:copy => { :edition => [:book, :format] })
     
     render :json => @order_copies.map {|x| x.get_hash}
   end

@@ -9,18 +9,18 @@ $(document).ready(function() {
         $(this).attr('src', '/images/search.png');
     });
 
-    var $products = $('#products');
+    var $books = $('#books');
     
     // Pagination links
-    $products.on('click', '.pagination a', function(e) {
+    $books.on('click', '.pagination a', function(e) {
         if (extClick(e)) return;
         e.preventDefault();;
         
-        getProducts(this.href);
+        getBooks(this.href);
     });
     
     // Sorting links
-    $products.on('click', '.sort a', function(e) {
+    $books.on('click', '.sort a', function(e) {
         if (extClick(e)) return;
         e.preventDefault();
         
@@ -45,7 +45,7 @@ $(document).ready(function() {
             if ($link.text() == "random") $link.removeClass('asc');
         }
         
-        getProducts(this.href, null, null, function() {
+        getBooks(this.href, null, null, function() {
             $link.attr('class', thisClass);
             if ($prev) $prev.attr('class', prevClass);
         });
@@ -60,26 +60,26 @@ $(document).ready(function() {
         var $prev = $collections.find('.current:first').removeClass('current');
         $link.addClass('current');
         
-        getProducts(this.href, null, null, function() {
+        getBooks(this.href, null, null, function() {
             $link.removeClass('current');
             $prev.addClass('current');
         })
     });
     
     // Clear filters button
-    $products.on('click', '.clear-link', function(e) {
+    $books.on('click', '.clear-link', function(e) {
         e.preventDefault();
         
         var $link = $(this);
         $link.closest('.applied-filters').fadeOut();
-        getProducts(this.href)
+        getBooks(this.href)
     });
     
     // Search box
     var $searchForm = $('#search-form').submit(function(e) {
         e.preventDefault();
         
-        getProducts('/?' + $(this).serialize());
+        getBooks('/?' + $(this).serialize());
     });
     
     // Filters
@@ -94,7 +94,7 @@ $(document).ready(function() {
         var $prev = $link.closest('ul').find('.current:first').removeClass('current');
         $link.addClass('current');
         
-        getProducts(this.href, null, null, function() {
+        getBooks(this.href, null, null, function() {
             $link.removeClass('current');
             $prev.addClass('current');
         })
@@ -119,7 +119,7 @@ $(document).ready(function() {
             $ul.find('li:first a').addClass('current');
         }
         
-        getProducts('/?' + $ageText.closest('form').serialize(), null, null, function() {
+        getBooks('/?' + $ageText.closest('form').serialize(), null, null, function() {
             $ul.find('.current:first').removeClass('current');
             $prev.addClass('current');
         })
@@ -140,7 +140,7 @@ $(document).ready(function() {
             $ul.find('li:first a').addClass('current');
         }
         
-        getProducts('/?' + $priceText.closest('form').serialize(), null, null, function() {
+        getBooks('/?' + $priceText.closest('form').serialize(), null, null, function() {
             $ul.find('.current:first').removeClass('current');
             $prev.addClass('current');
         })
@@ -149,12 +149,12 @@ $(document).ready(function() {
     var $searchText = $('#search');
     
     
-    // Function to handle getting filtered data and replacing the product list
-    var $covers = $products.find('.covers');
+    // Function to handle getting filtered data and replacing the book list
+    var $covers = $books.find('.covers');
     var $coversLoading = $('<p class="loading-large"><img alt="" src="/images/loading2.gif" /><br />Loading...</p>');
     var prev_xhr;
     
-    function getProducts(url, data, success, error, no_pushstate) {
+    function getBooks(url, data, success, error, no_pushstate) {
         // Cancel any pending requests
         if (prev_xhr) prev_xhr.abort();
         
@@ -200,7 +200,7 @@ $(document).ready(function() {
                     $covers.height($newCovers.height());
                 }, 100);
                 
-                $products.find('.pagination,.sort,.applied-filters').remove().end()
+                $books.find('.pagination,.sort,.applied-filters').remove().end()
                     .prepend($('.sort', html))
                     .prepend($('.applied-filters', html))
                     .append($('.pagination', html));
@@ -213,8 +213,8 @@ $(document).ready(function() {
                     history.pushState(data, null, url);
                 }
                 
-                // Trigger an event so product hover info is refreshed
-                $products.trigger("productsRefreshed");
+                // Trigger an event so book hover info is refreshed
+                $books.trigger("booksRefreshed");
                 
                 if (success) success();
             },
@@ -256,7 +256,7 @@ $(document).ready(function() {
                     $covers.height($newCovers.height());
                 }, 100);
                 
-                $products.find('.pagination,.sort,.applied-filters').remove().end()
+                $books.find('.pagination,.sort,.applied-filters').remove().end()
                     .prepend($('.sort', html))
                     .prepend($('.applied-filters', html))
                     .append($('.pagination', html));
@@ -264,10 +264,10 @@ $(document).ready(function() {
                 updateCollections(data);
                 updateFilters(data);
                     
-                $products.trigger("productsRefreshed");
+                $books.trigger("booksRefreshed");
             }
             else {
-               getProducts(location.href, null, null, true)
+               getBooks(location.href, null, null, true)
             }
         });
     }, 1000);
@@ -307,7 +307,7 @@ $(document).ready(function() {
             
             $.extend(params, base_params);
             
-            $link.attr('href', '/?' + $.param(params) + '#products');
+            $link.attr('href', '/?' + $.param(params) + '#books');
         });
         
         if (data.base == 'collection')
@@ -353,7 +353,7 @@ $(document).ready(function() {
             
             delete params[name]
             if (val) params[name] = val
-            $link.attr('href', '/?' + $.param(params) + '#products');
+            $link.attr('href', '/?' + $.param(params) + '#books');
         });
         
         // Age form

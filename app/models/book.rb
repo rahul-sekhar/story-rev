@@ -1,7 +1,7 @@
-class Product < ActiveRecord::Base
+class Book < ActiveRecord::Base
   default_scope :include => :author
   attr_accessible :title, :author_name, :illustrator_name, :publisher_name, :year, :country_name, :age_from, :age_to,
-                  :collection_list, :flipkart_id, :amazon_url, :short_description, :product_type_id, :content_type_id,
+                  :collection_list, :amazon_url, :short_description, :book_type_id,
                   :award_attributes, :other_field_attributes, :cover_image_id, :cover_image_url
   
   after_initialize :init
@@ -10,14 +10,13 @@ class Product < ActiveRecord::Base
   before_save :check_age_level
   after_create :set_timestamps
   
-  has_and_belongs_to_many :collections, :join_table => :products_collections, :uniq => true
+  has_and_belongs_to_many :collections, :join_table => :books_collections, :uniq => true
   belongs_to :author
   belongs_to :illustrator
   belongs_to :publisher
-  belongs_to :product_type
-  belongs_to :content_type
+  belongs_to :book_type
   belongs_to :country
-  has_many :product_awards, :dependent => :destroy
+  has_many :book_awards, :dependent => :destroy
   has_many :editions, :dependent => :destroy
   has_many :copies, :through => :editions
   has_many :other_fields, :dependent => :destroy
@@ -25,11 +24,9 @@ class Product < ActiveRecord::Base
   
   validates :title, :presence => true, :length => { :maximum => 255 }, :uniqueness => true
   validates :author, :presence => true
-  validates :content_type, :presence => true
   validates :age_from, :numericality => { :only_integer => true, :greater_than_or_equal_to => 0, :less_than => 100 }, :allow_blank => true
   validates :age_to, :numericality => { :only_integer => true, :greater_than_or_equal_to => 0, :less_than => 100 }, :allow_blank => true
   validates :year, :numericality => { :only_integer => true, :greater_than => 1000, :less_than => 2100 }, :allow_blank => true
-  validates :flipkart_id, :length => { :maximum => 40 }
   validates :amazon_url, :length => { :maximum => 200 }
   validates :accession_id, :presence => true, :uniqueness => true, :numericality => { :only_integer => true }
   
@@ -37,7 +34,7 @@ class Product < ActiveRecord::Base
   validates_associated :illustrator
   validates_associated :publisher
   validates_associated :country
-  validates_associated :product_awards
+  validates_associated :book_awards
   validates_associated :other_fields
   
   scope :stocked, where(:in_stock => true)
@@ -47,7 +44,7 @@ class Product < ActiveRecord::Base
   end
   
   def self.includes_data
-    includes(:illustrator, :publisher, :collections, :copies, :product_type, :content_type, :country, :other_fields, { :product_awards => { :award => :award_type }}, :editions => [:format, :publisher])
+    includes(:illustrator, :publisher, :collections, :copies, :book_type, :country, :other_fields, { :book_awards => { :award => :award_type }}, :editions => [:format, :publisher])
   end
   
   def self.includes_copies
@@ -60,18 +57,18 @@ class Product < ActiveRecord::Base
     when "random"
       order("random()#{sort_order}")
     when "title"
-      order("products.title#{sort_order}")
+      order("books.title#{sort_order}")
     when "author"
       order("auth.last_name#{sort_order}, auth.first_name#{sort_order}")
     when "age"
       order("age_from#{sort_order}")
     when "price"
-      joins("LEFT JOIN editions AS ed ON ed.product_id = products.id LEFT JOIN copies AS cop ON cop.edition_id = ed.id").group(columns_list).order("MIN(cop.price)#{sort_order}")
+      joins("LEFT JOIN editions AS ed ON ed.book_id = books.id LEFT JOIN copies AS cop ON cop.edition_id = ed.id").group(columns_list).order("MIN(cop.price)#{sort_order}")
     when "date"
       sort_order = sort_order.present? ? "" : " DESC"
-      order("products.book_date#{sort_order}")
+      order("books.book_date#{sort_order}")
     else
-      order("products.book_date#{sort_order}")
+      order("books.book_date#{sort_order}")
     end
   end
   
@@ -86,39 +83,39 @@ class Product < ActiveRecord::Base
     copies = Copy.unscoped.stocked
     
     if p[:recent].present?
-      new_books = Product.unscoped.select("products.id, products.in_stock, content_type_id, MAX(e.created_at) as ed_date")
-          .joins("INNER JOIN editions AS e ON e.product_id = products.id INNER JOIN copies as c ON c.edition_id = e.id WHERE c.in_stock = TRUE")
-          .group("products.id, products.in_stock, content_type_id").order("ed_date DESC").limit(28)
-      filtered = filtered.where("products.id IN (?)", new_books.map{ |x| x.id })
+      new_books = Book.unscoped.select("books.id, books.in_stock, MAX(e.created_at) as ed_date")
+          .joins("INNER JOIN editions AS e ON e.book_id = books.id INNER JOIN copies as c ON c.edition_id = e.id WHERE c.in_stock = TRUE")
+          .group("books.id, books.in_stock").order("ed_date DESC").limit(28)
+      filtered = filtered.where("books.id IN (?)", new_books.map{ |x| x.id })
     end
     
     if p[:award_winning].present?
-      filtered = filtered.where("products.id IN (?)", ProductAward.all.map{ |x| x.product_id })
+      filtered = filtered.where("books.id IN (?)", BookAward.all.map{ |x| x.book_id })
     end
     
     if p[:search].present?
       sqlSearch = "%#{SqlHelper::escapeWildcards(p[:search].downcase)}%"
       filtered = filtered
-        .joins('LEFT JOIN illustrators AS ill ON ill.id = products.illustrator_id')
-        .where('LOWER(products.title) LIKE ? OR
+        .joins('LEFT JOIN illustrators AS ill ON ill.id = books.illustrator_id')
+        .where('LOWER(books.title) LIKE ? OR
                LOWER(auth.first_name || \' \' || auth.last_name) LIKE ? OR
                LOWER(ill.first_name || \' \' || ill.last_name) LIKE ?',
                sqlSearch, sqlSearch, sqlSearch)
     end
     
     if p[:collection].present?
-      filtered = filtered.where('products.id IN (SELECT product_id FROM products_collections WHERE collection_id = ?)', p[:collection].to_i)
+      filtered = filtered.where('books.id IN (SELECT book_id FROM books_collections WHERE collection_id = ?)', p[:collection].to_i)
     end
     
     if p[:publisher].present?
       filtered_copies = true
-      editions = editions.joins(:product).where("products.publisher_id = ?", p[:publisher].to_i)
+      editions = editions.joins(:book).where("books.publisher_id = ?", p[:publisher].to_i)
     end
     
     if p[:award].present?
       awards = Award.where(:award_type_id => p[:award].to_i)
-      product_awards = ProductAward.where(:award_id => awards.map{ |x| x.id })
-      filtered = filtered.where("products.id IN (?)", product_awards.map{ |x| x.product_id })
+      book_awards = BookAward.where(:award_id => awards.map{ |x| x.id })
+      filtered = filtered.where("books.id IN (?)", book_awards.map{ |x| x.book_id })
     end
     
     if p[:author].present?
@@ -180,12 +177,12 @@ class Product < ActiveRecord::Base
     end
     
     if p[:category].present?
-      filtered = filtered.where(:product_type_id => p[:category].to_i)
+      filtered = filtered.where(:book_type_id => p[:category].to_i)
     end
     
     if filtered_copies
       editions = editions.where("editions.id IN (?)", copies.map {|c| c.edition_id })
-      filtered = filtered.where("products.id IN (?)", editions.map { |e| e.product_id })
+      filtered = filtered.where("books.id IN (?)", editions.map { |e| e.book_id })
     end
     
     return filtered
@@ -193,29 +190,28 @@ class Product < ActiveRecord::Base
   
   def self.search(query, fields, output)
     escaped = SqlHelper::escapeWildcards(query).upcase
-    product_array = []
+    book_array = []
     if fields == "all" && output == "display_target"
-      product_array |= self.select("id, title, in_stock, content_type_id")
+      book_array |= self.select("id, title, in_stock")
                             .where("UPPER(title) LIKE ?", "%#{escaped}%")
                             .map { |x| {:id => x.id, :name => x.title }}
       
       if (escaped =~ /^[A-Z]-[0-9]/)
-        product_array |= self.select("id, title, accession_id, in_stock, content_type_id")
+        book_array |= self.select("id, title, accession_id, in_stock")
                               .where('accession_id LIKE ?', "#{escaped}%")
                               .map { |x| {:id => x.id, :name => "#{x.title} - #{x.accession_id}" }}
       elsif (escaped =~ /^[0-9]+$/)
       else
-        product_array |= self.includes(:author)
+        book_array |= self.includes(:author)
                             .where('UPPER("authors".first_name || \' \' || "authors".last_name) LIKE ?', "%#{escaped}%")
                             .map { |x| {:id => x.id, :name => "#{x.title} - #{x.author.full_name}" }}
       end
     end
-    return product_array
+    return book_array
   end
   
   def init
     self.in_stock = false if in_stock.nil?
-    self.content_type_id ||= 1
   end
   
   def set_timestamps
@@ -239,13 +235,13 @@ class Product < ActiveRecord::Base
   end
   
   def find_accession_id
-    last_product = Product.where("accession_id IS NOT NULL").order("accession_id DESC").limit(1).first
-    return last_product.present? ? last_product.accession_id.to_i + 1 : 1
+    last_book = Book.where("accession_id IS NOT NULL").order("accession_id DESC").limit(1).first
+    return last_book.present? ? last_book.accession_id.to_i + 1 : 1
   end
   
   def build_empty_fields
-    if product_awards.length == 0
-      self.product_awards.build
+    if book_awards.length == 0
+      self.book_awards.build
     end
     
     if other_fields.length == 0
@@ -316,7 +312,7 @@ class Product < ActiveRecord::Base
   end
   
   def award_list
-    product_awards.map {|x| x.full_name}.join(", ")
+    book_awards.map {|x| x.full_name}.join(", ")
   end
   
   def editions_json
@@ -327,13 +323,13 @@ class Product < ActiveRecord::Base
     attrs.each do |a|
       if a[:award_id].present? && a[:award_id] != "add"
         if a[:id].present?
-          ProductAward.find(a[:id]).update_attributes(a)
+          BookAward.find(a[:id]).update_attributes(a)
         else
           a.delete :id
-          product_awards.build(a)
+          book_awards.build(a)
         end
       else
-        ProductAward.find(a[:id]).destroy if a[:id].present?
+        BookAward.find(a[:id]).destroy if a[:id].present?
       end
     end
   end
@@ -415,30 +411,22 @@ class Product < ActiveRecord::Base
     if (in_stock != is_in_stock)
         self.in_stock = is_in_stock
         
-        if (is_in_stock)
-          touch :in_stock_at
-          
-          # If the product went out of stock at least a day ago, update the book_date
-          touch :book_date if ((in_stock_at - out_of_stock_at) / 3600) > 24
-          
-        else
-          touch :out_of_stock_at
-        end
+        # -- UPDATE THE BOOK DATE -- #
         
         save
     end
   end
   
   def in_collection? (collection)
-    collection.product_ids.include?(id)
+    collection.book_ids.include?(id)
   end
   
-  def next_product
-    Product.where('"products"."created_at" > ?', created_at).order(:created_at).limit(1).first || Product.limit(1).order(:created_at).first
+  def next_book
+    Book.where('"books"."created_at" > ?', created_at).order(:created_at).limit(1).first || Book.limit(1).order(:created_at).first
   end
   
-  def previous_product
-    Product.where('"products"."created_at" < ?', created_at).order('"products"."created_at" DESC').limit(1).first || Product.limit(1).order('"products"."created_at" DESC').first
+  def previous_book
+    Book.where('"books"."created_at" < ?', created_at).order('"books"."created_at" DESC').limit(1).first || Book.limit(1).order('"books"."created_at" DESC').first
   end
   
   def used_copy_min_price

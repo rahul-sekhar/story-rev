@@ -26,8 +26,8 @@ class OrderCopy < ActiveRecord::Base
   def get_hash
     {
       :id => id,
-      :title => copy.product.title,
-      :author_name => copy.product.author_name,
+      :title => copy.book.title,
+      :author_name => copy.book.author_name,
       :accession_id => copy.accession_id,
       :price => copy.formatted_price,
       :format_name => copy.edition.format_name,

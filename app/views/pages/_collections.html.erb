@@ -1,5 +1,5 @@
-<% @stocked_products ||= Product.unscoped.where(:in_stock => true) %>
-<% @stocked_product_ids ||= @stocked_products.map{|x| x.id} %>
+<% @stocked_books ||= Book.unscoped.where(:in_stock => true) %>
+<% @stocked_book_ids ||= @stocked_books.map{|x| x.id} %>
 
 <section id="collections">
   

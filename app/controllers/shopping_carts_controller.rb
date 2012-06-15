@@ -7,7 +7,7 @@ class ShoppingCartsController < ApplicationController
         format.json {
           
           @cart_copies = shopping_cart.shopping_cart_copies
-          @cart_copies = @cart_copies.includes(:copy => {:edition => {:product => [:illustrator, :cover_image]}})
+          @cart_copies = @cart_copies.includes(:copy => {:edition => {:book => [:illustrator, :cover_image]}})
           @cart_copies = @cart_copies.order('"copies"."in_stock"')
           
           render :json => {
@@ -31,7 +31,7 @@ class ShoppingCartsController < ApplicationController
     @title = "Shopping Cart"
     
     @cart_copies = shopping_cart.shopping_cart_copies
-    @cart_copies = @cart_copies.includes(:copy => {:edition => {:product => [:illustrator, :cover_image]}})
+    @cart_copies = @cart_copies.includes(:copy => {:edition => {:book => [:illustrator, :cover_image]}})
     @cart_copies = @cart_copies.order('"copies"."in_stock"')
     
     # Log if there are unavailable copies

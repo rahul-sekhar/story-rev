@@ -5,7 +5,7 @@ class Author < ActiveRecord::Base
   
   before_validation :convert_full_name
   
-  has_many :products, :dependent => :destroy
+  has_many :books, :dependent => :destroy
   
   validates :full_name, :length => { :maximum => 150 }, :presence => true
   

@@ -13,13 +13,13 @@ $(document).ready(function() {
     var $hoverNewAmount = $hoverNew.find('.amount');
     var $hoverUsed = $('<p class="used">used copies start at <span class="amount"></span>').appendTo($hoverInfo);
     var $hoverUsedAmount = $hoverUsed.find('.amount');
-    var $hoverMoreInfo = $('<a href="#" class="product-link">more info</a>').appendTo($hoverInfo);
+    var $hoverMoreInfo = $('<a href="#" class="book-link">more info</a>').appendTo($hoverInfo);
     $hoverInfo.hide().appendTo($body);
     
-    function setProductHover() {
+    function setBookHover() {
         $hoverInfo.hide();
         
-        $('#products .cover').on('mousemove', trackCursor)
+        $('#books .cover').on('mousemove', trackCursor)
             .hoverIntent(function(e) {
                 var $book = $(this).data('hover', true);
                 if ($hoverInfo.is(':visible')) {
@@ -67,7 +67,7 @@ $(document).ready(function() {
             $hoverUsed.hide();
         }
         
-        $hoverMoreInfo.attr('href', $book.find('.product-link:first').attr('href'));
+        $hoverMoreInfo.attr('href', $book.find('.book-link:first').attr('href'));
         
         $hoverInfo.data('link', $book);
         $hoverInfo.off('mouseenter mouseleave');
@@ -100,12 +100,12 @@ $(document).ready(function() {
         }
     }
     
-    setProductHover();
+    setBookHover();
     
-    // Set up the hover state when a refreshed event is triggered on the products section
-    $('#products').on('productsRefreshed', setProductHover)
+    // Set up the hover state when a refreshed event is triggered on the books section
+    $('#books').on('booksRefreshed', setBookHover)
     
-    // Handle product information popups
+    // Handle book information popups
     var $bookInfoDialog = $('<section id="book-info-dialog" class="dialog"></section>');
     $bookInfoDialog.dialog({
         position: "center",
@@ -120,7 +120,7 @@ $(document).ready(function() {
     });
     var $bookInfoLoading = $('<p class="loading-large"><img alt="" src="/images/loading2.gif" /><br />Loading...</p>');
     
-    $body.on('click', '.product-link', function(e) {
+    $body.on('click', '.book-link', function(e) {
         
         // If an unavailable shopping cart copy was clicked on, remove it from the cart
         var $this = $(this);

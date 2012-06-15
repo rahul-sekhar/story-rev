@@ -1,4 +1,4 @@
-.product {
+.book {
     #top-nav li {
         margin-right: e(10px);
     }
@@ -16,25 +16,25 @@
         }
     }
     
-    #product_accession_id {
+    #book_accession_id {
         width:e(98px, $input-font-size);
     }
     
-    #product_year {
+    #book_year {
         width:e(48px, $input-font-size);
     }
     
-    #product_age_from, #product_age_to {
+    #book_age_from, #book_age_to {
         width:e(28px, $input-font-size);
     }
     
-    #product_short_description {
+    #book_short_description {
         width:e(358px, $input-font-size);
         height:e(98px, $input-font-size);
         resize:vertical;
     }
     
-    #product-fields {
+    #book-fields {
         margin-top:e(-10px);
         position:relative;
     }
@@ -284,7 +284,7 @@
         margin-bottom: e(30px, $button-size);
     }
     
-    .delete-product {
+    .delete-book {
         float:right;
         margin-right: 20px;
     }
@@ -370,10 +370,10 @@
     // Book information sidebar styling
     
     #info-sidebar {
-        #product-scroller {
+        #book-scroller {
             position:relative;
             
-            #product-list {
+            #book-list {
                 min-height:75px;
                 padding:5px 20px 5px 10px;
                 
@@ -400,7 +400,7 @@
                 }
             }
             
-            .product-list-wrapper {
+            .book-list-wrapper {
                 overflow:hidden;
             }
             
@@ -436,7 +436,7 @@
             text-align:center;
         }
         
-        #product-info {
+        #book-info {
             @include small-text;
             margin-top: e(30px, $small-text-size);
             @include word-wrap;

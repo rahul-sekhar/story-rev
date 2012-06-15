@@ -1,27 +1,27 @@
 $(document).ready(function() {
     var $body = $('body');
     
-    // Skip this code if we aren't on a product page
-    if (!$body.hasClass('product')) return;
+    // Skip this code if we aren't on a book page
+    if (!$body.hasClass('book')) return;
     
     if ($body.hasClass('search')) {
         // Handle the search box
-        $('#product-search').tokenInput("/admin/products/search", {
+        $('#book-search').tokenInput("/admin/books/search", {
             overlayHintText: 'Search by title, author, ISBN or accession number',
             tokenLimit: 1,
             addClass: "fill",
             additionalParams: { search_by: "all", output: "display_target" },
             allowCustom: true,
-            addFormatter: function(query) { return "<li>Add a new product - <strong>" + escapeHTML(query) + "</strong></li>" },
+            addFormatter: function(query) { return "<li>Add a new book - <strong>" + escapeHTML(query) + "</strong></li>" },
             onAdd: function(item) {
                 $(this).tokenInput("clear");
                 if (item.id) {
                     // Redirect to the edit page
-                    window.location.href = '/admin/products/' + item.id + '/edit'
+                    window.location.href = '/admin/books/' + item.id + '/edit'
                 }
                 else {
                     // If the ID is null, redirect to the add page, with the title preset
-                    window.location.href = '/admin/products/new?title=' + encodeURIComponent(item.name)
+                    window.location.href = '/admin/books/new?title=' + encodeURIComponent(item.name)
                 }
             }
         });
@@ -171,7 +171,7 @@ $(document).ready(function() {
         });
     }
     
-    // Skip the remaining code if we aren't on a product form page
+    // Skip the remaining code if we aren't on a book form page
     if (!$body.hasClass('form')) return;
     
     // Autocompletes
@@ -189,12 +189,12 @@ $(document).ready(function() {
         preventDuplicates: true,
         dataPrepopulate: true
     }
-    var $authorNameInput = $('#product_author_name').tokenInput("/admin/authors.json", singleAutocompleteSettings);
-    $('#product_illustrator_name').tokenInput("/admin/illustrators.json", singleAutocompleteSettings);
-    $('#product_publisher_name').tokenInput("/admin/publishers.json", singleAutocompleteSettings);
-    $('#product_country_name').tokenInput("/admin/countries.json", singleAutocompleteSettings);
-    $('#product_collection_list').tokenInput("/admin/collections.json", tagAutocompleteSettings);
-    $('#product_product_tag_list').tokenInput("/admin/product_tags.json", tagAutocompleteSettings);
+    var $authorNameInput = $('#book_author_name').tokenInput("/admin/authors.json", singleAutocompleteSettings);
+    $('#book_illustrator_name').tokenInput("/admin/illustrators.json", singleAutocompleteSettings);
+    $('#book_publisher_name').tokenInput("/admin/publishers.json", singleAutocompleteSettings);
+    $('#book_country_name').tokenInput("/admin/countries.json", singleAutocompleteSettings);
+    $('#book_collection_list').tokenInput("/admin/collections.json", tagAutocompleteSettings);
+    $('#book_book_tag_list').tokenInput("/admin/book_tags.json", tagAutocompleteSettings);
     
     // Function to handle adding options to select lists
     function allowOptionAdding($input, object_name, url, data_container) {
@@ -225,8 +225,7 @@ $(document).ready(function() {
         });
     }
     
-    allowOptionAdding($('#product_content_type_id'), 'content type', '/admin/content_types', 'content_type');
-    allowOptionAdding($('#product_product_type_id'), 'product type', '/admin/product_types', 'product_type');
+    allowOptionAdding($('#book_book_type_id'), 'book type', '/admin/book_types', 'book_type');
     
     var $awardList = $('#award-field-list ul');
     // Check when a award type selector is changed
@@ -342,11 +341,11 @@ $(document).ready(function() {
             .val("")
             .end()
         .find('.award_name')
-            .attr('name', 'product[award_attributes][][award_id]')
+            .attr('name', 'book[award_attributes][][award_id]')
             .empty()
             .end()
         .find('.award_year')
-            .attr('name', 'product[award_attributes][][year]')
+            .attr('name', 'book[award_attributes][][year]')
             .val("")
             .end()
         .find('input[type=hidden]')
@@ -393,8 +392,8 @@ $(document).ready(function() {
             
             // Create new storage fields
             $('<div id="stored-desc-' + number + '"></div>')
-                .append('<input class="title" type="hidden" value="" name="product[other_field_attributes][][title]" />')
-                .append('<input class="content" type="hidden" value="" name="product[other_field_attributes][][content]" />')
+                .append('<input class="title" type="hidden" value="" name="book[other_field_attributes][][title]" />')
+                .append('<input class="content" type="hidden" value="" name="book[other_field_attributes][][content]" />')
                 .appendTo($descFields);
             
             // Clear the current fields
@@ -428,8 +427,8 @@ $(document).ready(function() {
         }
     });
     
-    // Save current description before saving the product
-    $('.product form').submit(function() {
+    // Save current description before saving the book
+    $('.book form').submit(function() {
         saveCurrentDescription();
     });
     
@@ -539,8 +538,8 @@ $(document).ready(function() {
     }).insertBefore($cancel);
     
     // Handle the image links to add and clear the cover
-    var $coverId = $('#product_cover_image_id');
-    var $productTitle = $('#product_title');
+    var $coverId = $('#book_cover_image_id');
+    var $bookTitle = $('#book_title');
     var $removeCoverLink = $('#remove-cover-link');
     var $removeCoverLi = $removeCoverLink.parent("li");
     
@@ -557,7 +556,7 @@ $(document).ready(function() {
             if (url) {
                 clearCoverImage();
                 $cover.append('<a href="' + url + '"><img alt="" src="' + thumb + '" /></a>');
-                $coverId.attr("name", "product[cover_image_id]").val(id);
+                $coverId.attr("name", "book[cover_image_id]").val(id);
                 $removeCoverLi.removeClass("disabled");
             }
             $.unblockUI();
@@ -571,18 +570,18 @@ $(document).ready(function() {
         $coverMenu.hide();
         clearCoverImage();
         $cover.prepend($('<div class="blank-cover"></div>')
-            .append('<p class="title">' + $productTitle.val() + '</p>')
+            .append('<p class="title">' + $bookTitle.val() + '</p>')
             .append('<p class="author">' + $authorNameInput.val() + '</p>')
         );
         $removeCoverLi.addClass("disabled");
-        $coverId.attr("name", "product[cover_image_id]").val(null);
+        $coverId.attr("name", "book[cover_image_id]").val(null);
     });
     
     function coverFromURL(url) {
         if (url) {
             clearCoverImage();
             $cover.append('<a href="' + url + '"><img alt="" src="' + url + '" /></a>')
-            $coverId.attr("name", "product[cover_image_url]").val(url);
+            $coverId.attr("name", "book[cover_image_url]").val(url);
             $removeCoverLi.removeClass("disabled");
         }
     }
@@ -594,7 +593,7 @@ $(document).ready(function() {
     });
     
     // Change the cover text (if no image has been selected) when the title is changed
-    $productTitle.change(function() {
+    $bookTitle.change(function() {
         $cover.find(".blank-cover p.title").text($(this).val());
     });
     
@@ -606,11 +605,11 @@ $(document).ready(function() {
     
     var $ageGoogleLink = $('<a href=#" class="google-link ext">[google]</a>');
     var $awardGoogleLink = $('<a href=#" class="google-link ext">[google]</a>');
-    var $ageTo = $('#product_age_to');
+    var $ageTo = $('#book_age_to');
     var $awardListContainer = $('#award-field-list');
     
-    $productTitle.add($authorNameInput).change(function() {
-        var title = $productTitle.val();
+    $bookTitle.add($authorNameInput).change(function() {
+        var title = $bookTitle.val();
         if (!title) {
             $ageGoogleLink.add($awardGoogleLink).remove();
         }
@@ -626,31 +625,31 @@ $(document).ready(function() {
     
     // Handle amazon information
     var $sidebar = $('#info-sidebar');
-    var $productList = $sidebar.find('#product-list');
-    var $productInfo = $sidebar.find('#product-info');
-    var $productScroller = $sidebar.find('#product-scroller');
-    var $scrollWrapper = $productScroller.find('.product-list-wrapper');
+    var $bookList = $sidebar.find('#book-list');
+    var $bookInfo = $sidebar.find('#book-info');
+    var $bookScroller = $sidebar.find('#book-scroller');
+    var $scrollWrapper = $bookScroller.find('.book-list-wrapper');
     
     // Load amazon data
-    $productTitle.change(function() {
+    $bookTitle.change(function() {
         var title = $(this).val();
         
         if (!$.trim(title)) {
-            $productList.empty();
-            $productInfo.empty();
+            $bookList.empty();
+            $bookInfo.empty();
             return;
         }
         
         if (title == $sidebar.data("title")) return;
-        $productInfo.empty();
-        $productList.empty()
+        $bookInfo.empty();
+        $bookList.empty()
         $scrollWrapper.scrollLeft(0);
-        $productScroller.block(blockUILoading);
-        $.get('/admin/products/amazon_info.json', {'title': title}, function(data) {
-            $productList.empty();
+        $bookScroller.block(blockUILoading);
+        $.get('/admin/books/amazon_info.json', {'title': title}, function(data) {
+            $bookList.empty();
             
             if (!data.length) {
-                $productScroller.unblock();
+                $bookScroller.unblock();
                 return;
             }
             
@@ -659,8 +658,8 @@ $(document).ready(function() {
             
             $.each(data, function(index, entry) {
                 var $coverThumb = $('<div class="cover-thumb" title="' + entry.title + '"></div>')
-                    .data('productInfo', entry)
-                    .appendTo($productList);
+                    .data('bookInfo', entry)
+                    .appendTo($bookList);
                     
                 if (entry.thumb) {
                     list_length += parseInt(entry.thumbWidth, 10) + 14;
@@ -675,15 +674,15 @@ $(document).ready(function() {
                 }
             });
             
-            $productList.css('width', list_length + 'px');
-            $productScroller.unblock();
-            $productList.find('.cover-thumb:first').click();
+            $bookList.css('width', list_length + 'px');
+            $bookScroller.unblock();
+            $bookList.find('.cover-thumb:first').click();
         });
     });
     
-    // Amazon product list scroller
-    var $leftScroll = $productScroller.find('.left-scroll');
-    var $rightScroll = $productScroller.find('.right-scroll');
+    // Amazon book list scroller
+    var $leftScroll = $bookScroller.find('.left-scroll');
+    var $rightScroll = $bookScroller.find('.right-scroll');
     var scrollTimer;
     var scrollInterval = 10;
     var direction = 0;
@@ -707,38 +706,38 @@ $(document).ready(function() {
     });
     
     // Selection of a book
-    $productList.on('click', '.cover-thumb', function() {
-        var $selectedProduct = $(this);
-        if ($selectedProduct.hasClass("selected")) return;
+    $bookList.on('click', '.cover-thumb', function() {
+        var $selectedBook = $(this);
+        if ($selectedBook.hasClass("selected")) return;
         
-        $productList.find('.cover-thumb.selected').removeClass("selected");
-        $selectedProduct.addClass("selected");
+        $bookList.find('.cover-thumb.selected').removeClass("selected");
+        $selectedBook.addClass("selected");
         
-        $productInfo.empty();
-        var currProduct = $selectedProduct.data('productInfo');
+        $bookInfo.empty();
+        var currBook = $selectedBook.data('bookInfo');
         
-        if (currProduct.image) {
-            $productInfo.append($('<li></li>')
+        if (currBook.image) {
+            $bookInfo.append($('<li></li>')
                 .append($('<div class="cover"></div>')
-                    .append('<a href="' + currProduct.image + '" target="_blank"><img src="' + currProduct.image + '" alt="" /></a>')
+                    .append('<a href="' + currBook.image + '" target="_blank"><img src="' + currBook.image + '" alt="" /></a>')
                 )
                 .append($('<div class="use-link-wrapper"></div>')
                     .append('<a href="#" class="use-link">Use</a>')
-                    .append(' (' + (currProduct.imageWidth || 0) + '&times;' + (currProduct.imageHeight || 0) + ')')
+                    .append(' (' + (currBook.imageWidth || 0) + '&times;' + (currBook.imageHeight || 0) + ')')
                 )
             );
         }
             
-        $productInfo
-            .appendLi('Title', currProduct.title)
-            .appendLi('Author', currProduct.author)
-            .appendLi('Illustrator', currProduct.illustrator)
-            .appendLi('ISBN', currProduct.isbn)
-            .appendLi('Publisher', currProduct.publisher)
-            .appendLi('Publication Date', currProduct.publicationDate)
-            .appendLi('Age Level', currProduct.age)
-            .appendLi('Pages', currProduct.pages)
-            .appendLi('Amazon Page', '<a href="' + currProduct.details + '">' + currProduct.details + '</a>');
+        $bookInfo
+            .appendLi('Title', currBook.title)
+            .appendLi('Author', currBook.author)
+            .appendLi('Illustrator', currBook.illustrator)
+            .appendLi('ISBN', currBook.isbn)
+            .appendLi('Publisher', currBook.publisher)
+            .appendLi('Publication Date', currBook.publicationDate)
+            .appendLi('Age Level', currBook.age)
+            .appendLi('Pages', currBook.pages)
+            .appendLi('Amazon Page', '<a href="' + currBook.details + '">' + currBook.details + '</a>');
     });
     
     // Handle using amazon images
@@ -754,6 +753,6 @@ $(document).ready(function() {
         return $(this).append('<li><strong>' + title + ': </strong>' + (br ? '<br />' : '') + (value || '') + '</li>');
     }
     
-    $productTitle.change();
+    $bookTitle.change();
     
 });

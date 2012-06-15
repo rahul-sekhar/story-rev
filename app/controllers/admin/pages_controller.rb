@@ -9,7 +9,7 @@ class Admin::PagesController < Admin::ApplicationController
     @illustrators = Illustrator.prioritised
     @publishers = Publisher.prioritised
     @collections = Collection.prioritised
-    @product_types = ProductType.prioritised
+    @book_types = BookType.prioritised
   end
   
   def finances_config

@@ -303,30 +303,30 @@ $(document).ready(function() {
         $textbox.focus();
     });
     
-    // Handle manually adding products to orders
+    // Handle manually adding books to orders
     var $addDialog = $('<section id="add-order-copy" class="dialog"></section');
     $('<a class="close-button" href="#"></a>').click(function(e) {
         e.preventDefault();
         $.unblockUI();
     }).appendTo($addDialog);
     
-    var product_id = null
+    var book_id = null
     
-    var $searchBox = $('<input name="product-search" class="product-search" />')
+    var $searchBox = $('<input name="book-search" class="book-search" />')
         .appendTo($addDialog)
-        .tokenInput("/admin/products/search", {
+        .tokenInput("/admin/books/search", {
             overlayHintText: 'Search by title, author, ISBN or accession number',
             tokenLimit: 1,
             addClass: "fill dialog",
             additionalParams: { search_by: "all", output: "display_target" },
             allowCustom: true,
-            addFormatter: function(query) { return "<li>Add a new product - <strong>" + escapeHTML(query) + "</strong></li>" },
+            addFormatter: function(query) { return "<li>Add a new book - <strong>" + escapeHTML(query) + "</strong></li>" },
             onAdd: function(item) {
-                product_id = item.id;
-                $infoLink.data('id', product_id).show();
+                book_id = item.id;
+                $infoLink.data('id', book_id).show();
                 $editionBox.show();
                 $editionTable.itemTable({
-                    url: '/admin/products/' + item.id + '/editions',
+                    url: '/admin/books/' + item.id + '/editions',
                     objectName: 'edition',
                     editable: false,
                     removable: false,
@@ -350,7 +350,7 @@ $(document).ready(function() {
                 })
             },
             onDelete: function(){
-                product_id = null;
+                book_id = null;
                 $infoLink.hide();
                 $editionBox.hide();
                 $copyBox.hide();
@@ -373,7 +373,7 @@ $(document).ready(function() {
         $copyBox.show();
         
         $copyTable.itemTable({
-            url: '/admin/products/' + product_id + '/editions/' + id + '/copies',
+            url: '/admin/books/' + book_id + '/editions/' + id + '/copies',
             objectName: 'copy',
             editable: false,
             removable: false,

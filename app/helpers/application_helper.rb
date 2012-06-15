@@ -39,7 +39,7 @@ module ApplicationHelper
     when "condition"
       "Condition - #{val} stars#{val.to_i == 5 ? "" : " or above"}"
     when "category"
-      ProductType.find_by_id(val).name || ""
+      BookType.find_by_id(val).name || ""
     when "age"
       "Age #{val}"
     when "type"
@@ -121,7 +121,7 @@ module ApplicationHelper
     end
     
     link_params[:sort_by] = name
-    root_path(link_params, :anchor => "products")
+    root_path(link_params, :anchor => "books")
   end
   
   def collection_params(name, val)
@@ -136,7 +136,7 @@ module ApplicationHelper
   end
   
   def collection_path(name, val)
-    root_path(collection_params(name, val), :anchor => "products")
+    root_path(collection_params(name, val), :anchor => "books")
   end
   
   def filter_params(name, val)
@@ -166,7 +166,7 @@ module ApplicationHelper
   end
   
   def filter_path(name, val)
-    root_path(filter_params(name, val), :anchor => "products")
+    root_path(filter_params(name, val), :anchor => "books")
   end
   
   def sort_link(name)

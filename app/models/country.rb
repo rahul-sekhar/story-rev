@@ -1,5 +1,5 @@
 class Country < ActiveRecord::Base
-  has_many :products, :dependent => :nullify
+  has_many :books, :dependent => :nullify
   
   validates :name, :length => { :maximum => 100 }, :presence => true, :uniqueness => { :case_sensitive => false }
   

@@ -3,14 +3,14 @@ class CoverImage < ActiveRecord::Base
   
   before_save :store_dimensions
   
-  belongs_to :product
+  belongs_to :book
   
   validates :filename, :presence => true, :file_size => { :maximum => 4.megabytes.to_i }
   
   def self.clear_old
     cleared = 0
-    CoverImage.includes(:product).where("updated_at < current_timestamp - INTERVAL '1 day'").each do |i|
-      if i.product_id.blank?
+    CoverImage.includes(:book).where("updated_at < current_timestamp - INTERVAL '1 day'").each do |i|
+      if i.book_id.blank?
         puts "Deleted: #{i.file_info[:name]} (#{i.file_info[:size]}) \t\t [#{i.created_at}]"
         i.destroy
         cleared += 1

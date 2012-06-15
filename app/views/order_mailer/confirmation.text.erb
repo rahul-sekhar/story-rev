@@ -7,7 +7,7 @@ please reply to this email.
 Items:
 ======
 <% @order.order_copies.each do |oc| %>
-<%= oc.copy.product.title %> (by <%= oc.copy.product.author_name %>) - <%= pluralize(oc.number, 'copy') %> - Rs. <%= oc.copy.price %>
+<%= oc.copy.book.title %> (by <%= oc.copy.book.author_name %>) - <%= pluralize(oc.number, 'copy') %> - Rs. <%= oc.copy.price %>
 <% end %>
 
 Postage: Rs. <%= @order.postage_amount %>

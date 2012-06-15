@@ -3,7 +3,7 @@ class Illustrator < ActiveRecord::Base
   
   attr_writer :full_name
   
-  has_many :products, :dependent => :nullify
+  has_many :books, :dependent => :nullify
   
   validates :full_name, :length => { :maximum => 150 }, :presence => true
   

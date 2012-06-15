@@ -11,10 +11,10 @@
         
         <td class="copy">
           <p class="title">
-            <strong><%= c.product.title %></strong>
+            <strong><%= c.book.title %></strong>
           </p>
           <p class="creators">
-            <%= c.product.author_name + (c.product.illustrator.present? ? ' ' + c.product.illustrator_name : '') %>
+            <%= c.book.author_name + (c.book.illustrator.present? ? ' ' + c.book.illustrator_name : '') %>
           </p>
         </td>
         
@@ -61,11 +61,11 @@
         <p class="number"><strong><%= n %></strong></p>
         
         <p class="title">
-          <strong><%= c.product.title %></strong>
+          <strong><%= c.book.title %></strong>
         </p>
         
         <p class="creators">
-          <%= c.product.author_name + (c.product.illustrator.present? ? ' ' + c.product.illustrator_name : '') %>
+          <%= c.book.author_name + (c.book.illustrator.present? ? ' ' + c.book.illustrator_name : '') %>
         </p>
         
         <p class="format" title="<%= c.edition.publisher_name %>">

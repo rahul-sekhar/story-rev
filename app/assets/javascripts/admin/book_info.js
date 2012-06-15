@@ -1,6 +1,6 @@
 $(document).ready(function() {
     
-    // Handle product information popups
+    // Handle book information popups
     var $bookInfoDialog = $('<section id="book-info-dialog" class="dialog"></section>');
     $bookInfoDialog.dialog({
         position: "center",
@@ -17,7 +17,7 @@ $(document).ready(function() {
     
     $('body').on('click', '.zoom-link', function(e) {
         e.preventDefault();
-        var url = '/products/' + ($(this).data('id') || $(this).closest('tr').data('id'));
+        var url = '/books/' + ($(this).data('id') || $(this).closest('tr').data('id'));
         
         if (extClick(e)) {
             window.open(url);

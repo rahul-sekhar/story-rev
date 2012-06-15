@@ -3,7 +3,7 @@ class Edition < ActiveRecord::Base
   
   belongs_to :format
   belongs_to :language
-  belongs_to :product
+  belongs_to :book
   belongs_to :publisher
   
   has_many :copies, :dependent => :destroy

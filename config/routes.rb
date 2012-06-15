@@ -2,7 +2,7 @@ StoryRev::Application.routes.draw do
   
   root :to => "pages#store"
   
-  resources :products
+  resources :books
   
   get "order" => "orders#new"
   post "order" => "orders#create"
@@ -19,7 +19,7 @@ StoryRev::Application.routes.draw do
   
   # Admin routes  
   namespace :admin do
-    root :to => "products#search"
+    root :to => "books#search"
     
     get "logout" => "sessions#destroy", :as => "logout"
     get "login" => "sessions#new", :as => "login"
@@ -28,7 +28,7 @@ StoryRev::Application.routes.draw do
     get "priorities" => "pages#priorities", :as => "priorities"
     get "finances_config" => "pages#finances_config", :as => "finances_config"
     
-    resources :products do
+    resources :books do
       resources :editions do
         resources :copies
       end
@@ -54,13 +54,12 @@ StoryRev::Application.routes.draw do
     resources :authors
     resources :illustrators
     resources :publishers
-    resources :product_types
-    resources :content_types
+    resources :book_types
     resources :formats
     resources :countries
     resources :languages
     resources :collections do
-      resources :products, :controller => "collection_products"
+      resources :books, :controller => "collection_books"
     end
     resources :award_types do
       resources :awards

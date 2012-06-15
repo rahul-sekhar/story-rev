@@ -1,6 +1,6 @@
-<%= simple_form_for [:admin, @product], :defaults => { :required => false, :error => false } do |f| %>
-  <div id="product-fields">
-    <%= render "cover", :product => @product, :link_to_image => true, :form => f %>
+<%= simple_form_for [:admin, @book], :defaults => { :required => false, :error => false } do |f| %>
+  <div id="book-fields">
+    <%= render "cover", :book => @book, :link_to_image => true, :form => f %>
     
     <%= f.input :accession_id, :as => :string, :label => "Book no.", :disabled => true %>
     <%= f.input :title, :input_html => { :autocomplete => :off } %>
@@ -14,25 +14,25 @@
       :input_html => { :maxlength => 4 } %>
     <%= f.input :country_name, :label => "Country", :as => :string %>
     <div class="input">
-      <%= f.label :age_from, "Age level", :class => ( @product.errors[:age_from].present? ? "error" : nil ) %>
+      <%= f.label :age_from, "Age level", :class => ( @book.errors[:age_from].present? ? "error" : nil ) %>
       <%= f.input_field :age_from, :maxlength => 2, :as => :string %>
-      <%= f.label :age_to, "to", :class => "inline" + ( @product.errors[:age_to].present? ? " error" : "" ) %>
+      <%= f.label :age_to, "to", :class => "inline" + ( @book.errors[:age_to].present? ? " error" : "" ) %>
       <%= f.input_field :age_to, :maxlength => 2, :as => :string %>
     </div>
-    <%= f.input :product_type_id,
+    <%= f.input :book_type_id,
                 :label => "Book type",
                 :as => :select,
-                :collection => ProductType.all
+                :collection => BookType.all
                 %>
-    <%= f.input :collection_list, :label => "Collections", :input_html => { "data-pre" => @product.collections_json } %>
+    <%= f.input :collection_list, :label => "Collections", :input_html => { "data-pre" => @book.collections_json } %>
     
     <div class="input">
-      <label<%=raw @product.errors[:product_awards].present? ? ' class="error"' : '' %>>Awards</label>
+      <label<%=raw @book.errors[:book_awards].present? ? ' class="error"' : '' %>>Awards</label>
       <div id="award-field-list">
         <ul>
-          <% for product_award in @product.product_awards %>
-            <%= f.simple_fields_for "award_attributes[]", product_award do |product_award_form| %>
-              <%= render "admin/awards/fields", :f => product_award_form %>
+          <% for book_award in @book.book_awards %>
+            <%= f.simple_fields_for "award_attributes[]", book_award do |book_award_form| %>
+              <%= render "admin/awards/fields", :f => book_award_form %>
             <% end %>
           <% end %>
         </ul>
@@ -42,18 +42,17 @@
       </div>
     </div>
     
-    <%= f.input :flipkart_id, :label => "Flipkart ID", :input_html => { :maxlength => 20 } %>
     <%= f.input :amazon_url, :label => "Amazon URL" %>
     <%= f.input :short_description, :label_html => { :class => "multi-line" } %>
     
     <div class="input descriptions">
       <label for="description-title">Descriptions</label>
       <div id="description-fields">
-        <%= render "admin/other_fields/fields", :form => f, :product => @product %>
+        <%= render "admin/other_fields/fields", :form => f, :book => @book %>
       </div>
     </div>
     
-    <%= render "admin/products/amazon_sidebar" %>
+    <%= render "admin/books/amazon_sidebar" %>
   </div>
   
   <%= f.submit "Save", :class => "submit" %>

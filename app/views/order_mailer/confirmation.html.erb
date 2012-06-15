@@ -25,8 +25,8 @@
         <% @order.order_copies.each do |oc| %>
         <tr>
           <td style="padding:0 2em; min-width: 10em;">
-            <p><strong><%= oc.copy.product.title %></strong></p>
-            <p style="font-style:italic"><%= oc.copy.product.creators %></p>
+            <p><strong><%= oc.copy.book.title %></strong></p>
+            <p style="font-style:italic"><%= oc.copy.book.creators %></p>
           </td>
           <td style="padding:0 2em;">
             <p><%= pluralize(oc.number, 'copy') %></p>

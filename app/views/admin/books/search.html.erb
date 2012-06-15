@@ -1,0 +1,23 @@
+<% content_for :top_nav do %>
+  <li>
+    <%= link_to "Books", search_admin_books_path %>
+  </li>
+  
+  <li>></li>
+  <li class="current">
+    <%= link_to "Search", search_admin_books_path %>
+  </li>
+  
+  <li>></li>
+  <li>
+    <%= link_to "Add", new_admin_book_path %>
+  </li>
+  
+  <li class="right">
+    <%= link_to "Stock-Taking", admin_books_path %>
+  </li>
+<% end %>
+
+<div id="search-box">
+  <input name="book-search" id="book-search" />
+</div>

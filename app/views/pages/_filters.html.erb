@@ -19,12 +19,12 @@
     
     <ul data-name="category">
       <li><%= filter_link "All categories", :category, nil %></li>
-      <% @product_types.each do |x| %>
+      <% @book_types.each do |x| %>
         <li data-val="<%= x.id %>"><%= filter_link x.name, :category, x.id %></li>
       <% end %>
     </ul>
     
-    <%= form_tag root_path(:anchor => "products"), :method => :get do %>
+    <%= form_tag root_path(:anchor => "books"), :method => :get do %>
     <ul class="age" data-name="age">
       <li><%= filter_link "All ages", :age, nil %></li>
       <% filter_params(:age, nil).each do |k,v| %>
@@ -60,7 +60,7 @@
       <% end %>
     </ul>
     
-    <%= form_tag root_path(:anchor => "products"), :method => :get do %>
+    <%= form_tag root_path(:anchor => "books"), :method => :get do %>
     <ul class="price" data-name="price">
       <li><%= link_to("Any price", filter_path(:price, nil), :class => ((params[:price].blank? && params[:price_from].blank? && params[:price_to].blank?) ? "current" : nil)) %></li>
       <li data-val="-50"><%= filter_link "Less than #{RupeeHelper.to_rupee_span(50)}".html_safe, :price, "-50" %></li>

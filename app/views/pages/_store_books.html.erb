@@ -23,12 +23,12 @@
 </p>
 
 <div class="covers">
-    <% if @products.length > 0 %>
+    <% if @books.length > 0 %>
         <div class="row">
         <% i = 0 %>
-        <% @products.each do |p| %>
+        <% @books.each do |x| %>
             <% i += 1 %>
-            <%= render "products/cover", :product => p %>
+            <%= render "books/cover", :book => x %>
             <% if i % 4 == 0 %>
         </div>
         <div class="row">
@@ -40,4 +40,4 @@
     <% end %>
 </div>
 
-<%= paginate @products %>
+<%= paginate @books %>

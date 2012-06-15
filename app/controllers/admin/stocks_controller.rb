@@ -16,6 +16,6 @@ class Admin::StocksController < Admin::ApplicationController
       s.destroy
     end
     
-    redirect_to admin_products_path
+    redirect_to admin_books_path
   end
 end

@@ -16,9 +16,9 @@
       <% c = sc.copy %>
         <tr data-id="<%= c.id %>"<%= class_if !c.in_stock, "unavailable" %>>
           <td class="tiny-cover">
-            <% if c.product.cover_image.present? %>
-              <a href="<%= product_path(c.product) %>" class="product-link">
-                <img src="<%= c.product.cover_image.tiny_url %>" alt="" width="<%= c.product.cover_image.tiny_width %>" height="<%= c.product.cover_image.tiny_height %>" />
+            <% if c.book.cover_image.present? %>
+              <a href="<%= book_path(c.book) %>" class="book-link">
+                <img src="<%= c.book.cover_image.tiny_url %>" alt="" width="<%= c.book.cover_image.tiny_width %>" height="<%= c.book.cover_image.tiny_height %>" />
               </a>
             <% end %>
           </td>
@@ -32,10 +32,10 @@
               </div>
             <% end %>
             <p class="title">
-              <%= link_to c.product.title, product_path(c.product), :class => "product-link" %>
+              <%= link_to c.book.title, book_path(c.book), :class => "book-link" %>
             </p>
             <p class="creators">
-              <%= c.product.author_name + (c.product.illustrator.present? ? ' ' + c.product.illustrator_name : '') %>
+              <%= c.book.author_name + (c.book.illustrator.present? ? ' ' + c.book.illustrator_name : '') %>
             </p>
             <p class="format" title="<%= c.edition.publisher_name %>">
               <%= c.edition.format_name %>
@@ -51,8 +51,8 @@
             <p><%= RupeeHelper.to_rupee(c.price) %></p>
             <% unless c.in_stock %>
               <p class="error">Now unavailable</p>
-              <% if c.product.copies.stocked.length > 0 %>
-                <%= link_to "Pick another copy", product_path(c.product), :class => "product-link unavailable-copy" %>
+              <% if c.book.copies.stocked.length > 0 %>
+                <%= link_to "Pick another copy", book_path(c.book), :class => "book-link unavailable-copy" %>
               <% end %>
             <% end %>
           </td>

@@ -1,8 +1,8 @@
-class ProductAward < ActiveRecord::Base
-  self.table_name = :products_awards
+class BookAward < ActiveRecord::Base
+  self.table_name = :books_awards
   default_scope includes(:award)
   
-  belongs_to :product
+  belongs_to :book
   belongs_to :award
   
   validates :award_id, :presence => true

@@ -1,7 +1,7 @@
 class Admin::EditionsController < Admin::ApplicationController
   
   def index
-    @editions = Product.find(params[:product_id]).editions
+    @editions = Book.find(params[:book_id]).editions
     
     respond_to do |format|
       format.json { render :json => @editions.map { |x| x.get_hash }}
@@ -9,8 +9,8 @@ class Admin::EditionsController < Admin::ApplicationController
   end
   
   def create
-    @product = Product.find(params[:product_id])
-    @edition = @product.editions.build(params[:edition])
+    @book = Book.find(params[:book_id])
+    @edition = @book.editions.build(params[:edition])
     respond_to do |format|
       if @edition.save
         format.json { render :json => @edition.get_hash }

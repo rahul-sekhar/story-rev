@@ -23,19 +23,19 @@ $(document).ready(function() {
         ]
     });
     
-    // When the collection table changes, construct a product table for that collection
+    // When the collection table changes, construct a book table for that collection
     var $collectionLink = $('<a href="#" class="select-link">Select books</a>');
-    var $productTable = $('#collection-product-table');
+    var $bookTable = $('#collection-book-table');
     $collectionTable.on("selectionChange", function(e, id) {
-        $productTable.empty();
+        $bookTable.empty();
         if (!id) {
-            $productTable.parent().next('.select-container').remove();
+            $bookTable.parent().next('.select-container').remove();
             return;
         }
         
-        $productTable.itemTable({
-            url: '/admin/collections/' + id + '/products',
-            objectName: 'product',
+        $bookTable.itemTable({
+            url: '/admin/collections/' + id + '/books',
+            objectName: 'book',
             initialLoad: true,
             selectable: false,
             editable: false,
@@ -69,7 +69,7 @@ $(document).ready(function() {
             ]
         });
         
-        $collectionLink.insertAfter($productTable.parent())
+        $collectionLink.insertAfter($bookTable.parent())
             .wrap('<p class="select-container"></p>');
     });
     
@@ -78,7 +78,7 @@ $(document).ready(function() {
     $('<a href="#" class="close-button"></a>').click(function(e) {
         $.unblockUI();
         
-        // Refresh the products table
+        // Refresh the books table
         $collectionTable.trigger("selectionChange", $collectionTable.itemTable("getSelected"));
         
         e.preventDefault();
@@ -111,15 +111,15 @@ $(document).ready(function() {
             .addClass('loading-link')
             .data('val', 'loading');
         $td.attr('title', getTooltip('loading'));
-        var url = '/admin/collections/' + $dialogTable.data('collectionId') + '/products';
-        var product_id = $clicked.closest('tr').data('id');
+        var url = '/admin/collections/' + $dialogTable.data('collectionId') + '/books';
+        var book_id = $clicked.closest('tr').data('id');
         
         if (oldVal) {
-            url += '/' + product_id;
+            url += '/' + book_id;
             var data = { _method: 'DELETE'};
         }
         else {
-            var data = { product_id: product_id};
+            var data = { book_id: book_id};
         }
         
         $.ajax({
@@ -154,7 +154,7 @@ $(document).ready(function() {
     }
     
     // Show the book selection dialog when the select book link is clicked
-    $('#collection-product-table-wrapper').on('click', '.select-link', function(e) {
+    $('#collection-book-table-wrapper').on('click', '.select-link', function(e) {
         e.preventDefault();
         
         // Get the selected collection
@@ -165,8 +165,8 @@ $(document).ready(function() {
         
         // Set up the table
         $dialogTable.itemTable({
-            url: '/admin/collections/' + id + '/products?all_products=1',
-            objectName: 'product',
+            url: '/admin/collections/' + id + '/books?all_books=1',
+            objectName: 'book',
             initialLoad: true,
             selectable: false,
             editable: false,

@@ -4,7 +4,7 @@
   <% award_list = (f.object.award) ? (Award.where(:award_type_id => f.object.award.award_type_id)) : [] %>
   <% selected = f.object.award ? f.object.award.award_type_id : nil %>
   
-  <%= collection_select :product_award,
+  <%= collection_select :book_award,
                         :award_type_id,
                         AwardType.order("name").all,
                         :id,

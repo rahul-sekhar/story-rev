@@ -1,9 +1,9 @@
 <% link_to_image ||= false %>
-<% p = product %>
+<% p = book %>
 <div class="cover-container">
   <div class="cover" data-title="<%= p.title %>" data-creators="<%= p.creators %>"
       data-description="<%= p.short_description %>" data-used-copy-min-price="<%= p.used_copy_min_price %>" data-new-copy-min-price="<%= p.new_copy_min_price %>"
       data-age-level="<%=raw p.age_from.present? ? ((p.age_to.present? && p.age_to != p.age_from) ? "#{p.age_from} &ndash; #{p.age_to}+" : "#{p.age_from}+") : "" %>">
-    <%= render "products/inner_cover", :product => p, :link_to_image => link_to_image %>
+    <%= render "books/inner_cover", :book => p, :link_to_image => link_to_image %>
   </div>
 </div>

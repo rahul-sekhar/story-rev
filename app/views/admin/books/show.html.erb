@@ -1,41 +1,41 @@
 <% content_for :top_nav do %>
   <li>
-    <%= link_to "Books", search_admin_products_path %>
+    <%= link_to "Books", search_admin_books_path %>
   </li>
   
   <li>></li>
   <li>
-    <%= link_to "Search", search_admin_products_path %>
+    <%= link_to "Search", search_admin_books_path %>
   </li>
   
   <li>></li>
   <li>
-    <%= link_to "Edit", edit_admin_product_path(@product) %>
+    <%= link_to "Edit", edit_admin_book_path(@book) %>
   </li>
   
   <li>></li>
   <li>
-    <%= link_to "Book Information", edit_admin_product_path(@product) %>
+    <%= link_to "Book Information", edit_admin_book_path(@book) %>
   </li>
   
   <li>></li>
   <li class="current">
-    <%= link_to "Copies", admin_product_path(@product) %>
+    <%= link_to "Copies", admin_book_path(@book) %>
   </li>
   
   <li class="right">
-    <%= link_to "Stock-Taking", admin_products_path %>
+    <%= link_to "Stock-Taking", admin_books_path %>
   </li>
 <% end %>
 
 <div class="input first">
   <label>Title</label>
-  <input type="text" disabled="disabled" value="<%= @product.title %>" />
+  <input type="text" disabled="disabled" value="<%= @book.title %>" />
 </div>
 
 <div class="input">
   <label>Author</label>
-  <input type="text" disabled="disabled" value="<%= @product.author_name %>" />
+  <input type="text" disabled="disabled" value="<%= @book.author_name %>" />
 </div>
 
 <div class="input">
@@ -43,9 +43,9 @@
   
   <div class="table-wrapper">
     <div class="table-container">
-      <table id="edition-table" data-url="<%= admin_product_editions_path(@product) %>" data-publisher="<%= @product.publisher_name %>">
+      <table id="edition-table" data-url="<%= admin_book_editions_path(@book) %>" data-publisher="<%= @book.publisher_name %>">
         <% alt = false %>
-        <% @product.editions.each do |e| %>
+        <% @book.editions.each do |e| %>
           <tr data-id="<%= e.id %>"<%= alt ? ' class="alt"' : nil %>>
             <td data-val="<%= e.isbn %>"><%= e.isbn %></td>
             <td data-val="<%= e.format_name %>"><%= e.format_name %></td>
@@ -81,6 +81,6 @@
   </div>
 </div>
 
-<%= link_to "Next Book", edit_admin_product_path(@product.next_product), :class => "next-book button" %>
-<%= link_to "Previous Book", edit_admin_product_path(@product.previous_product), :class => "previous-book button" %>
-<%= link_to "New", new_admin_product_path, :class => "new-book button" %>
+<%= link_to "Next Book", edit_admin_book_path(@book.next_book), :class => "next-book button" %>
+<%= link_to "Previous Book", edit_admin_book_path(@book.previous_book), :class => "previous-book button" %>
+<%= link_to "New", new_admin_book_path, :class => "new-book button" %>

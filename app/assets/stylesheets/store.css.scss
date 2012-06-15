@@ -150,13 +150,13 @@
     }
     
     
-    $products-width: (100px + 20px) * 4 + 10px;
+    $books-width: (100px + 20px) * 4 + 10px;
     
     .applied-filters {
         @include clearfix;
         border-top: 1px solid $color-a7;
         border-bottom: 1px solid $color-a7;
-        width: e($products-width - 30px);
+        width: e($books-width - 30px);
         padding: e(7px) 0;
         text-transform:lowercase;
         font-weight:bold;
@@ -217,9 +217,9 @@
         }
     }
 
-    #products {
+    #books {
         @include clearfix;
-        width: e($products-width);
+        width: e($books-width);
         margin: 0 auto;
         
         .covers {
@@ -440,7 +440,7 @@
                     margin-top: e(10px, $text-size);
                 }
                 
-                .product-link {
+                .book-link {
                     @include small-text;
                     text-transform:lowercase;
                     @include link;
@@ -528,7 +528,7 @@
             float:left;
         }
         
-        .product-link {
+        .book-link {
             @include small-alt-text;
             float:right;
             @include link;

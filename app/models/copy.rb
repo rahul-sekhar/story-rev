@@ -2,8 +2,8 @@ class Copy < ActiveRecord::Base
   before_validation :set_accession_id
   after_initialize :init
   before_save :set_in_stock
-  after_save :check_product_stock
-  after_destroy :check_product_stock
+  after_save :check_book_stock
+  after_destroy :check_book_stock
   
   belongs_to :edition
   has_many :shopping_cart_copies, :dependent => :destroy
@@ -84,26 +84,26 @@ class Copy < ActiveRecord::Base
     if (!new_copy && in_stock != value)
       self.in_stock = value
       save
-      check_product_stock
+      check_book_stock
     end
   end
   
   def set_accession_id
     self.copy_number ||= find_copy_number
-    self.accession_id ||= "#{product.accession_id}-#{copy_number}"
+    self.accession_id ||= "#{book.accession_id}-#{copy_number}"
   end
   
   def find_copy_number
-    last_copy = product.copies.where("copy_number IS NOT NULL").order("copy_number DESC").limit(1).first
+    last_copy = book.copies.where("copy_number IS NOT NULL").order("copy_number DESC").limit(1).first
     return last_copy.present? ? last_copy.copy_number.to_i + 1 : 1
   end
   
-  def product
-    edition.product
+  def book
+    edition.book
   end
   
-  def check_product_stock
-    product.check_stock
+  def check_book_stock
+    book.check_stock
   end
   
   def formatted_price
