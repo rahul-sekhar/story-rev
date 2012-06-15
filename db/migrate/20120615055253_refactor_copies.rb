@@ -37,14 +37,14 @@ class RefactorCopies < ActiveRecord::Migration
       t.timestamps
     end
     add_index :orders_new_copies, :order_id
-    add_index :orders_new_copies, : new_copy_id
+    add_index :orders_new_copies, :new_copy_id
     
     create_table :shopping_carts_used_copies, :id => false do |t|
       t.integer :shopping_cart_id
       t.integer :used_copy_id
     end
     add_index :shopping_carts_used_copies, :shopping_cart_id
-    add_index :shopping_carts_used_copies, [:shopping_cart_id, :used_copy_id]
+    add_index :shopping_carts_used_copies, [:shopping_cart_id, :used_copy_id], :name => "shopping_cart_used_copy_index"
     
     create_table :shopping_carts_new_copies do |t|
       t.integer :shopping_cart_id
@@ -52,7 +52,7 @@ class RefactorCopies < ActiveRecord::Migration
       t.integer :number
     end
     add_index :shopping_carts_new_copies, :shopping_cart_id
-    add_index :shopping_carts_new_copies, [:shopping_cart_id, :new_copy_id]
+    add_index :shopping_carts_new_copies, [:shopping_cart_id, :new_copy_id], :name => "shopping_cart_new_copy_index"
     
     
     drop_table :shopping_carts_copies
