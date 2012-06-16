@@ -92,26 +92,6 @@ class Book < ActiveRecord::Base
     end
   end
   
-  def age_level
-    if (age_from && age_to)
-      if (age_from == age_to)
-        "#{age_from}"
-      else
-        "#{age_from} - #{age_to}".html_safe
-      end
-    elsif age_from
-      "#{age_from}+"
-    elsif age_to
-      "#{age_to}-"
-    else
-      ""
-    end
-  end
-  
-  def creators
-    "#{author_name}#{illustrator.present? && illustrator_name != author_name ? " and #{illustrator_name}" : ""}"
-  end
-  
   def author_name=(name)
     self.author = name.present? ? (Author.name_is(name) || Author.new({ :full_name => name })) : nil
   end
@@ -214,32 +194,6 @@ class Book < ActiveRecord::Base
     self.cover_image = CoverImage.create(:remote_filename_url => url)
   end
   
-  def get_collection_hash
-    {
-      :id => id,
-      :title => title,
-      :author_name => author_name,
-      :age_level => age_level,
-      :stock => number_of_copies
-    }
-  end
-  
-  def get_list_hash
-    {
-      :id => id,
-      :title => title,
-      :author_name => author_name,
-      :author_last_name => author.last_name,
-      :illustrator_name => illustrator_name,
-      :illustrator_last_name => illustrator.present? ? illustrator.last_name : nil,
-      :age_level => age_level,
-      :age_from => age_from,
-      :collection_list => collection_list,
-      :award_list => award_list,
-      :stock => number_of_copies
-    }
-  end
-  
   def number_of_copies
     copies.stocked.inject(0) { |num, x| num + x.stock }
   end
@@ -263,12 +217,12 @@ class Book < ActiveRecord::Base
   
   def used_copy_min_price
     price = copies.stocked.select{|x| x.new_copy == false}.map{|x| x.price}.min.to_i
-    return price > 0 ? RupeeHelper.to_rupee(price) : nil
+    return price > 0 ? price : nil
   end
   
   def new_copy_min_price
     price = copies.stocked.select{|x| x.new_copy == true}.map{|x| x.price}.min.to_i
-    return price > 0 ? RupeeHelper.to_rupee(price) : nil
+    return price > 0 ? price : nil
   end
   
   # Function to search by title, accession ID or author

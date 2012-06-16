@@ -5,9 +5,9 @@ class Admin::CollectionBooksController < Admin::ApplicationController
     @collection = Collection.find(params[:collection_id])
     if params[:all_books].present?
       collection_book_ids = @collection.book_ids
-      render :json => Book.includes_data.includes_copies.all.map {|x| x.get_list_hash.merge ({ :in_collection => collection_book_ids.include?(x.id) }) }
+      render :json => Book.includes_data.includes_copies.all.map {|x| x.as_list_hash.merge ({ :in_collection => collection_book_ids.include?(x.id) }) }
     else
-      render :json => @collection.books.includes_copies.map { |x| x.get_collection_hash }
+      render :json => @collection.books.includes_copies.map { |x| x.as_collection_hash }
     end
   end
   

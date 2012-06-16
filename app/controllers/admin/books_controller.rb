@@ -7,7 +7,7 @@ class Admin::BooksController < Admin::ApplicationController
     
     respond_to do |format|
       format.html
-      format.json { render :json => Book.includes_data.all.map{|x| x.get_list_hash} }
+      format.json { render :json => Book.includes_data.all.map{|x| x.as_list_hash} }
     end
   end
   

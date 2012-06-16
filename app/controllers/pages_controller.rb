@@ -7,7 +7,7 @@ class PagesController < ApplicationController
     
     check_params
     
-    @books = Book.stocked.includes(:cover_image).joins("LEFT JOIN authors AS auth ON books.author_id = auth.id").includes(:copies, :illustrator).filter(params).sort_by_param(params[:sort_by],params[:desc]).page(params[:page]).per(20)
+    @books = BookDecorator.decorate(Book.stocked.includes(:cover_image).joins("LEFT JOIN authors AS auth ON books.author_id = auth.id").includes(:copies, :illustrator).filter(params).sort_by_param(params[:sort_by],params[:desc]).page(params[:page]).per(20))
     
     if params[:ajax].present?
       params.delete :ajax

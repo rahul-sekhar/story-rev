@@ -55,6 +55,13 @@ GEM
     delayed_job_active_record (0.3.2)
       activerecord (> 2.1.0)
       delayed_job (~> 3.0.0)
+    diff-lcs (1.1.3)
+    draper (0.12.3)
+      actionpack (~> 3.1.3)
+      activesupport (>= 2.3.10)
+      activesupport (~> 3.1.3)
+      rake
+      rspec (~> 2.0)
     erubis (2.7.0)
     execjs (1.3.2)
       multi_json (~> 1.0)
@@ -114,6 +121,14 @@ GEM
     rdoc (3.12)
       json (~> 1.4)
     rmagick (2.13.1)
+    rspec (2.10.0)
+      rspec-core (~> 2.10.0)
+      rspec-expectations (~> 2.10.0)
+      rspec-mocks (~> 2.10.0)
+    rspec-core (2.10.1)
+    rspec-expectations (2.10.0)
+      diff-lcs (~> 1.1.3)
+    rspec-mocks (2.10.1)
     ruby-hmac (0.4.0)
     rvm-capistrano (1.1.0)
       capistrano (>= 2.0.0)
@@ -164,6 +179,7 @@ DEPENDENCIES
   carrierwave
   daemons
   delayed_job_active_record
+  draper
   jquery-rails
   kaminari
   nokogiri
