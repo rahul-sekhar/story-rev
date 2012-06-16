@@ -18,12 +18,12 @@ class Copy < ActiveRecord::Base
   validates :condition_rating, :numericality => { :only_integer => true, :greater_than_or_equal_to => 0, :less_than_or_equal_to => 5 }
   validates :price, :numericality => { :only_integer => true }
   
-  scope :stocked, where(:in_stock => true)
-  scope :unstocked, where(:in_stock => false)
+  scope :stocked, where("stock > 0")
+  scope :unstocked, where("stock <= 0")
   scope :new_copies, where(:new_copy => true)
   scope :used_copies, where(:new_copy => false)
   
-  scope :new_or_stocked, where("in_stock = TRUE OR new_copy = TRUE")
+  scope :new_or_stocked, where("stock > 0 OR new_copy = TRUE")
   
   def init
     self.new_copy = false if new_copy.nil?

@@ -1,5 +1,4 @@
 class Book < ActiveRecord::Base
-  default_scope :include => :author
   attr_accessible :title, :author_name, :illustrator_name, :publisher_name, :year, :country_name, :age_from, :age_to,
                   :collection_list, :amazon_url, :short_description, :book_type_id,
                   :award_attributes, :other_field_attributes, :cover_image_id, :cover_image_url
@@ -8,7 +7,7 @@ class Book < ActiveRecord::Base
   before_validation :set_accession_id
   after_validation :validate_virtual_attributes
   before_save :check_age_level
-  after_create :set_timestamps
+  after_create :set_book_date
   
   has_and_belongs_to_many :collections, :join_table => :books_collections, :uniq => true
   belongs_to :author
@@ -39,184 +38,28 @@ class Book < ActiveRecord::Base
   
   scope :stocked, where(:in_stock => true)
   
-  def self.includes_cover
-    includes(:cover_image)
-  end
-  
+  # Scope to include all book information
   def self.includes_data
     includes(:illustrator, :publisher, :collections, :copies, :book_type, :country, :other_fields, { :book_awards => { :award => :award_type }}, :editions => [:format, :publisher])
   end
   
+  # Scope to include copy data
   def self.includes_copies
     includes({:editions => [:format, :publisher]}, :copies)
   end
   
-  def self.sort_by_param(sort, sort_order)
-    sort_order = sort_order.present? ? " DESC" : ""
-    case sort
-    when "random"
-      order("random()#{sort_order}")
-    when "title"
-      order("books.title#{sort_order}")
-    when "author"
-      order("auth.last_name#{sort_order}, auth.first_name#{sort_order}")
-    when "age"
-      order("age_from#{sort_order}")
-    when "price"
-      joins("LEFT JOIN editions AS ed ON ed.book_id = books.id LEFT JOIN copies AS cop ON cop.edition_id = ed.id").group(columns_list).order("MIN(cop.price)#{sort_order}")
-    when "date"
-      sort_order = sort_order.present? ? "" : " DESC"
-      order("books.book_date#{sort_order}")
-    else
-      order("books.book_date#{sort_order}")
-    end
-  end
-  
+  # Function to get a complete list of all table columns (can be used to select all columns in pure SQL)
   def self.columns_list
     column_names.collect { |c| "#{table_name}.#{c}" }.join(",")
-  end
-  
-  def self.filter(p)
-    filtered = self.scoped
-    filtered_copies = false
-    editions = Edition.unscoped
-    copies = Copy.unscoped.stocked
-    
-    if p[:recent].present?
-      new_books = Book.unscoped.select("books.id, books.in_stock, MAX(e.created_at) as ed_date")
-          .joins("INNER JOIN editions AS e ON e.book_id = books.id INNER JOIN copies as c ON c.edition_id = e.id WHERE c.in_stock = TRUE")
-          .group("books.id, books.in_stock").order("ed_date DESC").limit(28)
-      filtered = filtered.where("books.id IN (?)", new_books.map{ |x| x.id })
-    end
-    
-    if p[:award_winning].present?
-      filtered = filtered.where("books.id IN (?)", BookAward.all.map{ |x| x.book_id })
-    end
-    
-    if p[:search].present?
-      sqlSearch = "%#{SqlHelper::escapeWildcards(p[:search].downcase)}%"
-      filtered = filtered
-        .joins('LEFT JOIN illustrators AS ill ON ill.id = books.illustrator_id')
-        .where('LOWER(books.title) LIKE ? OR
-               LOWER(auth.first_name || \' \' || auth.last_name) LIKE ? OR
-               LOWER(ill.first_name || \' \' || ill.last_name) LIKE ?',
-               sqlSearch, sqlSearch, sqlSearch)
-    end
-    
-    if p[:collection].present?
-      filtered = filtered.where('books.id IN (SELECT book_id FROM books_collections WHERE collection_id = ?)', p[:collection].to_i)
-    end
-    
-    if p[:publisher].present?
-      filtered_copies = true
-      editions = editions.joins(:book).where("books.publisher_id = ?", p[:publisher].to_i)
-    end
-    
-    if p[:award].present?
-      awards = Award.where(:award_type_id => p[:award].to_i)
-      book_awards = BookAward.where(:award_id => awards.map{ |x| x.id })
-      filtered = filtered.where("books.id IN (?)", book_awards.map{ |x| x.book_id })
-    end
-    
-    if p[:author].present?
-      filtered = filtered.where(:author_id => p[:author].to_i)
-    end
-    
-    if p[:illustrator].present?
-      filtered = filtered.where(:illustrator_id => p[:illustrator].to_i)
-    end
-    
-    if p[:age].present?
-      age = p[:age].to_i
-      filtered = filtered.where("age_from <= ? AND age_to >= ? OR (age_from IS NULL AND age_to = ?) OR (age_to IS NULL AND age_from = ?)", age, age, age, age)
-    end
-    
-    if p[:type].present?
-      filtered_copies = true
-      copies = copies.where(:new_copy => p[:type] == "new")
-    end
-    
-    if p[:condition].present?
-      filtered_copies = true
-      copies = copies.where("condition_rating >= ?", p[:condition].to_i)
-    end
-    
-    price_from = nil
-    price_to = nil
-    
-    if p[:price_from].present?
-      price_from = p[:price_from].to_i
-    end
-    if p[:price_to].present?
-      price_to = p[:price_to].to_i
-    end
-    
-    if p[:price].present? && p[:price_from].blank? && p[:price_to].blank?
-      a = p[:price].split("-").map{|x| x.to_i}
-      if a.length == 2
-        price_from = a.min
-        price_to = a.max
-      else
-        price_from = a[0]
-      end
-    end
-  
-    if price_from || price_to
-      filtered_copies = true
-      
-      if price_to.to_i > 0
-        copies = copies.where("price BETWEEN ? AND ?", price_from.to_i, price_to.to_i)
-      else
-        copies = copies.where("price > ?", price_from.to_i)
-      end
-    end
-    
-    if p[:format].present?
-      filtered_copies = true
-      editions = editions.where(:format_id => p[:format].to_i)
-    end
-    
-    if p[:category].present?
-      filtered = filtered.where(:book_type_id => p[:category].to_i)
-    end
-    
-    if filtered_copies
-      editions = editions.where("editions.id IN (?)", copies.map {|c| c.edition_id })
-      filtered = filtered.where("books.id IN (?)", editions.map { |e| e.book_id })
-    end
-    
-    return filtered
-  end
-  
-  def self.search(query, fields, output)
-    escaped = SqlHelper::escapeWildcards(query).upcase
-    book_array = []
-    if fields == "all" && output == "display_target"
-      book_array |= self.select("id, title, in_stock")
-                            .where("UPPER(title) LIKE ?", "%#{escaped}%")
-                            .map { |x| {:id => x.id, :name => x.title }}
-      
-      if (escaped =~ /^[A-Z]-[0-9]/)
-        book_array |= self.select("id, title, accession_id, in_stock")
-                              .where('accession_id LIKE ?', "#{escaped}%")
-                              .map { |x| {:id => x.id, :name => "#{x.title} - #{x.accession_id}" }}
-      elsif (escaped =~ /^[0-9]+$/)
-      else
-        book_array |= self.includes(:author)
-                            .where('UPPER("authors".first_name || \' \' || "authors".last_name) LIKE ?', "%#{escaped}%")
-                            .map { |x| {:id => x.id, :name => "#{x.title} - #{x.author.full_name}" }}
-      end
-    end
-    return book_array
   end
   
   def init
     self.in_stock = false if in_stock.nil?
   end
   
-  def set_timestamps
+  # Set the book date - triggered when the book is created, a used copy is created, or a new copy goes back in stock
+  def set_book_date
     touch :book_date
-    touch :out_of_stock_at
   end
   
   def validate_virtual_attributes
@@ -397,24 +240,13 @@ class Book < ActiveRecord::Base
     }
   end
   
-  def number_of_copy_types
-    copies.stocked.length
-  end
-  
   def number_of_copies
-    copies.select {|x| x.in_stock }.inject(0) { |num, x| num + (x.new_copy ? x.number : 1) }
+    copies.stocked.inject(0) { |num, x| num + x.stock }
   end
   
   def check_stock
-    is_in_stock = copies.stocked.length > 0
-    
-    if (in_stock != is_in_stock)
-        self.in_stock = is_in_stock
-        
-        # -- UPDATE THE BOOK DATE -- #
-        
-        save
-    end
+    self.in_stock = copies.stocked.length > 0
+    save
   end
   
   def in_collection? (collection)
@@ -437,5 +269,162 @@ class Book < ActiveRecord::Base
   def new_copy_min_price
     price = copies.stocked.select{|x| x.new_copy == true}.map{|x| x.price}.min.to_i
     return price > 0 ? RupeeHelper.to_rupee(price) : nil
+  end
+  
+  # Function to search by title, accession ID or author
+  def self.search(query, fields, output)
+    escaped = SqlHelper::escapeWildcards(query).upcase
+    book_array = []
+    if fields == "all" && output == "display_target"
+      book_array |= self.select("id, title, in_stock")
+                            .where("UPPER(title) LIKE ?", "%#{escaped}%")
+                            .map { |x| {:id => x.id, :name => x.title }}
+      
+      if (escaped =~ /^[0-9]/)
+        book_array |= self.select("id, title, accession_id, in_stock")
+                              .where('accession_id LIKE ?', "#{escaped}%")
+                              .map { |x| {:id => x.id, :name => "#{x.title} - #{x.accession_id}" }}
+      else
+        book_array |= self.includes(:author)
+                            .where('UPPER("authors".first_name || \' \' || "authors".last_name) LIKE ?', "%#{escaped}%")
+                            .map { |x| {:id => x.id, :name => "#{x.title} - #{x.author.full_name}" }}
+      end
+    end
+    return book_array
+  end
+  
+  # Function to return a scope sorted by a parameter
+  def self.sort_by_param(sort, sort_order)
+    sort_order = sort_order.present? ? " DESC" : ""
+    case sort
+    when "random"
+      order("random()#{sort_order}")
+    when "title"
+      order("books.title#{sort_order}")
+    when "author"
+      order("auth.last_name#{sort_order}, auth.first_name#{sort_order}")
+    when "age"
+      order("age_from#{sort_order}")
+    when "price"
+      joins("LEFT JOIN editions AS ed ON ed.book_id = books.id LEFT JOIN copies AS cop ON cop.edition_id = ed.id").group(columns_list).order("MIN(cop.price)#{sort_order}")
+    when "date"
+      sort_order = sort_order.present? ? "" : " DESC"
+      order("books.book_date#{sort_order}")
+    else
+      order("books.book_date#{sort_order}")
+    end
+  end
+  
+  # Function to return a filtered scope, depending on the parameters
+  def self.filter(p)
+    filtered = self.scoped
+    filtered_copies = false
+    editions = Edition.unscoped
+    copies = Copy.unscoped.stocked
+    
+    if p[:recent].present?
+      new_books = Book.unscoped.select("books.id, books.in_stock, MAX(e.created_at) as ed_date")
+          .joins("INNER JOIN editions AS e ON e.book_id = books.id INNER JOIN copies as c ON c.edition_id = e.id WHERE c.in_stock = TRUE")
+          .group("books.id, books.in_stock").order("ed_date DESC").limit(28)
+      filtered = filtered.where("books.id IN (?)", new_books.map{ |x| x.id })
+    end
+    
+    if p[:award_winning].present?
+      filtered = filtered.where("books.id IN (?)", BookAward.all.map{ |x| x.book_id })
+    end
+    
+    if p[:search].present?
+      sqlSearch = "%#{SqlHelper::escapeWildcards(p[:search].downcase)}%"
+      filtered = filtered
+        .joins('LEFT JOIN illustrators AS ill ON ill.id = books.illustrator_id')
+        .where('LOWER(books.title) LIKE ? OR
+               LOWER(auth.first_name || \' \' || auth.last_name) LIKE ? OR
+               LOWER(ill.first_name || \' \' || ill.last_name) LIKE ?',
+               sqlSearch, sqlSearch, sqlSearch)
+    end
+    
+    if p[:collection].present?
+      filtered = filtered.where('books.id IN (SELECT book_id FROM books_collections WHERE collection_id = ?)', p[:collection].to_i)
+    end
+    
+    if p[:publisher].present?
+      filtered_copies = true
+      editions = editions.joins(:book).where("books.publisher_id = ?", p[:publisher].to_i)
+    end
+    
+    if p[:award].present?
+      awards = Award.where(:award_type_id => p[:award].to_i)
+      book_awards = BookAward.where(:award_id => awards.map{ |x| x.id })
+      filtered = filtered.where("books.id IN (?)", book_awards.map{ |x| x.book_id })
+    end
+    
+    if p[:author].present?
+      filtered = filtered.where(:author_id => p[:author].to_i)
+    end
+    
+    if p[:illustrator].present?
+      filtered = filtered.where(:illustrator_id => p[:illustrator].to_i)
+    end
+    
+    if p[:age].present?
+      age = p[:age].to_i
+      filtered = filtered.where("age_from <= ? AND age_to >= ? OR (age_from IS NULL AND age_to = ?) OR (age_to IS NULL AND age_from = ?)", age, age, age, age)
+    end
+    
+    if p[:type].present?
+      filtered_copies = true
+      copies = copies.where(:new_copy => p[:type] == "new")
+    end
+    
+    if p[:condition].present?
+      filtered_copies = true
+      copies = copies.where("condition_rating >= ?", p[:condition].to_i)
+    end
+    
+    price_from = nil
+    price_to = nil
+    
+    if p[:price_from].present?
+      price_from = p[:price_from].to_i
+    end
+    if p[:price_to].present?
+      price_to = p[:price_to].to_i
+    end
+    
+    if p[:price].present? && p[:price_from].blank? && p[:price_to].blank?
+      a = p[:price].split("-").map{|x| x.to_i}
+      if a.length == 2
+        price_from = a.min
+        price_to = a.max
+      else
+        price_from = a[0]
+      end
+    end
+  
+    if price_from || price_to
+      filtered_copies = true
+      
+      if price_to.to_i > 0
+        copies = copies.where("price BETWEEN ? AND ?", price_from.to_i, price_to.to_i)
+      else
+        copies = copies.where("price > ?", price_from.to_i)
+      end
+    end
+    
+    if p[:format].present?
+      filtered_copies = true
+      editions = editions.where(:format_id => p[:format].to_i)
+    end
+    
+    if p[:category].present?
+      filtered = filtered.where(:book_type_id => p[:category].to_i)
+    end
+    
+    if filtered_copies
+      editions = editions.where("editions.id IN (?)", copies.map {|c| c.edition_id })
+      filtered = filtered.where("books.id IN (?)", editions.map { |e| e.book_id })
+    end
+    
+    return filtered
   end
 end
