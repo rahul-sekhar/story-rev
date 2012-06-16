@@ -134,14 +134,6 @@ class Book < ActiveRecord::Base
     collections.to_json({ :only => [:id, :name] })
   end
   
-  def award_list
-    book_awards.map {|x| x.full_name}.join(", ")
-  end
-  
-  def editions_json
-    editions.to_json({ :only => [:id, :isbn, :format_name, :base_price] })
-  end
-  
   def award_attributes=(attrs)
     attrs.each do |a|
       if a[:award_id].present? && a[:award_id] != "add"

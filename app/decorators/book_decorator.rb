@@ -31,6 +31,10 @@ class BookDecorator < ApplicationDecorator
     to_currency(min) unless min.nil?
   end
   
+  def award_list
+    book_awards.map {|x| x.full_name}.join(", ")
+  end
+  
   def as_collection_hash
     {
       :id => book.id,
