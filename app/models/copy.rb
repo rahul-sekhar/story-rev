@@ -1,14 +1,17 @@
 class Copy < ActiveRecord::Base
   before_validation :set_accession_id
   after_initialize :init
-  before_save :set_in_stock
   after_save :check_book_stock
   after_destroy :check_book_stock
+  after_create :set_book_date
   
   belongs_to :edition
   has_many :shopping_cart_copies, :dependent => :destroy
   has_many :order_copies, :dependent => :destroy
-  has_one :stock
+  has_one :stock_taking
+  
+  # Protect 'stock', it should instead be set using 'set_stock'
+  attr_protected :stock
   
   validates :accession_id, :presence => true, :uniqueness => true
   validates :copy_number, :presence => true, :numericality => { :only_integer => true }
@@ -23,13 +26,13 @@ class Copy < ActiveRecord::Base
   scope :new_or_stocked, where("in_stock = TRUE OR new_copy = TRUE")
   
   def init
-    self.in_stock = true if in_stock.nil?
     self.new_copy = false if new_copy.nil?
-    self.limited_copies = false if limited_copies.nil?
-    self.number ||= 0
-    self.condition_rating ||= 3
+    self.stock ||= new_copy ? 0 : 1
+    self.condition_rating ||= new_copy ? 5 : 3
   end
   
+  # Function to return copies that don't have the same price, edition and condition rating, out of an array of copies
+  # Used to prevent showing multiple similar copies for a book
   def self.filter_unique(src_copies)
     result = []
     src_copies.each do |c|
@@ -45,6 +48,21 @@ class Copy < ActiveRecord::Base
     return result
   end
   
+  # The copy is in stock if its stock is above 0
+  def in_stock
+    stock > 0
+  end
+  
+  def set_accession_id
+    self.copy_number ||= find_copy_number
+    self.accession_id ||= "#{book.accession_id}-#{copy_number}"
+  end
+  
+  def find_copy_number
+    last_copy = book.copies.where("copy_number IS NOT NULL").order("copy_number DESC").limit(1).first
+    return last_copy.present? ? last_copy.copy_number.to_i + 1 : 1
+  end
+  
   def accession_id_sortable
     "#{accession_id.to_i}.#{copy_number}".to_f
   end
@@ -58,8 +76,8 @@ class Copy < ActiveRecord::Base
         :price => price,
         :formatted_price => formatted_price,
         :new_copy => new_copy,
-        :limited_copies => limited_copies,
-        :number => number
+        :stock => stock,
+        :required_stock => required_stock
       }
     else
       return {
@@ -75,27 +93,20 @@ class Copy < ActiveRecord::Base
     end
   end
   
-  def set_in_stock
-    self.in_stock = !limited_copies || (number > 0) if new_copy
-    return nil
-  end
-  
   def set_stock=(value)
-    if (!new_copy && in_stock != value)
-      self.in_stock = value
-      save
-      check_book_stock
+    if new_copy
+      # Update the book date if a new copy that was out of stock has come back in stock
+      book.set_book_date if self.stock <= 0 && value > 0
+      self.stock = value
+    else
+      self.stock = (value == false || value == 0) ? 0 : 1
     end
+    save
   end
   
-  def set_accession_id
-    self.copy_number ||= find_copy_number
-    self.accession_id ||= "#{book.accession_id}-#{copy_number}"
-  end
-  
-  def find_copy_number
-    last_copy = book.copies.where("copy_number IS NOT NULL").order("copy_number DESC").limit(1).first
-    return last_copy.present? ? last_copy.copy_number.to_i + 1 : 1
+  # Set the book date if a fresh copy has been created
+  def set_book_date
+    book.set_book_date if (!new_copy && stock > 0)
   end
   
   def book
