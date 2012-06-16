@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120614153543) do
+ActiveRecord::Schema.define(:version => 20120615055253) do
 
   create_table "accounts", :force => true do |t|
     t.string   "name"
@@ -138,24 +138,21 @@ ActiveRecord::Schema.define(:version => 20120614153543) do
     t.string   "accession_id"
     t.string   "condition_description"
     t.integer  "condition_rating",      :limit => 2
+    t.integer  "price"
+    t.boolean  "new_copy"
+    t.integer  "stock"
+    t.integer  "copy_number"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "price"
-    t.boolean  "in_stock"
-    t.boolean  "new_copy"
-    t.boolean  "limited_copies"
-    t.integer  "number"
-    t.integer  "copy_number"
+    t.integer  "required_stock"
   end
 
   add_index "copies", ["accession_id"], :name => "index_copies_on_accession_id"
   add_index "copies", ["condition_rating"], :name => "index_copies_on_condition_rating"
   add_index "copies", ["copy_number"], :name => "index_copies_on_copy_number"
   add_index "copies", ["edition_id"], :name => "index_copies_on_edition_id"
-  add_index "copies", ["in_stock"], :name => "index_copies_on_in_stock"
-  add_index "copies", ["limited_copies"], :name => "index_copies_on_limited_copies"
   add_index "copies", ["new_copy"], :name => "index_copies_on_new_copy"
-  add_index "copies", ["number"], :name => "index_copies_on_number"
+  add_index "copies", ["stock"], :name => "index_copies_on_number"
 
   create_table "countries", :force => true do |t|
     t.string   "name"

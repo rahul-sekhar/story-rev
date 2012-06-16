@@ -6,7 +6,7 @@ class RefactorCopies < ActiveRecord::Migration
     Copy.reset_column_information
     
     # Set new copies to have a condition rating of 5
-    Copy.all do |x|
+    Copy.all.each do |x|
       if x.new_copy
         x.condition_rating = 5
       else
