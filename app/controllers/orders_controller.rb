@@ -9,7 +9,7 @@ class OrdersController < ApplicationController
     
     @order.calculate_total if @order.step == 4
     
-    render :layout => "ajax" if params[:ajax]
+    render :layout => "ajax" if request.xhr?
   end
   
   def create
@@ -28,18 +28,18 @@ class OrdersController < ApplicationController
       @order.finalise
       OrderMailer.delay.confirmation(@order)
       OrderMailer.delay.notify_owner(@order)
-      render "confirmation", :layout => params[:ajax] ? "ajax" : true
+      render "confirmation", :layout => request.xhr? ? "ajax" : true
     else
-      render "new", :layout => params[:ajax] ? "ajax" : true
+      render "new", :layout => request.xhr? ? "ajax" : true
     end
   end
   
   def destroy
     shopping_cart.order && shopping_cart.order.destroy
-    if params[:ajax]
+    if request.xhr?
       render :json => { :success => true }
     else
-      redirect_to shopping_cart_path(:ajax => params[:ajax])
+      redirect_to shopping_cart_path
     end
   end
   
@@ -51,7 +51,7 @@ class OrdersController < ApplicationController
         message = "Your shopping cart is empty, so an order cannot be placed."
       end
       
-      if params[:ajax]
+      if request.xhr?
         render :text => message, :status => 400
       else
         redirect_to shopping_cart_url, :notice => message

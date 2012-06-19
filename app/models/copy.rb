@@ -1,4 +1,6 @@
 class Copy < ActiveRecord::Base
+  attr_accessible :condition_rating, :condition_description, :price, :new_copy, :stock, :required_stock
+
   before_validation :set_accession_id
   after_initialize :init
   after_save :check_book_stock
@@ -63,36 +65,6 @@ class Copy < ActiveRecord::Base
     return last_copy.present? ? last_copy.copy_number.to_i + 1 : 1
   end
   
-  def accession_id_sortable
-    "#{accession_id.to_i}.#{copy_number}".to_f
-  end
-  
-  def get_hash
-    if new_copy
-      return {
-        :id => id,
-        :accession_id => accession_id,
-        :accession_id_sortable => accession_id_sortable,
-        :price => price,
-        :formatted_price => formatted_price,
-        :new_copy => new_copy,
-        :stock => stock,
-        :required_stock => required_stock
-      }
-    else
-      return {
-        :id => id,
-        :accession_id => accession_id,
-        :accession_id_sortable => accession_id_sortable,
-        :price => price,
-        :formatted_price => formatted_price,
-        :condition_description => get_condition_description,
-        :condition_rating => condition_rating,
-        :new_copy => new_copy
-      }
-    end
-  end
-  
   def set_stock=(value)
     if new_copy
       # Update the book date if a new copy that was out of stock has come back in stock
@@ -115,28 +87,5 @@ class Copy < ActiveRecord::Base
   
   def check_book_stock
     book.check_stock
-  end
-  
-  def formatted_price
-    RupeeHelper::to_rupee(price)
-  end
-  
-  def get_condition_description
-    condition_description.present? ? condition_description : Copy.condition_to_words(condition_rating)
-  end
-  
-  def self.condition_to_words(condition)
-    case condition
-    when 1
-      "Acceptable"
-    when 2
-      "Acceptable"
-    when 3
-      "Good"
-    when 4
-      "Excellent"
-    when 5
-      "Like new"
-    end
   end
 end

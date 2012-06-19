@@ -1,4 +1,6 @@
 class ShoppingCartCopy < ActiveRecord::Base
+  attr_accessible :copy_id, :number
+  
   self.table_name = :shopping_carts_copies
   
   after_initialize :init
@@ -19,6 +21,6 @@ class ShoppingCartCopy < ActiveRecord::Base
   end
   
   def check_number
-    self.number = 1 unless (copy.new_copy && number > 0)
+    self.number = 1 unless (copy.new_copy && number > 1)
   end
 end

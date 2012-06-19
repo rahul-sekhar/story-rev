@@ -3,7 +3,7 @@ class Admin::BooksController < Admin::ApplicationController
     @class = "book stock-taking"
     @title = "Stock Taking"
     
-    @copies = Copy.stocked.includes({ :edition => :book }, :stock)
+    @copies = CopyDecorator.decorate(Copy.stocked.includes({ :edition => :book }, :stock))
     
     respond_to do |format|
       format.html
@@ -24,13 +24,13 @@ class Admin::BooksController < Admin::ApplicationController
   def show
     @class = "book editions"
     @title = "Copies & Editions"
-    @book = Book.find(params[:id])    
+    @book = BookDecorator.find(params[:id])    
   end
   
   def new
     @class = "book form"
     @title = "Add Book"
-    @book = Book.new
+    @book = BookDecorator.new(Book.new)
     @book.build_empty_fields
     @book.title = params[:title] if params[:title]
   end
@@ -41,6 +41,7 @@ class Admin::BooksController < Admin::ApplicationController
       redirect_to admin_book_path(@book), :notice => "Book created - its accession number is #{@book.accession_id}"
     else
       @book.build_empty_fields
+      @book = BookDecorator.new(@book)
       @class = "book form"
       @title = "Add Book"
       render "new"
@@ -50,7 +51,7 @@ class Admin::BooksController < Admin::ApplicationController
   def edit
     @class = "book form"
     @title = "Edit Book Information"
-    @book = Book.find(params[:id])
+    @book = BookDecorator.find(params[:id])
     @book.build_empty_fields
   end
   
@@ -69,6 +70,7 @@ class Admin::BooksController < Admin::ApplicationController
       redirect_to redirect_path, :notice => "Book saved - its accession number is #{@book.accession_id}"
     else
       @book.build_empty_fields
+      @book = BookDecorator.new(@book)
       @class = "book form"
       @title = "Edit Book Information"
       render "edit"

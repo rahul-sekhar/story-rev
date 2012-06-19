@@ -2,7 +2,7 @@ class Admin::CopiesController < Admin::ApplicationController
   
   def index
     @edition = Edition.find(params[:edition_id])
-    @copies = @edition.copies
+    @copies = CopyDecorator.decorate(@edition.copies)
     
     if (params[:new])
       @copies = @copies.new_copies

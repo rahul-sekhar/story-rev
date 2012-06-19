@@ -1,6 +1,7 @@
 class Author < ActiveRecord::Base
   include Person
   
+  attr_accessible :full_name, :priority
   attr_writer :full_name
   
   before_validation :convert_full_name

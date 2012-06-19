@@ -1,6 +1,8 @@
 class BookAward < ActiveRecord::Base
   self.table_name = :books_awards
   default_scope includes(:award)
+
+  attr_accessible :year, :award_id
   
   belongs_to :book
   belongs_to :award

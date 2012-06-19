@@ -1,4 +1,6 @@
 class Award < ActiveRecord::Base
+  attr_accessible :award_type_id, :name
+  
   default_scope :include => :award_type
   belongs_to :award_type
   has_many :book_awards, :dependent => :destroy

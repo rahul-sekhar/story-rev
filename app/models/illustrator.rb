@@ -1,5 +1,6 @@
 class Illustrator < ActiveRecord::Base
   include Person
+  attr_accessible :full_name, :priority
   
   attr_writer :full_name
   

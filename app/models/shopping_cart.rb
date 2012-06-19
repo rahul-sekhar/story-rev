@@ -1,5 +1,5 @@
 class ShoppingCart < ActiveRecord::Base
-  default_scope includes(:order, :copies)
+  attr_accessible
   
   has_many :shopping_cart_copies, :dependent => :destroy, :include => :copy
   has_many :copies, :through => :shopping_cart_copies, :as => :copy

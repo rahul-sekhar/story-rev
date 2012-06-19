@@ -1,6 +1,8 @@
 class OrderCopy < ActiveRecord::Base
   self.table_name = :orders_copies
   
+  attr_accessible :copy_id, :number
+
   after_initialize :init
   before_save :check_number
   

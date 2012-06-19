@@ -1,4 +1,6 @@
 class ConfigData < ActiveRecord::Base
+  attr_accessible
+  
   before_save :check_number
   
   belongs_to :default_account, :class_name => "Account"

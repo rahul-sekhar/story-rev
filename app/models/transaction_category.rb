@@ -1,4 +1,5 @@
 class TransactionCategory < ActiveRecord::Base
+  attr_accessible :name, :off_record
   after_initialize :init
   
   has_many :transactions, :dependent => :nullify

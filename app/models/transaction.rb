@@ -1,4 +1,5 @@
 class Transaction < ActiveRecord::Base
+  attr_accessible :credit, :debit, :other_party, :payment_method_id, :transaction_category_id, :account_id, :short_date, :notes
   after_initialize :init
   before_save :check_data
   

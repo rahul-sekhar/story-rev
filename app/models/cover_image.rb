@@ -1,5 +1,6 @@
 class CoverImage < ActiveRecord::Base
   mount_uploader :filename, CoverUploader
+  attr_accessible :filename
   
   before_save :store_dimensions
   

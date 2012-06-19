@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120615055253) do
+ActiveRecord::Schema.define(:version => 20120617150527) do
 
   create_table "accounts", :force => true do |t|
     t.string   "name"
@@ -187,6 +187,16 @@ ActiveRecord::Schema.define(:version => 20120615055253) do
 
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
 
+  create_table "descriptions", :force => true do |t|
+    t.integer  "book_id"
+    t.string   "title"
+    t.text     "content"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "descriptions", ["book_id"], :name => "index_other_fields_on_product_id"
+
   create_table "editions", :force => true do |t|
     t.integer  "book_id"
     t.string   "isbn"
@@ -281,16 +291,6 @@ ActiveRecord::Schema.define(:version => 20120615055253) do
     t.integer "number"
     t.boolean "ticked"
   end
-
-  create_table "other_fields", :force => true do |t|
-    t.integer  "book_id"
-    t.string   "title"
-    t.text     "content"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "other_fields", ["book_id"], :name => "index_other_fields_on_product_id"
 
   create_table "payment_methods", :force => true do |t|
     t.string   "name"

@@ -1,4 +1,6 @@
 class AwardType < ActiveRecord::Base
+  attr_accessible :name, :priority
+
   has_many :awards, :dependent => :destroy
   
   after_save :create_empty_award

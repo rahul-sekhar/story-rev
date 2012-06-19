@@ -392,8 +392,8 @@ $(document).ready(function() {
             
             // Create new storage fields
             $('<div id="stored-desc-' + number + '"></div>')
-                .append('<input class="title" type="hidden" value="" name="book[other_field_attributes][][title]" />')
-                .append('<input class="content" type="hidden" value="" name="book[other_field_attributes][][content]" />')
+                .append('<input class="title" type="hidden" value="" name="book[description_attributes][][title]" />')
+                .append('<input class="content" type="hidden" value="" name="book[description_attributes][][content]" />')
                 .appendTo($descFields);
             
             // Clear the current fields

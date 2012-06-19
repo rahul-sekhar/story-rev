@@ -32,7 +32,7 @@ class ShoppingCartsController < ApplicationController
     
     @cart_copies = shopping_cart.shopping_cart_copies
     @cart_copies = @cart_copies.includes(:copy => {:edition => {:book => [:illustrator, :cover_image]}})
-    @cart_copies = @cart_copies.order('"copies"."in_stock"')
+    @cart_copies = @cart_copies.order('"copies"."stock"')
     
     # Log if there are unavailable copies
     log_unavailable if (@cart_copies.unstocked.length > 0)
@@ -40,7 +40,7 @@ class ShoppingCartsController < ApplicationController
     if (params[:count])
       render :json => { :item_count => shopping_cart.items }
     else
-      render :layout => "ajax" if (params[:ajax])
+      render :layout => "ajax" if request.xhr?
     end
   end
   

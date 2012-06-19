@@ -1,7 +1,7 @@
 class Book < ActiveRecord::Base
   attr_accessible :title, :author_name, :illustrator_name, :publisher_name, :year, :country_name, :age_from, :age_to,
                   :collection_list, :amazon_url, :short_description, :book_type_id,
-                  :award_attributes, :other_field_attributes, :cover_image_id, :cover_image_url
+                  :award_attributes, :description_attributes, :cover_image_id, :cover_image_url
   
   after_initialize :init
   before_validation :set_accession_id
@@ -18,7 +18,7 @@ class Book < ActiveRecord::Base
   has_many :book_awards, :dependent => :destroy
   has_many :editions, :dependent => :destroy
   has_many :copies, :through => :editions
-  has_many :other_fields, :dependent => :destroy
+  has_many :descriptions, :dependent => :destroy
   has_one :cover_image, :dependent => :destroy
   
   validates :title, :presence => true, :length => { :maximum => 255 }, :uniqueness => true
@@ -34,13 +34,13 @@ class Book < ActiveRecord::Base
   validates_associated :publisher
   validates_associated :country
   validates_associated :book_awards
-  validates_associated :other_fields
+  validates_associated :descriptions
   
   scope :stocked, where(:in_stock => true)
   
   # Scope to include all book information
   def self.includes_data
-    includes(:illustrator, :publisher, :collections, :copies, :book_type, :country, :other_fields, { :book_awards => { :award => :award_type }}, :editions => [:format, :publisher])
+    includes(:illustrator, :publisher, :collections, :copies, :book_type, :country, :descriptions, { :book_awards => { :award => :award_type }}, :editions => [:format, :publisher])
   end
   
   # Scope to include copy data
@@ -87,8 +87,8 @@ class Book < ActiveRecord::Base
       self.book_awards.build
     end
     
-    if other_fields.length == 0
-      self.other_fields.build
+    if descriptions.length == 0
+      self.descriptions.build
     end
   end
   
@@ -149,17 +149,17 @@ class Book < ActiveRecord::Base
     end
   end
   
-  def other_field_attributes=(attrs)
+  def description_attributes=(attrs)
     attrs.each do |a|
       if a[:title].present?
         if a[:id].present?
-          OtherField.find(a[:id]).update_attributes(a)
+          Description.find(a[:id]).update_attributes(a)
         else
           a.delete :id
-          other_fields.build(a)
+          descriptions.build(a)
         end
       else
-        OtherField.find(a[:id]).destroy if a[:id].present?
+        Description.find(a[:id]).destroy if a[:id].present?
       end
     end
   end

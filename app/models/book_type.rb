@@ -1,4 +1,5 @@
 class BookType < ActiveRecord::Base
+  attr_accessible :name, :priority
   has_many :books
   
   validates :name, :length => { :maximum => 100 }, :presence => true, :uniqueness => { :case_sensitive => false }

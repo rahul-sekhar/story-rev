@@ -47,7 +47,7 @@ class Edition < ActiveRecord::Base
     self.raw_isbn = isbn.to_s.gsub("-", "")
   end
   
-  def get_hash
+  def as_hash
     {
       :id => id,
       :format_name => format_name,

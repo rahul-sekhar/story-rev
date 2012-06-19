@@ -1,5 +1,7 @@
 class Collection< ActiveRecord::Base
   include Tag
+
+  attr_accessible :name, :priority
   
   has_and_belongs_to_many :books, :join_table => :books_collections, :uniq => true
   
@@ -8,7 +10,7 @@ class Collection< ActiveRecord::Base
   scope :prioritised, order("priority DESC")
   scope :visible, where("priority > 0")
   
-  def get_hash
+  def as_hash
     {
       :id => id,
       :name => name,
