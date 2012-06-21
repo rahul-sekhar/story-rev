@@ -26,3 +26,6 @@ config/environments/*.local.yml
 
 # Ignore the default SQLite database.
 /db/*.sqlite3
+
+# Ignore bundler stubs
+/bundler_stubs

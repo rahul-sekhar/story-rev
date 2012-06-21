@@ -15,6 +15,18 @@ end
 
 group :developent, :test do
   gem 'rspec-rails', '2.10.1'
+  gem 'spork', '1.0.0rc3'
+  gem 'guard', git: 'git://github.com/rahul-sekhar/guard.git'    # Using a modified guard to fix growl notifications on Ubuntu
+  gem 'guard-spork', '1.0.1'
+  gem 'guard-rspec', '1.1.0'
+end
+
+group :test do
+  gem 'capybara', '1.1.2'
+  gem 'capybara-webkit', '0.12.1'
+  gem 'libnotify', '0.7.4'
+  gem 'ruby-dbus', '0.7.2'
+  gem 'factory_girl_rails', '3.4.0'
 end
 
 gem 'jquery-rails', '2.0.2'
