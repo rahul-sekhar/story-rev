@@ -11,6 +11,7 @@
 /backups
 /db/data.yml
 /db/data.yml.bak
+/db/data*.yml.bak
 
 # Ignore all logfiles and tempfiles.
 /log/*.log

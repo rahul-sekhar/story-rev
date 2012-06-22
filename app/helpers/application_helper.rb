@@ -7,7 +7,7 @@ module ApplicationHelper
   end
   
   def sort_params
-    %w[sort_by desc]
+    %w[sort_by desc seed]
   end
   
   def base_filters

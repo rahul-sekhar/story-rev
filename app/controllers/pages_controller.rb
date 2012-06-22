@@ -6,7 +6,7 @@ class PagesController < ApplicationController
     @title = "Store"
     
     check_params
-    
+    set_seed
     @products = Product.stocked.includes_cover.joins("LEFT JOIN authors AS auth ON products.author_id = auth.id").includes(:copies, :illustrator).filter(params).sort_by_param(params[:sort_by],params[:desc]).page(params[:page]).per(20)
     
     if params[:ajax].present?
@@ -50,6 +50,21 @@ class PagesController < ApplicationController
     # Set the default sort parameter
     params[:sort_by] = "random" unless params[:sort_by].present?
   end
+
+  def set_seed
+    if params[:sort_by] == "random"
+      seed = params[:seed].to_s
+      if seed.match(/\A\d+\z/) && seed.to_i > 0
+        seed = seed.to_i
+      else
+        seed = rand(1..99999)
+      end
+      params[:seed] = seed.to_s
+      Product.connection.execute("select setseed(#{seed.to_f / 100000})")
+    else
+      params.delete(:seed)
+    end
+  end
   
   def get_collection_lists
     stocked_books = Product.unscoped.stocked
@@ -68,6 +83,7 @@ class PagesController < ApplicationController
       :sort_by => params[:sort_by],
       :desc => params[:desc],
       :base => get_base,
+      :seed => params[:seed],
       :base_val => params[get_base],
       :filters => filter_list
     }

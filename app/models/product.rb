@@ -66,7 +66,7 @@ class Product < ActiveRecord::Base
     when "age"
       order("age_from#{sort_order}")
     when "price"
-      joins("LEFT JOIN editions AS ed ON ed.product_id = products.id LEFT JOIN copies AS cop ON cop.edition_id = ed.id").group(columns_list).order("MIN(cop.price)#{sort_order}")
+      joins("LEFT JOIN editions AS ed ON ed.product_id = products.id LEFT JOIN copies AS cop ON (cop.edition_id = ed.id AND cop.in_stock = TRUE)").group(columns_list).order("MIN(cop.price)#{sort_order}")
     when "date"
       sort_order = sort_order.present? ? "" : " DESC"
       order("products.book_date#{sort_order}")
