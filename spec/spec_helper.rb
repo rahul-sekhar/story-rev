@@ -5,7 +5,9 @@ require 'spork'
 
 Spork.prefork do
   ENV["RAILS_ENV"] ||= 'test'
+
   require File.expand_path("../../config/environment", __FILE__)
+
   require 'rspec/rails'
   require 'rspec/autorun'
 
@@ -39,7 +41,7 @@ Spork.prefork do
     config.filter_run :focus => true
     config.run_all_when_everything_filtered = true
 
-    config.include Factory::Syntax::Methods
+    config.include FactoryGirl::Syntax::Methods
   end
 
   # Use the webkit driver for javascript in capybara
@@ -47,6 +49,9 @@ Spork.prefork do
 end
 
 Spork.each_run do
-  # This code will be run each time you run your specs.
+  
+  ActiveSupport::Dependencies.clear
 
+  FactoryGirl.reload
+  
 end
