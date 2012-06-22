@@ -46,6 +46,8 @@ class RefactorBooks < ActiveRecord::Migration
     change_table :books do |t|
       t.string :flipkart_id
       t.integer :content_type_id
+      t.datetime :in_stock_at
+      t.datetime :out_of_stock_at
       t.rename :book_type_id, :product_type_id
     end
     

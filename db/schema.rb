@@ -283,6 +283,8 @@ ActiveRecord::Schema.define(:version => 20120531121725) do
     t.integer  "accession_id"
     t.string   "flipkart_id"
     t.integer  "content_type_id"
+    t.datetime "in_stock_at"
+    t.datetime "out_of_stock_at"
   end
 
   add_index "products", ["accession_id"], :name => "index_products_on_accession_id"
