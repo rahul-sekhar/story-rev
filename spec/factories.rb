@@ -7,11 +7,11 @@ FactoryGirl.define do
   end
 
   factory :author do
-    sequence(:full_name) { |n| "Test Author #{n}" }
+    sequence(:name) { |n| "Test Author #{n}" }
   end
 
   factory :illustrator do
-    sequence(:full_name) { |n| "Test Illustrator #{n}" }
+    sequence(:name) { |n| "Test Illustrator #{n}" }
   end
 
   factory :publisher do
@@ -25,4 +25,49 @@ FactoryGirl.define do
   factory :book_type do
     sequence(:name) { |n| "Book Type #{n}"}
   end
+
+  factory :collection do
+    sequence(:name) { |n| "Collection #{n}"}
+  end
+
+  factory :award_type do
+    sequence(:name) { |n| "Award Type #{n}"}
+  end
+
+  factory :award do
+    name "Award Name"
+    award_type
+  end
+
+  factory :book_award do
+    award
+    year 2000
+  end
+
+  factory :description do
+    title "Description Title"
+    content "Description Content\nMore content"
+  end
+
+  factory :cover_image do
+    filename { File.open(File.join(Rails.root, 'public', 'images', 'title.png')) }
+  end
+
+  factory :format do
+    sequence(:name) { |n| "Format #{n}"}
+  end
+
+  factory :edition do
+    format
+  end
+
+  factory :used_copy do
+    price 50
+  end
+
+  factory :new_copy do
+    price 100
+    required_stock 10
+  end
+
 end

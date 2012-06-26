@@ -1,4 +1,6 @@
 class Book < ActiveRecord::Base
+  extend NameTags
+
   attr_accessible :title, :author_name, :illustrator_name, :publisher_name, :year, :country_name, :age_from, :age_to,
                   :collection_list, :amazon_url, :short_description, :book_type_id,
                   :award_attributes, :description_attributes, :cover_image_id, :cover_image_url
@@ -16,9 +18,13 @@ class Book < ActiveRecord::Base
   belongs_to :country
   has_many :book_awards, :dependent => :destroy
   has_many :editions, :dependent => :destroy
-  has_many :copies, :through => :editions
+  has_many :new_copies, :through => :editions
+  has_many :used_copies, :through => :editions
+  has_many :copies, :through => :editions, :readonly => true
   has_many :descriptions, :dependent => :destroy
   has_one :cover_image, :dependent => :destroy
+
+  name_tag :author, :illustrator, :publisher, :country
   
   validates :title, :presence => true, :length => { :maximum => 255 }, :uniqueness => true
   validates :author, :presence => true
@@ -92,43 +98,21 @@ class Book < ActiveRecord::Base
     end
   end
   
-  def author_name=(name)
-    self.author = name.present? ? (Author.name_is(name) || Author.new({ :full_name => name })) : nil
-  end
-  
-  def author_name
-    author ? author.full_name : nil
-  end
-  
-  def illustrator_name=(name)
-    self.illustrator = name.present? ? (Illustrator.name_is(name) || Illustrator.new({ :full_name => name })) : nil
-  end
-  
-  def illustrator_name
-    illustrator ? illustrator.full_name : nil
-  end
-  
-  def publisher_name=(name)
-    self.publisher = name.present? ? (Publisher.name_is(name).first || Publisher.new({ :name => name })) : nil
-  end
-  
-  def publisher_name
-    publisher ? publisher.name : nil
-  end
-  
-  def country_name=(name)
-    self.country = name.present? ? (Country.name_is(name).first || Country.new({ :name => name })) : nil
-  end
-  
-  def country_name
-    country ? country.name : nil
-  end
-  
   def collection_list
     collections.map{ |x| x.name }.join(", ")
   end
   def collection_list=(tag_list)
     self.collections = Collection.split_list(tag_list)
+    # Remove invalid entries and duplicates
+    collection_names = []
+    self.collections = collections.select do |x|
+      if collection_names.include? x.name.downcase
+        false
+      else
+        collection_names << x.name.downcase
+        true
+      end
+    end
   end
   def collections_json
     collections.to_json({ :only => [:id, :name] })
@@ -187,16 +171,27 @@ class Book < ActiveRecord::Base
   end
   
   def number_of_copies
-    copies.stocked.inject(0) { |num, x| num + x.stock }
+    new_copies.stocked.inject(0) { |num, x| num + x.stock } + used_copies.stocked.length
   end
   
   def check_stock
     self.in_stock = copies.stocked.length > 0
     save
   end
+
+  def used_copy_min_price
+    price = used_copies.stocked.map{|x| x.price}.min.to_i
+    return price > 0 ? price : nil
+  end
+  
+  def new_copy_min_price
+    price = new_copies.stocked.map{|x| x.price}.min.to_i
+    return price > 0 ? price : nil
+  end
   
   def in_collection? (collection)
-    collection.book_ids.include?(id)
+    collection = Collection.find_by_iname(collection) if collection.is_a? String
+    collection.book_ids.include?(id) if collection
   end
   
   def next_book
@@ -205,16 +200,6 @@ class Book < ActiveRecord::Base
   
   def previous_book
     Book.where('"books"."created_at" < ?', created_at).order('"books"."created_at" DESC').limit(1).first || Book.limit(1).order('"books"."created_at" DESC').first
-  end
-  
-  def used_copy_min_price
-    price = copies.stocked.select{|x| x.new_copy == false}.map{|x| x.price}.min.to_i
-    return price > 0 ? price : nil
-  end
-  
-  def new_copy_min_price
-    price = copies.stocked.select{|x| x.new_copy == true}.map{|x| x.price}.min.to_i
-    return price > 0 ? price : nil
   end
   
   # Function to search by title, accession ID or author
@@ -233,7 +218,7 @@ class Book < ActiveRecord::Base
       else
         book_array |= self.includes(:author)
                             .where('UPPER("authors".first_name || \' \' || "authors".last_name) LIKE ?', "%#{escaped}%")
-                            .map { |x| {:id => x.id, :name => "#{x.title} - #{x.author.full_name}" }}
+                            .map { |x| {:id => x.id, :name => "#{x.title} - #{x.author.name}" }}
       end
     end
     return book_array

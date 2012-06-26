@@ -1,4 +1,6 @@
 class Edition < ActiveRecord::Base
+  extend NameTags
+
   attr_accessible :isbn, :format_name, :publisher_name, :language_name
   
   belongs_to :format
@@ -6,7 +8,11 @@ class Edition < ActiveRecord::Base
   belongs_to :book
   belongs_to :publisher
   
-  has_many :copies, :dependent => :destroy
+  has_many :new_copies, :dependent => :destroy
+  has_many :used_copies, :dependent => :destroy
+  has_many :copies, :readonly => true
+
+  name_tag :format, :language, :publisher
   
   before_validation :convert_raw_isbn
   
@@ -17,30 +23,6 @@ class Edition < ActiveRecord::Base
   
   def init
     self.language_id ||= 1
-  end
-  
-  def format_name
-    format ? format.name : nil
-  end
-  
-  def format_name=(name)
-    self.format = name.present? ? (Format.name_is(name).first || Format.new({ :name => name })) : nil
-  end
-  
-  def language_name
-    language ? language.name : nil
-  end
-  
-  def language_name=(name)
-    self.language = name.present? ? (Language.name_is(name).first || Language.new({ :name => name })) : nil
-  end
-  
-  def publisher_name=(name)
-    self.publisher = name.present? ? (Publisher.name_is(name).first || Publisher.new({ :name => name })) : nil
-  end
-  
-  def publisher_name
-    publisher ? publisher.name : nil
   end
   
   def convert_raw_isbn

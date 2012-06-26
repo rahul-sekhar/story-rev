@@ -5,7 +5,7 @@ class Admin::IllustratorsController < Admin::ApplicationController
     respond_to do |format|
       format.json do
         @illustrators = @illustrators.name_like(params[:q]).limit(10) if params[:q]
-        render :json => @illustrators.map {|x| { :id => x.id, :name => x.full_name } }
+        render :json => @illustrators.map {|x| { :id => x.id, :name => x.name } }
       end
     end
   end

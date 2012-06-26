@@ -6,7 +6,7 @@ class Country < ActiveRecord::Base
   validates :name, :length => { :maximum => 100 }, :presence => true, :uniqueness => { :case_sensitive => false }
   
   def self.name_is(data)
-    where("LOWER(name) = ?", data.downcase)
+    where("LOWER(name) = ?", data.downcase).first
   end
   
   def self.name_like(data)

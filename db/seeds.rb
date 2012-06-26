@@ -38,29 +38,6 @@ if (PickupPoint.count == 0)
   end
 end
 
-puts "\nCreating Content Types"
-puts "======================"
-
-content_types = %w[Fiction Non-fiction In-between]
-
-puts "Clearing first three types"
-ContentType.where(:id => (1..3)).all.each {|x| x.delete}
-ContentType.where(:name => content_types).all.each {|x| x.destroy}
-
-i = 0
-content_types.each do |c|
-  i += 1
-  content_type = ContentType.new(:name => c)
-  content_type.id = i
-  if content_type.save
-    puts "Created: #{c}"
-  else
-    puts "Failed: #{c}"
-  end
-end
-puts "Resetting primary key sequence"
-SqlHelper.reset_primary_key(ContentType)
-
 puts "\nCreating English as the default language"
 puts "========================================"
 

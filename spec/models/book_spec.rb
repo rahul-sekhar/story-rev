@@ -2,7 +2,7 @@ require 'spec_helper'
 require '/home/rahul/projects/story-rev/app/models/book'
 
 describe Book do
-  let(:book) { build(:book) }
+  let!(:book) { build(:book) }
 
   it "should begin with a valid book" do
     book.should be_valid
@@ -111,6 +111,13 @@ describe Book do
       book.accession_id.should == 99
     end
   end
+
+  it "should set the from age to the to age if only the to age is set" do
+    book.age_to = 12
+    book.save
+    book.age_from.should == 12
+  end
+
   
   [:author, :illustrator, :publisher, :country, :book_type].each do |field|
     it "should check for an invalid #{field}" do
@@ -120,4 +127,252 @@ describe Book do
     end
   end
 
+  it "should add an error for an invalid author name" do
+    book.author = build(:author, :name => "a" * 255)
+    book.should be_invalid
+    book.errors[:author_name].should be_present
+  end
+
+  it "should initially be out of stock" do
+    book.in_stock.should == false
+  end
+
+  it "should return the authors full name as author name" do
+    book.author.name = "Test A Name"
+    book.author_name.should == "Test A Name"
+  end
+
+  it "should use an existing author if one is present with the set author name" do
+    author = create(:author, :name => "Existing Author")
+    book.author_name = "Existing Author"
+    book.author_id.should == author.id
+  end
+
+  it "should create a new author if the set author name does not exist" do
+    expect do
+      book.author_name = "New Author"
+      book.save
+    end.to change{ Author.count }.by(1)
+  end
+
+  it "should use an existing illustrator if one is present with the set illustrator name" do
+    illustrator = create(:illustrator, :name => "Existing Illustrator")
+    book.illustrator_name = "Existing Illustrator"
+    book.illustrator_id.should == illustrator.id
+  end
+
+  it "should create a new illustrator if the set illustrator name does not exist" do
+    expect do
+      book.illustrator_name = "New Illustrator"
+     book.save 
+   end.to change{ Illustrator.count }.by(1)
+  end
+
+  it "should use an existing publisher if one is present with the set publisher name" do
+    publisher = create(:publisher, :name => "Existing Publisher")
+    book.publisher_name = "Existing Publisher"
+    book.publisher_id.should == publisher.id
+  end
+
+  it "should create a new publisher if the set publisher name does not exist" do
+    expect do
+      book.publisher_name = "New Publisher"
+      book.save 
+    end.to change{ Publisher.count }.by(1)
+  end
+
+  it "should use an existing country if one is present with the set country name" do
+    country = create(:country, :name => "Existing Country")
+    book.country_name = "Existing Country"
+    book.country_id.should == country.id
+  end
+
+  it "should create a new country if the set country name does not exist" do
+    expect do 
+      book.country_name = "New Country"
+      book.save 
+    end.to change{ Country.count }.by(1)
+  end
+
+  describe "collections" do
+    before do
+      ["collection1", "test-collection", "Test two"].each do |name|
+        book.collections << create(:collection, :name => name)
+      end
+    end
+
+    it "should take a comma separated list of collections and use existing objects and create new ones if required, ignoring duplicates" do
+      create(:collection, :name => "Test")
+      create(:collection, :name => "Test 2")
+      create(:collection, :name => "Testing Again")
+
+      expect do
+        book.collection_list = "Collection1, Test two, Test, Test 2, Testing Again,New Collection,New,Test, New, new collection"
+        book.save
+      end.to change{ Collection.count }.by(2)
+
+      book.collections.length.should == 7
+    end
+
+    it "should return a comma seperated list of collection names" do
+      book.collection_list.should == "collection1, test-collection, Test two"
+    end
+
+    it "should check if the book is in a particular collection" do
+      book.save
+      book.should be_in_collection "test-collection"
+      book.should be_in_collection "test two"
+      book.should_not be_in_collection "test three"
+      new_collection = create(:collection, :name => "Test")
+      book.should_not be_in_collection "Test"
+      book.should_not be_in_collection new_collection
+      book.should be_in_collection Collection.find_by_name("Test two")
+    end
+  end
+
+  it "should be able to cycle through the books using next book and previous book" do
+    (1..4).each do |n|
+      create(:book, :title => "Book #{n}")
+    end
+    last = Book.last
+    last.next_book.title.should == "Book 1"
+    last.next_book.next_book.title.should == "Book 2"
+    last.previous_book.title.should == "Book 3"
+    last.previous_book.previous_book.title.should == "Book 2"
+  end
+
+  describe "award attributes" do
+    it "should allow adding awards" do
+      expect do
+        book.award_attributes = [{ :award_id => create(:award).id, :year => 2000 }, { :award_id => create(:award).id, :year => 2010 }]
+        book.save
+      end.to change{ BookAward.count }.by(2)
+      book.book_awards.count.should == 2
+    end
+
+    it "should allow awards to be edited" do
+      book_award = create(:book_award)
+      book.book_awards << book_award
+      book.save
+      award = create(:award)
+      book.award_attributes = [{ :id => book_award.id, :year => 1990, :award_id => award.id }]
+      book.save
+      book_award.reload.year.should == 1990
+      book_award.award.should == award
+    end
+
+    it "should allow awards to be removed by removing the award id" do
+      book_award = create(:book_award)
+      book.book_awards << book_award
+      book.save
+
+      expect do
+        book.award_attributes = [{ :id => book_award.id }]
+        book.save
+      end.to change{ BookAward.count }.by(-1)
+      book.book_awards.count.should == 0
+    end
+  end
+
+  describe "descriptions" do
+    it "should allow adding descriptions" do
+      expect do
+        book.description_attributes = [attributes_for(:description), attributes_for(:description)]
+        book.save
+      end.to change{ Description.count }.by(2)
+      book.descriptions.count.should == 2
+    end
+
+    it "should allow descriptions to be edited" do
+      description = create(:description)
+      book.descriptions << description
+      book.save
+      description = create(:description)
+      book.description_attributes = [{ :id => description.id, :title => "Changed Title", :content => "Changed Content" }]
+      book.save
+      description.reload.title.should == "Changed Title"
+      description.content.should == "Changed Content"
+    end
+
+    it "should allow descriptions to be removed by removing the title" do
+      description = create(:description)
+      book.descriptions << description
+      book.save
+
+      expect do
+        book.description_attributes = [{ :id => description.id }]
+        book.save
+      end.to change{ Description.count }.by(-1)
+      book.descriptions.count.should == 0
+    end
+  end
+
+  describe "cover image" do
+    it "should load a cover image from a remote url", :skip do
+      expect do
+        book.cover_image_url = "http://localhost:3000/images/title.png"
+        book.save
+      end.to change{ CoverImage.count }.by(1)
+    end
+
+    it "should destroy an existing cover image if a new one is loaded from a url", :skip do
+      book.cover_image = create(:cover_image)
+      old_id = book.cover_image.id
+      book.cover_image_url = "http://localhost:3000/images/title.png"
+      book.save
+      CoverImage.count.should == 1
+      expect { CoverImage.find(old_id) }.to raise_exception
+    end
+
+    it "should destroy an existing cover image if a new object is chosen" do
+      book.cover_image = create(:cover_image)
+      old_id = book.cover_image.id
+      new_cover_image = create(:cover_image)
+      CoverImage.count.should == 2
+      book.cover_image_id = new_cover_image.id
+      CoverImage.count.should == 1
+      expect { CoverImage.find(old_id) }.to raise_exception
+    end
+  end
+
+  describe "copies" do
+    before do
+      book.editions << build_list(:edition, 4)
+      book.save
+    end
+
+    it "should show the right number of copies" do
+      book.editions[0].used_copies << build_list(:used_copy, 2)                     # 2
+      book.editions[0].used_copies << build(:used_copy, :set_stock => 0)            # 0
+      book.editions[0].new_copies << build(:new_copy, :stock => 3)                  # 3
+
+      book.editions[1].used_copies << build_list(:used_copy, 2, :set_stock => 0)    # 0
+      book.editions[1].used_copies << build_list(:used_copy, 4)                     # 4
+
+      book.editions[2].used_copies << build_list(:used_copy, 2, :set_stock => 0)    # 0
+      book.editions[2].new_copies << build_list(:new_copy, 3)                       # 0
+
+      book.editions[3].new_copies << build_list(:new_copy, 2, :stock => 10)         # 20
+      book.editions[3].new_copies << build_list(:new_copy, 3)                       # 0
+
+      book.number_of_copies.should == 29                                            # Total = 29
+    end
+
+    it "should correctly find the used copy minimum price" do
+      book.editions[0].used_copies << build_list(:used_copy, 3, :price => 60)
+      book.editions[1].used_copies << build(:used_copy, :price => 30)
+      book.editions[1].used_copies << build(:used_copy, :price => 20, :set_stock => 0)
+      book.editions[1].new_copies << build(:new_copy, :price => 25, :set_stock => 5)
+      book.editions[2].used_copies << build(:used_copy, :price => 40)
+      book.used_copy_min_price.should == 30
+    end
+
+    it "should correctly find the new copy minimum price" do
+      book.editions[0].new_copies << build(:new_copy, :price => 45, :set_stock => 6)
+      book.editions[2].used_copies << build(:used_copy, :price => 30)
+      book.editions[2].new_copies << build(:new_copy, :price => 40, :set_stock => 3)
+      book.editions[2].new_copies << build(:new_copy, :price => 35)
+      book.new_copy_min_price.should == 40
+    end
+  end
 end

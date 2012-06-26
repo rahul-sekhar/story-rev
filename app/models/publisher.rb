@@ -14,6 +14,6 @@ class Publisher < ActiveRecord::Base
   end
   
   def self.name_is(data)
-    where("LOWER(name) = ?", data.downcase)
+    where("LOWER(name) = ?", data.downcase).first
   end
 end

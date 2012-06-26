@@ -1,11 +1,11 @@
 module Person
   
-  def full_name
-    @full_name ||= (first_name.blank? ? last_name : "#{first_name} #{last_name}")
+  def name
+    @name ||= (first_name.blank? ? last_name : "#{first_name} #{last_name}")
   end
   
-  def convert_full_name
-    split_name = full_name.split
+  def convert_name
+    split_name = name.split
     self.last_name = split_name.pop
     while !split_name.empty? && ("a".."z").member?(split_name.last[0,1])
       self.last_name = "#{split_name.pop} #{last_name}"

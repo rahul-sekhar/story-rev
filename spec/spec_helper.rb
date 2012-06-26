@@ -39,9 +39,14 @@ Spork.prefork do
 
     config.treat_symbols_as_metadata_keys_with_true_values = true
     config.filter_run :focus => true
+    config.filter_run_excluding :skip => true
     config.run_all_when_everything_filtered = true
 
     config.include FactoryGirl::Syntax::Methods
+
+    config.after(:all) do
+      FileUtils.rm_rf(Dir["#{Rails.root}/spec/uploads"])
+    end 
   end
 
   # Use the webkit driver for javascript in capybara
@@ -49,9 +54,14 @@ Spork.prefork do
 end
 
 Spork.each_run do
-  
   ActiveSupport::Dependencies.clear
-
   FactoryGirl.reload
-  
+  load "#{Rails.root}/db/seeds.rb"
+
+  CoverUploader.class_eval do
+    def store_dir
+      "#{Rails.root}/spec/uploads/books/#{model.id}"
+    end 
+  end
+  CoverUploader.enable_processing = false
 end
