@@ -17,9 +17,14 @@ class Edition < ActiveRecord::Base
   before_validation :convert_raw_isbn
   
   validates :format, :presence => true
-  validates :raw_isbn, :numericality => { :only_integer => true }, :allow_blank => true
+  validates :language, :presence => true
+  validates :isbn, :length => { :maximum => 255 }
+  validates :raw_isbn, :numericality => { :only_integer => true }, :if => "isbn.present?"
+  validates :isbn, :format => { :with => /\A\d+(?:-?\d+)*\z/ }, :allow_blank => true
   
   validates_associated :publisher
+  validates_associated :format
+  validates_associated :language
   
   def init
     self.language_id ||= 1

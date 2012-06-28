@@ -17,7 +17,7 @@ class ShoppingCartCopy < ActiveRecord::Base
   end
   
   def price
-    copy.in_stock ? copy.price * number : 0
+    copy.in_stock? ? copy.price * number : 0
   end
   
   def check_number

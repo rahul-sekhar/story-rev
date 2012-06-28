@@ -15,6 +15,7 @@ guard 'spork', :cucumber_env => { 'RAILS_ENV' => 'test' }, :rspec_env => { 'RAIL
   watch(%r{features/support/}) { :cucumber }
   watch('spec/support/')
   watch('app/uploaders/')
+  watch('db/seeds.rb')
 end
 
 guard 'rspec', :version => 2, :all_after_pass => false, :cli => '--drb' do
@@ -32,7 +33,8 @@ guard 'rspec', :version => 2, :all_after_pass => false, :cli => '--drb' do
   # Capybara request specs
   watch(%r{^app/views/(.+)/.*\.(erb|haml)$})          { |m| "spec/requests/#{m[1]}_spec.rb" }
 
-  watch('db/seeds.rb')
+  # New copy and used copy depend on copy
+  watch('app/models/copy.rb') { ['spec/models/new_copy_spec.rb', 'spec/models/used_copy_spec.rb'] }
   
   # watch(%r{^app/controllers/(.+)_(controller)\.rb$})  do |m|
   #   ["spec/routing/#{m[1]}_routing_spec.rb",

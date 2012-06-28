@@ -57,17 +57,33 @@ FactoryGirl.define do
     sequence(:name) { |n| "Format #{n}"}
   end
 
+  factory :language do
+    sequence(:name) { |n| "Language #{n}"}
+  end
+
   factory :edition do
     format
+    
+    factory :edition_with_book do
+      book
+    end
   end
 
   factory :used_copy do
     price 50
+
+    factory :used_copy_with_book do
+      association :edition, factory: :edition_with_book
+    end
   end
 
   factory :new_copy do
     price 100
     required_stock 10
+    
+    factory :new_copy_with_book do
+      association :edition, factory: :edition_with_book
+    end
   end
 
 end

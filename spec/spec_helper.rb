@@ -46,7 +46,10 @@ Spork.prefork do
 
     config.after(:all) do
       FileUtils.rm_rf(Dir["#{Rails.root}/spec/uploads"])
-    end 
+    end
+
+    # Load seeds
+    load "#{Rails.root}/db/seeds.rb"
   end
 
   # Use the webkit driver for javascript in capybara
@@ -56,7 +59,6 @@ end
 Spork.each_run do
   ActiveSupport::Dependencies.clear
   FactoryGirl.reload
-  load "#{Rails.root}/db/seeds.rb"
 
   CoverUploader.class_eval do
     def store_dir

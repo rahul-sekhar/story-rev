@@ -212,7 +212,7 @@ class Order < ActiveRecord::Base
         oc.copy.number -= oc.number
         oc.copy.save
       else
-        if oc.copy.in_stock
+        if oc.copy.in_stock?
           oc.copy.set_stock = false
         else
           self.out_of_stock << oc
@@ -337,7 +337,7 @@ class Order < ActiveRecord::Base
   
   def add_copy(copy_id)
     copy = Copy.find(copy_id)
-    return if copy.in_stock = false || copies.include?(copy)
+    return if !copy.in_stock? || copies.include?(copy)
     
     if copy.new_copy
       copy.number -= 1

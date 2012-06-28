@@ -32,7 +32,7 @@ class Book < ActiveRecord::Base
   validates :age_to, :numericality => { :only_integer => true, :greater_than_or_equal_to => 0, :less_than => 100 }, :allow_blank => true
   validates :year, :numericality => { :only_integer => true, :greater_than_or_equal_to => 1000, :less_than => 2100 }, :allow_blank => true
   validates :amazon_url, :length => { :maximum => 255 }
-  validates :accession_id, :uniqueness => true, :numericality => { :only_integer => true }, :allow_blank => true
+  validates :accession_id, :uniqueness => true, :numericality => { :only_integer => true, :greater_than_or_equal_to => 0 }, :allow_blank => true
   
   validates_associated :author
   validates_associated :illustrator

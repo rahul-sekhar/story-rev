@@ -1,5 +1,4 @@
 require 'spec_helper'
-require '/home/rahul/projects/story-rev/app/models/book'
 
 describe Book do
   let!(:book) { build(:book) }
@@ -24,6 +23,7 @@ describe Book do
       book.should be_valid
       book.title = "a" * 256
       book.should be_invalid
+      book.errors[:title].should be_present
     end
 
     it "should be unique" do
@@ -31,20 +31,21 @@ describe Book do
       book.should be_valid
       create(:book, :title => "Duplicate Test")
       book.should be_invalid
+      book.errors[:title].should be_present
     end
   end
 
   it "should require an author" do
     book.author = nil
     book.should be_invalid
+    book.errors[:author].should be_present
   end
-
-
 
   it "should ensure that the from age is a number ranging from 0 to 99" do
     ["as", 'a', '-', '1a', 'a1', -1, 100, 1.5, 0.1].each do |x|
       book.age_from = x
       book.should be_invalid
+      book.errors[:age_from].should be_present
     end
     [0,1,7,99].each do |x|
       book.age_from = x
@@ -56,6 +57,7 @@ describe Book do
     ["as", 'a', '-', '1a', 'a1', -1, 100].each do |x|
       book.age_to = x
       book.should be_invalid, x
+      book.errors[:age_to].should be_present
     end
     [0,1,7,99].each do |x|
       book.age_to = x
@@ -67,6 +69,7 @@ describe Book do
     ["as", 'a', '-', '1a', 'a1', -1, 2100, 1.5, 999].each do |x|
       book.year = x
       book.should be_invalid, x
+      book.errors[:year].should be_present
     end
     [1000,1999,2000,2099].each do |x|
       book.year = x
@@ -79,6 +82,7 @@ describe Book do
     book.should be_valid
     book.amazon_url = "a" * 256
     book.should be_invalid
+    book.errors[:amazon_url].should be_present
   end
 
   describe "accession id" do
@@ -88,7 +92,7 @@ describe Book do
       book.accession_id.should be_a Integer
     end
 
-    it "should be unique" do
+    it "should be unique for each new book" do
       book1 = create(:book)
       book2 = create(:book)
       book1.accession_id.should_not == book2.accession_id
@@ -106,9 +110,45 @@ describe Book do
     end
 
     it "should be settable before saving" do
+      book.accession_id = 765
+      book.save
+      book.accession_id.should == 765
+    end
+
+    it "should check for uniqueness when user set" do
+      book.save
+      book2 = build(:book, accession_id: book.accession_id)
+      book2.should be_invalid
+      book2.errors[:accession_id].should be_present
+    end
+
+    it "should reset the accession_id when the user sets it to be nil" do
       book.accession_id = 99
       book.save
-      book.accession_id.should == 99
+      book.accession_id = nil
+      book.save
+      book.accession_id.should == 100
+    end
+
+    it "should reset the accession_id when the user sets it to be a blank string" do
+      book.accession_id = 99
+      book.save
+      book.accession_id = ""
+      book.save
+      book.accession_id.should == 100
+    end
+
+    it "should accept only non-negative integers for user set values" do
+      [-1, "a", "1a", "1-", "-", "1_1", 0.56, "1.5"].each do |x|
+        book.accession_id = x
+        book.should be_invalid, x
+        book.errors[:accession_id].should be_present
+      end
+
+      [0, 1, 1001, "1"].each do |x|
+        book.accession_id = x
+        book.should be_valid, x
+      end
     end
   end
 
@@ -124,6 +164,7 @@ describe Book do
       book.send("#{field}=", build(field))
       book.send(field).stub(:valid?).and_return(false)
       book.should be_invalid
+      book.errors[field].should be_present
     end
   end
 
@@ -308,7 +349,7 @@ describe Book do
   end
 
   describe "cover image" do
-    it "should load a cover image from a remote url", :skip do
+    it "should load a cover image from a remote url", :skip do            # Skipped as this test requires the 
       expect do
         book.cover_image_url = "http://localhost:3000/images/title.png"
         book.save
@@ -342,36 +383,36 @@ describe Book do
     end
 
     it "should show the right number of copies" do
-      book.editions[0].used_copies << build_list(:used_copy, 2)                     # 2
-      book.editions[0].used_copies << build(:used_copy, :set_stock => 0)            # 0
-      book.editions[0].new_copies << build(:new_copy, :stock => 3)                  # 3
+      book.editions[0].used_copies << build_list(:used_copy, 2)                    # 2
+      book.editions[0].used_copies << build(:used_copy, set_stock: 0)              # 0
+      book.editions[0].new_copies << build(:new_copy, stock: 3)                    # 3
 
-      book.editions[1].used_copies << build_list(:used_copy, 2, :set_stock => 0)    # 0
-      book.editions[1].used_copies << build_list(:used_copy, 4)                     # 4
+      book.editions[1].used_copies << build_list(:used_copy, 2, set_stock: 0)      # 0
+      book.editions[1].used_copies << build_list(:used_copy, 4)                    # 4
 
-      book.editions[2].used_copies << build_list(:used_copy, 2, :set_stock => 0)    # 0
-      book.editions[2].new_copies << build_list(:new_copy, 3)                       # 0
+      book.editions[2].used_copies << build_list(:used_copy, 2, set_stock: 0)      # 0
+      book.editions[2].new_copies << build_list(:new_copy, 3)                      # 0
 
-      book.editions[3].new_copies << build_list(:new_copy, 2, :stock => 10)         # 20
-      book.editions[3].new_copies << build_list(:new_copy, 3)                       # 0
+      book.editions[3].new_copies << build_list(:new_copy, 2, stock: 10)           # 20
+      book.editions[3].new_copies << build_list(:new_copy, 3)                      # 0
 
-      book.number_of_copies.should == 29                                            # Total = 29
+      book.number_of_copies.should == 29                                           # Total = 29
     end
 
     it "should correctly find the used copy minimum price" do
-      book.editions[0].used_copies << build_list(:used_copy, 3, :price => 60)
-      book.editions[1].used_copies << build(:used_copy, :price => 30)
-      book.editions[1].used_copies << build(:used_copy, :price => 20, :set_stock => 0)
-      book.editions[1].new_copies << build(:new_copy, :price => 25, :set_stock => 5)
-      book.editions[2].used_copies << build(:used_copy, :price => 40)
+      book.editions[0].used_copies << build_list(:used_copy, 3, price: 60)
+      book.editions[1].used_copies << build(:used_copy, price: 30)
+      book.editions[1].used_copies << build(:used_copy, price: 20, set_stock: 0)
+      book.editions[1].new_copies << build(:new_copy, price: 25, set_stock: 5)
+      book.editions[2].used_copies << build(:used_copy, price: 40)
       book.used_copy_min_price.should == 30
     end
 
     it "should correctly find the new copy minimum price" do
-      book.editions[0].new_copies << build(:new_copy, :price => 45, :set_stock => 6)
-      book.editions[2].used_copies << build(:used_copy, :price => 30)
-      book.editions[2].new_copies << build(:new_copy, :price => 40, :set_stock => 3)
-      book.editions[2].new_copies << build(:new_copy, :price => 35)
+      book.editions[0].new_copies << build(:new_copy, price: 45, set_stock: 6)
+      book.editions[2].used_copies << build(:used_copy, price: 30)
+      book.editions[2].new_copies << build(:new_copy, price: 40, set_stock: 3)
+      book.editions[2].new_copies << build(:new_copy, price: 35)
       book.new_copy_min_price.should == 40
     end
   end

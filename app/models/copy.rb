@@ -13,7 +13,8 @@ class Copy < ActiveRecord::Base
   
   validates :accession_id, :presence => true, :uniqueness => true
   validates :copy_number, :presence => true, :numericality => { :only_integer => true }
-  validates :price, :numericality => { :only_integer => true }
+  validates :stock, :presence => true, :numericality => { :only_integer => true }
+  validates :price, :numericality => { :only_integer => true, :greater_than_or_equal_to => 0 }
   
   scope :stocked, -> { where("stock > 0") }
   scope :unstocked, -> { where("stock <= 0") }
@@ -28,7 +29,7 @@ class Copy < ActiveRecord::Base
   end
   
   # The copy is in stock if its stock is above 0
-  def in_stock
+  def in_stock?
     stock > 0
   end
   

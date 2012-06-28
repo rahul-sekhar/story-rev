@@ -31,7 +31,8 @@ class UsedCopy < Copy
   end
 
   def set_stock=(value)
-    self.stock = (value == false || value == 0) ? 0 : 1
+    value = (value > 0) if value.is_a? Integer
+    self.stock = value ? 1 : 0
   end
 
   def set_book_date
