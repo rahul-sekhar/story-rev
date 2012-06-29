@@ -3,9 +3,12 @@ class Collection< ActiveRecord::Base
 
   attr_accessible :name, :priority
   
-  has_and_belongs_to_many :books, :join_table => :books_collections, :uniq => true
+  has_and_belongs_to_many :books, join_table: :books_collections, uniq: true
   
-  validates :name, :length => { :maximum => 200 }, :presence => true, :uniqueness => { :case_sensitive => false }
+  validates :name, 
+    length: { :maximum => 200 },
+    presence: true, 
+    uniqueness: { case_sensitive: false }
   
   scope :prioritised, order("priority DESC")
   scope :visible, where("priority > 0")

@@ -35,7 +35,7 @@ FactoryGirl.define do
   end
 
   factory :award do
-    name "Award Name"
+    sequence(:name) { |n| "Award #{n}"}
     award_type
   end
 
@@ -86,4 +86,7 @@ FactoryGirl.define do
     end
   end
 
+  factory :pickup_point do
+    sequence(:name) { |n| "Pickup Point #{n}"}
+  end
 end

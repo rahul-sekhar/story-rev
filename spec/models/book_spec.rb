@@ -2,20 +2,19 @@ require 'spec_helper'
 
 describe Book do
   let!(:book) { build(:book) }
+  subject { book }
 
-  it "should begin with a valid book" do
-    book.should be_valid
-  end
+  it { should be_valid }
 
   describe "title" do
-    it "should not be nil" do
-      book.title = nil
-      book.should be_invalid
+    context "with a nil title" do
+      before { subject.title = nil }
+      it { should be_invalid }
     end
 
-    it "should not be blank" do
-      book.title = ""
-      book.should be_invalid
+    context "with a blank title" do
+      before { subject.title = "" }
+      it { should be_invalid }
     end
 
     it "should have a max length of 255 characters" do
@@ -383,20 +382,20 @@ describe Book do
     end
 
     it "should show the right number of copies" do
-      book.editions[0].used_copies << build_list(:used_copy, 2)                    # 2
-      book.editions[0].used_copies << build(:used_copy, set_stock: 0)              # 0
-      book.editions[0].new_copies << build(:new_copy, stock: 3)                    # 3
+      book.editions[0].used_copies << build_list(:used_copy, 2)
+      book.editions[0].used_copies << build(:used_copy, set_stock: 0)
+      book.editions[0].new_copies << build(:new_copy, stock: 3)
 
-      book.editions[1].used_copies << build_list(:used_copy, 2, set_stock: 0)      # 0
-      book.editions[1].used_copies << build_list(:used_copy, 4)                    # 4
+      book.editions[1].used_copies << build_list(:used_copy, 2, set_stock: 0)
+      book.editions[1].used_copies << build_list(:used_copy, 4)
 
-      book.editions[2].used_copies << build_list(:used_copy, 2, set_stock: 0)      # 0
-      book.editions[2].new_copies << build_list(:new_copy, 3)                      # 0
+      book.editions[2].used_copies << build_list(:used_copy, 2, set_stock: 0)
+      book.editions[2].new_copies << build_list(:new_copy, 3)
 
-      book.editions[3].new_copies << build_list(:new_copy, 2, stock: 10)           # 20
-      book.editions[3].new_copies << build_list(:new_copy, 3)                      # 0
+      book.editions[3].new_copies << build_list(:new_copy, 2, stock: 10)
+      book.editions[3].new_copies << build_list(:new_copy, 3)
 
-      book.number_of_copies.should == 29                                           # Total = 29
+      book.number_of_copies.should == 29
     end
 
     it "should correctly find the used copy minimum price" do
@@ -414,6 +413,32 @@ describe Book do
       book.editions[2].new_copies << build(:new_copy, price: 40, set_stock: 3)
       book.editions[2].new_copies << build(:new_copy, price: 35)
       book.new_copy_min_price.should == 40
+    end
+  end
+
+  describe "after being destroyed" do
+    it "should destroy child editions" do
+      book.editions << build_list(:edition, 2)
+      book.save
+      expect{ book.destroy }.to change{ Edition.count }.by(-2)
+    end
+
+    it "should destroy awards" do
+      book.book_awards << build_list(:book_award, 2)
+      book.save
+      expect{ book.destroy }.to change{ BookAward.count }.by(-2)
+    end
+
+    it "should destroy the cover image" do
+      book.cover_image = build(:cover_image)
+      book.save
+      expect{ book.destroy }.to change{ CoverImage.count }.by(-1)
+    end
+
+    it "should destroy descriptions" do
+      book.descriptions << build_list(:description, 2)
+      book.save
+      expect{ book.destroy }.to change{ Description.count }.by(-2)
     end
   end
 end

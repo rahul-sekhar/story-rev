@@ -1,10 +1,18 @@
 require 'spec_helper'
-require "#{Rails.root}/spec/support/copy"
 
 describe NewCopy do
   let(:copy) { build(:new_copy_with_book) }
 
   it_should_behave_like "a copy"
+
+  it "should only retrieve used copies from the database" do
+    copy.save
+    copy1 = create(:new_copy_with_book)
+    used_copy = create(:used_copy_with_book)
+    new_copies = NewCopy.all
+    new_copies.should include(copy, copy1)
+    new_copies.should_not include(used_copy)
+  end
 
   it "should initially be out of stock" do
     copy.should_not be_in_stock
@@ -17,5 +25,44 @@ describe NewCopy do
 
   it "should have a default condition rating of 5" do
     copy.condition_rating.should == 5
+  end
+
+  it "should ensure that required stock is a positive integer" do
+    [-1, "a", "1a", "1-", "-", "1_1", 0.56, "1.5"].each do |x|
+      copy.required_stock = x
+      copy.should be_invalid, x
+      copy.errors[:required_stock].should be_present
+    end
+
+    [0, 1, 1001, "1"].each do |x|
+      copy.required_stock = x
+      copy.should be_valid, x
+    end
+  end
+
+  it "should update the book date if the book copy out of stock then comes back in stock" do
+    old_book_date = copy.book.book_date
+    copy.save
+    copy.book.book_date.should == old_book_date
+    copy.set_stock = 10
+    copy.save
+    copy.book.book_date.should > old_book_date
+  end
+
+  it "should not update the book date if the copy goes out of stock and then the stock goes negative" do
+    copy.save
+    old_book_date = copy.book.book_date
+    copy.set_stock = -1
+    copy.save
+    copy.book.book_date.should == old_book_date
+  end
+
+  it "should not update the book date if the copy does not go out of stock" do
+    copy.set_stock = 1
+    copy.save
+    old_book_date = copy.book.book_date
+    copy.set_stock = 10
+    copy.save
+    copy.book.book_date.should == old_book_date
   end
 end

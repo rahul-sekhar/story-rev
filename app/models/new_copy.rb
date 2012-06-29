@@ -1,8 +1,13 @@
 class NewCopy < Copy
-  default_scope -> { where(:new_copy => true) }
+  default_scope -> { where(new_copy: true) }
   attr_accessible :required_stock
 
-  validates :required_stock, :numericality => { :only_integer => true, :greater_than_or_equal_to => 0 }, :allow_blank => true
+  validates :required_stock, 
+    numericality: { 
+      only_integer: true, 
+      greater_than_or_equal_to: 0 
+    }, 
+    allow_blank: true
 
   def init
     self.new_copy = true

@@ -11,10 +11,6 @@ Spork.prefork do
   require 'rspec/rails'
   require 'rspec/autorun'
 
-  # Requires supporting ruby files with custom matchers and macros, etc,
-  # in spec/support/ and its subdirectories.
-  Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
-
   RSpec.configure do |config|
     # ## Mock Framework
     #
@@ -57,8 +53,11 @@ Spork.prefork do
 end
 
 Spork.each_run do
-  ActiveSupport::Dependencies.clear
   FactoryGirl.reload
+  ActiveSupport::Dependencies.clear
+  ActiveRecord::Base.instantiate_observers
+
+  Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
 
   CoverUploader.class_eval do
     def store_dir

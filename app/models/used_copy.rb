@@ -1,11 +1,18 @@
 class UsedCopy < Copy
-  default_scope -> { where(:new_copy => false) }
+  default_scope -> { where(new_copy: false) }
   attr_accessible :condition_rating, :condition_description
   
   # Set the book date if a fresh copy has been created
   after_create :set_book_date
 
-  validates :condition_rating, :numericality => { :only_integer => true, :greater_than_or_equal_to => 0, :less_than_or_equal_to => 5 }
+  validates :condition_rating, 
+    numericality: { 
+      only_integer: true,
+      greater_than_or_equal_to: 0,
+      less_than_or_equal_to: 5 
+    }
+
+  validates :condition_description, length: { maximum: 255 }
 
   def init
     self.new_copy = false
@@ -37,5 +44,24 @@ class UsedCopy < Copy
 
   def set_book_date
     book.set_book_date if stock > 0
+  end
+
+  def condition_description
+    super || UsedCopy.condition_to_words(condition_rating)
+  end
+
+  def self.condition_to_words(condition)
+    case condition
+    when 1
+      "Acceptable"
+    when 2
+      "Acceptable"
+    when 3
+      "Good"
+    when 4
+      "Excellent"
+    when 5
+      "Like new"
+    end
   end
 end

@@ -1,4 +1,6 @@
 class TransactionCategory < ActiveRecord::Base
+  extend FindableByName
+  
   attr_accessible :name, :off_record
   after_initialize :init
   
@@ -12,13 +14,5 @@ class TransactionCategory < ActiveRecord::Base
   
   def toggle_record
     self.off_record = !off_record
-  end
-  
-  def self.name_is(data)
-    where("LOWER(name) = ?", data.downcase)
-  end
-  
-  def self.name_like(data)
-    where("LOWER(name) LIKE ?", "%#{SqlHelper::escapeWildcards(data.downcase)}%")
   end
 end

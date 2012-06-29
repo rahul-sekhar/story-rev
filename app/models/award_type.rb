@@ -5,7 +5,10 @@ class AwardType < ActiveRecord::Base
   
   after_save :create_empty_award
   
-  validates :name, :length => { :maximum => 100 }, :presence => true, :uniqueness => { :case_sensitive => false }
+  validates :name, 
+    :length => { :maximum => 100 }, 
+    :presence => true, 
+    :uniqueness => { :case_sensitive => false }
   
   def create_empty_award
     if Award.where(:award_type_id => id).blank?

@@ -58,4 +58,21 @@ describe Edition do
     edition.isbn = ""
     edition.should be_valid
   end
+
+  describe "after being destroyed" do
+    before do 
+      edition.book = create(:book)
+      edition.save
+    end
+    it "should destroy used copies" do
+      edition.used_copies << build_list(:used_copy, 2)
+      expect{ edition.destroy }.to change{ UsedCopy.count }.by(-2)
+    end
+
+    it "should destroy new copies" do
+      edition.new_copies << build_list(:new_copy, 2)
+      edition.save
+      expect{ edition.destroy }.to change{ NewCopy.count }.by(-2)
+    end
+  end
 end

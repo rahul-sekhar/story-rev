@@ -1,16 +1,19 @@
 class Book < ActiveRecord::Base
   extend NameTags
 
-  attr_accessible :title, :author_name, :illustrator_name, :publisher_name, :year, :country_name, :age_from, :age_to,
-                  :collection_list, :amazon_url, :short_description, :book_type_id,
-                  :award_attributes, :description_attributes, :cover_image_id, :cover_image_url
+  attr_accessible :title, :author_name, :illustrator_name, :publisher_name, 
+  :year, :country_name, :age_from, :age_to, :collection_list, :amazon_url, 
+  :short_description, :book_type_id, :award_attributes, 
+  :description_attributes, :cover_image_id, :cover_image_url
   
   after_initialize :init
   after_validation :validate_virtual_attributes
   before_save :check_age_level, :set_accession_id
   after_create :set_book_date
   
-  has_and_belongs_to_many :collections, :join_table => :books_collections, :uniq => true
+  has_and_belongs_to_many :collections, 
+    join_table: :books_collections, 
+    uniq: true
   belongs_to :author
   belongs_to :illustrator
   belongs_to :publisher
@@ -26,13 +29,46 @@ class Book < ActiveRecord::Base
 
   name_tag :author, :illustrator, :publisher, :country
   
-  validates :title, :presence => true, :length => { :maximum => 255 }, :uniqueness => true
-  validates :author, :presence => true
-  validates :age_from, :numericality => { :only_integer => true, :greater_than_or_equal_to => 0, :less_than => 100 }, :allow_blank => true
-  validates :age_to, :numericality => { :only_integer => true, :greater_than_or_equal_to => 0, :less_than => 100 }, :allow_blank => true
-  validates :year, :numericality => { :only_integer => true, :greater_than_or_equal_to => 1000, :less_than => 2100 }, :allow_blank => true
-  validates :amazon_url, :length => { :maximum => 255 }
-  validates :accession_id, :uniqueness => true, :numericality => { :only_integer => true, :greater_than_or_equal_to => 0 }, :allow_blank => true
+  validates :title, 
+    presence: true, 
+    length: { maximum: 255 },
+    uniqueness: true
+
+  validates :author, presence: true
+  
+  validates :age_from, 
+    numericality: { 
+      only_integer: true, 
+      greater_than_or_equal_to: 0,
+      less_than: 100 
+    },
+    allow_blank: true
+  
+  validates :age_to, 
+    numericality: {
+      only_integer: true,
+      greater_than_or_equal_to: 0,
+      less_than: 100
+    }, 
+  allow_blank: true
+  
+  validates :year,
+    numericality: { 
+      only_integer: true,
+      greater_than_or_equal_to: 1000,
+      less_than: 2100 
+    },
+    allow_blank: true
+  
+  validates :amazon_url, length: { maximum: 255 }
+  
+  validates :accession_id,
+    uniqueness: true,
+    numericality: {
+      only_integer: true,
+      greater_than_or_equal_to: 0 
+    }, 
+    allow_blank: true
   
   validates_associated :author
   validates_associated :illustrator
@@ -42,7 +78,7 @@ class Book < ActiveRecord::Base
   validates_associated :book_awards
   validates_associated :descriptions
   
-  scope :stocked, where(:in_stock => true)
+  scope :stocked, where(in_stock: true)
   
   # Scope to include all book information
   def self.includes_data
@@ -190,7 +226,7 @@ class Book < ActiveRecord::Base
   end
   
   def in_collection? (collection)
-    collection = Collection.find_by_iname(collection) if collection.is_a? String
+    collection = Collection.name_is(collection) if collection.is_a? String
     collection.book_ids.include?(id) if collection
   end
   

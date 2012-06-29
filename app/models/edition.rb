@@ -18,9 +18,11 @@ class Edition < ActiveRecord::Base
   
   validates :format, :presence => true
   validates :language, :presence => true
-  validates :isbn, :length => { :maximum => 255 }
-  validates :raw_isbn, :numericality => { :only_integer => true }, :if => "isbn.present?"
-  validates :isbn, :format => { :with => /\A\d+(?:-?\d+)*\z/ }, :allow_blank => true
+  validates :isbn, length: { maximum: 255 }
+  validates :raw_isbn, 
+    numericality: { only_integer: true }, 
+    if: "isbn.present?"
+  validates :isbn, format: { with: /\A\d+(?:-?\d+)*\z/ }, allow_blank: true
   
   validates_associated :publisher
   validates_associated :format

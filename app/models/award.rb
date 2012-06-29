@@ -5,7 +5,10 @@ class Award < ActiveRecord::Base
   belongs_to :award_type
   has_many :book_awards, :dependent => :destroy
   
-  validates :name, :length => { :maximum => 150 }, :presence => true
+  validates :name, 
+    length: { maximum: 150 },
+    presence: true,
+    uniqueness: { case_sensitive: false, scope: :award_type_id }
   
   def full_name
     if (name == "-")

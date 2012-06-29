@@ -3,6 +3,9 @@ class PickupPoint < ActiveRecord::Base
 
   has_many :orders
   
-  validates :name, :length => { :maximum => 255 }, :presence => true
+  validates :name, 
+    length: { maximum: 255 },
+    presence: true,
+    uniqueness: { case_sensitive: false }
   
 end
