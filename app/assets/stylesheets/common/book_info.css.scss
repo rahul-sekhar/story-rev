@@ -24,6 +24,12 @@
             }
         }
     }
+
+    .base-info {
+        float:left;
+        margin-bottom: e(40px);
+        width: e(325px);
+    }
     
     .amazon-link {
         @include small-text;

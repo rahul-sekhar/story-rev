@@ -11,62 +11,64 @@
     </div>
   <% end %>
   
-  <h2><%= @product.title %></h2>
-  
-  <div class="creators">
-    <p class="author">by <%= link_to @product.author_name, collection_path(:author, @product.author_id) %></p>
+  <div class="base-info">
+    <h2><%= @product.title %></h2>
     
-    <% if @product.illustrator.present? && @product.illustrator_name != @product.author_name %>
-      <p class="illustrator">illustrated by <%= link_to @product.illustrator_name, collection_path(:illustrator, @product.illustrator_id) %></p>
+    <div class="creators">
+      <p class="author">by <%= link_to @product.author_name, collection_path(:author, @product.author_id) %></p>
+      
+      <% if @product.illustrator.present? && @product.illustrator_name != @product.author_name %>
+        <p class="illustrator">illustrated by <%= link_to @product.illustrator_name, collection_path(:illustrator, @product.illustrator_id) %></p>
+      <% end %>
+    </div>
+    
+    <div class="age_year">
+      <% if @product.age_from.present? %>
+        <p class="age">May be appropriate for
+        <span><%=raw @product.age_to.present? && (@product.age_to != @product.age_from) ? "ages #{@product.age_from} &ndash; #{@product.age_to}" : "age #{@product.age_from}" %></span>
+        <span class="sidenote">(and up)</span>
+      <% end %>
+      
+      <% if @product.publisher.present? %>
+      <p class="publisher">Publisher: <span><%= @product.publisher_name %></span></p>
     <% end %>
-  </div>
-  
-  <div class="age_year">
-    <% if @product.age_from.present? %>
-      <p class="age">May be appropriate for
-      <span><%=raw @product.age_to.present? && (@product.age_to != @product.age_from) ? "ages #{@product.age_from} &ndash; #{@product.age_to}" : "age #{@product.age_from}" %></span>
-      <span class="sidenote">(and up)</span>
+      
+      <% if @product.year.present? %>
+        <p class="year">First published in <span><%= @product.year %></span>
+      <% end %>
+    </div>
+    
+    <% if @product.cover_image.blank? %>
+      <% if @product.amazon_url.present? %>
+        <div class="amazon-links">
+          <p class="amazon-link"><%= link_to "View reviews on amazon", @product.amazon_url, :class => :ext %></p>
+        </div>
+      <% end %>
     <% end %>
     
-    <% if @product.publisher.present? %>
-    <p class="publisher">Publisher: <span><%= @product.publisher_name %></span></p>
-  <% end %>
+    <% if @product.copies.new_copies.stocked.length > 0 %>
+      <h3>Buy New Copies</h3>
+      <table class="copies new-copies">
+        <% @product.copies.new_copies.stocked.each do |c| %>
+          <%= render "copy_row", :c => c %>
+        <% end %>
+      </table>
+    <% end %>
     
-    <% if @product.year.present? %>
-      <p class="year">First published in <span><%= @product.year %></span>
+    <% if @product.copies.used_copies.stocked.length > 0 %>
+      <h3>Buy Used Copies</h3>
+      <table class="copies used-copies">
+        <% Copy.filter_unique(@product.copies.used_copies.stocked).each do |c| %>
+          <%= render "copy_row", :c => c %>
+        <% end %>
+      </table>
     <% end %>
-  </div>
-  
-  <% if @product.cover_image.blank? %>
-    <% if @product.amazon_url.present? %>
-      <div class="amazon-links">
-        <p class="amazon-link"><%= link_to "View reviews on amazon", @product.amazon_url, :class => :ext %></p>
-      </div>
-    <% end %>
-  <% end %>
-  
-  <% if @product.copies.new_copies.stocked.length > 0 %>
-  <h3>Buy New Copies</h3>
-  <table class="copies new-copies">
-    <% @product.copies.new_copies.stocked.each do |c| %>
-      <%= render "copy_row", :c => c %>
-    <% end %>
-  </table>
-  <% end %>
-  
-  <% if @product.copies.used_copies.stocked.length > 0 %>
-  <h3>Buy Used Copies</h3>
-  <table class="copies used-copies">
-    <% Copy.filter_unique(@product.copies.used_copies.stocked).each do |c| %>
-      <%= render "copy_row", :c => c %>
-    <% end %>
-  </table>
-  <% end %>
 
-  <% if !(@product.copies.stocked.length > 0) %>
-    <h3>Available Copies</h3>
-    <p>There are no copies in stock at the moment.</p>
-  <% end %>
+    <% if !(@product.copies.stocked.length > 0) %>
+      <h3>Available Copies</h3>
+      <p>There are no copies in stock at the moment.</p>
+    <% end %>
+  </div>
   
   <div class="details">
     <% if @product.product_awards.length > 0 %>
