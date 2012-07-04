@@ -132,6 +132,7 @@ module ApplicationHelper
     end
     
     link_params[name] = val if val
+    link_params["sort_by"] = "date" if name == :recent
     return link_params
   end
   
