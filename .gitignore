@@ -1,7 +1,7 @@
 # Design folder
 /design
 
-/bundler_stubs
+# Ignore coverage reports
 /coverage
 /rails_best_practices_output.html
 
@@ -30,3 +30,6 @@ config/environments/*.local.yml
 
 # Ignore the default SQLite database.
 /db/*.sqlite3
+
+# Ignore bundler stubs
+/bundler_stubs
