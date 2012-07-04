@@ -8,6 +8,12 @@ class PagesController < ApplicationController
     check_params
     set_seed
     @products = Product.stocked.includes_cover.joins("LEFT JOIN authors AS auth ON products.author_id = auth.id").includes(:copies, :illustrator).filter(params).sort_by_param(params[:sort_by],params[:desc]).page(params[:page]).per(20)
+
+    # Show the shopping cart if necessary
+    if params[:show_cart].present?
+      params.delete :show_cart
+      @show_shopping_cart = true
+    end
     
     if params[:ajax].present?
       params.delete :ajax

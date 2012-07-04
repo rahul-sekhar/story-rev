@@ -8,11 +8,6 @@
       <% PickupPoint.all.each do |p| %>
         <li><p><%= f.radio_button(:pickup_point_id, p.id) %> <%= p.name %></p></li>
       <% end %>
-      
-      <li>
-        <p><%= f.radio_button(:pickup_point_id, 0) %> Other (we can sometimes find an unlisted common point)</p>
-        <%= f.text_area :other_pickup, :placeholder => "Other pickup point details" %>
-      </li>
     </ul>
   </li>
 </ul>

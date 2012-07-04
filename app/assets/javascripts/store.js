@@ -358,6 +358,17 @@ $(document).ready(function() {
             updateShoppingCartCount(data.item_count);
         });
     });
+
+    // Pickup point radio buttons
+    $orderSection.on('change', '#order_delivery_method_1', function() {
+        $('.pickup input:radio:checked').prop('checked', false);
+    }).on('change', '#order_delivery_method_2', function() {
+        $('.pickup input:radio:first').prop('checked', true);
+    }).on('change', '.pickup input:radio', function() {
+        if (this.checked) {
+            $('#order_delivery_method_2').prop('checked', true)
+        }
+    });
     
     /* ------------------- Shopping cart dialog ---------------------------*/
     
@@ -417,6 +428,11 @@ $(document).ready(function() {
             }
         });
     });
+
+    // Show the shopping cart on load if the page requires it
+    if ($shoppingCartLink.data("show")) {
+        $shoppingCartLink.click();
+    }
     
     // Handle emptying the cart
     var $shoppingCartSection = $('#shopping-cart');

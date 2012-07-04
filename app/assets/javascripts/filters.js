@@ -205,7 +205,6 @@ $(document).ready(function() {
                     .prepend($('.applied-filters', html))
                     .append($('.pagination', html));
                 
-                console.log(data)
                 updateCollections(data);
                 updateFilters(data);
                 

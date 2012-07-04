@@ -45,30 +45,36 @@
         </div>
       <% end %>
     <% end %>
-    
-    <% if @product.copies.new_copies.stocked.length > 0 %>
-      <h3>Buy New Copies</h3>
-      <table class="copies new-copies">
-        <% @product.copies.new_copies.stocked.each do |c| %>
-          <%= render "copy_row", :c => c %>
-        <% end %>
-      </table>
-    <% end %>
-    
-    <% if @product.copies.used_copies.stocked.length > 0 %>
-      <h3>Buy Used Copies</h3>
-      <table class="copies used-copies">
-        <% Copy.filter_unique(@product.copies.used_copies.stocked).each do |c| %>
-          <%= render "copy_row", :c => c %>
-        <% end %>
-      </table>
-    <% end %>
+  </div>
+  
+  <% if @product.copies.new_copies.stocked.length > 0 %>
+    <table class="copies new-copies">
+      <tr>
+        <th colspan="3"><h3>Buy New Copies</h3></th>
+      </tr>
+      <% @product.copies.new_copies.stocked.each do |c| %>
+        <%= render "copy_row", :c => c %>
+      <% end %>
+    </table>
+  <% end %>
 
-    <% if !(@product.copies.stocked.length > 0) %>
+  <% if @product.copies.used_copies.stocked.length > 0 %>
+    <table class="copies used-copies<%= @product.copies.new_copies.stocked.length > 0 ? " second" : "" %>">
+      <tr>
+        <th colspan="3"><h3>Buy Used Copies</h3></th>
+      </tr>
+      <% Copy.filter_unique(@product.copies.used_copies.stocked).each do |c| %>
+        <%= render "copy_row", :c => c %>
+      <% end %>
+    </table>  
+  <% end %>
+
+  <% if !(@product.copies.stocked.length > 0) %>
+    <div class="no-stock">
       <h3>Available Copies</h3>
       <p>There are no copies in stock at the moment.</p>
-    <% end %>
-  </div>
+    </div>
+  <% end %>
   
   <div class="details">
     <% if @product.product_awards.length > 0 %>
@@ -79,21 +85,23 @@
     <% end %>
     
     <% if @product.collections.length > 0 %>
-      <div class="collections">
+      <div class="collections<%= @product.product_awards.length > 0 ? "" : " first" %>">
         <h3>Collections</h3>
         <p><%=raw @product.collections.map{|x| link_to(x.name, collection_path(:collection, x.id)) }.join(', ') %></p>
       </div>
     <% end %>
     
-    <% if @product.short_description.present? %>
-      <h3>The Book, in Brief</h3>
-      <p><%= @product.short_description %></p>
-    <% end %>
-    
-    <% @product.other_fields.each do |desc| %>
-      <h3><%= desc.title %></h3>
-      <p><%= desc.content %></p>
-    <% end %>
+    <div class="description">
+      <% if @product.short_description.present? %>
+        <h3>The Book, in Brief</h3>
+        <p><%= @product.short_description %></p>
+      <% end %>
+      
+      <% @product.other_fields.each do |desc| %>
+        <h3><%= desc.title %></h3>
+        <p><%= desc.content %></p>
+      <% end %>
+    </div>
   </div>
   
   <%= link_to "Back", :back, :class => "back-button" %>
