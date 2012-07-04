@@ -1,4 +1,8 @@
 .store {
+    &.main #wrapper {
+        min-height: e(920px);
+    }
+
     #filters {
         position:absolute;
         width: e(170px);

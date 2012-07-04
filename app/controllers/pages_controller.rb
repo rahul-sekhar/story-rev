@@ -2,7 +2,7 @@ class PagesController < ApplicationController
   include ApplicationHelper
   
   def store
-    @class = "store"
+    @class = "store main"
     @title = "Store"
     
     check_params

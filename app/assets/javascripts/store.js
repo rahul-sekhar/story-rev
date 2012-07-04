@@ -253,21 +253,26 @@ $(document).ready(function() {
         $orderDialog.dialog("close");
     });
     
-    $body.on('click', '.order-button', function(e) {
-        if (extClick(e)) return;
-        e.preventDefault();
+    /* ---- Order dialog disabled ---- */
+
+     $body.on('click', '.order-button', function(e) {
+         if (extClick(e)) return;
+         // e.preventDefault();
+
+         /* -- Only close the dialogs present -- */
+         closeOtherDialogs('order-dialog');
         
-        if ($(this).hasClass('disabled')) return;
-        $shoppingCartSection.find(".button,.remove-link,.edit-link").addClass("disabled");
+    //     if ($(this).hasClass('disabled')) return;
+    //     $shoppingCartSection.find(".button,.remove-link,.edit-link").addClass("disabled");
         
-        if ($shoppingCartSection.find('.unavailable').length > 0) {
-            var message = "Some copies in your shopping cart are now unavailable. These copies will not be included in the order.";
-            displayNotice(message, "Continue", openOrderDialog)
-        }
-        else {
-            openOrderDialog();
-        }
-    });
+    //     if ($shoppingCartSection.find('.unavailable').length > 0) {
+    //         var message = "Some copies in your shopping cart are now unavailable. These copies will not be included in the order.";
+    //         displayNotice(message, "Continue", openOrderDialog)
+    //     }
+    //     else {
+    //         openOrderDialog();
+    //     }
+     });
     
     function openOrderDialog() {
         closeOtherDialogs('order-dialog');

@@ -2,7 +2,7 @@
   <h2>Shopping Cart</h2>
   
   <% if shopping_cart.items > 0 %>
-    <a href="<%= order_path %>" class="major button order-button">Check Out</a>
+    <a href="<%= order_path(anchor: "order") %>" class="major button order-button">Check Out</a>
     
     <p class="info">Books are only removed from the store after you finish
     ordering, so books in your cart may occasionally become unavailable while
@@ -76,7 +76,7 @@
   </div>
   
   <% if shopping_cart.items > 0 %>
-    <a href="<%= order_path %>" class="major button order-button">Check Out</a>
+    <a href="<%= order_path(anchor: "order") %>" class="major button order-button">Check Out</a>
     <a href="<%= update_cart_path(:shopping_cart => { :empty => true }) %>" class="button" id="empty-button">Empty Cart</a>
     <%= link_to "Back", :back, :class => "back-button left" %>
   <% else %>
