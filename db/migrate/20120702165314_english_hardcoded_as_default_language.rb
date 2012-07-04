@@ -12,7 +12,7 @@ class EnglishHardcodedAsDefaultLanguage < ActiveRecord::Migration
     lang = Language.new(name: "English")
     lang.id = 1
     lang.save
-    SqlHelper.reset_primary_key(Langauge)
+    SqlHelper.reset_primary_key(Language)
 
     Edition.where(language_id: nil).each do |x|
       x.language_id = 1
