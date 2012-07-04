@@ -97,7 +97,7 @@
         <p><%= @book.short_description %></p>
       <% end %>
       
-      <% @book.other_fields.each do |desc| %>
+      <% @book.descriptions.each do |desc| %>
         <h3><%= desc.title %></h3>
         <p><%= desc.content %></p>
       <% end %>
