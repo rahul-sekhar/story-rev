@@ -1,3 +1,9 @@
+if(ENV["RUN_COVERAGE"])
+  require 'simplecov'
+  SimpleCov.start 'rails'
+  puts "Running coverage tool\n"
+end
+
 require 'rubygems'
 require 'spork'
 #uncomment the following line to use spork with the debugger
@@ -35,7 +41,7 @@ Spork.prefork do
 
     config.treat_symbols_as_metadata_keys_with_true_values = true
     config.filter_run :focus => true
-    config.filter_run_excluding :skip => true
+    config.filter_run_excluding :skip => true, :server => true
     config.run_all_when_everything_filtered = true
 
     config.include FactoryGirl::Syntax::Methods
@@ -45,10 +51,9 @@ Spork.prefork do
     end
 
     # Load seeds
-    load "#{Rails.root}/db/seeds.rb"
+    #load "#{Rails.root}/db/seeds.rb"
   end
 
-  # Use the webkit driver for javascript in capybara
   Capybara.javascript_driver = :webkit
 end
 
@@ -62,7 +67,7 @@ Spork.each_run do
   CoverUploader.class_eval do
     def store_dir
       "#{Rails.root}/spec/uploads/books/#{model.id}"
-    end 
+    end
   end
   CoverUploader.enable_processing = false
 end

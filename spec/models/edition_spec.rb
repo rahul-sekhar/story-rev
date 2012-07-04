@@ -8,19 +8,14 @@ describe Edition do
     edition.should be_invalid
   end
 
-  it "should require a language" do
-    edition.language = nil
-    edition.should be_invalid
-  end
-
   it "should set the language to English by default" do
-    edition.language.name.should == "English"
+    edition.language_name.should == "English"
   end
 
   it "should check the length of the ISBN" do
-    edition.isbn = "1" * 255
+    edition.isbn = "1" * 50
     edition.should be_valid
-    edition.isbn = "1" * 256
+    edition.isbn = "1" * 51
     edition.should be_invalid
   end
 
@@ -37,9 +32,6 @@ describe Edition do
     edition.isbn = "1-152151-124-123-12"
     edition.save
     edition.raw_isbn.should == "115215112412312"
-    edition.isbn = "00151221561216"
-    edition.save
-    edition.raw_isbn.should == "00151221561216"
   end
 
   it "should check the ISBN format" do
@@ -48,7 +40,7 @@ describe Edition do
       edition.should be_invalid, x
       edition.errors[:isbn].should be_present
     end
-    ["124", "12-12", "12-412-512-1", "0012", "0"].each do |x|
+    ["124", "12-12", "12-412-512-1", "0"].each do |x|
       edition.isbn = x
       edition.should be_valid, x
     end
@@ -57,22 +49,5 @@ describe Edition do
   it "should allow a blank ISBN" do
     edition.isbn = ""
     edition.should be_valid
-  end
-
-  describe "after being destroyed" do
-    before do 
-      edition.book = create(:book)
-      edition.save
-    end
-    it "should destroy used copies" do
-      edition.used_copies << build_list(:used_copy, 2)
-      expect{ edition.destroy }.to change{ UsedCopy.count }.by(-2)
-    end
-
-    it "should destroy new copies" do
-      edition.new_copies << build_list(:new_copy, 2)
-      edition.save
-      expect{ edition.destroy }.to change{ NewCopy.count }.by(-2)
-    end
   end
 end

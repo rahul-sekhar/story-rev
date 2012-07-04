@@ -38,21 +38,6 @@ if (PickupPoint.count == 0)
   end
 end
 
-puts "\nCreating English as the default language"
-puts "========================================"
-
-Language.where(:id => 1).each {|x| x.delete}
-Language.where(:name => "English").each {|x| x.destroy}
-
-lang = Language.new(:name => "English")
-lang.id = 1
-
-if lang.save
-  puts "Done"
-else
-  puts "Failed"
-end
-
 puts "\nCreating default accounts and setting config data"
 puts "=================================================="
 

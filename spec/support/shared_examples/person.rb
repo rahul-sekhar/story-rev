@@ -1,15 +1,15 @@
 shared_examples_for "a person" do
   let (:klass) { subject.class }
   it "should correctly return the full name with both a first name and last name set" do
-    person.first_name = "First Name"
-    person.last_name = "Last Name"
-    person.name.should == "First Name Last Name"
+    person.first_name = "First"
+    person.last_name = "Second"
+    person.name.should == "First Second"
   end
 
   it "should correctly return the full name with only the last name set" do
     person.first_name = nil
-    person.last_name = "Last Name"
-    person.name.should == "Last Name"
+    person.last_name = "Second"
+    person.name.should == "Second"
   end
 
   describe "splitting the full name" do
@@ -105,7 +105,7 @@ shared_examples_for "a person" do
         klass.name_is("Other").should be_nil
       end
 
-      it "should not be case sensitive" do
+      it "should be case insensitive" do
         klass.name_is("rahul sekhar").should be_a klass
       end
 

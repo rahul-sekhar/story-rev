@@ -8,17 +8,16 @@ class Edition < ActiveRecord::Base
   belongs_to :book
   belongs_to :publisher
   
-  has_many :new_copies, :dependent => :destroy
-  has_many :used_copies, :dependent => :destroy
-  has_many :copies, :readonly => true
+  has_many :new_copies, dependent: :destroy
+  has_many :used_copies, dependent: :destroy
+  has_many :copies, readonly: true
 
   name_tag :format, :language, :publisher
   
   before_validation :convert_raw_isbn
   
-  validates :format, :presence => true
-  validates :language, :presence => true
-  validates :isbn, length: { maximum: 255 }
+  validates :format, presence: true
+  validates :isbn, length: { maximum: 50 }
   validates :raw_isbn, 
     numericality: { only_integer: true }, 
     if: "isbn.present?"
@@ -28,12 +27,12 @@ class Edition < ActiveRecord::Base
   validates_associated :format
   validates_associated :language
   
-  def init
-    self.language_id ||= 1
-  end
-  
   def convert_raw_isbn
     self.raw_isbn = isbn.to_s.gsub("-", "")
+  end
+
+  def language_name
+    language ? language.name : "English"
   end
   
   def as_hash

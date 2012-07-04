@@ -1,6 +1,10 @@
 # Design folder
 /design
 
+# Ignore coverage reports
+/coverage
+/rails_best_practices_output.html
+
 # Symlinks - shared uploaded data
 /public/images/books
 

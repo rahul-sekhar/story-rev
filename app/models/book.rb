@@ -138,17 +138,7 @@ class Book < ActiveRecord::Base
     collections.map{ |x| x.name }.join(", ")
   end
   def collection_list=(tag_list)
-    self.collections = Collection.split_list(tag_list)
-    # Remove invalid entries and duplicates
-    collection_names = []
-    self.collections = collections.select do |x|
-      if collection_names.include? x.name.downcase
-        false
-      else
-        collection_names << x.name.downcase
-        true
-      end
-    end
+    self.collections = Collection.from_list(tag_list)
   end
   def collections_json
     collections.to_json({ :only => [:id, :name] })
@@ -189,10 +179,6 @@ class Book < ActiveRecord::Base
   end
   
   def cover_image_id=(cover_id)
-    if (cover_image.present? && cover_id.to_i != cover_image.id)
-      cover_image.destroy
-    end
-    
     if cover_id.present?
       self.cover_image = CoverImage.find(cover_id)
     end
@@ -223,11 +209,6 @@ class Book < ActiveRecord::Base
   def new_copy_min_price
     price = new_copies.stocked.map{|x| x.price}.min.to_i
     return price > 0 ? price : nil
-  end
-  
-  def in_collection? (collection)
-    collection = Collection.name_is(collection) if collection.is_a? String
-    collection.book_ids.include?(id) if collection
   end
   
   def next_book
