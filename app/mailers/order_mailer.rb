@@ -1,9 +1,11 @@
 class OrderMailer < ActionMailer::Base
   default from: "\"Story Revolution\" <contact@storyrevolution.in>"
   
-  def confirmation(order)
+  def confirmation(order, email_to = nil)
     @order = order
-    mail(:to => "\"#{@order.name}\" <#{@order.email}>", :subject => "Order confirmation")
+
+    email_to = "\"#{@order.name}\" <#{@order.email}>" unless email_to
+    mail(:to => email_to, :subject => "Order confirmation")
   end
   
   def notify_owner(order)

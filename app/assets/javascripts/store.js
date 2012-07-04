@@ -253,21 +253,26 @@ $(document).ready(function() {
         $orderDialog.dialog("close");
     });
     
-    $body.on('click', '.order-button', function(e) {
-        if (extClick(e)) return;
-        e.preventDefault();
+    /* ---- Order dialog disabled ---- */
+
+     $body.on('click', '.order-button', function(e) {
+         if (extClick(e)) return;
+         // e.preventDefault();
+
+         /* -- Only close the dialogs present -- */
+         closeOtherDialogs('order-dialog');
         
-        if ($(this).hasClass('disabled')) return;
-        $shoppingCartSection.find(".button,.remove-link,.edit-link").addClass("disabled");
+    //     if ($(this).hasClass('disabled')) return;
+    //     $shoppingCartSection.find(".button,.remove-link,.edit-link").addClass("disabled");
         
-        if ($shoppingCartSection.find('.unavailable').length > 0) {
-            var message = "Some copies in your shopping cart are now unavailable. These copies will not be included in the order.";
-            displayNotice(message, "Continue", openOrderDialog)
-        }
-        else {
-            openOrderDialog();
-        }
-    });
+    //     if ($shoppingCartSection.find('.unavailable').length > 0) {
+    //         var message = "Some copies in your shopping cart are now unavailable. These copies will not be included in the order.";
+    //         displayNotice(message, "Continue", openOrderDialog)
+    //     }
+    //     else {
+    //         openOrderDialog();
+    //     }
+     });
     
     function openOrderDialog() {
         closeOtherDialogs('order-dialog');
@@ -353,6 +358,17 @@ $(document).ready(function() {
             updateShoppingCartCount(data.item_count);
         });
     });
+
+    // Pickup point radio buttons
+    $orderSection.on('change', '#order_delivery_method_1', function() {
+        $('.pickup input:radio:checked').prop('checked', false);
+    }).on('change', '#order_delivery_method_2', function() {
+        $('.pickup input:radio:first').prop('checked', true);
+    }).on('change', '.pickup input:radio', function() {
+        if (this.checked) {
+            $('#order_delivery_method_2').prop('checked', true)
+        }
+    });
     
     /* ------------------- Shopping cart dialog ---------------------------*/
     
@@ -412,6 +428,11 @@ $(document).ready(function() {
             }
         });
     });
+
+    // Show the shopping cart on load if the page requires it
+    if ($shoppingCartLink.data("show")) {
+        $shoppingCartLink.click();
+    }
     
     // Handle emptying the cart
     var $shoppingCartSection = $('#shopping-cart');

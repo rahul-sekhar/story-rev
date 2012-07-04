@@ -12,7 +12,8 @@
       </ul>
       
       <%= link_to "Your Cart <span class=\"number\">#{shopping_cart.items}</span>".html_safe, shopping_cart_path,
-        :id=>"shopping-cart-link"
+        :id => "shopping-cart-link",
+        "data-show" => @show_shopping_cart
       %>
     </nav>
   </div>

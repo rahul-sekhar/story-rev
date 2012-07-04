@@ -11,7 +11,7 @@
     
     .cover-section {
         float:left;
-        margin: 0 e(30px) e(40px) 0;
+        margin: 0 e(30px) e(10px) 0;
         
         .large-cover {
             border:1px solid $book-info-color-1;
@@ -24,10 +24,14 @@
             }
         }
     }
+
+    .base-info {
+        margin-bottom: e(40px);
+    }
     
     .amazon-link {
         @include small-text;
-        margin-bottom:e(5px, $small-text-size);
+        margin-bottom:e(10px, $small-text-size);
     }
     
     h3 {
@@ -73,11 +77,27 @@
     
     .details {
         clear:left;
-        margin-top: e(40px);
+        float:left;
+        width:100%;
+    }
+
+    .description h3:first-child {
+        margin-top: e(20px, $alt-heading-size);
+    }
+
+    .no-stock {
+        margin-bottom: e(20px);
+
+        h3 { margin-top: 0;}
     }
     
     .copies {
+        margin-bottom: e(20px);
+
+        &.second { margin-top: e(40px); }
         
+        h3 { margin-top:0; }
+
         td {
             @include smaller-text;
             padding-right: e(10px, $smaller-text-size);
@@ -128,6 +148,8 @@
         float:right;
         width: e(150px);
         margin-left: e(60px);
+        margin-bottom: e(20px);
+        margin-top: e(20px);
         clear:right;
         
         h3 {
@@ -143,14 +165,13 @@
             }
         }
     }
-    
-    .awards {
-        margin-bottom: e(20px);
-    }
-    
+
     .collections {
         text-transform: lowercase;
         margin-top: e(40px);
-        margin-bottom: e(20px);
+
+        &.first {
+            margin-top: e(20px);
+        }
     }
 }

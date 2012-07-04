@@ -39,7 +39,7 @@ class OrdersController < ApplicationController
     if request.xhr?
       render :json => { :success => true }
     else
-      redirect_to shopping_cart_path
+      redirect_to root_path( show_cart: true)
     end
   end
   

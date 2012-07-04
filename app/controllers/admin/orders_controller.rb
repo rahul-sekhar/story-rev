@@ -3,14 +3,14 @@ class Admin::OrdersController < Admin::ApplicationController
     @title = "Pending Orders"
     @class = "orders pending"
     
-    @orders = Order.includes(:order_copies).where("step = 5 AND (confirmed_date IS NULL OR paid_date IS NULL OR packaged_date IS NULL OR posted_date IS NULL)")
+    @orders = Order.includes(:order_copies).where("step = 5 AND (confirmed_date IS NULL OR paid_date IS NULL OR packaged_date IS NULL OR posted_date IS NULL)").order("confirmed_date DESC")
   end
   
   def index
     @title = "Old Orders"
     @class = "orders old"
     
-    @orders = Order.includes(:order_copies).where("step = 5 AND confirmed_date IS NOT NULL AND paid_date IS NOT NULL AND packaged_date IS NOT NULL AND posted_date IS NOT NULL")
+    @orders = Order.includes(:order_copies).where("step = 5 AND confirmed_date IS NOT NULL AND paid_date IS NOT NULL AND packaged_date IS NOT NULL AND posted_date IS NOT NULL").order("confirmed_date DESC")
   end
   
   def show

@@ -306,6 +306,10 @@ $(document).ready(function() {
             }
             
             $.extend(params, base_params);
+
+            if ($li.hasClass('recent')) {
+                params['sort_by'] = "date";
+            }
             
             $link.attr('href', '/?' + $.param(params) + '#books');
         });
@@ -330,6 +334,7 @@ $(document).ready(function() {
         var base_params = {}
         if (data.sort_by) base_params['sort_by'] = data.sort_by;
         if (data.desc) base_params['desc'] = data.desc;
+        if (data.seed) base_params['seed'] = data.seed;
         if (data.base) base_params[data.base] = data.base_val;
         
         // Update links
