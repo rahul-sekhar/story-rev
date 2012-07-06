@@ -24,16 +24,9 @@ describe AwardType do
     end
   end
 
-  context "with child awards" do
-    before do
-      (1..2).each do |n|
-        award_type.awards << Award.new(name: "Award #{n}")
-      end
-      award_type.save
-    end
-
-    it "should destroy all child awards on being deleted" do
-      expect{ award_type.destroy }.to change{ Award.count }.by(-2)
-    end
+  it "should destroy child awards on being deleted" do
+    award_type.awards << Award.new(name: "Award 1")
+    award_type.save
+    expect{ award_type.destroy }.to change{ Award.count }.by(-1)
   end
 end

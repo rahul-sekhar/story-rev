@@ -1,16 +1,26 @@
 require 'spec_helper'
 
 describe NewCopy do
-  let(:copy) { build(:new_copy_with_book) }
+  let(:copy) { build(:new_copy) }
+  let(:unstubbed_copy) { build(:new_copy_with_book) }
+  let(:book_stub) { double("book") }
+  before do
+    copy.stub(:book).and_return(book_stub)
+    copy.stub(:set_accession_id) do
+      copy.copy_number = 1
+      copy.accession_id = "1-1"
+    end
+    book_stub.stub(:check_stock)
+  end
 
   it_should_behave_like "a copy"
 
-  it "should only retrieve used copies from the database" do
-    copy.save
+  it "should only retrieve new copies from the database" do
     copy1 = create(:new_copy_with_book)
+    copy2 = create(:new_copy_with_book)
     used_copy = create(:used_copy_with_book)
     new_copies = NewCopy.all
-    new_copies.should include(copy, copy1)
+    new_copies.should include(copy1, copy2)
     new_copies.should_not include(used_copy)
   end
 
@@ -40,29 +50,38 @@ describe NewCopy do
     end
   end
 
-  it "should update the book date if the book copy out of stock then comes back in stock" do
-    old_book_date = copy.book.book_date
-    copy.save
-    copy.book.book_date.should == old_book_date
-    copy.set_stock = 10
-    copy.save
-    copy.book.book_date.should > old_book_date
-  end
+  describe "book_date" do
+    it "should not update the book date if the copy is saved with no stock" do
+      book_stub.should_not_receive(:set_book_date)
+      copy.save
+    end
 
-  it "should not update the book date if the copy goes out of stock and then the stock goes negative" do
-    copy.save
-    old_book_date = copy.book.book_date
-    copy.set_stock = -1
-    copy.save
-    copy.book.book_date.should == old_book_date
-  end
+    it "should update the book date if the copy is saved with some stock" do
+      book_stub.should_receive(:set_book_date)
+      copy.set_stock = 5
+      copy.save
+    end
 
-  it "should not update the book date if the copy does not go out of stock" do
-    copy.set_stock = 1
-    copy.save
-    old_book_date = copy.book.book_date
-    copy.set_stock = 10
-    copy.save
-    copy.book.book_date.should == old_book_date
+    it "should update the book date if the book copy out of stock then comes back in stock" do
+      copy.save
+      book_stub.should_receive(:set_book_date)
+      copy.set_stock = 10
+      copy.save
+    end
+
+    it "should not update the book date if the copy goes out of stock and then the stock goes negative" do
+      copy.save
+      book_stub.should_not_receive(:set_book_date)
+      copy.set_stock = -1
+      copy.save
+    end
+    
+    it "should not update the book date if the copy does not go out of stock" do
+      book_stub.should_receive(:set_book_date).once
+      copy.set_stock = 1
+      copy.save
+      copy.set_stock = 10
+      copy.save
+    end
   end
 end

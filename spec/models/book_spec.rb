@@ -349,15 +349,15 @@ describe Book do
 
   describe "after being destroyed" do
     it "should destroy child editions" do
-      book.editions << build_list(:edition, 2)
+      book.editions << build(:edition)
       book.save
-      expect{ book.destroy }.to change{ Edition.count }.by(-2)
+      expect{ book.destroy }.to change{ Edition.count }.by(-1)
     end
 
     it "should destroy awards" do
-      book.book_awards << build_list(:book_award, 2)
+      book.book_awards << build(:book_award)
       book.save
-      expect{ book.destroy }.to change{ BookAward.count }.by(-2)
+      expect{ book.destroy }.to change{ BookAward.count }.by(-1)
     end
 
     it "should destroy the cover image" do
@@ -367,9 +367,9 @@ describe Book do
     end
 
     it "should destroy descriptions" do
-      book.descriptions << build_list(:description, 2)
+      book.descriptions << build(:description)
       book.save
-      expect{ book.destroy }.to change{ Description.count }.by(-2)
+      expect{ book.destroy }.to change{ Description.count }.by(-1)
     end
   end
 end

@@ -25,22 +25,23 @@ describe Award do
   end
 
   describe "full name" do
-    before do
-      award.award_type.name = "Award Type"
-      award.name = "Award"
-    end
-
+    before { award.award_type.name = "Award Type" }
     subject { award.full_name }
 
     it "should be the award type and award name together" do
-      should == "Award Type Award"
+      award.name = "Award"
+      subject.should == "Award Type Award"
     end
 
-    context "when the award name is '-'" do
-      before { award.name = "-" }
-      it "should be only the award type name" do
-        should == "Award Type"
-      end
+    it "should be only the award type name when the award name is '-'" do
+      award.name = "-"
+      subject.should == "Award Type"
     end
+  end
+
+  it "should destroy child book awards on being deleted" do
+    award.save
+    BookAward.create(award_id: award.id)
+    expect{ award.destroy }.to change{ BookAward.count }.by(-1)
   end
 end

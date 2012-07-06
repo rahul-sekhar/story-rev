@@ -53,41 +53,36 @@ shared_examples_for "a copy" do
   end
 
   describe "copy number and accession id" do
-
     before do
-      copy.book.accession_id = 50
-      copy.book.save
-
-      # Create a used and new copy for different books, which should not effect the test outcome
-      create(:used_copy_with_book, copy_number: 15)
-      create(:new_copy_with_book, copy_number: 15)
+      unstubbed_copy.book.accession_id = 50
+      unstubbed_copy.book.save
     end
 
     def check_copy_number_and_accession_id(num)
-      copy.save
-      copy.copy_number.should == num
-      copy.accession_id.should == "50-#{num}"
+      unstubbed_copy.save
+      unstubbed_copy.copy_number.should == num
+      unstubbed_copy.accession_id.should == "50-#{num}"
     end
 
     def new_edition
       new_ed = build(:edition)
-      copy.book.editions << new_ed
-      copy.book.save
+      unstubbed_copy.book.editions << new_ed
+      unstubbed_copy.book.save
       return new_ed.reload
     end
 
     it "should be set to 1 for the first copy" do
-      copy.save
+      unstubbed_copy.save
       check_copy_number_and_accession_id(1)
     end
 
     it "should be set correctly with a used copy in the same edition" do
-      copy.edition.used_copies << build(:used_copy, copy_number: 10)
+      unstubbed_copy.edition.used_copies << build(:used_copy, copy_number: 10)
       check_copy_number_and_accession_id(11)
     end
 
     it "should be set correctly with a new copy in the same edition" do
-      copy.edition.new_copies << build(:new_copy, copy_number: 10)
+      unstubbed_copy.edition.new_copies << build(:new_copy, copy_number: 10)
       check_copy_number_and_accession_id(11)
     end
 
@@ -99,6 +94,12 @@ shared_examples_for "a copy" do
     it "should be set correctly with a new copy in a different edition" do
       new_edition.new_copies << build(:new_copy, copy_number: 10)
       check_copy_number_and_accession_id(11)
+    end
+
+    it "should be set correctly, ignoring copies for different books" do
+      create(:used_copy_with_book, copy_number: 10)
+      create(:new_copy_with_book, copy_number: 10)
+      check_copy_number_and_accession_id(1)
     end
   end
 end

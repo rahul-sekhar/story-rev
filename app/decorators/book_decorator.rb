@@ -10,8 +10,6 @@ class BookDecorator < ApplicationDecorator
       end
     elsif age_from
       "#{book.age_from}+"
-    elsif age_to
-      "#{book.age_to}-"
     else
       ""
     end
@@ -22,12 +20,12 @@ class BookDecorator < ApplicationDecorator
   end
   
   def used_copy_min_price
-    min = book.used_copy_min_price
+    min = super
     to_currency(min) unless min.nil?
   end
   
   def new_copy_min_price
-    min = book.new_copy_min_price
+    min = super
     to_currency(min) unless min.nil?
   end
   

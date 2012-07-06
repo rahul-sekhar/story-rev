@@ -16,6 +16,7 @@ Spork.prefork do
 
   require 'rspec/rails'
   require 'rspec/autorun'
+  require 'draper/rspec_integration'
 
   RSpec.configure do |config|
     # ## Mock Framework

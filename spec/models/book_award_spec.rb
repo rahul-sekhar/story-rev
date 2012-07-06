@@ -30,14 +30,15 @@ describe BookAward do
   describe "full name" do
     before { book_award.award.stub(:full_name).and_return("Award Name") }
     subject { book_award.full_name }
-    context "when the year is present" do
-      before { book_award.year = 2010 }
-      it { should == "Award Name 2010" }
+    
+    it "should include the year when it is present" do
+      book_award.year = 2010
+      subject.should == "Award Name 2010"
     end
 
-    context "when the year is nil" do
-      before { book_award.year = nil }
-      it { should == "Award Name" }
+    it "should omit the the year when it is nil" do
+      book_award.year = nil
+      subject.should == "Award Name"
     end
   end
 end

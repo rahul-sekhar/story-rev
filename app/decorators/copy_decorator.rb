@@ -5,6 +5,10 @@ class CopyDecorator < ApplicationDecorator
     "#{copy.accession_id.to_i}.#{copy.copy_number}".to_f
   end
 
+  def condition_description
+    copy.condition_description.present? ? copy.condition_description : condition_to_words(copy.condition_rating)
+  end
+
   def as_hash
     if new_copy
       return {
@@ -29,10 +33,6 @@ class CopyDecorator < ApplicationDecorator
         :new_copy => copy.new_copy
       }
     end
-  end
-
-  def condition_description
-    copy.condition_description.present? ? copy.condition_description : condition_to_words(copy.condition_rating)
   end
 
   private

@@ -6,6 +6,7 @@ describe Edition do
   it "should require a format" do
     edition.format = nil
     edition.should be_invalid
+    edition.errors.should have_key :format
   end
 
   it "should set the language to English by default" do

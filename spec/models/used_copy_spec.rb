@@ -1,16 +1,26 @@
 require 'spec_helper'
 
 describe UsedCopy do
-  let(:copy) { build(:used_copy_with_book) }
+  let(:copy) { build(:used_copy) }
+  let(:unstubbed_copy) { build(:used_copy_with_book) }
+  let(:book_stub) { double("book") }
+  before do
+    copy.stub(:book).and_return(book_stub)
+    copy.stub(:set_accession_id) do
+      copy.copy_number = 1
+      copy.accession_id = "1-1"
+    end
+    book_stub.stub(:check_stock)
+  end
 
   it_should_behave_like "a copy"
 
   it "should only retrieve used copies from the database" do
-    copy.save
     copy1 = create(:used_copy_with_book)
+    copy2 = create(:used_copy_with_book)
     new_copy = create(:new_copy_with_book)
     used_copies = UsedCopy.all
-    used_copies.should include(copy, copy1)
+    used_copies.should include(copy1, copy2)
     used_copies.should_not include(new_copy)
   end
 
@@ -33,28 +43,25 @@ describe UsedCopy do
     copy.stock.should == 1
   end
 
-  it "should set the book date when a fresh copy is created" do
-    old_date = copy.book.book_date
-    copy.save
-    copy.book.book_date.should > old_date
-  end
+  describe "book_date" do
+    it "should set the book date when a fresh copy is created" do
+      book_stub.should_receive(:set_book_date)
+      copy.save
+    end
 
-  it "should not set the book date when a fresh copy is created and set to out of stock" do
-    old_date = copy.book.book_date
-    copy.set_stock = false
-    copy.save
-    copy.book.book_date.should == old_date
-  end
-  
-  it "should not set the book date when a fresh copy is created and goes back in stock" do
-    copy.save
-    old_date = copy.book.book_date
-    copy.set_stock = false
-    copy.save
-    copy.book.book_date.should == old_date
-    copy.set_stock = true
-    copy.save
-    copy.book.book_date.should == old_date
+    it "should not set the book date when a fresh copy is created and set to out of stock" do
+      book_stub.should_not_receive(:set_book_date)
+      copy.set_stock = false
+      copy.save
+    end
+    
+    it "should not set the book date when a fresh copy is created and goes back in stock" do
+      copy.set_stock = false
+      copy.save
+      book_stub.should_not_receive(:set_book_date)
+      copy.set_stock = true
+      copy.save
+    end
   end
 
   it "should return the condition description when one is present" do
@@ -78,26 +85,28 @@ describe UsedCopy do
   end
 
   describe "function to filter unique copies" do
-    let (:copy1) { build(:used_copy, edition_id: copy.edition_id) }
+    let (:copy1) { build(:used_copy, edition_id: 1) }
+    before do
+      copy.edition_id = 1
+    end
 
     it "should filter out copies with the same attributes" do
-      copy2 = build(:used_copy, edition_id: copy.edition_id)
+      copy2 = build(:used_copy, edition_id: 1)
       UsedCopy.filter_unique([copy, copy1, copy2]).should == [copy]
     end
 
     it "should not filter copies from a different edition" do
-      new_edition = create(:edition, book_id: copy.book.id)
-      copy2 = build(:used_copy, edition_id: new_edition.id)
+      copy2 = build(:used_copy, edition_id: 2)
       UsedCopy.filter_unique([copy, copy1, copy2]).should == [copy, copy2]
     end
 
     it "should not filter copies with a different price" do
-      copy2 = build(:used_copy, edition_id: copy.edition_id, price: 20)
+      copy2 = build(:used_copy, edition_id: 1, price: 20)
       UsedCopy.filter_unique([copy, copy1, copy2]).should == [copy, copy2]
     end
 
     it "should not filter copies with a different condition rating" do
-      copy2 = build(:used_copy, edition_id: copy.edition_id, condition_rating: 1)
+      copy2 = build(:used_copy, edition_id: 1, condition_rating: 1)
       UsedCopy.filter_unique([copy, copy1, copy2]).should == [copy, copy2]
     end
   end
