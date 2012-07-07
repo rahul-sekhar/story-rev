@@ -50,5 +50,6 @@ gem 'daemons', '1.1.8'
 gem 'whenever', '0.7.3'
 gem 'aws-s3', '0.6.3'
 gem 'draper', '0.14.0'
+gem 'squeel', '1.0.6'
 
 gem 'bcrypt-ruby', '~> 3.0.0', :require => "bcrypt"

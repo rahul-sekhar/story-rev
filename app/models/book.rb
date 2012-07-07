@@ -219,28 +219,6 @@ class Book < ActiveRecord::Base
     Book.where('"books"."created_at" < ?', created_at).order('"books"."created_at" DESC').limit(1).first || Book.limit(1).order('"books"."created_at" DESC').first
   end
   
-  # Function to search by title, accession ID or author
-  def self.search(query, fields, output)
-    escaped = SqlHelper::escapeWildcards(query).upcase
-    book_array = []
-    if fields == "all" && output == "display_target"
-      book_array |= self.select("id, title, in_stock")
-                            .where("UPPER(title) LIKE ?", "%#{escaped}%")
-                            .map { |x| {:id => x.id, :name => x.title }}
-      
-      if (escaped =~ /^[0-9]/)
-        book_array |= self.select("id, title, accession_id, in_stock")
-                              .where('accession_id LIKE ?', "#{escaped}%")
-                              .map { |x| {:id => x.id, :name => "#{x.title} - #{x.accession_id}" }}
-      else
-        book_array |= self.includes(:author)
-                            .where('UPPER("authors".first_name || \' \' || "authors".last_name) LIKE ?', "%#{escaped}%")
-                            .map { |x| {:id => x.id, :name => "#{x.title} - #{x.author.name}" }}
-      end
-    end
-    return book_array
-  end
-  
   # Function to return a scope sorted by a parameter
   def self.sort_by_param(sort, sort_order)
     sort_order = sort_order.present? ? " DESC" : ""
@@ -375,4 +353,5 @@ class Book < ActiveRecord::Base
     
     return filtered
   end
+
 end

@@ -2,6 +2,7 @@ Feature: Admin searches for books
 
 As an admin I want to be able to search for books by their title, author, ISBN or accession number so that I can easily find and edit the books
 
+@javascript
 Scenario: Search by author name
 Given PENDING: test webkit
 Given the following books exist
@@ -12,6 +13,6 @@ Given the following books exist
 | Stargirl              | Jerry Spinelli | 31           |
 And I have logged in as an admin
 And I am on the admin book search page
-When I search for "Jerry"
+When I search for "jerry"
 Then I should see "Manic Magee"
 And I should see "Stargirl"
