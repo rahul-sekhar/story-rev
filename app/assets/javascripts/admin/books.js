@@ -10,8 +10,8 @@ $(document).ready(function() {
             overlayHintText: 'Search by title, author, ISBN or accession number',
             tokenLimit: 1,
             addClass: "fill",
-            additionalParams: { search_by: "all", output: "display_target" },
             allowCustom: true,
+            propertyToSearch: "text",
             addFormatter: function(query) { return "<li>Add a new book - <strong>" + escapeHTML(query) + "</strong></li>" },
             onAdd: function(item) {
                 $(this).tokenInput("clear");

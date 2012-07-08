@@ -1,15 +1,10 @@
-if(ENV["RUN_COVERAGE"])
-  require 'simplecov'
-  SimpleCov.start 'rails'
-  puts "Running coverage tool\n"
-end
-
 require 'rubygems'
 require 'spork'
 #uncomment the following line to use spork with the debugger
 #require 'spork/ext/ruby-debug'
 
 Spork.prefork do
+
   ENV["RAILS_ENV"] ||= 'test'
 
   require File.expand_path("../../config/environment", __FILE__)
@@ -19,17 +14,6 @@ Spork.prefork do
   require 'draper/rspec_integration'
 
   RSpec.configure do |config|
-    # ## Mock Framework
-    #
-    # If you prefer to use mocha, flexmock or RR, uncomment the appropriate line:
-    #
-    # config.mock_with :mocha
-    # config.mock_with :flexmock
-    # config.mock_with :rr
-
-    # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
-    config.fixture_path = "#{::Rails.root}/spec/fixtures"
-
     # If you're not using ActiveRecord, or you'd prefer not to run each of your
     # examples within a transaction, remove the following line or assign false
     # instead of true.
@@ -50,18 +34,16 @@ Spork.prefork do
     config.after(:all) do
       FileUtils.rm_rf(Dir["#{Rails.root}/spec/uploads"])
     end
-
-    # Load seeds
-    #load "#{Rails.root}/db/seeds.rb"
   end
 
   Capybara.javascript_driver = :webkit
 end
 
 Spork.each_run do
-  FactoryGirl.reload
+  
   ActiveSupport::Dependencies.clear
   ActiveRecord::Base.instantiate_observers
+  FactoryGirl.reload
 
   Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
 

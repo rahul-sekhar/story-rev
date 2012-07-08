@@ -1,6 +1,8 @@
 class Book < ActiveRecord::Base
   extend NameTags
 
+  default_scope -> { includes(:author) }
+
   attr_accessible :title, :author_name, :illustrator_name, :publisher_name, 
   :year, :country_name, :age_from, :age_to, :collection_list, :amazon_url, 
   :short_description, :book_type_id, :award_attributes, 

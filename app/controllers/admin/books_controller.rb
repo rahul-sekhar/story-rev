@@ -17,7 +17,9 @@ class Admin::BooksController < Admin::ApplicationController
     
     respond_to do |format|
       format.html
-      format.json { render :json => Book.search(params[:q], params[:search_by], params[:output]) }
+      format.json do
+        render :json => BookSearcher.search(params[:q]).formatted_results
+      end
     end
   end
   

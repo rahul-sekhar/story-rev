@@ -6,9 +6,9 @@ class BookSearcher
   end
 
   def query=(q)
-    @query = q
-    @sql_query = SqlHelper::escapeWildcards(q)
-    @regex_query = Regexp.escape(q)
+    @query = q || ""
+    @sql_query = SqlHelper::escapeWildcards(@query)
+    @regex_query = Regexp.escape(@query)
   end
 
   def self.search(q)

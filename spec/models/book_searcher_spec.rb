@@ -1,6 +1,10 @@
 require 'spec_helper'
 
-describe BookSearcher, :focus do
+describe BookSearcher do
+  it "should initialise with a nil query" do
+    BookSearcher.new.should be_a BookSearcher
+  end
+
   describe "#search" do
     describe "by title:" do
       before do
@@ -132,7 +136,7 @@ describe BookSearcher, :focus do
         results.first[:text].should include book1.title
       end
     end
-
+    
     it "should prioritise full title matches over word matches" do
       book1 = build(:book, id: 1, title: "A Title With More Stuff")
       book2 = build(:book, id: 2, title: "A Title")
