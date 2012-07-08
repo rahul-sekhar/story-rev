@@ -20,12 +20,12 @@ class BookDecorator < ApplicationDecorator
   end
   
   def used_copy_min_price
-    min = super
+    min = book.used_copy_min_price
     to_currency(min) unless min.nil?
   end
   
   def new_copy_min_price
-    min = super
+    min = book.new_copy_min_price
     to_currency(min) unless min.nil?
   end
   

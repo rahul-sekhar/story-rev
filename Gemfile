@@ -8,31 +8,28 @@ group :assets do
   gem 'uglifier', '1.2.6'
 end
 
-group :test do
-  gem 'capybara', '1.1.2'
-  gem 'capybara-webkit', '0.12.1'
+group :test, :development do
+  gem 'rspec-rails', '2.11.0'
   gem 'factory_girl_rails', '3.5.0'
-  gem 'forgery', '0.5.0'
-  gem 'pickle', '0.4.10'
-  gem 'launchy', '2.1.0'
-  gem 'headless', '0.3.1'
-end
-
-group :development, :test do
-  gem 'rspec-rails', '2.10.1'
   gem 'cucumber-rails', '1.3.0', :require => false
   gem 'database_cleaner', '0.8.0'
+  gem 'spork-rails', '3.2.0'
 
-  gem 'spork', '1.0.0rc3'
+  gem 'pickle', '0.4.11'
+  gem 'capybara', '1.1.2'
+  gem 'capybara-webkit', '0.12.1'
+  gem 'launchy', '2.1.0'
+  gem 'headless', '0.3.1'
+  
   # Using a modified guard to fix growl notifications on Ubuntu
-  gem 'guard', git: 'git://github.com/rahul-sekhar/guard.git'    
-  gem 'guard-spork', '1.1.0'
-  gem 'guard-rspec', '1.1.0'
-  gem 'guard-cucumber', '1.2.0'
-
   gem 'libnotify', '0.7.4'
   gem 'ruby-dbus', '0.7.2'
-  gem 'simplecov', '0.6.4', :require => false
+  #gem 'guard', git: 'git://github.com/rahul-sekhar/guard.git'    
+  #gem 'guard-spork', '1.1.0'
+  #gem 'guard-rspec', '1.1.0'
+  #gem 'guard-cucumber', '1.2.0'
+
+  #gem 'simplecov', '0.6.4', :require => false
 end
 
 gem 'jquery-rails', '2.0.2'
