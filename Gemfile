@@ -19,7 +19,8 @@ group :test do
   gem 'factory_girl_rails', '3.5.0'
   gem 'pickle', '0.4.11'
   gem 'capybara', '1.1.2'
-  gem 'capybara-webkit', '0.12.1'
+  gem 'capybara-webkit', path: '/home/rahul/projects/capybara-webkit'
+  gem 'poltergeist', git: 'git://github.com/jonleighton/poltergeist.git' 
   gem 'launchy', '2.1.0'
   gem 'headless', '0.3.1'
 end

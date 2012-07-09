@@ -31,8 +31,17 @@ module NavigationHelpers
     #   when /^(.*)'s profile page$/i
     #     user_profile_path(User.find_by_login($1))
 
-  when /the admin page/
-    admin_root_path
+    when /the admin page/
+      admin_root_path
+
+    when /the admin book search page/
+      search_admin_books_path
+
+    when /^the edit page for the book "(.*)"$/
+      edit_admin_book_path(Book.find_by_title($1))
+
+    when /the new book page/
+      new_admin_book_path
 
     else
       begin

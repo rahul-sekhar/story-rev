@@ -30,3 +30,11 @@ end
 Then /^I should see "(.*?)"$/ do |arg1|
   page.should have_content(arg1)
 end
+
+When /^I click the list item "(.*?)"$/ do |arg1|
+  page.find('li', text: arg1).click
+end
+
+Then /^the "(.*?)" field should contain "(.*?)"$/ do |arg1, arg2|
+  find_field(arg1).value.should == arg2
+end
