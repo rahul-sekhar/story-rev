@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe BookDecorator, :type => :decorator do
+describe CopyPresenter, :type => :decorator do
   let(:copy) { Copy.new }
-  subject { CopyDecorator.new(copy) }
+  subject { CopyPresenter.new(copy, view) }
 
   describe "accession_id_sortable" do
     it "should return the accession id as a decimal number" do

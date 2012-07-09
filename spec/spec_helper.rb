@@ -22,7 +22,7 @@ Spork.prefork do
     config.run_all_when_everything_filtered = true
    
     config.after(:all) do
-      FileUtils.rm_rf(Dir["#{Rails.root}/spec/uploads"])
+      FileUtils.rm_rf(Dir["#{Rails.root}/tmp/tests"])
     end
 
     config.include FactoryGirl::Syntax::Methods

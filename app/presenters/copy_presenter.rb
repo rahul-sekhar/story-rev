@@ -1,4 +1,4 @@
-class CopyPresenter < ApplicationPresenter
+class CopyPresenter < BasePresenter
   presents :copy
 
   def accession_id_sortable

@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe BookDecorator, :type => :decorator do
+describe BookPresenter, :type => :decorator do
   let(:book) { Book.new }
-  subject {BookDecorator.new(book)}
+  subject {BookPresenter.new(book, view)}
 
   it "should include currency methods" do
     subject.should respond_to(:to_currency)
@@ -14,35 +14,35 @@ describe BookDecorator, :type => :decorator do
     end
 
     it "should be a range with both age limits set" do
-      subject.age_from, subject.age_to = 10, 50
+      book.age_from, book.age_to = 10, 50
       subject.age_level.should == "10 - 50"
     end
 
     it "should be only the lower limit when the upper limit is not set" do
-      subject.age_from = 15
+      book.age_from = 15
       subject.age_level.should == "15+"
     end
 
     it "should be just the age when both limits are the same" do
-      subject.age_from, subject.age_to = 12, 12
+      book.age_from, book.age_to = 12, 12
       subject.age_level.should == "12"
     end
   end
 
   describe "creators" do
-    before { subject.author_name = "Test Author" }
+    before { book.author_name = "Test Author" }
 
     it "should be the author name when no illustrator is present" do
       subject.creators.should == "Test Author"
     end
 
     it "should be both the author and illustrator names when both are present" do
-      subject.illustrator_name = "Test Illustrator"
+      book.illustrator_name = "Test Illustrator"
       subject.creators.should == "Test Author and Test Illustrator"
     end
 
     it "should be only a single name when the author and illustrator names are identical" do
-      subject.illustrator_name = "Test Author"
+      book.illustrator_name = "Test Author"
       subject.creators.should == "Test Author"
     end
   end

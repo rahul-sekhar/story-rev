@@ -1,4 +1,4 @@
-class BookPresenter < ApplicationPresenter
+class BookPresenter < BasePresenter
   presents :book
 
   def age_level
@@ -8,7 +8,7 @@ class BookPresenter < ApplicationPresenter
       else
         "#{book.age_from} - #{book.age_to}"
       end
-    elsif age_from
+    elsif book.age_from
       "#{book.age_from}+"
     else
       ""
