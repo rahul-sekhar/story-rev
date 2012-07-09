@@ -80,9 +80,10 @@ describe BookSearcher do
 
     describe "by accession_id:" do
       before do
-        @book1 = create(:book, accession_id: 50)
-        @book2 = create(:book, accession_id: 506)
-        @book3 = create(:book, accession_id: 12)
+        author = create(:author, name: "Some Author")
+        @book1 = create(:book, title: "Book 1", author: author, accession_id: 50)
+        @book2 = create(:book, title: "Book 2", author: author, accession_id: 506)
+        @book3 = create(:book, title: "Book 3", author: author, accession_id: 12)
       end
       
       it "should match accession ids" do

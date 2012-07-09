@@ -1,5 +1,5 @@
-class BookDecorator < ApplicationDecorator
-  decorates :book
+class BookPresenter < ApplicationPresenter
+  presents :book
 
   def age_level
     if (book.age_from && book.age_to)

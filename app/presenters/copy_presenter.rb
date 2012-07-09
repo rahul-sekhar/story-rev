@@ -1,5 +1,5 @@
-class CopyDecorator < ApplicationDecorator
-  decorates :copy
+class CopyPresenter < ApplicationPresenter
+  presents :copy
 
   def accession_id_sortable
     "#{copy.accession_id.to_i}.#{copy.copy_number}".to_f
