@@ -4,13 +4,17 @@ require 'spork'
 #require 'spork/ext/ruby-debug'
 
 Spork.prefork do
+  unless ENV['DRB']
+    require 'simplecov'
+    SimpleCov.start 'rails'
+  end
 
- ENV["RAILS_ENV"] ||= 'test'
- require File.expand_path("../../config/environment", __FILE__)
- require 'rspec/rails'
- require 'rspec/autorun'
+  ENV["RAILS_ENV"] ||= 'test'
+  require File.expand_path("../../config/environment", __FILE__)
+  require 'rspec/rails'
+  require 'rspec/autorun'
 
- RSpec.configure do |config|
+  RSpec.configure do |config|
     config.use_transactional_fixtures = true
     config.infer_base_class_for_anonymous_controllers = false
 
@@ -51,11 +55,16 @@ Spork.prefork do
     #   end
     #   alias_method_chain :require, :trace
     # end
- end
+  end
 
 end
 
 Spork.each_run do
+  if ENV['DRB']
+    require 'simplecov'
+    SimpleCov.start 'rails'
+  end
+  
   # Randomise RSpec seed
   RSpec.configuration.seed = srand && srand % 0xFFFF
 
