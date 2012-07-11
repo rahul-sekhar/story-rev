@@ -1,16 +1,14 @@
 source 'http://rubygems.org'
 
 gem 'rails', '3.1.3'
-
 gem 'pg'
+group :development do
+  gem 'thin', '1.4.1'
+end
 
 group :assets do
   gem 'sass-rails', '3.1.5'
   gem 'uglifier', '>= 1.0.3'
-end
-
-group :developent do
-  gem 'rvm-capistrano'
 end
 
 gem 'jquery-rails'
