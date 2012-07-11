@@ -12,17 +12,20 @@ When /^I add the( new)? token "(.*?)" to "(.*?)"$/ do |new_token, arg1, arg2|
   if new_token.present?
     page.find('.token-input-dropdown li', text: /new .* #{arg1}$/).click
   else
-    p "blah"
     page.find('.token-input-dropdown li', text: /^#{arg1}$/).click
   end
 end
 
-When /^I add the following tokens to "(.*?)":?$/ do |arg1, table|
-  field_id = find_field(arg1)[:id]
+When /^I add the following( new)? tokens to "(.*?)":?$/ do |new_tokens, arg2, table|
+  field_id = find_field(arg2)[:id]
   field = page.find("#token-input-#{field_id}")
   table.raw.flatten.each do |token|
     field.set(token)
-    page.find('.token-input-dropdown li', text: /#{token}$/).click
+    if new_tokens.present?
+      page.find('.token-input-dropdown li', text: /new .* #{token}$/).click
+    else
+      page.find('.token-input-dropdown li', text: /^#{token}$/).click
+    end
   end
 end
 
@@ -31,10 +34,6 @@ When /^I add "(.*?)" to the "(.*?)" select list$/ do |arg1, arg2|
   a = page.driver.browser.switch_to.alert
   a.send_keys(arg1)
   a.accept
-end
-
-When /^I select "(.*?)" from "(.*?)"$/ do |arg1, arg2|
-  select arg1, from: arg2
 end
 
 When /^I (enter|add) an award with the( new)? type "(.*?)"(?:,| and) the( new)? name "(.*?)"(?: and the year "(.*?)")?$/ do |arg1, new_award_type, award_type, new_award_name, award_name, year|

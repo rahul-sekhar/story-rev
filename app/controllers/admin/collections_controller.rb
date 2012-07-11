@@ -9,7 +9,7 @@ class Admin::CollectionsController < Admin::ApplicationController
       format.html
       format.json do
         @collections = @collections.name_like(params[:q]).limit(10) if params[:q]
-        render :json => @collections.map {|x| x.get_hash }
+        render :json => @collections.map {|x| x.as_hash }
       end
     end
   end
@@ -17,7 +17,7 @@ class Admin::CollectionsController < Admin::ApplicationController
   def create
     @collection = Collection.new(params[:collection])
     if @collection.save
-      render :json => @collection.get_hash
+      render :json => @collection.as_hash
     else
       render :json => @collection.errors.full_messages, :status => :unprocessable_entity
     end
@@ -26,7 +26,7 @@ class Admin::CollectionsController < Admin::ApplicationController
   def update
     @collection = Collection.find(params[:id])
     if @collection.update_attributes(params[:collection])
-      render :json => @collection.get_hash
+      render :json => @collection.as_hash
     else
       render :json => @collection.errors.full_messages, :status => :unprocessable_entity
     end

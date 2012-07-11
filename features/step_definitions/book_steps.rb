@@ -20,3 +20,8 @@ end
 Then /^the book should have a description with the title "(.*?)" and content "(.*?)"$/ do |title, content|
   @book.descriptions.to_a.count{ |x| x.title == title && x.content == content }.should == 1
 end
+
+Given /^an award exists with the type "(.*?)" and the name "(.*?)"$/ do |type, name|
+  award_type = AwardType.create(name: type)
+  Award.create(name: name, award_type_id: award_type.id)
+end
