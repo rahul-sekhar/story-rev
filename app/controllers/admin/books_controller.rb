@@ -43,7 +43,6 @@ class Admin::BooksController < Admin::ApplicationController
       redirect_to admin_book_path(@book), :notice => "Book created - its accession number is #{@book.accession_id}"
     else
       @book.build_empty_fields
-      @book = Book.new(@book)
       @class = "book form"
       @title = "Add Book"
       render "new"

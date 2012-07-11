@@ -30,6 +30,7 @@ class Book < ActiveRecord::Base
   has_one :cover_image, :dependent => :destroy
 
   name_tag :author, :illustrator, :publisher, :country
+  delegate :name, to: :book_type, prefix: true, allow_nil: true
   
   validates :title, 
     presence: true, 

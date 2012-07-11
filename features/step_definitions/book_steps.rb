@@ -8,3 +8,7 @@ Then /^the book should have the following attributes$/ do |table|
     @book.send(key).to_s.should == val
   end
 end
+
+Then /^the book should have a collection with the name "(.*?)"$/ do |arg1|
+  @book.collections.find_by_name(arg1).should be_present
+end
