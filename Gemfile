@@ -3,6 +3,10 @@ source 'http://rubygems.org'
 gem 'rails', '3.2.6'
 gem 'pg', '0.14.0'
 
+group :development do
+  gem 'thin', '1.4.1'
+end
+
 gem 'jquery-rails', '2.0.2'
 gem 'sanitize', '2.0.3'
 gem 'yaml_db', '0.2.3'
@@ -38,6 +42,7 @@ group :test do
   gem 'capybara', '1.1.2'
   gem 'launchy', '2.1.0'
   gem 'headless', '0.3.1'
+  gem 'simplecov', '0.6.4', :require => false
 end
 
 group :test, :development do
@@ -48,5 +53,4 @@ group :test, :development do
   gem 'guard-spork', '1.1.0'
   gem 'guard-rspec', '1.1.0'
   gem 'guard-cucumber', '1.2.0'
-  gem 'simplecov', '0.6.4', :require => false
 end
