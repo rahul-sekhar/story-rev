@@ -32,7 +32,8 @@ class Admin::BooksController < Admin::ApplicationController
   def new
     @class = "book form"
     @title = "Add Book"
-    @book = Book.new
+    @book = Book.new(flash[:book_params])
+    @book.valid? if flash[:book_params].present?
     @book.build_empty_fields
     @book.title = params[:title] if params[:title]
   end
@@ -42,10 +43,8 @@ class Admin::BooksController < Admin::ApplicationController
     if @book.save
       redirect_to admin_book_path(@book), :notice => "Book created - its accession number is #{@book.accession_id}"
     else
-      @book.build_empty_fields
-      @class = "book form"
-      @title = "Add Book"
-      render "new"
+      flash[:book_params] = params[:book]
+      redirect_to :action => :new
     end
   end
   
@@ -53,6 +52,10 @@ class Admin::BooksController < Admin::ApplicationController
     @class = "book form"
     @title = "Edit Book Information"
     @book = Book.find(params[:id])
+    if flash[:book_params].present?
+      @book.update_attributes(flash[:book_params])
+      @book.valid?
+    end
     @book.build_empty_fields
   end
   
@@ -70,11 +73,8 @@ class Admin::BooksController < Admin::ApplicationController
       
       redirect_to redirect_path, :notice => "Book saved - its accession number is #{@book.accession_id}"
     else
-      @book.build_empty_fields
-      @book = Book.new(@book)
-      @class = "book form"
-      @title = "Edit Book Information"
-      render "edit"
+      flash[:book_params] = params[:book]
+      redirect_to :action => :edit
     end
   end
   
