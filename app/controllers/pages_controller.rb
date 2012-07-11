@@ -36,6 +36,7 @@ class PagesController < ApplicationController
   def story_hour
     @title = "Story Hour"
     @class = "story-hour"
+    @hide_layout = true
   end
 
   
