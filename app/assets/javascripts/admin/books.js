@@ -331,30 +331,33 @@ $(document).ready(function() {
         e.preventDefault();
     });
     
-    // Create an initial template for an award section by cloning the first award section and
-    // reseting it
-    var $awardTemplate = $awardList.find('li:first').clone()
-        .find('.award_type')
-            .find('option')
-                .removeAttr("selected")
+    // Create a template for an award section by cloning the first award section and reseting it
+    function getAwardTemplate() {
+        return $awardList.find('li:first').clone()
+            .show()
+            .find('.award_type')
+                .find('option')
+                    .removeAttr("selected")
+                    .end()
+                .val("")
                 .end()
-            .val("")
-            .end()
-        .find('.award_name')
-            .attr('name', 'book[award_attributes][][award_id]')
-            .empty()
-            .end()
-        .find('.award_year')
-            .attr('name', 'book[award_attributes][][year]')
-            .val("")
-            .end()
-        .find('input[type=hidden]')
-            .remove()
-            .end();
+            .find('.award_name')
+                .attr('name', 'book[award_attributes][][award_id]')
+                .empty()
+                .end()
+            .find('.award_year')
+                .attr('name', 'book[award_attributes][][year]')
+                .val("")
+                .end()
+            .find('input[type=hidden]')
+                .remove()
+                .end();
+    }
+
     
     // Handle adding awards
     $('#add-award-link').click(function(e) {
-        $awardTemplate.clone().appendTo($awardList);
+        getAwardTemplate().appendTo($awardList);
         checkFirstAward();
         e.preventDefault();
     });

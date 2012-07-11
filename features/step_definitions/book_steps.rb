@@ -12,3 +12,11 @@ end
 Then /^the book should have a collection with the name "(.*?)"$/ do |arg1|
   @book.collections.find_by_name(arg1).should be_present
 end
+
+Then /^the book should have an award with the name "(.*?)"$/ do |arg1|
+  @book.book_awards.to_a.count{ |x| x.full_name == arg1 }.should == 1
+end
+
+Then /^the book should have a description with the title "(.*?)" and content "(.*?)"$/ do |title, content|
+  @book.descriptions.to_a.count{ |x| x.title == title && x.content == content }.should == 1
+end

@@ -20,22 +20,28 @@ And I fill in "to" with "62"
 And I add "Fiction" to the "Book type" select list
 And I add the following tokens to "Collections":
 | Frightening books | Test books |
-And I fill in an award with the new award type "Newberry", the new description "Winner" and the year "1986"
-And I add an award with the award type "Newberry" and the new description "Runner Up"
+And I enter an award with the new type "Newberry", the new name "Winner" and the year "1986"
+And I add an award with the type "Newberry" and the new name "Runner Up"
 And I fill in "Amazon URL" with "http://www.amazon.com/blahblah"
-And I fill in "Short Description" with "It really is a very scary book."
+And I fill in "Short description" with "It really is a very scary book."
 And I enter a description with the title "Review" and content "It's a great book"
 And I add a description with the title "Other Review" and content "It's a terribly scary book"
 And I click "Save"
 Then a book should exist with the title "Scary Book"
 And the book should have the following attributes
-| author_name       | John Doe        |
-| illustrator_name  | Random Chappie  |
-| publisher_name    | Awesome Books   |
-| year              | 2011            |
-| country_name      | Ukraine         |
-| age_from          | 15              |
-| age_to            | 62              |
-| book_type_name    | Fiction         |
+| author_name       | John Doe                        |
+| illustrator_name  | Random Chappie                  |
+| publisher_name    | Awesome Books                   |
+| year              | 2011                            |
+| country_name      | Ukraine                         |
+| age_from          | 15                              |
+| age_to            | 62                              |
+| book_type_name    | Fiction                         |
+| amazon_url        | http://www.amazon.com/blahblah  |
+| short_description | It really is a very scary book. |
 And the book should have a collection with the name "Frightening books"
 And the book should have a collection with the name "Test books"
+And the book should have an award with the name "Newberry Winner 1986"
+And the book should have an award with the name "Newberry Runner Up"
+And the book should have a description with the title "Review" and content "It's a great book"
+And the book should have a description with the title "Other Review" and content "It's a terribly scary book"

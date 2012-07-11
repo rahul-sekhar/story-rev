@@ -57,7 +57,7 @@
   
   <%= f.submit "Save", :class => "submit" %>
   
-  <%= f.submit "Next Book", :class=>"next-book submit" %>
+  <%= f.submit "Next Book", :class=>"next-book submit" unless @book.new_record? %>
   
-  <%= f.submit "Previous Book", :class=>"previous-book submit" %>
+  <%= f.submit "Previous Book", :class=>"previous-book submit" unless @book.new_record? %>
 <% end %>
