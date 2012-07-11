@@ -32,6 +32,12 @@ class PagesController < ApplicationController
     @title = "Help"
     @class = "help"
   end
+
+  def story_hour
+    @title = "Story Hour"
+    @class = "story-hour"
+  end
+
   
   def subscribe
     if params[:email].present?

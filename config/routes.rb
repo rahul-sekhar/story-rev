@@ -14,6 +14,7 @@ StoryRev::Application.routes.draw do
   
   get "about" => "pages#about"
   get "help" => "pages#help"
+  get "story-hour" => "pages#story_hour"
   
   post "subscribe" => "pages#subscribe"
   
