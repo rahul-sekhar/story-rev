@@ -7,5 +7,7 @@ class PickupPoint < ActiveRecord::Base
     length: { maximum: 255 },
     presence: true,
     uniqueness: { case_sensitive: false }
+
+  strip_attributes
   
 end

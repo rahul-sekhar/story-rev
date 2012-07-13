@@ -280,13 +280,14 @@
     // Buttons
     input.submit {
         float:right;
-        margin-right: e($sidebar-width + (2 * $sidebar-hor-padding) + 50px, $button-size);
+        margin-right: e($sidebar-width + (2 * $sidebar-hor-padding) + 30px, $button-size);
         margin-bottom: e(30px, $button-size);
     }
     
     .delete-book {
         float:right;
-        margin-right: 20px;
+        margin-right: e(20px, $button-size);
+        margin-left: e(-100px, $button-size);
     }
     
     // Image upload dialog

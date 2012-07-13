@@ -11,17 +11,32 @@ module Person
     end
     self.first_name = split_name.join(" ")
   end
+
+  def name_must_be_unique
+    my_id = id
+    if self.class.scoped_name_is(name).where{id != my_id}.present?
+      errors.add(:name, "must be unique")
+    end
+  end
   
   module ClassMethods
+    # Returns a single person that has the passed name
     def name_is(name)
-      # Add a space for a single worded name
+      scoped_name_is(name).first
+    end
+
+    # Returns an ActiveRecord relation containing people with the passed name
+    def scoped_name_is(name)
+      name = SqlHelper::escapeWildcards(name)
+      # Add a leading space for a single worded name
       name = " #{name}" if !name.include? ' '
-      
-      where("LOWER(first_name || ' ' || last_name) = ?", name.downcase).first
+      where{first_name.op('||', ' ').op('||', last_name).like(name)}
     end
     
+    # Returns an ActiveRecord relation containing people whos name includes the passed string
     def name_like(name)
-      where("LOWER(first_name || ' ' || last_name) like ?", "%#{SqlHelper::escapeWildcards(name.downcase)}%")
+      name = SqlHelper::escapeWildcards(name)
+      where{first_name.op('||', ' ').op('||', last_name).like("%#{name}%")}
     end
   end
   

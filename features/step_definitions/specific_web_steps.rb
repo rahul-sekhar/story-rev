@@ -65,3 +65,14 @@ When /^I (enter|add) a description with the title "(.*?)" and content "(.*?)"$/ 
     fill_in "description-content", with: content
   end
 end
+
+Then /^"(.*?)" should be shown to have an error$/ do |arg1|
+  page.should have_css '.field_with_errors label', text: arg1
+end
+
+When /^I upload a cover image$/ do
+  page.execute_script('$("#edit-cover-list").show()')
+  click_link "Upload an image"
+  attach_file("image_file", "#{Rails.root}/public/images/title.png")
+  wait_until { page.has_selector? '.cover img'}
+end

@@ -72,6 +72,38 @@ shared_examples_for "a person" do
     end
   end
 
+  describe "Ensure names are unique" do
+    it "must be case insensitively unique" do
+      person.name = "rahuL sekhar"
+      person.should be_valid
+      create_person(name: "Rahul Sekhar")
+      person.should be_invalid
+      person.errors.should have_key :name
+    end
+
+    it "must be case insensitively unique for a single word name" do
+      person.name = "rahul"
+      person.should be_valid
+      create_person(name: "Rahul")
+      person.should be_invalid
+      person.errors.should have_key :name
+    end
+
+    it "must be unique with leading and trailing spaces" do
+      person.name = " Other Person "
+      person.should be_valid
+      create_person(name: "Other Person")
+      person.should be_invalid
+      person.errors.should have_key :name
+    end
+
+    it "should be valid once saved" do
+      person.name = "Rahul Sekhar"
+      person.save
+      person.should be_valid
+    end
+  end
+
   context "when multiple people have been created" do
     before do
       ["Rahul Sekhar", "Rahul de Sekhar", "Rahul", "Sekhar", "Other Person", "Some Other Person", "Alan Carson"].each do |name|

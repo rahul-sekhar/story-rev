@@ -1,11 +1,37 @@
-Feature: Admin manages books
+Feature: Admin adds books
 
-As an admin I want to be able to add and edit book information and delete books
-
+As an admin I want to be able to add book new books containing all the required
+information
 
 Background:
 Given I have logged in as an admin
 And the amazon book information is disabled
+
+Scenario: Add a book with no title or author
+Given I am on the new book page
+When I click "Save"
+Then I should be on the new book page
+And "Title" should be shown to have an error
+And "Author" should be shown to have an error
+
+
+Scenario: Add a book with a title but no author
+Given I am on the new book page
+When I fill in "Title" with "Scary Book"
+And I click "Save"
+Then I should be on the new book page
+And "Author" should be shown to have an error
+
+@javascript
+Scenario: Add a book with only an author and a title
+Given I am on the new book page
+When I fill in "Title" with "Chaos"
+And I add the new token "Gleick" to "Author"
+And I click "Save"
+Then a book should exist with the title "Chaos"
+And that book should have the following attributes
+| author_name | Gleick |
+And I should be on the page for that book
 
 
 @javascript
@@ -30,7 +56,7 @@ And I enter a description with the title "Review" and content "It's a great book
 And I add a description with the title "Other Review" and content "It's a terribly scary book"
 And I click "Save"
 Then a book should exist with the title "Scary Book"
-And the book should have the following attributes
+And that book should have the following attributes
 | author_name       | John Doe                        |
 | illustrator_name  | Random Chappie                  |
 | publisher_name    | Awesome Books                   |
@@ -41,12 +67,13 @@ And the book should have the following attributes
 | book_type_name    | Fiction                         |
 | amazon_url        | http://www.amazon.com/blahblah  |
 | short_description | It really is a very scary book. |
-And the book should have a collection with the name "Frightening books"
-And the book should have a collection with the name "Test books"
-And the book should have an award with the name "Newberry Winner 1986"
-And the book should have an award with the name "Newberry Runner Up"
-And the book should have a description with the title "Review" and content "It's a great book"
-And the book should have a description with the title "Other Review" and content "It's a terribly scary book"
+And that book should have a collection with the name "Frightening books"
+And that book should have a collection with the name "Test books"
+And that book should have an award with the name "Newberry Winner 1986"
+And that book should have an award with the name "Newberry Runner Up"
+And that book should have a description with the title "Review" and content "It's a great book"
+And that book should have a description with the title "Other Review" and content "It's a terribly scary book"
+And I should be on the page for that book
 
 
 @javascript
@@ -72,20 +99,24 @@ And I add the following new tokens to "Collections":
 And I enter an award with the type "Newberry" and the name "Winner"
 And I click "Save"
 Then a book should exist with the title "Lord of the Rings"
-And the book should have the following attributes
+And that book should have the following attributes
 | author_name       | J R R Tolkien     |
 | illustrator_name  | Sauron            |
 | publisher_name    | Hobbit Publishers |
 | country_name      | England           |
 | book_type_name    | Fantasy           |
-And the book should have a collection with the name "Trilogy books"
-And the book should have a collection with the name "Test books"
-And the book should have an award with the name "Newberry Winner"
+And that book should have a collection with the name "Trilogy books"
+And that book should have a collection with the name "Test books"
+And that book should have an award with the name "Newberry Winner"
+And I should be on the page for that book
 
-
-@current
-Scenario: Add a book with no title
+@javascript
+Scenario: Add a book with a cover image
 Given I am on the new book page
-When I click "Save"
-Then I should be on the new book page
-And "Title" should be shown to have an error
+When I fill in "Title" with "Chaos"
+And I add the new token "Gleick" to "Author"
+And I upload a cover image
+And I click "Save"
+Then a book should exist with the title "Chaos"
+And I should be on the page for that book
+And that book should have a cover image

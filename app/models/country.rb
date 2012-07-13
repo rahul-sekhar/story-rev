@@ -9,4 +9,6 @@ class Country < ActiveRecord::Base
     length: { maximum: 100 }, 
     presence: true, 
     uniqueness: { case_sensitive: false }
+
+  strip_attributes
 end

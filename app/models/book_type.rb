@@ -6,6 +6,8 @@ class BookType < ActiveRecord::Base
     length: { maximum: 100 },
     presence: true,
     uniqueness: { case_sensitive: false }
+
+  strip_attributes
   
   scope :prioritised, order("priority DESC, name")
   scope :visible, where("priority > 0")

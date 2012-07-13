@@ -9,6 +9,8 @@ class Award < ActiveRecord::Base
     length: { maximum: 150 },
     presence: true,
     uniqueness: { case_sensitive: false, scope: :award_type_id }
+
+  strip_attributes
   
   def full_name
     if (name == "-")

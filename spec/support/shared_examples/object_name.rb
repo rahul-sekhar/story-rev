@@ -33,6 +33,11 @@ shared_examples_for "an object with a unique name" do
       subject.name = "OBJECT"
       subject.should be_invalid
     end
+
+    it "should be invalid when its name is the same with trailing and leading spaces" do
+      subject.name = " OBJECT  "
+      subject.should be_invalid
+    end
   end
 end
 

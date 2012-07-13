@@ -7,6 +7,7 @@ group :development do
   gem 'thin', '1.4.1'
 end
 
+gem 'strip_attributes', '1.1.0'
 gem 'jquery-rails', '2.0.2'
 gem 'sanitize', '2.0.3'
 gem 'yaml_db', '0.2.3'

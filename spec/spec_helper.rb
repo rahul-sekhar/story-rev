@@ -21,7 +21,7 @@ Spork.prefork do
     config.order = "random"
 
     config.treat_symbols_as_metadata_keys_with_true_values = true
-    config.filter_run :focus => true
+    config.filter_run :focus => true, :duplicate_names => true
     config.filter_run_excluding :skip => true, :server => true
     config.run_all_when_everything_filtered = true
    
@@ -70,12 +70,4 @@ Spork.each_run do
 
   # Load support files
   Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
-
-  # Change cover uploader storage directory
-  CoverUploader.class_eval do
-    def store_dir
-      "#{Rails.root}/spec/uploads/books/#{model.id}"
-    end
-  end
-  CoverUploader.enable_processing = false
 end

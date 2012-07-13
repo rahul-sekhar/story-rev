@@ -29,8 +29,3 @@
 <% end %>
 
 <%= render "fields" %>
-
-<%= link_to "Delete", admin_book_path(@book),
-  class: "delete-book button",
-  data: { confirm: "Are you sure you want to delete this book? This cannot be undone." },
-  method: :delete %>

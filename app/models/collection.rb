@@ -9,6 +9,8 @@ class Collection< ActiveRecord::Base
     length: { :maximum => 200 },
     presence: true, 
     uniqueness: { case_sensitive: false }
+
+  strip_attributes
   
   scope :prioritised, order("priority DESC")
   scope :visible, where("priority > 0")

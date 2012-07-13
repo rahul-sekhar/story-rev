@@ -212,6 +212,8 @@ GEM
       activerecord (~> 3.0)
       activesupport (~> 3.0)
       polyamorous (~> 0.5.0)
+    strip_attributes (1.1.0)
+      activemodel (~> 3.0)
     terminator (0.4.4)
       fattr
     thin (1.4.1)
@@ -273,6 +275,7 @@ DEPENDENCIES
   simplecov (= 0.6.4)
   spork-rails (= 3.2.0)
   squeel (= 1.0.6)
+  strip_attributes (= 1.1.0)
   terminator (= 0.4.4)
   thin (= 1.4.1)
   uglifier (= 1.2.6)

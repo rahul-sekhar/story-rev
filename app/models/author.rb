@@ -4,7 +4,11 @@ class Author < ActiveRecord::Base
   attr_accessible :name, :priority
 
   validates :first_name, length: { maximum: 100 }
-  validates :last_name, length: { maximum: 100 }, presence: true
+  validates :last_name, 
+    length: { maximum: 100 }, 
+    presence: true
+  
+  validate :name_must_be_unique
   
   has_many :books, :dependent => :destroy
   

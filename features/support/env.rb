@@ -12,19 +12,14 @@ Spork.prefork do
   require 'cucumber/rspec/doubles'
 
   Capybara.default_selector = :css
-  #default_js_driver = :webkit
-  #Capybara.javascript_driver = default_js_driver
 
-  Before('@javascript') do
-    # Capybara.javascript_driver = :selenium
-    require 'headless'
-    headless = Headless.new
-    headless.start
+  unless ENV['SHOW_BROWSER']
+    Before('@javascript') do
+      require 'headless'
+      headless = Headless.new
+      headless.start
+    end
   end
-
-  # After('@selenium') do
-  #   Capybara.javascript_driver = default_js_driver
-  # end
 end
  
 Spork.each_run do
@@ -44,4 +39,7 @@ Spork.each_run do
 
   Cucumber::Rails::Database.javascript_strategy = :truncation
 
+  at_exit do
+    FileUtils.rm_rf(Dir["#{Rails.root}/tmp/tests"])
+  end
 end

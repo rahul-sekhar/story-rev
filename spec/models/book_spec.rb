@@ -25,10 +25,18 @@ describe Book do
       book.errors[:title].should be_present
     end
 
-    it "should be unique" do
+    it "should be case insensitively unique" do
       book.title = "Duplicate Test"
       book.should be_valid
-      create(:book, :title => "Duplicate Test")
+      create(:book, :title => "duplicate TEST")
+      book.should be_invalid
+      book.errors[:title].should be_present
+    end
+
+    it "should be unique even with extra trailing and leading spaces" do
+      book.title = "    Duplicate Test   "
+      book.should be_valid
+      create(:book, :title => "duplicate test")
       book.should be_invalid
       book.errors[:title].should be_present
     end

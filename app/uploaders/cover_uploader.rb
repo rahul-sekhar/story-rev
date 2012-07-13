@@ -13,8 +13,14 @@ class CoverUploader < CarrierWave::Uploader::Base
   # Override the directory where uploaded files will be stored.
   # Use a different directory for tests
   def store_dir
-    "images/books/#{model.id}"
+    if Rails.env.test?
+      "#{Rails.root}/tmp/tests/uploads/books/#{model.id}"
+    else
+      "images/books/#{model.id}"
+    end
   end
+
+  enable_processing = false if Rails.env.test?
   
   process :resize_to_limit => [1600, 1200]
   

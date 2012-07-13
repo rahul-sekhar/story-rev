@@ -41,7 +41,7 @@ class BookSearcher
     start_matcher = "#{@sql_query}%"
     word_boundary_matchers = ["#{@sql_query}%", "% #{@sql_query}%"]
 
-    Book.joins(:author).where do
+    Book.joins(:author).order(:title).where do
       title.like_any(word_boundary_matchers) | 
       
       authors.first_name.op('||', ' ').op('||', authors.last_name).

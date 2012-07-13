@@ -31,11 +31,13 @@ class Book < ActiveRecord::Base
 
   name_tag :author, :illustrator, :publisher, :country
   delegate :name, to: :book_type, prefix: true, allow_nil: true
+
+  strip_attributes
   
   validates :title, 
     presence: true, 
     length: { maximum: 255 },
-    uniqueness: true
+    uniqueness: { case_sensitive: false }
 
   validates :author, presence: true
   

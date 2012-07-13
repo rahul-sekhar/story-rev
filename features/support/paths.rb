@@ -37,11 +37,17 @@ module NavigationHelpers
     when /the admin book search page/
       search_admin_books_path
 
+    when /the new book page/
+      new_admin_book_path
+
     when /^the edit page for the book "(.*)"$/
       edit_admin_book_path(Book.find_by_title($1))
 
-    when /the new book page/
-      new_admin_book_path
+    when /^the edit page for that book$/
+      edit_admin_book_path(@book)
+
+    when /the page for that book/
+      admin_book_path(@book)
 
     else
       begin
