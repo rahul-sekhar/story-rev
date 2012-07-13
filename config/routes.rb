@@ -76,6 +76,8 @@ StoryRev::Application.routes.draw do
     resources :transaction_categories do
       get "toggle_record"
     end
+    resources :transfers
+    resources :transfer_categories
     resources :payment_methods
     resources :accounts do
       get "to_cash"

@@ -32,3 +32,22 @@
     </table>
   </div>
 </div>
+
+
+<div class="table-wrapper">
+  <div class="table-container">
+    <table id="transfers-table">
+      <% @transfers.each do |x| %>
+        <tr data-id="<%= x.id %>">
+          <td data-val="<%= x.short_date %>" class="date" data-sort-by="<%= x.timestamp %>"><%= x.formatted_date %></td>
+          <td data-val="<%= x.transfer_category_id %>" data-sort-by="<%= x.transfer_category_name %>"><%= x.transfer_category_name %></td>
+          <td data-val="<%= x.payment_method_id %>" data-sort-by="<%= x.payment_method_name %>"><%= x.payment_method_name %></td>
+          <td data-val="<%= x.source_account_id %>" data-sort-by="<%= x.source_account_name %>"><%= x.source_account_name %></td>
+          <td data-val="<%= x.target_account_id %>" data-sort-by="<%= x.target_account_name %>"><%= x.target_account_name %></td>
+          <td data-val="<%= x.notes %>"><%= x.notes %></td>
+          <td data-val="<%= x.amount %>" class="amount" data-sort-by="<%= x.amount %>"><%= x.formatted_amount %></td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+</div>

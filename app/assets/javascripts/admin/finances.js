@@ -66,7 +66,7 @@ $(document).ready(function() {
                 raw: 'account_id',
                 type: 'dropdown',
                 sourceURL: '/admin/accounts',
-                sort_by: 'other_party',
+                sort_by: 'account_name',
             },
             {
                 name: 'Notes',
@@ -86,6 +86,70 @@ $(document).ready(function() {
                 sort_by: 'debit',
                 class_name: 'amount'
             }
+        ]
+    });
+
+    $('#transfers-table').itemTable({
+        url: '/admin/transfers',
+        objectName: 'transfer',
+        selectable: true,
+        headings: true,
+        sortable: true,
+        addLinkText: 'New Transfer',
+        columns: [
+            {
+                name: 'Date',
+                raw: 'short_date',
+                field: 'formatted_date',
+                type:'date',
+                default_val:'now',
+                sort_by: 'timestamp',
+                default_sort: 'desc',
+                class_name: 'date'
+            },
+            {
+                name: 'Category',
+                field: 'transfer_category_name',
+                raw: 'transfer_category_id',
+                sort_by: 'transfer_category_name',
+                type: 'dropdown',
+                sourceURL: '/admin/transfer_categories'
+            },
+            {
+                name: 'Payment method',
+                field: 'payment_method_name',
+                raw: 'payment_method_id',
+                type:'dropdown',
+                sourceURL: '/admin/payment_methods',
+                sort_by: 'payment_method_name'
+            },
+            {
+                name: 'Source Account',
+                field: 'source_account_name',
+                raw: 'source_account_id',
+                type: 'dropdown',
+                sourceURL: '/admin/accounts',
+                sort_by: 'source_account_name',
+            },
+            {
+                name: 'Target Account',
+                field: 'target_account_name',
+                raw: 'target_account_id',
+                type: 'dropdown',
+                sourceURL: '/admin/accounts',
+                sort_by: 'target_account_name',
+            },
+            {
+                name: 'Notes',
+                field: 'notes'
+            },
+            {
+                name: 'Amount',
+                field: 'formatted_amount',
+                raw: 'amount',
+                sort_by: 'amount',
+                class_name: 'amount'
+            },
         ]
     });
     
