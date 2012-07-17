@@ -2,28 +2,101 @@ class Transaction < ActiveRecord::Base
   attr_accessible :credit, :debit, :other_party, :payment_method_id, :transaction_category_id, :account_id, :short_date, :notes
   after_initialize :init
   before_save :check_data
-  
-  belongs_to :account
-  belongs_to :transaction_category
-  belongs_to :payment_method
-  
+
   has_one :order
-  has_one :postage_order, :class_name => "Order", :foreign_key => :postage_transaction_id
+  has_one :postage_order, 
+    class_name: "Order", 
+    foreign_key: "postage_transaction_id"
   
-  validates :account_id, :presence => true
-  
-  scope :on_record, where(:off_record => false)
+  belongs_to :payment_method
+  belongs_to :transaction_category
+  belongs_to :account
+
+  delegate :name, to: :transaction_category, prefix: true, allow_nil: true
+  delegate :name, to: :payment_method, prefix: true, allow_nil: true
+  delegate :name, to: :account, prefix: true, allow_nil: true
+
+  validates :account, presence: true
+
+  scope :on_record, -> { where off_record: false }
   
   # Scope for transactions between two dates
   # 'between_exclusive' excludes the end day
   def self.between_exclusive(from, to)
-    transactions = Transaction.where("date >= ? AND date < ?", from, to)
+    where("date >= ? AND date < ?", from, to)
   end
   # 'between' includes the end day
   def self.between(from, to)
     between_exclusive(from, to + 1.day)
   end
+
+  def self.first_date
+    first_transaction = order("date asc").first
+    return first_transaction ? first_transaction.date.to_date : Date.new(1900)
+  end
   
+  def init
+    self.credit ||= 0
+    self.debit ||= 0
+  end
+  
+  def check_data
+    self.off_record = transaction_category.off_record if transaction_category.present?
+    self.date = DateTime.now if date.nil?
+    return nil
+  end
+
+  def formatted_credit
+    (credit && credit > 0) ? RupeeHelper.to_rupee(credit) : '-'
+  end
+  
+  def formatted_debit
+    (debit && debit > 0) ? RupeeHelper.to_rupee(debit) : '-'
+  end
+  
+  # Format date as in 'Nov 19, 2012'
+  def formatted_date
+    date.strftime("%b %e, %Y")
+  end
+  
+  def timestamp
+    date.to_i
+  end
+  
+  def short_date
+    date.strftime("%d-%m-%Y")
+  end
+  
+  def short_date=(val)
+    self.date = DateTime.strptime(val, "%d-%m-%Y")
+  end
+
+  def order_url
+    return order.present? ? order.get_url : nil
+  end
+
+  def get_hash
+    {
+      :id => id,
+      :formatted_date => formatted_date,
+      :short_date => short_date,
+      :timestamp => timestamp,
+      :transaction_category_name => transaction_category_name,
+      :transaction_category_id => transaction_category_id,
+      :other_party => other_party,
+      :payment_method_name => payment_method_name,
+      :payment_method_id => payment_method_id,
+      :account_name => account_name,
+      :account_id => account_id,
+      :notes => notes,
+      :credit => credit,
+      :formatted_credit => formatted_credit,
+      :debit => debit,
+      :formatted_debit => formatted_debit,
+      :order_url => order_url
+    }
+  end
+
   # Build graph data given dates, a period and a type
   def self.graph_data(period_text, data_type, from, to)
     
@@ -87,7 +160,7 @@ class Transaction < ActiveRecord::Base
     end
     
     # Get transactions within the range, starting from the newest ones
-    transactions = Transaction.between(start_date, end_date).order("date DESC")
+    transactions = Transaction.on_record.between(start_date, end_date).order("date DESC")
     
     transaction_index = 0
     graph_points = 0
@@ -180,80 +253,6 @@ class Transaction < ActiveRecord::Base
                 { :label => x_label, :type => "number" },
                 { :role => "tooltip", :type => "string" }],
       :rows => graph_data
-    }
-  end
-  
-  def init
-    self.credit ||= 0
-    self.debit ||= 0
-  end
-  
-  def check_data
-    self.date = DateTime.now if date.nil?
-    self.off_record = transaction_category.off_record if transaction_category.present?
-    return nil
-  end
-  
-  def formatted_credit
-    (credit && credit > 0) ? RupeeHelper.to_rupee(credit) : '-'
-  end
-  
-  def formatted_debit
-    (debit && debit > 0) ? RupeeHelper.to_rupee(debit) : '-'
-  end
-  
-  # Format date as in 'Nov 19, 2012'
-  def formatted_date
-    date.strftime("%b %e, %Y")
-  end
-  
-  def timestamp
-    date.to_i
-  end
-  
-  def transaction_category_name
-    transaction_category && transaction_category.name
-  end
-  
-  def payment_method_name
-    payment_method && payment_method.name
-  end
-  
-  def account_name
-    account && account.name
-  end
-  
-  def short_date
-    date.strftime("%d-%m-%Y")
-  end
-  
-  def short_date=(val)
-    self.date = DateTime.strptime(val, "%d-%m-%Y")
-  end
-  
-  def order_url
-    return order.present? ? order.get_url : nil
-  end
-  
-  def get_hash
-    {
-      :id => id,
-      :formatted_date => formatted_date,
-      :short_date => short_date,
-      :timestamp => timestamp,
-      :transaction_category_name => transaction_category_name,
-      :transaction_category_id => transaction_category_id,
-      :other_party => other_party,
-      :payment_method_name => payment_method_name,
-      :payment_method_id => payment_method_id,
-      :account_name => account_name,
-      :account_id => account_id,
-      :notes => notes,
-      :credit => credit,
-      :formatted_credit => formatted_credit,
-      :debit => debit,
-      :formatted_debit => formatted_debit,
-      :order_url => order_url
     }
   end
 end

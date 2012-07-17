@@ -18,6 +18,8 @@ module CurrencyMethods
       number = number.gsub(/^,/, '') + '.' + string[1] if string[1]
       # remove leading comma
       number = number[1..-1] if number[0] == ","
+      # remove leading comma if the number is negative
+      number = "-#{number[2..-1]}" if number[0,2] == "-,"
     end
     number
   end

@@ -25,7 +25,14 @@
   <div class="amount">
     <p class="postage">Postage: <span></span></p>
     <p class="total">Total: <span></span></p>
-    <p class="postage-expenditure">Postage expenditure: <span></span><a href="#" class="edit-link"></a></p>
+    <p class="account">Account paid to: <select>
+        <% Account.default_order.each do |x| %>
+          <option value="<%= x.id %>"><%= x.name %></option>
+        <% end %>
+      </select>
+    </p>
+    <p class="postage-expenditure">Postage expenditure: <span></span><a href="#" class="edit-link"></a>
+    </p>
   </div>
   
   <div class="table-wrapper" id="order-copies">
@@ -33,6 +40,12 @@
       <table></table>
     </div>
     <p class="add-container"><a href="#" class="add-link">Manually add book</a></p>
+  </div>
+
+  <div class="table-wrapper" id="order-costs">
+    <div class="table-container">
+      <table></table>
+    </div>
   </div>
   
   <div class="info">

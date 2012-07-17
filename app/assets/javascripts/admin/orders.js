@@ -60,7 +60,13 @@ $(document).ready(function() {
     // Handle checkboxes in the copies list for each order
     var curr_id;
     var $orderInfo = $('#order-info');
-    var $copiesTable = $orderInfo.find('table').on('click', '.ticked', function(e) {
+    
+    var $costsTable = $orderInfo.find('#order-costs table')
+        .on("addRow editRow itemRemove", function(e, data) {
+            updateOrderAmount(data);
+        });
+    
+    var $copiesTable = $orderInfo.find('#order-copies table').on('click', '.ticked', function(e) {
         var $this = $(this);
         $this.prop('disabled', true);
         var order_copy_id = $this.closest('tr').data('id');
@@ -151,74 +157,133 @@ $(document).ready(function() {
                     .data("value", data.postage_expenditure_val)
                     .find("span").text(data.postage_expenditure).end()
                     .end()
-                .find(".notes pre").text(data.notes).end()
-                .show();
+                .find(".notes pre").text(data.notes).end();
+            if (data.account_id) {
+                $orderInfo.find(".amount .account")
+                    .show()
+                    .find("select").val(data.account_id);
+            }
+            else {
+                $orderInfo.find(".amount .account")
+                    .hide();
+            }
+
+            $orderInfo.show();
                 
-                // Update the copies table
-                $copiesTable.itemTable({
-                    url: '/admin/orders/' + id + '/order_copies',
-                    objectName: 'order_copy',
-                    addable: false,
-                    editable: false,
-                    initialLoad: true,
-                    numbered: true,
-                    columns: [
-                        {
-                            name: 'Title',
-                            field: 'title'
+            // Update the copies table
+            $copiesTable.itemTable({
+                url: '/admin/orders/' + id + '/order_copies',
+                objectName: 'order_copy',
+                addable: false,
+                editable: false,
+                initialLoad: true,
+                numbered: true,
+                columns: [
+                    {
+                        name: 'Title',
+                        field: 'title'
+                    },
+                    {
+                        name: 'Author',
+                        field: 'author_name'
+                    },
+                    {
+                        name: 'Accession Number',
+                        field: 'accession_id',
+                        class_name: 'accession_id'
+                    },
+                    {
+                        name: 'Price',
+                        field: 'price'
+                    },
+                    {
+                        name: 'Number',
+                        field: 'number',
+                        class_name: 'copy-number'
+                    },
+                    {
+                        name: 'Edit Number',
+                        field: 'new_copy',
+                        class_name: 'has-button edit-number',
+                        displayCallback: function(data) {
+                            return data ? '<a class="edit-link" href="#"></a>' : ''
                         },
-                        {
-                            name: 'Author',
-                            field: 'author_name'
-                        },
-                        {
-                            name: 'Accession Number',
-                            field: 'accession_id',
-                            class_name: 'accession_id'
-                        },
-                        {
-                            name: 'Price',
-                            field: 'price'
-                        },
-                        {
-                            name: 'Number',
-                            field: 'number',
-                            class_name: 'copy-number'
-                        },
-                        {
-                            name: 'Edit Number',
-                            field: 'new_copy',
-                            class_name: 'has-button edit-number',
-                            displayCallback: function(data) {
-                                return data ? '<a class="edit-link" href="#"></a>' : ''
-                            },
-                            type: 'html'
-                        },
-                        {
-                            name: 'Format',
-                            field: 'format_name'
-                        },
-                        {
-                            name: 'ISBN',
-                            field: 'isbn'
-                        },
-                        {
-                            name: 'Rating',
-                            field: 'condition_rating',
-                            type: 'rating',
-                            class_name: 'rating'
-                        },
-                        {
-                            name: 'Ticked',
-                            field: 'ticked',
-                            class_name: 'has-button',
-                            type: 'html',
-                            displayCallback: function(data) {
-                                return '<input class="ticked" type="checkbox" ' + (data ? 'checked="checked" ' : '') + '/>';
-                            }
+                        type: 'html'
+                    },
+                    {
+                        name: 'Format',
+                        field: 'format_name'
+                    },
+                    {
+                        name: 'ISBN',
+                        field: 'isbn'
+                    },
+                    {
+                        name: 'Rating',
+                        field: 'condition_rating',
+                        type: 'rating',
+                        class_name: 'rating'
+                    },
+                    {
+                        name: 'Ticked',
+                        field: 'ticked',
+                        class_name: 'has-button',
+                        type: 'html',
+                        displayCallback: function(data) {
+                            return '<input class="ticked" type="checkbox" ' + (data ? 'checked="checked" ' : '') + '/>';
                         }
-                    ]
-                });
+                    }
+                ]
+            });
+
+            // Update the extra costs table
+            $costsTable.itemTable({
+                url: '/admin/orders/' + id + '/extra_costs',
+                objectName: 'extra_cost',
+                addLinkText: 'Add a cost',
+                addable: true,
+                editable: true,
+                initialLoad: true,
+                numbered: true,
+                columns: [
+                    {
+                        name: 'Name',
+                        field: 'name'
+                    },
+                    {
+                        name: 'Amount',
+                        field: 'formatted_amount',
+                        raw: 'amount',
+                        default_val: '0',
+                        numberic: true
+                    }
+                ]
+            });
+        });
+    });
+    
+    var $accountSelect = $orderInfo.find('.amount .account select')
+    var old_account_id = $accountSelect.val();
+    // Handle editing the account
+    $accountSelect.change(function() {
+        console.log("Account changed");
+
+        $.ajax({
+            url: '/admin/orders/' + curr_id,
+            method: 'POST',
+            data: {
+                _method: 'PUT',
+                order: {
+                    account_id: $accountSelect.val()
+                }
+            },
+            success: function(data) {
+                $accountSelect.val(data.account_id);
+                old_account_id = data.account_id;
+            },
+            error: function() {
+                $accountSelect.val(old_account_id);
+            }
         });
     });
     
@@ -252,8 +317,8 @@ $(document).ready(function() {
                     $textbox.replaceWith($span);
                     $this.show();
                 }
-            })
-        }
+            });
+        };
         
         $textbox.blur(saveEdit);
         $span.replaceWith($textbox);
@@ -293,8 +358,8 @@ $(document).ready(function() {
                     $textbox.replaceWith($pre);
                     $this.show();
                 }
-            })
-        }
+            });
+        };
         
         $textbox.blur(saveEdit);
         $container.height($container.height());
@@ -442,7 +507,7 @@ $(document).ready(function() {
         $.unblockUI();
     })
     
-    $orderInfo.on('click', '.add-link', function(e) {
+    $orderInfo.on('click', '#order-copies .add-link', function(e) {
         e.preventDefault();
         
         $searchBox.tokenInput("reset");

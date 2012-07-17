@@ -69,6 +69,10 @@
                 height: e(20px, $small-text-size);
                 margin-left: e(15px, $small-text-size);
             }
+
+            select {
+                font-size: 1em;
+            }
         }
         
         .info {

@@ -5,6 +5,7 @@ gem 'pg', '0.14.0'
 
 group :development do
   gem 'thin', '1.4.1'
+  gem 'rvm-capistrano', '1.2.2'
 end
 
 gem 'strip_attributes', '1.1.0'

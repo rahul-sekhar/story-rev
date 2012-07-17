@@ -1,20 +1,18 @@
 class Admin::TransactionsController < Admin::ApplicationController
+  include TransactionDates
+
   before_filter :require_admin
   
   def index
     @title = "Finances Details"
     @class = "finances details"
     
-    @first_transaction = Transaction.order("date asc").limit(1).first
-    
-    @date_to = (params[:to] && Date.strptime(params[:to], "%d-%m-%Y")) || Date.today
-    tentative_from = @date_to - 3.months
-    @date_from = (params[:from] && Date.strptime(params[:from], "%d-%m-%Y")) || (@first_transaction.date > tentative_from) ? @first_transaction.date : tentative_from
-    
+    get_dates
+
     @transactions = Transaction.between(@date_from, @date_to)
     
     respond_to do |format|
-      format.html
+      format.html { @transfers = Transfer.between(@date_from, @date_to) }
       format.json { render :json => @transactions.map { |x| x.get_hash }}
     end
   end
@@ -22,14 +20,8 @@ class Admin::TransactionsController < Admin::ApplicationController
   def summarised
     @title = "Finances Summary"
     @class = "finances summary"
-    @first_transaction = Transaction.order("date asc").limit(1).first
     
-    @graph_period = params[:period].present? ? params[:period] : "weekly"
-    @graph_type = params[:type].present? ? params[:type] : "sales"
-    
-    @date_to = params[:to].present? ? Date.strptime(params[:to], "%d-%m-%Y") : Date.today
-    tentative_from = @date_to - 1.year
-    @date_from = params[:from].present? ? Date.strptime(params[:from], "%d-%m-%Y") : (@first_transaction.date > tentative_from) ? @first_transaction.date : tentative_from
+    get_dates(1.year)
     
     @transactions = Transaction.on_record.between(@date_from, @date_to)
     

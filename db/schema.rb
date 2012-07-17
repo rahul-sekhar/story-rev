@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120531121725) do
+ActiveRecord::Schema.define(:version => 20120717085058) do
 
   create_table "accounts", :force => true do |t|
     t.string   "name"
@@ -158,6 +158,16 @@ ActiveRecord::Schema.define(:version => 20120531121725) do
     t.datetime "updated_at"
   end
 
+  create_table "extra_costs", :force => true do |t|
+    t.integer  "order_id"
+    t.integer  "amount"
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "extra_costs", ["order_id"], :name => "index_extra_costs_on_order_id"
+
   create_table "formats", :force => true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -210,6 +220,7 @@ ActiveRecord::Schema.define(:version => 20120531121725) do
     t.datetime "posted_date"
     t.integer  "postage_transaction_id"
     t.integer  "transaction_id"
+    t.integer  "account_id"
   end
 
   add_index "orders", ["confirmed_date"], :name => "index_orders_on_confirmed_date"
@@ -384,5 +395,31 @@ ActiveRecord::Schema.define(:version => 20120531121725) do
   add_index "transactions", ["other_party"], :name => "index_transactions_on_other_party"
   add_index "transactions", ["payment_method_id"], :name => "index_transactions_on_payment_method_id"
   add_index "transactions", ["transaction_category_id"], :name => "index_transactions_on_transaction_category_id"
+
+  create_table "transfer_categories", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "transfer_categories", ["name"], :name => "index_transfer_categories_on_name"
+
+  create_table "transfers", :force => true do |t|
+    t.integer  "amount"
+    t.integer  "source_account_id"
+    t.integer  "target_account_id"
+    t.integer  "transfer_category_id"
+    t.integer  "payment_method_id"
+    t.text     "notes"
+    t.datetime "date"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "transfers", ["date"], :name => "index_transfers_on_date"
+  add_index "transfers", ["payment_method_id"], :name => "index_transfers_on_payment_method_id"
+  add_index "transfers", ["source_account_id"], :name => "index_transfers_on_source_account_id"
+  add_index "transfers", ["target_account_id"], :name => "index_transfers_on_target_account_id"
+  add_index "transfers", ["transfer_category_id"], :name => "index_transfers_on_transfer_category_id"
 
 end

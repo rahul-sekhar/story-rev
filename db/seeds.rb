@@ -46,12 +46,12 @@ config = ConfigData.access
 if config.cash_account.present?
   puts "Cash account already exists - #{config.cash_account.name}"
 else
-  cash_account = Account.find_by_name("Cash")
+  cash_account = Account.find_by_name("Unaccounted")
   if cash_account
-    puts "Cash account named 'Cash' already exists, using it"
+    puts "Cash account named 'Unaccounted' already exists, using it"
   else
-    puts "Creating a cash account named 'Cash'"
-    cash_account = Account.create(:name => "Cash")
+    puts "Creating a cash account named 'Unaccounted'"
+    cash_account = Account.create(:name => "Unaccounted")
   end
   config.cash_account = cash_account
 end
@@ -117,5 +117,15 @@ end
 
 puts "Resetting primary key sequence"
 SqlHelper.reset_primary_key(TransactionCategory)
+
+puts "\nCreating transfer categories"
+puts "================================"
+
+if TransferCategory.count > 0
+  puts "Transfer categories already exist, leaving them alone"
+else
+  puts "No transfer categories exist - creating an 'Account Transfer' category"
+  TransferCategory.create(name: 'Account Transfer')
+end
 
 puts "Done"
