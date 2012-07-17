@@ -4,6 +4,7 @@ gem 'rails', '3.1.3'
 gem 'pg'
 group :development do
   gem 'thin', '1.4.1'
+  gem 'rvm-capistrano', '1.2.2'
 end
 
 group :assets do
@@ -11,7 +12,6 @@ group :assets do
   gem 'uglifier', '>= 1.0.3'
 end
 
-gem 'rvm-capistrano'
 gem 'jquery-rails'
 gem 'sanitize'
 gem 'yaml_db'
