@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120713101342) do
+ActiveRecord::Schema.define(:version => 20120717075337) do
 
   create_table "accounts", :force => true do |t|
     t.string   "name"
@@ -210,6 +210,7 @@ ActiveRecord::Schema.define(:version => 20120713101342) do
     t.datetime "posted_date"
     t.integer  "postage_transaction_id"
     t.integer  "transaction_id"
+    t.integer  "account_id"
   end
 
   add_index "orders", ["confirmed_date"], :name => "index_orders_on_confirmed_date"

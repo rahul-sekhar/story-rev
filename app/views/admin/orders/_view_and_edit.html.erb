@@ -25,7 +25,14 @@
   <div class="amount">
     <p class="postage">Postage: <span></span></p>
     <p class="total">Total: <span></span></p>
-    <p class="postage-expenditure">Postage expenditure: <span></span><a href="#" class="edit-link"></a></p>
+    <p class="account">Account paid to: <select>
+        <% Account.default_order.each do |x| %>
+          <option value="<%= x.id %>"><%= x.name %></option>
+        <% end %>
+      </select>
+    </p>
+    <p class="postage-expenditure">Postage expenditure: <span></span><a href="#" class="edit-link"></a>
+    </p>
   </div>
   
   <div class="table-wrapper" id="order-copies">
