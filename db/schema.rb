@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120531121725) do
+ActiveRecord::Schema.define(:version => 20120717085058) do
 
   create_table "accounts", :force => true do |t|
     t.string   "name"
@@ -76,33 +76,29 @@ ActiveRecord::Schema.define(:version => 20120531121725) do
 
   create_table "content_types", :force => true do |t|
     t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
-
-  add_index "content_types", ["name"], :name => "index_content_types_on_name"
 
   create_table "copies", :force => true do |t|
     t.integer  "edition_id"
     t.string   "accession_id"
     t.string   "condition_description"
     t.integer  "condition_rating",      :limit => 2
-    t.datetime "created_at"
-    t.datetime "updated_at"
     t.integer  "price"
-    t.boolean  "in_stock"
     t.boolean  "new_copy"
-    t.boolean  "limited_copies"
     t.integer  "number"
     t.integer  "copy_number"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "limited_copies"
+    t.boolean  "in_stock"
   end
 
   add_index "copies", ["accession_id"], :name => "index_copies_on_accession_id"
   add_index "copies", ["condition_rating"], :name => "index_copies_on_condition_rating"
   add_index "copies", ["copy_number"], :name => "index_copies_on_copy_number"
   add_index "copies", ["edition_id"], :name => "index_copies_on_edition_id"
-  add_index "copies", ["in_stock"], :name => "index_copies_on_in_stock"
-  add_index "copies", ["limited_copies"], :name => "index_copies_on_limited_copies"
   add_index "copies", ["new_copy"], :name => "index_copies_on_new_copy"
   add_index "copies", ["number"], :name => "index_copies_on_number"
 
@@ -162,6 +158,16 @@ ActiveRecord::Schema.define(:version => 20120531121725) do
     t.datetime "updated_at"
   end
 
+  create_table "extra_costs", :force => true do |t|
+    t.integer  "order_id"
+    t.integer  "amount"
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "extra_costs", ["order_id"], :name => "index_extra_costs_on_order_id"
+
   create_table "formats", :force => true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -214,6 +220,7 @@ ActiveRecord::Schema.define(:version => 20120531121725) do
     t.datetime "posted_date"
     t.integer  "postage_transaction_id"
     t.integer  "transaction_id"
+    t.integer  "account_id"
   end
 
   add_index "orders", ["confirmed_date"], :name => "index_orders_on_confirmed_date"
@@ -275,27 +282,26 @@ ActiveRecord::Schema.define(:version => 20120531121725) do
     t.integer  "age_from"
     t.integer  "age_to"
     t.integer  "year"
-    t.string   "flipkart_id"
     t.string   "amazon_url"
     t.text     "short_description"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "in_stock"
-    t.datetime "in_stock_at"
-    t.datetime "out_of_stock_at"
     t.datetime "book_date"
     t.integer  "publisher_id"
     t.integer  "country_id"
     t.integer  "product_type_id"
-    t.integer  "content_type_id"
     t.integer  "accession_id"
+    t.string   "flipkart_id"
+    t.integer  "content_type_id"
+    t.datetime "in_stock_at"
+    t.datetime "out_of_stock_at"
   end
 
   add_index "products", ["accession_id"], :name => "index_products_on_accession_id"
   add_index "products", ["age_from", "age_to"], :name => "index_products_on_age_from_and_age_to"
   add_index "products", ["author_id"], :name => "index_products_on_author_id"
   add_index "products", ["book_date"], :name => "index_products_on_book_date"
-  add_index "products", ["content_type_id"], :name => "index_products_on_content_type_id"
   add_index "products", ["country_id"], :name => "index_products_on_country_id"
   add_index "products", ["illustrator_id"], :name => "index_products_on_illustrator_id"
   add_index "products", ["in_stock"], :name => "index_products_on_in_stock"
@@ -356,11 +362,9 @@ ActiveRecord::Schema.define(:version => 20120531121725) do
   create_table "theme_icons", :force => true do |t|
     t.integer  "theme_id"
     t.string   "filename"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
-
-  add_index "theme_icons", ["theme_id"], :name => "index_theme_icons_on_theme_id"
 
   create_table "transaction_categories", :force => true do |t|
     t.string   "name"
@@ -391,5 +395,31 @@ ActiveRecord::Schema.define(:version => 20120531121725) do
   add_index "transactions", ["other_party"], :name => "index_transactions_on_other_party"
   add_index "transactions", ["payment_method_id"], :name => "index_transactions_on_payment_method_id"
   add_index "transactions", ["transaction_category_id"], :name => "index_transactions_on_transaction_category_id"
+
+  create_table "transfer_categories", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "transfer_categories", ["name"], :name => "index_transfer_categories_on_name"
+
+  create_table "transfers", :force => true do |t|
+    t.integer  "amount"
+    t.integer  "source_account_id"
+    t.integer  "target_account_id"
+    t.integer  "transfer_category_id"
+    t.integer  "payment_method_id"
+    t.text     "notes"
+    t.datetime "date"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "transfers", ["date"], :name => "index_transfers_on_date"
+  add_index "transfers", ["payment_method_id"], :name => "index_transfers_on_payment_method_id"
+  add_index "transfers", ["source_account_id"], :name => "index_transfers_on_source_account_id"
+  add_index "transfers", ["target_account_id"], :name => "index_transfers_on_target_account_id"
+  add_index "transfers", ["transfer_category_id"], :name => "index_transfers_on_transfer_category_id"
 
 end

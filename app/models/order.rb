@@ -3,11 +3,12 @@ class Order < ActiveRecord::Base
   after_validation :change_step_if_invalid
   before_save :remove_unecessary_fields, :refresh_if_incomplete, :calculate_total, :check_transaction
   
-  attr_accessible :next_step, :delivery_method, :pickup_point_id, :other_pickup,
-    :payment_method_id, :name, :email, :phone, :address, :city, :pin_code, :other_info,
-    :confirmed, :paid, :packaged, :posted, :as => [:default, :admin]
+  attr_accessible :next_step, :delivery_method, :pickup_point_id, 
+    :other_pickup, :payment_method_id, :name, :email, :phone, :address, 
+    :city, :pin_code, :other_info, :confirmed, :paid, :packaged, 
+    :posted, as: [:default, :admin]
   
-  attr_accessible :postage_expenditure, :notes, :as => [:admin]
+  attr_accessible :postage_expenditure, :notes, :account_id, as: [:admin]
   
   attr_reader :next_step, :out_of_stock
   attr_writer :out_of_stock
@@ -15,10 +16,12 @@ class Order < ActiveRecord::Base
   has_many :order_copies, :dependent => :destroy, :include => :copy
   has_many :copies, :through => :order_copies, :as => :copy
   has_many :transactions
+  has_many :extra_costs, order: "created_at ASC"
   
   belongs_to :pickup_point
   belongs_to :shopping_cart
   belongs_to :payment_method
+  belongs_to :account
   
   belongs_to :transaction, :dependent => :destroy
   belongs_to :postage_transaction, :class_name => "Transaction", :dependent => :destroy
@@ -39,7 +42,7 @@ class Order < ActiveRecord::Base
   validates :name, :presence => :true, :unless => :below_step_3?
   validates :email, :presence => :true, :unless => :below_step_3?
   
-  scope :complete, where(:step => 5)
+  scope :complete, where(step: 5)
   
   
   def self.clear_old
@@ -59,6 +62,10 @@ class Order < ActiveRecord::Base
     self.postage_expenditure ||= 0
     
     self.payment_method_id = 1 if step == 2 && payment_method_id > 2
+
+    if step == 5
+      self.account ||= (payment_method_id == 3 ? ConfigData.access.cash_account : ConfigData.access.default_account)
+    end
   end
   
   def change_step_if_invalid
@@ -94,7 +101,7 @@ class Order < ActiveRecord::Base
         :other_party => name,
         :payment_method_id => payment_method_id,
         :transaction_category_id => 1,
-        :account => payment_method_id == 3 ? ConfigData.access.cash_account : ConfigData.access.default_account,
+        :account => account,
         :date => paid_date,
         :notes => notes
       })
@@ -196,6 +203,10 @@ class Order < ActiveRecord::Base
       if (delivery_method == 1)
         postage += (10 * oc.number)
       end
+    end
+
+    extra_costs.each do |x|
+      total += x.amount
     end
     
     postage += 10 if postage > 0 # First book shipping charge is 20
@@ -311,19 +322,20 @@ class Order < ActiveRecord::Base
   
   def get_hash
     {
-      :name => name,
-      :email => email,
-      :address => full_address || "",
-      :phone => phone || "",
-      :other_info => other_info || "",
-      :payment_text => payment_text,
-      :delivery_text => delivery_text,
-      :pickup_point_text => pickup_point_text || "",
-      :postage_amount => formatted_postage_amount,
-      :total_amount => formatted_total_amount,
-      :postage_expenditure => formatted_postage_expenditure,
-      :postage_expenditure_val => postage_expenditure == 0 ? nil : postage_expenditure,
-      :notes => notes || ""
+      name: name,
+      email: email,
+      address: full_address || "",
+      phone: phone || "",
+      other_info: other_info || "",
+      payment_text: payment_text,
+      delivery_text: delivery_text,
+      pickup_point_text: pickup_point_text || "",
+      postage_amount: formatted_postage_amount,
+      total_amount: formatted_total_amount,
+      postage_expenditure: formatted_postage_expenditure,
+      postage_expenditure_val: postage_expenditure == 0 ? nil : postage_expenditure,
+      notes: notes || "",
+      account_id: account_id
     }
   end
   

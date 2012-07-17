@@ -2,8 +2,7 @@ class Admin::AccountsController < Admin::ApplicationController
   before_filter :require_admin, :except => :index
   
   def index
-    config = ConfigData.access
-    @accounts = Account.order("id = #{config.default_account_id} DESC, id=#{config.cash_account_id} DESC")
+    @accounts = Account.default_order
     respond_to do |f|
       f.json do
         @accounts = @accounts.name_like(params[:q]).limit(10) if params[:q]
