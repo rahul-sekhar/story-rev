@@ -175,7 +175,7 @@ $.ItemTable = function(table, settings) {
                     // Replace row or add a new row
                     if ($tr.length) {
                         $tr.replaceWith($newTr);
-			// Trigger an edit item event
+			             // Trigger an edit item event
                         $table.trigger("editRow", data);
                     }
                     else {
@@ -219,7 +219,7 @@ $.ItemTable = function(table, settings) {
             var $tr = $(this).closest('tr');
             // Fill dialog fields
             $.each(settings.columns, function(index, column) {
-                var field_val = $tr.find('td:eq(' + index + ')').data('val');
+                var field_val = $tr.find('td:eq(' + cell_number(index) + ')').data('val');
                 $dialog.find('#' + field_id(column)).trigger("fill", field_val);
             });
             // Trigger a reset event in all the inputs
@@ -329,7 +329,7 @@ $.ItemTable = function(table, settings) {
             if (settings.tooltips)
                 setTooltip($td, column);
             
-            $table.find("tr td:eq(" + index + ")").before(
+            $table.find("tr td:eq(" + cell_number(index) + ")").before(
                 $td.clone()
             )
         }
@@ -360,7 +360,7 @@ $.ItemTable = function(table, settings) {
         $table.find('tr').each(function() {
             var $tr = $(this);
             $.each(settings.columns, function(index, column) {
-                setTooltip($tr.find('td:eq(' + index + ')'), column);
+                setTooltip($tr.find('td:eq(' + cell_number(index) + ')'), column);
             });
         });
     }
@@ -398,6 +398,13 @@ $.ItemTable = function(table, settings) {
     
     
     // Private functions
+
+    function cell_number(column_index) {
+        if (settings.numbered)
+            return column_index + 1
+        else
+            return column_index
+    }
     
     function restripe() {
         $table.find('tr:not(.headings)').removeClass('alt').filter(':odd').addClass('alt');

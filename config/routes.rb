@@ -45,6 +45,7 @@ StoryRev::Application.routes.draw do
     
     resources :orders do
       resources :order_copies
+      resources :extra_costs
       collection do
         get 'pending'
       end

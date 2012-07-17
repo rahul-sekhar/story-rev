@@ -16,6 +16,7 @@ class Order < ActiveRecord::Base
   has_many :order_copies, :dependent => :destroy, :include => :copy
   has_many :copies, :through => :order_copies, :as => :copy
   has_many :transactions
+  has_many :extra_costs, order: "created_at ASC"
   
   belongs_to :pickup_point
   belongs_to :shopping_cart
@@ -202,6 +203,10 @@ class Order < ActiveRecord::Base
       if (delivery_method == 1)
         postage += (10 * oc.number)
       end
+    end
+
+    extra_costs.each do |x|
+      total += x.amount
     end
     
     postage += 10 if postage > 0 # First book shipping charge is 20

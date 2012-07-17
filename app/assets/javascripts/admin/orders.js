@@ -60,7 +60,13 @@ $(document).ready(function() {
     // Handle checkboxes in the copies list for each order
     var curr_id;
     var $orderInfo = $('#order-info');
-    var $copiesTable = $orderInfo.find('table').on('click', '.ticked', function(e) {
+    
+    var $costsTable = $orderInfo.find('#order-costs table')
+        .on("addRow editRow itemRemove", function(e, data) {
+            updateOrderAmount(data);
+        });
+    
+    var $copiesTable = $orderInfo.find('#order-copies table').on('click', '.ticked', function(e) {
         var $this = $(this);
         $this.prop('disabled', true);
         var order_copy_id = $this.closest('tr').data('id');
@@ -226,6 +232,30 @@ $(document).ready(function() {
                         displayCallback: function(data) {
                             return '<input class="ticked" type="checkbox" ' + (data ? 'checked="checked" ' : '') + '/>';
                         }
+                    }
+                ]
+            });
+
+            // Update the extra costs table
+            $costsTable.itemTable({
+                url: '/admin/orders/' + id + '/extra_costs',
+                objectName: 'extra_cost',
+                addLinkText: 'Add a cost',
+                addable: true,
+                editable: true,
+                initialLoad: true,
+                numbered: true,
+                columns: [
+                    {
+                        name: 'Name',
+                        field: 'name'
+                    },
+                    {
+                        name: 'Amount',
+                        field: 'formatted_amount',
+                        raw: 'amount',
+                        default_val: '0',
+                        numberic: true
                     }
                 ]
             });
@@ -477,7 +507,7 @@ $(document).ready(function() {
         $.unblockUI();
     })
     
-    $orderInfo.on('click', '.add-link', function(e) {
+    $orderInfo.on('click', '#order-copies .add-link', function(e) {
         e.preventDefault();
         
         $searchBox.tokenInput("reset");
