@@ -1,15 +1,15 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.2.6'
+gem 'rails', '3.2.8'
 gem 'pg', '0.14.0'
 
 group :development do
   gem 'thin', '1.4.1'
-  gem 'rvm-capistrano', '1.2.2'
+  gem 'rvm-capistrano', '1.2.5'
 end
 
 gem 'strip_attributes', '1.1.0'
-gem 'jquery-rails', '2.0.2'
+gem 'jquery-rails', '2.1.1'
 gem 'sanitize', '2.0.3'
 gem 'yaml_db', '0.2.3'
 gem 'kaminari', '0.13.0'
@@ -20,15 +20,15 @@ gem 'amazon-ecs', '2.2.4'
 gem 'terminator', '0.4.4'
 gem 'valid_email', '0.0.4', :require => 'valid_email/email_validator'
 gem 'delayed_job_active_record', '0.3.2'
-gem 'daemons', '1.1.8'
+gem 'daemons', '1.1.9'
 gem 'whenever', '0.7.3'
 gem 'aws-s3', '0.6.3'
-gem 'squeel', '1.0.6'
+gem 'squeel', '1.0.9'
 gem 'bcrypt-ruby', '~> 3.0.0', :require => "bcrypt"
 
 group :assets do
   gem 'sass-rails', '3.2.5'
-  gem 'uglifier', '1.2.6'
+  gem 'uglifier', '1.2.7'
 end
 
 group :test, :development do
@@ -39,10 +39,10 @@ group :test, :development do
 end
 
 group :test do
-  gem 'factory_girl_rails', '3.5.0'
+  gem 'factory_girl_rails', '4.0.0'
   gem 'pickle', '0.4.11'
   gem 'capybara', '1.1.2'
-  gem 'launchy', '2.1.0'
+  gem 'launchy', '2.1.2'
   gem 'headless', '0.3.1'
   gem 'simplecov', '0.6.4', :require => false
 end
