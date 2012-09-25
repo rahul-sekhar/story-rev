@@ -11,10 +11,6 @@ $teal: #45BF8C;
 $grey: #868786;
 $light-grey: #ACADAB;
 
-.logo {
-  @include image-replacement(0, 193px, 84px, "/images/story_hour/logo.png");
-}
-
 html {
   overflow-y: scroll;
 }
@@ -35,6 +31,12 @@ body {
 
 .logo {
   float:left;
+  width: 193px;
+  height: 84px;
+  background: url('/images/story_hour/logo.png') no-repeat center;
+  font: 0/0 a;
+  text-shadow: none;
+  color: transparent;
 }
 
 h1 {
@@ -76,7 +78,7 @@ h1 {
   text-transform:uppercase;
 
   a {
-    @include link($teal, lighten($teal, 10));
+    @include link($teal, lighten($teal, 20));
     border-bottom: 1px dotted;
   }
 

@@ -19,10 +19,10 @@ StoryRev::Application.routes.draw do
 
   # Story hour routes
   namespace :story_hour, path: "story-hour" do
-    root :to => "pages#about"
+    root :to => "pages#events"
 
     get "old" => "pages#old"
-    get "events" => "pages#events"
+    get "about" => "pages#about"
   end
   
   # Admin routes  
