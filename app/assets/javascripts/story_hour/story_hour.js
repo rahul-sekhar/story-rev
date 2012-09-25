@@ -1,5 +1,5 @@
 //
-//= require jquery
+//= require_directory ../jquery
 //
 
 $(document).ready(function() {

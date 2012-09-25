@@ -15,6 +15,10 @@ $light-grey: #ACADAB;
   @include image-replacement(0, 193px, 84px, "/images/story_hour/logo.png");
 }
 
+html {
+  overflow-y: scroll;
+}
+
 body {
   font-family: "myriad-pro", Arial, Helvetica, sans-serif;
   color: $grey;
