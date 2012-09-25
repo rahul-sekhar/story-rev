@@ -14,17 +14,19 @@
     <div id="header">
       <%= link_to "Story Revolution's", root_url, class: :logo %>
       <h1>Story Hour<span> | Chennai</span></h1>
+    </div>
+
+    <div id="navigation">
+      <ul>
+        <li><%= link_to "About Story Hour", story_hour_about_path, id: "about-link" %></li>
+        <li><%= link_to "Current Events", story_hour_root_path, id: "events-link" %></li>
+        <li><%= link_to "Past Events", story_hour_old_path, id: "old-link" %></li>
+      </ul>
 
       <p class="store-link">
         <%= link_to "Back to the Bookstore", root_url %>
       </p>
     </div>
-
-    <ul id="navigation">
-      <li><%= link_to "About Story Hour", story_hour_about_path, id: "about-link" %></li>
-      <li><%= link_to "Current Events", story_hour_root_path, id: "events-link" %></li>
-      <li><%= link_to "Past Events", story_hour_old_path, id: "old-link" %></li>
-    </ul>
 
     <div id="content">
 
