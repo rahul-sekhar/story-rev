@@ -4,6 +4,7 @@ gem 'rails', '3.1.3'
 gem 'pg'
 group :development do
   gem 'thin', '1.4.1'
+  gem 'capistrano'
   gem 'rvm-capistrano', '1.2.2'
 end
 

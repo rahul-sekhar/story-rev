@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Story Hour<%= @title.present? ? " - #{@title}" : "" %></title>
+  <%= stylesheet_link_tag    "story_hour/story_hour" %>
+  <%= javascript_include_tag "story_hour/story_hour" %>
+  <%= csrf_meta_tags %>
+
+  <script type="text/javascript" src="//use.typekit.net/nem8oex.js"></script>
+  <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+</head>
+<body<%= class_if @class, @class %>>
+  <div id="wrapper">
+    <div id="header">
+      <%= link_to "Story Revolution's", root_url, class: :logo %>
+      <h1>Story Hour<span> | Chennai</span></h1>
+
+      <p class="store-link">
+        <%= link_to "Back to the Bookstore", root_url %>
+      </p>
+    </div>
+
+    <ul id="navigation">
+      <li><%= link_to "About Story Hour", story_hour_root_path, id: "about-link" %></li>
+      <li><%= link_to "Current Events", story_hour_events_path, id: "events-link" %></li>
+      <li><%= link_to "Past Events", story_hour_old_path, id: "old-link" %></li>
+    </ul>
+
+    <div id="content">
+
+      <%= yield %>
+    </div>
+  </div>
+
+<script type="text/javascript">
+  var _gaq=[['_setAccount','UA-31568628-1'],['_trackPageview']];
+  (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+  g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+  s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+  
+</body>
+</html>

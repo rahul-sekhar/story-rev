@@ -83,25 +83,3 @@ body.help {
         clear:left;
     }
 }
-
-body.story-hour {
-    background-color: #323232;
-
-    #wrapper {
-        padding:0;
-    }
-
-    #poster {
-        padding: e(20px) 0;
-        text-align: center;
-
-        p {
-            color: #ccc;
-            margin-top: e(20px, $text-size);
-        }
-
-        img {
-            @include box-shadow(0 0 3px #555);
-        }
-    }
-}
