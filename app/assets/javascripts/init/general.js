@@ -67,6 +67,10 @@ function isOldIE() {
     return ($.browser.msie  && parseInt($.browser.version, 10) <= 7)
 }
 
+function isIE8() {
+    return ($.browser.msie  && parseInt($.browser.version, 10) <= 8)
+}
+
 // Resize a dialog to its contents height by sliding (check again after resizing)
 function resizeDialog($dialog, $content, resize_overlay, center_dialog, callbackFunction) {
     

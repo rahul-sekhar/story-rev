@@ -234,12 +234,124 @@ module DuplicateNames
 
       describe '#merge' do
         let(:group) { Group.new("Some Group") }
+        let(:u_obj1) { InvalidObj.new("Something") }
+        let(:u_obj2) { InvalidObj.new("something") }
+        let(:l_obj1) { InvalidObj.new("something") }
+        let(:l_obj2) { InvalidObj.new("Something") }
+        let(:l_obj3) { InvalidObj.new("something") }
+        let(:dep_obj) { double("Dependent Array") }
+
         subject(:merger) { GroupMerger.new(group, :dependents) }
 
-        it "should remove any objects unlinked to dependents" do
-          unlinked_obj = InvalidObj.new("Something")
-          unlinked_obj.stub(:dependents).
-          group.add(ww)
+        before do
+          dep_obj.stub(:empty?).and_return(false)
+          dep_obj.stub("<<")
+
+          u_obj1.stub(:dependents).and_return []
+          u_obj2.stub(:dependents).and_return []
+          l_obj1.stub(:dependents).and_return dep_obj
+          l_obj2.stub(:dependents).and_return [1, 2]
+          l_obj3.stub(:dependents).and_return ["ah", "bah"]
+
+          u_obj1.stub(:destroy)
+          u_obj2.stub(:destroy)
+          l_obj1.stub(:destroy)
+          l_obj2.stub(:destroy)
+          l_obj3.stub(:destroy)
+        end
+
+        context "unlinked objects and one linked object" do
+          before do
+            group.add(u_obj1)
+            group.add(l_obj1)
+            group.add(u_obj2)
+          end
+
+          it "unlinked objects destroyed" do
+            u_obj1.should_receive(:destroy)
+            u_obj2.should_receive(:destroy)
+            l_obj1.should_not_receive(:destroy)
+            subject.merge
+          end
+
+          it "unlinked objects removed" do
+            subject.merge
+            group.objects.should eq([l_obj1])
+          end
+
+          it "should not change the dependent object" do
+            dep_obj.should_not_receive("<<")
+            subject.merge
+          end
+        end
+
+        context "only linked objects" do
+          before do
+            group.add(l_obj1)
+            group.add(l_obj2)
+            group.add(l_obj3)
+          end
+
+          it "should merge dependents to the first object" do
+            dep_obj.should_receive("<<").with([1,2])
+            dep_obj.should_receive("<<").with(["ah", "bah"])
+            subject.merge
+          end
+        end
+
+        context "empty group" do
+          it "should remain empty" do
+            subject.merge
+            group.objects.should eq([])
+          end
+        end
+
+        context "only unlinked objects" do
+          before do
+            group.add(u_obj1)
+            group.add(u_obj2)
+          end
+
+          it "unlinked objects destroyed" do
+            u_obj1.should_receive(:destroy)
+            u_obj2.should_receive(:destroy)
+            subject.merge
+          end
+
+          it "unlinked objects removed" do
+            subject.merge
+            group.objects.should eq([])
+          end
+        end
+
+        context "many unlinked and linked objects" do
+          before do
+            group.add(l_obj1)
+            group.add(u_obj1)
+            group.add(l_obj2)
+            group.add(u_obj2)
+            group.add(l_obj3)
+          end
+
+          it "unlinked objects destroyed" do
+            u_obj1.should_receive(:destroy)
+            u_obj2.should_receive(:destroy)
+            l_obj1.should_not_receive(:destroy)
+            l_obj2.should_not_receive(:destroy)
+            l_obj3.should_not_receive(:destroy)
+            subject.merge
+          end
+
+          it "unlinked objects removed" do
+            subject.merge
+            group.objects.should eq([l_obj1, l_obj2, l_obj3])
+          end
+
+          it "should merge dependents to the first object" do
+            dep_obj.should_receive("<<").with([1,2])
+            dep_obj.should_receive("<<").with(["ah", "bah"])
+            subject.merge
+          end
         end
       end
     end

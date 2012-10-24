@@ -1,5 +1,5 @@
 //
-//= require jquery
+//= require_directory ../jquery
 //= require jquery_ujs
 //= require_directory ../lib
 //= require_directory ../init

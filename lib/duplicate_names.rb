@@ -1,17 +1,36 @@
 module DuplicateNames
   
   class Handler
-    def initialize(klass, dependent_field)
+    def initialize(klass, dependent_field, verbose = false)
       @klass = klass
       @dependent_field = dependent_field
+      @verbose = verbose
     end
 
     def merge_duplicates
-      checker = Checker.new(@klass, true)
-      groups = Grouper.split(checker.invalid_objects)
-      groups.each do |g|
-        GroupMerger.new(g, dependent_field, true).merge
+      checker = Checker.new(@klass)
+      if @verbose
+        puts "Found #{checker.invalid_objects.length} invalid #{@klass} objects:"
+        checker.invalid_objects.each do |x|
+          puts "\t" + x.name
+        end
+        puts "\n"
       end
+
+      groups = Grouper.split(checker.invalid_objects)
+      if @verbose
+        puts "Split them into #{groups.length} groups, with names:"
+        puts groups.map {|x| x.name }
+        puts "\n"
+      end
+
+      groups.each do |g|
+        puts "From group #{g.name}:"
+        GroupMerger.new(g, @dependent_field, @verbose).merge
+        puts "\n"
+      end
+
+      puts "Done.\n"
     end
   end
 
@@ -19,9 +38,8 @@ module DuplicateNames
   class Checker
     attr_reader :invalid_objects
 
-    def initialize(klass, verbose = false)
+    def initialize(klass)
       @klass = klass
-      @verbose = verbose
       check
     end
 
@@ -41,7 +59,6 @@ module DuplicateNames
           if x.errors.keys != [:name]
             raise Exception.new("Object has an invalid attribute apart from its name - #{x.inspect}")
           end
-          puts "Invalid #{@klass.to_s} - '#{x.name}'" if @verbose
           next true
         end
       end
@@ -51,7 +68,7 @@ module DuplicateNames
 
   class Group
     include Enumerable
-    attr_reader :name
+    attr_reader :name, :objects
 
     def initialize(name)
       @name = name
@@ -61,6 +78,11 @@ module DuplicateNames
     def add(object)
       @objects << object
       return self
+    end
+
+    def destroy(object)
+      @objects.find{ |x| x == object }.destroy
+      @objects.delete(object)
     end
 
     def matches(string)
@@ -107,14 +129,36 @@ module DuplicateNames
     end
 
     def merge
-      destroy_unlinked_objects
-      
-    end
+      # Destroy any unlinked elements
+      @group.select { |x| x.send(@dependent_field).empty? }.each do |x|
+        puts "\tDestroying unlinked object with name '#{x.name}'" if @verbose
+        @group.destroy(x)
+      end
 
-    private
+      if @group.objects.empty?
+        puts "\tNo linked objects" if @verbose
+        return
+      end
 
-    def destroy_unlinked_objects
+      # Change the name of the first goup element till it is valid
+      puts "\tKeeping first object with name '#{@group.first.name}'" if @verbose
+      tmp_name = @group.first.name
+      while @group.first.invalid? do
+        @group.first.name = @group.first.name + "x"
+      end
+      @group.first.save
 
+      # Move all dependent fields to the first element of the group
+      @group.objects[1..-1].each do |x|
+        objects_to_shift = x.send(@dependent_field)
+        puts "\tShifting #{objects_to_shift.length} objects to it" if @verbose
+        @group.first.send(@dependent_field) << objects_to_shift
+        x.destroy
+      end
+
+      # Change back the name
+      @group.first.name = tmp_name
+      @group.first.save
     end
   end
 end

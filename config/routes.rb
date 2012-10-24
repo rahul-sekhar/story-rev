@@ -14,9 +14,16 @@ StoryRev::Application.routes.draw do
   
   get "about" => "pages#about"
   get "help" => "pages#help"
-  get "story-hour" => "pages#story_hour"
   
   post "subscribe" => "pages#subscribe"
+
+  # Story hour routes
+  namespace :story_hour, path: "story-hour" do
+    root :to => "pages#events"
+
+    get "old" => "pages#old"
+    get "about" => "pages#about"
+  end
   
   # Admin routes  
   namespace :admin do
