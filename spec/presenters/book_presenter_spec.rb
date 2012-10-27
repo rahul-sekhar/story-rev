@@ -4,10 +4,6 @@ describe BookPresenter, :type => :decorator do
   let(:book) { Book.new }
   subject {BookPresenter.new(book, view)}
 
-  it "should include currency methods" do
-    subject.should respond_to(:to_currency)
-  end
-
   describe "age_level" do
     it "should be blank with no age limits set" do
       subject.age_level.should be_blank
@@ -50,7 +46,7 @@ describe BookPresenter, :type => :decorator do
   describe "used_copy_min_price" do
     it "should return the book's used_copy_min_price with the currency added" do
       book.should_receive(:used_copy_min_price).and_return(40)
-      subject.should_receive(:to_currency).and_return(:returned_currency)
+      CurrencyMethods.should_receive(:to_currency).and_return(:returned_currency)
       subject.used_copy_min_price.should equal(:returned_currency)
     end
 
@@ -63,7 +59,7 @@ describe BookPresenter, :type => :decorator do
   describe "new_copy_min_price" do
     it "should return the book's new_copy_min_price with the currency added" do
       book.should_receive(:new_copy_min_price).and_return(40)
-      subject.should_receive(:to_currency).and_return(:returned_currency)
+      CurrencyMethods.should_receive(:to_currency).and_return(:returned_currency)
       subject.new_copy_min_price.should equal(:returned_currency)
     end
 

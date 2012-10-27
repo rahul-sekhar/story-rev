@@ -63,10 +63,10 @@
     <%= form_tag root_path(:anchor => "books"), :method => :get do %>
     <ul class="price" data-name="price">
       <li><%= link_to("Any price", filter_path(:price, nil), :class => ((params[:price].blank? && params[:price_from].blank? && params[:price_to].blank?) ? "current" : nil)) %></li>
-      <li data-val="-50"><%= filter_link "Less than #{RupeeHelper.to_rupee_span(50)}".html_safe, :price, "-50" %></li>
-      <li data-val="50-100"><%= filter_link "#{RupeeHelper.to_rupee_span(50)} &ndash; #{RupeeHelper.to_rupee_span(100)}".html_safe, :price, "50-100" %></li>
-      <li data-val="100-200"><%= filter_link "#{RupeeHelper.to_rupee_span(100)} &ndash; #{RupeeHelper.to_rupee_span(200)}".html_safe, :price, "100-200" %></li>
-      <li data-val="200-500"><%= filter_link "More than #{RupeeHelper.to_rupee_span(200)}".html_safe, :price, "200-" %></li>
+      <li data-val="-50"><%= filter_link "Less than #{CurrencyMethods.to_currency_with_span(50)}".html_safe, :price, "-50" %></li>
+      <li data-val="50-100"><%= filter_link "#{CurrencyMethods.to_currency_with_span(50)} &ndash; #{CurrencyMethods.to_currency_with_span(100)}".html_safe, :price, "50-100" %></li>
+      <li data-val="100-200"><%= filter_link "#{CurrencyMethods.to_currency_with_span(100)} &ndash; #{CurrencyMethods.to_currency_with_span(200)}".html_safe, :price, "100-200" %></li>
+      <li data-val="200-500"><%= filter_link "More than #{CurrencyMethods.to_currency_with_span(200)}".html_safe, :price, "200-" %></li>
       <% filter_params(:price, nil).each do |k,v| %>
         <input type="hidden" name="<%= k %>" value="<%= v %>" />
       <% end %>

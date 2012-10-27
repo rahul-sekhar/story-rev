@@ -3,6 +3,10 @@ Then /^a book should exist with the title "(.*?)"$/ do |arg1|
   @book.should be_present
 end
 
+Then /^a book should not exist with the title "(.*?)"$/ do |arg1|
+  Book.find_by_title(arg1).should be_nil
+end
+
 Then /^that book should have the following attributes$/ do |table|
   table.rows_hash.each do |key, val|
     @book.send(key).to_s.should == val

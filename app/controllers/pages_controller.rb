@@ -10,7 +10,6 @@ class PagesController < ApplicationController
     @books = Book.stocked.includes(:cover_image, :copies, :illustrator)
     @books = @books.joins("LEFT JOIN authors AS auth ON books.author_id = auth.id")
     @books = @books.filter(params).sort_by_param(params[:sort_by],params[:desc]).page(params[:page]).per(20)
-    @books = BookDecorator.decorate(@books)
 
     # Show the shopping cart if necessary
     if params[:show_cart].present?

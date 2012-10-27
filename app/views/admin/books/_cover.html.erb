@@ -1,6 +1,6 @@
 <% link_to_image ||= false %>
 <div class="cover">
-  <%= render "books/inner_cover", :book => book, :link_to_image => link_to_image %>
+  <%= present(@book).inner_cover(link_to_image) %>
   
   <%= form.hidden_field :cover_image_id, :value => @book.cover_image_id %>
   <a href="#" id="edit-cover-link"></a>

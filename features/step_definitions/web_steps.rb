@@ -29,3 +29,7 @@ end
 When /^I select "(.*?)" from "(.*?)"$/ do |arg1, arg2|
   select arg1, from: arg2
 end
+
+Then /^the page should have the title "(.*?)"$/ do |arg1|
+  page.should have_css('head title', text: arg1)
+end

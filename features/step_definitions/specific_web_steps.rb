@@ -76,3 +76,9 @@ When /^I upload a cover image$/ do
   attach_file("image_file", "#{Rails.root}/public/images/title.png")
   wait_until { page.has_selector? '.cover img'}
 end
+
+Then /^I should see the footer elements$/ do
+  step 'I should see "Get in Touch"'
+  step 'I should see "Subscribe"'
+  step 'I should see "Facebook"'
+end
