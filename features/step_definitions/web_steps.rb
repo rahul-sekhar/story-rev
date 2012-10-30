@@ -14,6 +14,14 @@ Then /^I should see "(.*?)"$/ do |arg1|
   page.should have_content(arg1)
 end
 
+Then /^I should not see "(.*?)"$/ do |arg1|
+  page.should have_no_content(arg1)
+end
+
+Then /^I should see the css selector "(.*?)" with text "(.*?)"$/ do |arg1, arg2|
+  page.should have_css(arg1, text:arg2)
+end
+
 Then /^the "(.*?)" field should contain "(.*?)"$/ do |arg1, arg2|
   find_field(arg1).value.should == arg2
 end

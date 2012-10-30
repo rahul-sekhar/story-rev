@@ -4,14 +4,14 @@ describe BookPresenter, :type => :decorator do
   let(:book) { Book.new }
   subject {BookPresenter.new(book, view)}
 
-  describe "age_level" do
+  describe "#age_level" do
     it "should be blank with no age limits set" do
       subject.age_level.should be_blank
     end
 
     it "should be a range with both age limits set" do
       book.age_from, book.age_to = 10, 50
-      subject.age_level.should == "10 - 50"
+      subject.age_level.should == "10 &ndash; 50"
     end
 
     it "should be only the lower limit when the upper limit is not set" do
@@ -25,7 +25,7 @@ describe BookPresenter, :type => :decorator do
     end
   end
 
-  describe "creators" do
+  describe "#creators" do
     before { book.author_name = "Test Author" }
 
     it "should be the author name when no illustrator is present" do

@@ -78,7 +78,7 @@ When /^I upload a cover image$/ do
 end
 
 Then /^I should see the footer elements$/ do
-  step 'I should see "Get in Touch"'
+  step 'I should see "Get In Touch"'
   step 'I should see "Subscribe"'
-  step 'I should see "Facebook"'
+  step 'I should see "facebook"'
 end

@@ -4,9 +4,9 @@ class BookPresenter < BasePresenter
   delegate :short_description, to: :book
 
 
-  def inner_cover(link = false)
+  def inner_cover(link_to_image = false)
     if book.cover_image.present?
-      link_to (link ? book.cover_image.url : book_path(book)), class: (link ? nil : "book-link") do
+      link_to (link_to_image ? book.cover_image.url : book_path(book)), class: (link_to_image ? nil : "book-link") do
           
           image_tag book.cover_image.thumb_url,
             alt: "#{book.author_name} - #{book.title}",
@@ -16,7 +16,8 @@ class BookPresenter < BasePresenter
       end
     else
       content_tag :div, class: "blank-cover" do
-        link_to_unless (!link || book.new_record?), book_path(book), class: "book-link" do
+        path = (link_to_image && !book.new_record?) ? book_path(book) : ""
+        link_to_if path.present?, path, class: "book-link" do
           content_tag(:p, book.title, class: :title) + 
           content_tag(:p, book.author_name, class: :author)
         end

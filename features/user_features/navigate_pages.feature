@@ -22,12 +22,14 @@ And I should see "Payment"
 And I should see "Condition"
 And I should see "Return"
 And I should see "Cancellation"
+And I should see the footer elements
 
 Scenario: Go to the home page from the about page
 Given I am on the about page
 When I click "Bookstore"
 Then I should be on the home page
 And the page should have the title "Story Revolution - Store"
+And I should see the footer elements
 
 Scenario: Go to the help page from the about page
 Given I am on the about page
