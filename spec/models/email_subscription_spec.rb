@@ -69,7 +69,7 @@ describe EmailSubscription do
       before { subject.email = "a@a" }
 
       specify "appropriate error message" do
-        subject.error_message.should eq("Please enter a valid email address")
+        subject.error_message.should eq("Invalid email address")
       end
     end
 

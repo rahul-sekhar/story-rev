@@ -1,4 +1,4 @@
-    require 'rubygems'
+require 'rubygems'
 require 'spork'
 #uncomment the following line to use spork with the debugger
 #require 'spork/ext/ruby-debug'
@@ -13,6 +13,7 @@ Spork.prefork do
   require File.expand_path("../../config/environment", __FILE__)
   require 'rspec/rails'
   require 'rspec/autorun'
+  require 'capybara/rspec'
 
   RSpec.configure do |config|
     config.use_transactional_fixtures = true

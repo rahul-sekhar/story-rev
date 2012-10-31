@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe PagesController, :focus do
+describe PagesController do
   
   describe "POST subscribe" do
     before do
@@ -101,7 +101,7 @@ describe PagesController, :focus do
         it_behaves_like "invalid subscription"
 
         it "sets the correct error in the flash" do
-          flash[:subscription_error].should eq("Please enter a valid email address")
+          flash[:subscription_error].should eq("Invalid email address")
         end
       end
 
@@ -201,7 +201,7 @@ describe PagesController, :focus do
         it_behaves_like "json invalid subscription"
 
         it "responds with an error message" do
-          json_response['error'].should eq("Please enter a valid email address")
+          json_response['error'].should eq("Invalid email address")
         end
       end
 
