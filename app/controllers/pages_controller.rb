@@ -36,16 +36,29 @@ class PagesController < ApplicationController
 
   
   def subscribe
-    if params[:email].present?
-      @email = params[:email]
-      EmailSubscription.create(:email => @email)
+    @email = params[:email]
+    email_subscription = EmailSubscription.new(email: @email)
+    
+    if email_subscription.save
       UpdateMailer.delay.subscribe_mail(@email)
       UpdateMailer.delay.notify_owner(@email)
-    end
-    
-    respond_to do |f|
-      f.html { redirect_to root_path(:subscribed => true, :anchor => "footer") }
-      f.json { render :json => { :success => true }}
+
+      respond_to do |f|
+        f.html do 
+          flash[:subscribed] = true
+          redirect_to root_path(anchor: 'page-footer')
+        end
+        f.json { render json: { success: true }}
+      end
+
+    else
+      respond_to do |f|
+        f.html do 
+          flash[:subscription_error] = email_subscription.error_message
+          redirect_to root_path(anchor: 'page-footer')
+        end
+        f.json { render json: { error: email_subscription.error_message }}
+      end  
     end
   end
   

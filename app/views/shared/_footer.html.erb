@@ -15,8 +15,8 @@
       
       <%= form_tag subscribe_path, :method => :post, :id => "subscribe-form" do %>
       <div class="email">
-        <input type="text" name="email" id="subscribe-email" placeholder="email address" />
-        <% if params[:subscribed] %>
+        <input type="text" name="email" id="subscribe-email" placeholder="<%= subscription_placeholder %>" <%= subscription_class %>/>
+        <% if flash[:subscribed] %>
           <img src="/images/ticked-button.png" alt="Subscribed" id="email-subscribed" />
         <% else %>
           <input type="image" src="/images/ok-button.png" alt="Ok"  id="subscribe-email-submit" />

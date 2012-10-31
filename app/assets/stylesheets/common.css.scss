@@ -188,6 +188,10 @@
         width: e(150px, $small-text-size);
         margin-left: e(110px, $small-text-size);
         float:left;
+
+        &.subscription_error {
+            @include placeholder-color($color-c1)
+        }
     }
     
     #subscribe-email-submit {

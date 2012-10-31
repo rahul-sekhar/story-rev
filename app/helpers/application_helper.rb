@@ -223,4 +223,20 @@ module ApplicationHelper
   def filter_box (attr, val)
     check_box_tag("#{attr}[#{val}]", "1", (params[attr.to_s] && params[attr.to_s][val.to_s])).html_safe
   end
+
+  def subscription_placeholder
+    if flash[:subscribed]
+      "Thank you for subscribing!"
+    elsif flash[:subscription_error]
+      flash[:subscription_error]
+    else
+      "email address"
+    end
+  end
+
+  def subscription_class
+    if flash[:subscription_error]
+      'class = "subscription_error" '.html_safe
+    end
+  end
 end
