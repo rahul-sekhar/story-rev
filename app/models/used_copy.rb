@@ -37,31 +37,7 @@ class UsedCopy < Copy
     return result
   end
 
-  def set_stock=(value)
-    value = (value > 0) if value.is_a? Integer
-    self.stock = value ? 1 : 0
-  end
-
   def set_book_date
     book.set_book_date if stock > 0
-  end
-
-  def condition_description
-    super || UsedCopy.condition_to_words(condition_rating)
-  end
-
-  def self.condition_to_words(condition)
-    case condition
-    when 1
-      "Acceptable"
-    when 2
-      "Acceptable"
-    when 3
-      "Good"
-    when 4
-      "Excellent"
-    when 5
-      "Like new"
-    end
   end
 end

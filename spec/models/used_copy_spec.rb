@@ -36,13 +36,6 @@ describe UsedCopy do
     copy.condition_rating.should == 3
   end
 
-  it "should allow setting the stock as a boolean" do
-    copy.set_stock = false
-    copy.stock.should == 0
-    copy.set_stock = true
-    copy.stock.should == 1
-  end
-
   describe "book_date" do
     it "should set the book date when a fresh copy is created" do
       book_stub.should_receive(:set_book_date)
@@ -51,28 +44,16 @@ describe UsedCopy do
 
     it "should not set the book date when a fresh copy is created and set to out of stock" do
       book_stub.should_not_receive(:set_book_date)
-      copy.set_stock = false
+      copy.stock = 0
       copy.save
     end
     
     it "should not set the book date when a fresh copy is created and goes back in stock" do
-      copy.set_stock = false
+      copy.stock = 0
       copy.save
       book_stub.should_not_receive(:set_book_date)
-      copy.set_stock = true
+      copy.stock = 1
       copy.save
-    end
-  end
-
-  it "should return the condition description when one is present" do
-    copy.condition_description = "Somewhat decent condition"
-    copy.condition_description.should == "Somewhat decent condition"
-  end
-
-  it "should return a description based on the rating when no description is present" do
-    { 1 => "Acceptable", 2 => "Acceptable", 3 => "Good", 4 => "Excellent", 5 => "Like new" }.each do |rating, description|
-      copy.condition_rating = rating
-      copy.condition_description.should == description
     end
   end
 

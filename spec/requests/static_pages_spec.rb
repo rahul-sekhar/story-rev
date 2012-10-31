@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Static Pages", :focus do
+describe "Static Pages" do
 
   shared_examples("page with header and footer") do
     describe "page footer" do
@@ -59,7 +59,7 @@ describe "Static Pages", :focus do
       page.should have_content('No books found')
     end
     
-    it "has a title" do
+    it "has the right title" do
       page.find(:css, 'title').text.should eq("Story Revolution - Store")
     end
 
@@ -75,10 +75,14 @@ describe "Static Pages", :focus do
       visit '/about'
     end
 
-    it "should have the founders" do
+    it "has the founders" do
       page.should have_content "Founders"
       page.should have_content "Angela Jain"
       page.should have_content "Shalini Sekhar"
+    end
+
+    it "has the right title" do
+      page.find(:css, 'title').text.should eq("Story Revolution - About")
     end
 
     it_behaves_like("page with header and footer")
@@ -89,7 +93,11 @@ describe "Static Pages", :focus do
       visit '/help'
     end
 
-    it "should have various help titles" do
+    it "has the right title" do
+      page.find(:css, 'title').text.should eq("Story Revolution - Help")
+    end
+
+    it "has various help titles" do
       page.should have_content "Postage"
       page.should have_content "Payment"
       page.should have_content "Condition"

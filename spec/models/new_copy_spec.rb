@@ -58,29 +58,29 @@ describe NewCopy do
 
     it "should update the book date if the copy is saved with some stock" do
       book_stub.should_receive(:set_book_date)
-      copy.set_stock = 5
+      copy.stock = 5
       copy.save
     end
 
     it "should update the book date if the book copy out of stock then comes back in stock" do
       copy.save
       book_stub.should_receive(:set_book_date)
-      copy.set_stock = 10
+      copy.stock = 10
       copy.save
     end
 
     it "should not update the book date if the copy goes out of stock and then the stock goes negative" do
       copy.save
       book_stub.should_not_receive(:set_book_date)
-      copy.set_stock = -1
+      copy.stock = -1
       copy.save
     end
     
     it "should not update the book date if the copy does not go out of stock" do
       book_stub.should_receive(:set_book_date).once
-      copy.set_stock = 1
+      copy.stock = 1
       copy.save
-      copy.set_stock = 10
+      copy.stock = 10
       copy.save
     end
   end

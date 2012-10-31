@@ -103,6 +103,10 @@ class Book < ActiveRecord::Base
   def init
     self.in_stock = false if in_stock.nil?
   end
+
+  def to_param
+    accession_id
+  end
   
   # Set the book date - triggered when the book is created, a used copy is created, or a new copy goes back in stock
   def set_book_date

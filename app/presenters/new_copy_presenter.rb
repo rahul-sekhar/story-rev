@@ -1,12 +1,12 @@
-class CopyPresenter < BasePresenter
+class NewCopyPresenter < BasePresenter
   presents :copy
 
   def accession_id_sortable
     "#{copy.accession_id.to_i}.#{copy.copy_number}".to_f
   end
 
-  def condition_description
-    copy.condition_description.present? ? copy.condition_description : condition_to_words(copy.condition_rating)
+  def price
+    CurrencyMethods.to_currency(copy.price)
   end
 
   def as_hash
@@ -32,23 +32,6 @@ class CopyPresenter < BasePresenter
         :condition_rating => copy.condition_rating,
         :new_copy => copy.new_copy
       }
-    end
-  end
-
-  private
-  
-  def condition_to_words(condition)
-    case condition
-    when 1
-      "Acceptable"
-    when 2
-      "Acceptable"
-    when 3
-      "Good"
-    when 4
-      "Excellent"
-    when 5
-      "Like new"
     end
   end
 end

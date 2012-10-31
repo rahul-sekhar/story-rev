@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe BookPresenter, :type => :decorator do
+describe BookPresenter, type: :decorator do
   let(:book) { Book.new }
   subject {BookPresenter.new(book, view)}
 

@@ -329,7 +329,7 @@ describe Book do
 
     it "should show the right number of copies" do
       book.editions[0].used_copies << build_list(:used_copy, 2)
-      book.editions[0].used_copies << build(:used_copy, set_stock: 0)
+      book.editions[0].used_copies << build(:used_copy, stock: 0)
       book.editions[0].new_copies << build(:new_copy, stock: 3)
 
       book.editions[1].new_copies << build_list(:new_copy, 2, stock: 10)
@@ -340,16 +340,16 @@ describe Book do
 
     it "should correctly find the used copy minimum price" do
       book.editions[0].used_copies << build(:used_copy, price: 60)
-      book.editions[0].new_copies << build(:new_copy, price: 25, set_stock: 5)
+      book.editions[0].new_copies << build(:new_copy, price: 25, stock: 5)
       book.editions[1].used_copies << build(:used_copy, price: 30)
-      book.editions[1].used_copies << build(:used_copy, price: 20, set_stock: 0)
+      book.editions[1].used_copies << build(:used_copy, price: 20, stock: 0)
       book.used_copy_min_price.should == 30
     end
 
     it "should correctly find the new copy minimum price" do
-      book.editions[0].new_copies << build(:new_copy, price: 45, set_stock: 6)
+      book.editions[0].new_copies << build(:new_copy, price: 45, stock: 6)
       book.editions[1].used_copies << build(:used_copy, price: 30)
-      book.editions[1].new_copies << build(:new_copy, price: 40, set_stock: 3)
+      book.editions[1].new_copies << build(:new_copy, price: 40, stock: 3)
       book.editions[1].new_copies << build(:new_copy, price: 35)
       book.new_copy_min_price.should == 40
     end

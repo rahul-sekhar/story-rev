@@ -13,7 +13,7 @@
     </td>
   <% end %>
   
-  <td class="price"><%= RupeeHelper.to_rupee(c.price) %></td>
+  <td class="price"><%= present(c).price %></td>
   <td class="cart">
     <% if shopping_cart.copy_ids.include? c.id %>
       <span class="added" title="Added to cart">In Cart</span>

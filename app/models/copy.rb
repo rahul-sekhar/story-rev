@@ -1,5 +1,5 @@
 class Copy < ActiveRecord::Base
-  attr_accessible :price, :set_stock
+  attr_accessible :price, :stock
 
   before_validation :prevent_save_if_base, :set_accession_id
   after_initialize :init
@@ -44,10 +44,6 @@ class Copy < ActiveRecord::Base
   def find_copy_number
     last_copy = book.copies.where("copy_number IS NOT NULL").order("copy_number DESC").limit(1).first
     return last_copy.present? ? last_copy.copy_number.to_i + 1 : 1
-  end
-
-  def set_stock=(value)
-    # To be filled in by descendents
   end
 
   def book

@@ -1,8 +1,9 @@
 class NewCopy < Copy
   default_scope -> { where(new_copy: true) }
   attr_accessible :required_stock
+  attr_accessor :prev_stock
 
-  after_create :update_book_date_if_stocked
+  after_save :update_book_date
 
   validates :required_stock, 
     numericality: { 
@@ -14,16 +15,12 @@ class NewCopy < Copy
   def init
     self.new_copy = true
     self.stock ||= 0
+    self.prev_stock = stock
     self.condition_rating ||= 5
   end
 
-  def set_stock=(value)
-    # Update the book date if a new copy that was out of stock has come back in stock
-    book.set_book_date if !new_record? && stock <= 0 && value > 0
-    self.stock = value
-  end
-
-  def update_book_date_if_stocked
-    book.set_book_date if stock > 0
+  def update_book_date
+    book.set_book_date if prev_stock <= 0 && stock > 0
+    self.prev_stock = stock
   end
 end

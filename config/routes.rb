@@ -91,4 +91,9 @@ StoryRev::Application.routes.draw do
       get "to_default"
     end
   end
+
+  # 404 errors
+  if Rails.application.config.show_error_pages
+    match '*not_found', to: 'errors#error_404'
+  end
 end

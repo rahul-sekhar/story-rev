@@ -41,13 +41,13 @@ shared_examples_for "a copy" do
     end
 
     it "should be in stock if its stock is above 0" do
-      copy.set_stock = 10
+      copy.stock = 10
       copy.should be_in_stock, 10
-      copy.set_stock = 1
+      copy.stock = 1
       copy.should be_in_stock, 1
-      copy.set_stock = 0
+      copy.stock = 0
       copy.should_not be_in_stock, 0
-      copy.set_stock = -1
+      copy.stock = -1
       copy.should_not be_in_stock, -1
     end
   end

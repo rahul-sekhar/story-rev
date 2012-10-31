@@ -83,3 +83,12 @@ body.help {
         clear:left;
     }
 }
+
+.error-page .error-message{
+    margin-left: e(120px);
+
+    h2 {
+        margin-top: e(50px, $large-heading-size);
+        margin-bottom: e(25px, $large-heading-size);
+    }
+}
