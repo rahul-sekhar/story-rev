@@ -16,10 +16,14 @@ class BookPresenter < BasePresenter
       end
     else
       content_tag :div, class: "blank-cover" do
-        path = (link_to_image && !book.new_record?) ? book_path(book) : ""
-        link_to_if path.present?, path, class: "book-link" do
+        if link_to_image || book.new_record?
           content_tag(:p, book.title, class: :title) + 
           content_tag(:p, book.author_name, class: :author)
+        else
+          link_to book_path(book), class: "book-link" do
+            content_tag(:p, book.title, class: :title) + 
+            content_tag(:p, book.author_name, class: :author)
+          end
         end
       end
     end
