@@ -1,7 +1,53 @@
 require "spec_helper"
 
 describe PagesController do
-  
+  describe "GET store" do
+    it "has a 200 status code" do
+      get :store
+      response.code.should eq("200")
+    end
+
+    it "sets the correct title" do
+      get :store
+      assigns(:title).should eq("Store")
+    end
+
+    it "does not set show_shopping_cart if show_cart is not set" do
+      get :store
+      assigns(:show_shopping_cart).should be_nil
+    end
+    
+    it "sets show_shopping_cart if show_cart is set" do
+      get :store, show_cart: true
+      assigns(:show_shopping_cart).should be_true
+    end
+
+    it "returns no books if there are no books" do
+      get :store
+      assigns(:books).should be_empty
+    end
+
+    it "returns no books if there are only unstocked books" do
+      create_list(:book, 5)
+      get :store
+      assigns(:books).should be_empty
+    end
+
+    it "returns only stocked books" do
+      unstocked_books = create_list(:book, 3)
+      stocked_books = create_list(:used_copy_with_book, 3)
+      unstocked_new_books = create_list(:new_copy_with_book, 3)
+      stocked_new_books = create_list(:new_copy_with_book, 3, stock: 1)
+
+      get :store
+      assigns(:books).should =~ (stocked_books + stocked_new_books).map{ |x| x.book }
+    end
+
+    describe "ordering and pagination" do
+
+    end
+  end
+
   describe "POST subscribe" do
     before do
       Delayed::Worker.delay_jobs = false

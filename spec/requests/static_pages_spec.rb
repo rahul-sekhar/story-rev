@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe "Static Pages" do
-
   shared_examples("page with header and footer") do
     describe "page footer" do
       it "has a get in touch section" do

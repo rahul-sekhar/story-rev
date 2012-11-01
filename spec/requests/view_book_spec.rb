@@ -92,7 +92,7 @@ describe "View book" do
 
     context "with copies" do
       before do
-        edition = @book.editions.create(name: "That Edition", format_name: "Softbound")
+        edition = @book.editions.create(format_name: "Softbound")
         edition.used_copies.create(price: 50)
         edition.used_copies.create(price: 70)
 
