@@ -60,7 +60,7 @@ describe PagesController do
           create(:book_with_used_copy)
           make_request
           book_list1 = assigns(:books).all.dup
-          p book_list1
+          #p book_list1
           create(:book_with_used_copy)
           make_request
 

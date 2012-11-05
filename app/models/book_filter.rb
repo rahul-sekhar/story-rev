@@ -1,4 +1,5 @@
 class BookFilter
+  @@num_recent_books = 28
 
   def self.filter(params)
     new(params).filter
@@ -22,11 +23,15 @@ class BookFilter
     merge
   end
 
+  # Change the number of recent books to return, for testing purposes
+  def self.num_recent_books=(val)
+    @@num_recent_books = val
+  end
   
   private
 
     def filters_available
-      [:collection, :publisher, :author, :illustrator, :type, :format, :category, :age]
+      [:collection, :publisher, :author, :illustrator, :type, :format, :category, :age, :condition, :award, :award_winning, :recent, :search]
     end
 
     # Merge the books filtered with the editions and copies filtered
@@ -74,6 +79,38 @@ class BookFilter
 
     def filter_by_age(val)
       @books = @books.where{ (age_from == val) | (age_to == val) | ((age_from < val) & (age_to > val)) }
+    end
+
+    def filter_by_condition(val)
+      @copies = @copies.where{condition_rating >= val}
+      @merge_required = true
+    end
+
+    def filter_by_award(val)
+      matched_books = BookAward.joins{award}.where{award.award_type_id == val}.select{book_id}
+      @books = @books.where{id.in(matched_books)}
+    end
+
+    def filter_by_award_winning(val)
+      @books = @books.where{id.in(BookAward.select{book_id})}
+    end
+
+    def filter_by_recent(val)
+      new_books = Book.unscoped.joins{editions.copies}
+                      .select{id}.group{id}.order{max(editions.created_at).desc}
+                      .where{editions.copies.stock > 0}
+                      .limit(@@num_recent_books)
+
+      @books = @books.where{id.in(new_books)}
+    end
+
+    def filter_by_search(val)
+      val = "%#{SqlHelper::escapeWildcards(val)}%"
+      @books = @books.joins{[illustrator.outer, author]}.where do
+        title.like(val) |
+        author.first_name.op('||', ' ').op('||', author.last_name).like(val) |
+        illustrator.first_name.op('||', ' ').op('||', illustrator.last_name).like(val)
+      end
     end
 
     # Price filter, checks multiple params

@@ -531,5 +531,193 @@ describe BookFilter do
         end
       end
     end
+
+    describe "filter by condition" do
+      let(:params) {{ condition: "3" }}
+
+      it "returns books with copies of the same or higher condition" do
+        b1 = create(:book_with_new_copy)
+        b2 = create(:book_with_used_copy)
+        b3 = create(:book_with_used_copy)
+        c = b3.used_copies.first
+        c.condition_rating = 2
+        c.save
+        b4 = create(:book_with_used_copy)
+        c = b4.used_copies.first
+        c.condition_rating = 4
+        c.save
+        subject.should == [b1,b2,b4]
+      end
+
+      it "returns a book with one matching copy" do
+        b1 = create(:book_with_used_copy)
+        create(:used_copy, edition: b1.editions.first, condition_rating: 2)
+        b2 = create(:book_with_used_copy)
+        c = b2.used_copies.first
+        c.condition_rating = 1
+        c.save
+        create(:used_copy, edition: b2.editions.first, condition_rating: 2)
+        subject.should == [b1]
+      end
+
+      it "returns only one instance of a book with multiple matching copies" do
+        b = create(:book_with_used_copy)
+        create(:edition_with_new_copy, book:b)
+        subject.should == [b]
+      end
+
+      it "ignores unstocked copies" do
+        b = create(:book_with_used_copy)
+        create(:edition_with_new_copy, book: b)
+        c = b.used_copies.first
+        c.stock = 0
+        c.save
+        c = b.new_copies.first
+        c.stock = 0
+        c.save
+        subject.should be_empty
+      end
+    end
+
+    describe "filter by award" do
+      let(:params) {{ award: "3" }}
+      let(:unmatched_award) { create(:award, award_type: create(:award_type, id: 5)) }
+      let(:unmatched_ba) { create(:book_award, award: unmatched_award) }
+      let(:matched_award) { create(:award, award_type: create(:award_type, id: 3)) }
+      let(:matched_ba) { create(:book_award, award: matched_award) }
+      let(:matched_award2) { create(:award, award_type_id: 3) }
+      let(:matched_ba2) { create(:book_award, award: matched_award2) }
+      
+      it "is empty for a non-existant category" do
+        create(:book_with_new_copy)
+        subject.should be_empty
+      end
+
+      it "is empty with no matching books" do
+        create(:book_with_used_copy, book_awards: [unmatched_ba])
+        subject.should be_empty
+      end
+
+      it "returns any matching books" do
+        b1 = create(:book_with_used_copy, book_awards: [matched_ba])
+        b2 = create(:book_with_used_copy, book_awards: [unmatched_ba])
+        b3 = create(:book_with_new_copy, book_awards: [matched_ba2])
+        subject.should =~ [b1,b3]
+      end
+
+      it "returns matching books with multiple awards once" do
+        b = create(:book_with_used_copy, book_awards: [unmatched_ba, matched_ba])
+        subject.should == [b]
+      end
+
+      it "returns one book with multiple matching awards" do
+        b = create(:book_with_used_copy, book_awards: [matched_ba, matched_ba2])
+        subject.should == [b]
+      end
+    end
+
+    describe "filter award winning books" do
+      let(:params) {{ award_winning: "1" }}
+
+      it "returns books with awards" do
+        b1 = create(:book_with_used_copy)
+        b2 = create(:book_with_new_copy)
+        create(:book_award, book: b2)
+        b3 = create(:book_with_used_copy)
+        create(:book_award, book: b3)
+        create(:book_award, book: b3)
+        subject.should == [b2, b3]
+      end
+    end
+
+    describe "filter by recent" do
+      let(:params) {{ recent: "1" }}
+
+      before do
+        BookFilter.num_recent_books = 2
+      end
+
+      it "returns the two most reently created, stocked books" do
+        b1 = create(:book_with_used_copy)
+        b2 = create(:book_with_new_copy)
+        b3 = create(:book_with_used_copy)
+        b4 = create(:book_with_new_copy)
+        c = b4.new_copies.first
+        c.stock = 0
+        c.save
+        b5 = create(:book_with_used_copy)
+        subject.should =~ [b3, b5]
+      end
+
+      it "returns books with the most recently created editions" do
+        b1 = create(:book_with_used_copy)
+        b2 = create(:book_with_new_copy)
+        b3 = create(:book_with_used_copy)
+        BookFilter.filter(params).should =~ [b2, b3]
+        create(:edition_with_new_copy, book: b1)
+        BookFilter.filter(params).should =~ [b1, b3]
+      end
+
+      it "ignores new out of stock editions" do
+        b1 = create(:book_with_used_copy)
+        b2 = create(:book_with_new_copy)
+        b3 = create(:book_with_used_copy)
+        e = create(:edition_with_new_copy, book: b1)
+        c = e.new_copies.first
+        c.stock = 0
+        c.save
+        subject.should =~ [b2, b3]
+      end
+
+      it "ignores new copies added to old editions" do
+        b1 = create(:book_with_used_copy)
+        b2 = create(:book_with_new_copy)
+        b3 = create(:book_with_used_copy)
+        create(:used_copy, edition: b1.editions.first)
+        subject.should =~ [b2, b3]
+      end
+    end
+
+    describe "filter by search" do
+      let(:params) {{ search: "Blah" }}
+
+      it "escapes SQL wildcards" do
+        b1 = create(:book_with_used_copy, title: "Blah blah")
+        b2 = create(:book_with_used_copy, title: "Blah% heh")
+        BookFilter.filter(search: "Blah%").should == [b2]
+      end
+
+      it "returns books whose title  contains the search parameter" do
+        b1 = create(:book_with_used_copy, title: "No match")
+        b2 = create(:book_with_new_copy, title: "Blah match")
+        b3 = create(:book_with_new_copy, title: "gahblahtah")
+        subject.should == [b2, b3]
+      end
+
+      it "returns books whose author contains the search parameter" do
+        b1 = create(:book_with_new_copy, author_name: "Blah")
+        b2 = create(:book_with_used_copy, author_name: "Arthur BLAH")
+        b3 = create(:book_with_new_copy, author_name: "Something Else")
+        b4 = create(:book_with_new_copy, author_name: "Bl Ah")
+        b5 = create(:book_with_used_copy, author_name: "blah Gah")
+        subject.should == [b1, b2, b5]
+      end
+      
+      it "returns books whose illustrator contains the search parameter" do
+        b1 = create(:book_with_used_copy, illustrator_name: "Blah")
+        b2 = create(:book_with_new_copy, illustrator_name: "Arthur BLAH")
+        b3 = create(:book_with_used_copy, illustrator_name: "Something Else")
+        b4 = create(:book_with_new_copy, illustrator_name: "Bl Ah")
+        b5 = create(:book_with_new_copy, illustrator_name: "blah Gah")
+        subject.should == [b1, b2, b5]
+      end
+
+      it "returns books with multiple matches once" do
+        b1 = create(:book_with_used_copy, title: "Blahahah", author_name: "Blah the Gah", illustrator_name: "Hah blah")
+        b2 = create(:book_with_used_copy, title: "Blah match", author_name: "Blah", illustrator_name: "No Match")
+        b3 = create(:book_with_used_copy, title: "Doesn't match", author_name: "Hmm", illustrator_name: "No Match")
+        subject.should == [b1,b2]
+      end
+    end
   end
 end

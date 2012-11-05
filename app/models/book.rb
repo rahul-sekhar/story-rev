@@ -249,40 +249,4 @@ class Book < ActiveRecord::Base
       order("books.book_date#{sort_order}")
     end
   end
-  
-  # Function to return a filtered scope, depending on the parameters
-  def self.filter(p)
-    if p[:recent].present?
-      new_books = Book.unscoped.select("books.id, books.in_stock, MAX(e.created_at) as ed_date")
-          .joins("INNER JOIN editions AS e ON e.book_id = books.id INNER JOIN copies as c ON c.edition_id = e.id WHERE c.in_stock = TRUE")
-          .group("books.id, books.in_stock").order("ed_date DESC").limit(28)
-      filtered = filtered.where("books.id IN (?)", new_books.map{ |x| x.id })
-    end
-    
-    if p[:award_winning].present?
-      filtered = filtered.where("books.id IN (?)", BookAward.all.map{ |x| x.book_id })
-    end
-    
-    if p[:search].present?
-      sqlSearch = "%#{SqlHelper::escapeWildcards(p[:search].downcase)}%"
-      filtered = filtered
-        .joins('LEFT JOIN illustrators AS ill ON ill.id = books.illustrator_id')
-        .where('LOWER(books.title) LIKE ? OR
-               LOWER(auth.first_name || \' \' || auth.last_name) LIKE ? OR
-               LOWER(ill.first_name || \' \' || ill.last_name) LIKE ?',
-               sqlSearch, sqlSearch, sqlSearch)
-    end
-    
-    if p[:award].present?
-      awards = Award.where(:award_type_id => p[:award].to_i)
-      book_awards = BookAward.where(:award_id => awards.map{ |x| x.id })
-      filtered = filtered.where("books.id IN (?)", book_awards.map{ |x| x.book_id })
-    end
-    
-    if p[:condition].present?
-      filtered_copies = true
-      copies = copies.where("condition_rating >= ?", p[:condition].to_i)
-    end
-  end
-
 end
