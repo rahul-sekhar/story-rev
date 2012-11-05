@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe BookFilter, :focus do
+describe BookFilter do
   describe "#filter" do
     subject { BookFilter.filter(params) }
 
