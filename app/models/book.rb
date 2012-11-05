@@ -252,11 +252,6 @@ class Book < ActiveRecord::Base
   
   # Function to return a filtered scope, depending on the parameters
   def self.filter(p)
-    filtered = self.scoped
-    filtered_copies = false
-    editions = Edition.unscoped
-    copies = Copy.unscoped.stocked
-    
     if p[:recent].present?
       new_books = Book.unscoped.select("books.id, books.in_stock, MAX(e.created_at) as ed_date")
           .joins("INNER JOIN editions AS e ON e.book_id = books.id INNER JOIN copies as c ON c.edition_id = e.id WHERE c.in_stock = TRUE")
@@ -278,89 +273,16 @@ class Book < ActiveRecord::Base
                sqlSearch, sqlSearch, sqlSearch)
     end
     
-    if p[:collection].present?
-      filtered = filtered.where('books.id IN (SELECT book_id FROM books_collections WHERE collection_id = ?)', p[:collection].to_i)
-    end
-    
-    if p[:publisher].present?
-      filtered_copies = true
-      editions = editions.joins(:book).where("books.publisher_id = ?", p[:publisher].to_i)
-    end
-    
     if p[:award].present?
       awards = Award.where(:award_type_id => p[:award].to_i)
       book_awards = BookAward.where(:award_id => awards.map{ |x| x.id })
       filtered = filtered.where("books.id IN (?)", book_awards.map{ |x| x.book_id })
     end
     
-    if p[:author].present?
-      filtered = filtered.where(:author_id => p[:author].to_i)
-    end
-    
-    if p[:illustrator].present?
-      filtered = filtered.where(:illustrator_id => p[:illustrator].to_i)
-    end
-    
-    if p[:age].present?
-      age = p[:age].to_i
-      filtered = filtered.where("age_from <= ? AND age_to >= ? OR (age_from IS NULL AND age_to = ?) OR (age_to IS NULL AND age_from = ?)", age, age, age, age)
-    end
-    
-    if p[:type].present?
-      filtered_copies = true
-      copies = copies.where(:new_copy => p[:type] == "new")
-    end
-    
     if p[:condition].present?
       filtered_copies = true
       copies = copies.where("condition_rating >= ?", p[:condition].to_i)
     end
-    
-    price_from = nil
-    price_to = nil
-    
-    if p[:price_from].present?
-      price_from = p[:price_from].to_i
-    end
-    if p[:price_to].present?
-      price_to = p[:price_to].to_i
-    end
-    
-    if p[:price].present? && p[:price_from].blank? && p[:price_to].blank?
-      a = p[:price].split("-").map{|x| x.to_i}
-      if a.length == 2
-        price_from = a.min
-        price_to = a.max
-      else
-        price_from = a[0]
-      end
-    end
-  
-    if price_from || price_to
-      filtered_copies = true
-      
-      if price_to.to_i > 0
-        copies = copies.where("price BETWEEN ? AND ?", price_from.to_i, price_to.to_i)
-      else
-        copies = copies.where("price > ?", price_from.to_i)
-      end
-    end
-    
-    if p[:format].present?
-      filtered_copies = true
-      editions = editions.where(:format_id => p[:format].to_i)
-    end
-    
-    if p[:category].present?
-      filtered = filtered.where(:book_type_id => p[:category].to_i)
-    end
-    
-    if filtered_copies
-      editions = editions.where("editions.id IN (?)", copies.map {|c| c.edition_id })
-      filtered = filtered.where("books.id IN (?)", editions.map { |e| e.book_id })
-    end
-    
-    return filtered
   end
 
 end

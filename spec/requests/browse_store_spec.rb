@@ -3,14 +3,8 @@ require 'spec_helper'
 describe "Browse Store" do
   describe "View store with a few books" do
     before do
-      book1 = Book.create(title: "Test Book", author_name: "Test Author")
-      edition1 = book1.editions.create(format_name: "Hardbound")
-      edition1.used_copies.create(price: 50)
-
-      book2 = Book.create(title: "Other Book", author_name: "Some Author")
-      edition2 = book2.editions.create(format_name: "Softbound")
-      edition2.new_copies.create(price: 100, stock: 1)
-
+      create(:book_with_used_copy, title: "Test Book", author_name: "Test Author")
+      create(:book_with_new_copy, title: "Other Book", author_name: "Some Author")
       visit "/"
     end
 

@@ -35,16 +35,55 @@ describe PagesController do
 
     it "returns only stocked books" do
       unstocked_books = create_list(:book, 3)
-      stocked_books = create_list(:used_copy_with_book, 3)
+      stocked_books = create_list(:book_with_used_copy, 3)
       unstocked_new_books = create_list(:new_copy_with_book, 3)
-      stocked_new_books = create_list(:new_copy_with_book, 3, stock: 1)
+      stocked_new_books = create_list(:book_with_new_copy, 3)
 
       get :store
-      assigns(:books).should =~ (stocked_books + stocked_new_books).map{ |x| x.book }
+      assigns(:books).should =~ stocked_books + stocked_new_books
     end
 
-    describe "ordering and pagination" do
+    it "returns 20 books per page" do
+      create_list(:book_with_used_copy, 21)
+      get :store
+      assigns(:books).length.should eq(20)
+    end
 
+    describe "sorting and pagination" do
+      before do
+        #create_list(:random_book_with_used_copy, 2)
+        #create_list(:random_book_with_new_copy, 15)
+      end
+
+      shared_examples_for "random sorting" do
+        it "should change with each refresh" do
+          create(:book_with_used_copy)
+          make_request
+          book_list1 = assigns(:books).all.dup
+          p book_list1
+          create(:book_with_used_copy)
+          make_request
+
+          book_list1.should == assigns(:books).all
+          #a = create(:book)
+          #b = create(:book)
+          #[a,b].should_not == [b,a]
+        end
+
+
+      end
+
+      context "with no sort param specified" do
+        let!(:make_request) { get :store }
+
+        #it_behaves_like "random sorting"
+      end
+
+      context "with sort param: random" do
+        let!(:make_request) { get :store, sort_by: :random }
+
+        it_behaves_like "random sorting"
+      end
     end
   end
 

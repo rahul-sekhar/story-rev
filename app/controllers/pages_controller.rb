@@ -7,9 +7,10 @@ class PagesController < ApplicationController
     
     check_params
     set_seed
-    @books = Book.stocked.includes(:cover_image, :copies, :illustrator)
-    @books = @books.joins("LEFT JOIN authors AS auth ON books.author_id = auth.id")
-    @books = @books.filter(params).sort_by_param(params[:sort_by],params[:desc]).page(params[:page]).per(20)
+    @books = BookFilter.filter(params)
+    #@books = @books.includes(:cover_image, :copies, :illustrator)
+    #@books = @books.joins("LEFT JOIN authors AS auth ON books.author_id = auth.id")
+    #@books = @books.sort_by_param(params[:sort_by],params[:desc]).page(params[:page]).per(20)
 
     # Show the shopping cart if necessary
     if params[:show_cart].present?

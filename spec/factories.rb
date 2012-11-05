@@ -1,13 +1,35 @@
 require 'factory_girl'
 
 FactoryGirl.define do
+  sequence(:random_string) { |n| rand(36**8).to_s(36) + n.to_s }
+
   factory :book do
+    ignore do
+      price 50
+    end
+
     sequence(:title) { |n| "Book #{n}" }
     author
+
+    factory :book_with_used_copy do
+      after(:create) do |book, evaluator|
+        create(:edition_with_used_copy, book: book, price: evaluator.price)
+      end
+    end
+
+    factory :book_with_new_copy do
+      after(:create) do |book, evaluator|
+        create(:edition_with_new_copy, book: book, price: evaluator.price)
+      end
+    end
   end
 
   factory :author do
     sequence(:name) { |n| "Test Author #{n}" }
+
+    factory :random_author do
+      name { generate(:random_string) }
+    end
   end
 
   factory :illustrator do
@@ -62,10 +84,26 @@ FactoryGirl.define do
   end
 
   factory :edition do
+    ignore do
+      price 50
+    end
+
     format
     
     factory :edition_with_book do
       book
+    end
+
+    factory :edition_with_used_copy do
+      after(:create) do |edition, evaluator|
+       create(:used_copy, edition: edition, price: evaluator.price)
+      end
+    end
+
+    factory :edition_with_new_copy do
+      after(:create) do |edition, evaluator|
+       create(:new_copy, edition: edition, stock: 1, price: evaluator.price)
+      end
     end
   end
 

@@ -68,7 +68,9 @@ Spork.each_run do
   
   # Randomise RSpec seed
   RSpec.configuration.seed = srand && srand % 0xFFFF
-
+  
+  FactoryGirl.reload
+  
   # Load support files
   Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
 end
