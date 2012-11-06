@@ -1,11 +1,6 @@
 class BookFilter
   @@num_recent_books = 28
 
-  def self.filter(params)
-    new(params).filter
-  end
-
-
   def initialize(params)
     @params = params
     @books = Book.stocked

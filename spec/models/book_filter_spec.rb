@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe BookFilter do
   describe "#filter" do
-    subject { BookFilter.filter(params) }
+    subject { BookFilter.new(params).filter }
 
     context "no filter parameters" do
       let(:params) {{}}
@@ -521,7 +521,7 @@ describe BookFilter do
           end
 
           it "does not return a book with an out of stock matching copy" do
-            b = create(:book_with_used_copyit, price: 30)
+            b = create(:book_with_used_copy, price: 30)
             e = create(:edition_with_new_copy, book: b, price: 50)
             c = e.new_copies.first
             c.stock = 0
@@ -566,7 +566,7 @@ describe BookFilter do
         c = b4.used_copies.first
         c.condition_rating = 4
         c.save
-        subject.should == [b1,b2,b4]
+        subject.should =~ [b1,b2,b4]
       end
 
       it "returns a book with one matching copy" do
@@ -646,7 +646,7 @@ describe BookFilter do
         b3 = create(:book_with_used_copy)
         create(:book_award, book: b3)
         create(:book_award, book: b3)
-        subject.should == [b2, b3]
+        subject.should =~ [b2, b3]
       end
     end
 
@@ -673,9 +673,9 @@ describe BookFilter do
         b1 = create(:book_with_used_copy)
         b2 = create(:book_with_new_copy)
         b3 = create(:book_with_used_copy)
-        BookFilter.filter(params).should =~ [b2, b3]
+        BookFilter.new(params).filter.should =~ [b2, b3]
         create(:edition_with_new_copy, book: b1)
-        BookFilter.filter(params).should =~ [b1, b3]
+        BookFilter.new(params).filter.should =~ [b1, b3]
       end
 
       it "ignores new out of stock editions" do
@@ -704,14 +704,14 @@ describe BookFilter do
       it "escapes SQL wildcards" do
         b1 = create(:book_with_used_copy, title: "Blah blah")
         b2 = create(:book_with_used_copy, title: "Blah% heh")
-        BookFilter.filter(search: "Blah%").should == [b2]
+        BookFilter.new(search: "Blah%").filter.should == [b2]
       end
 
       it "returns books whose title  contains the search parameter" do
         b1 = create(:book_with_used_copy, title: "No match")
         b2 = create(:book_with_new_copy, title: "Blah match")
         b3 = create(:book_with_new_copy, title: "gahblahtah")
-        subject.should == [b2, b3]
+        subject.should =~ [b2, b3]
       end
 
       it "returns books whose author contains the search parameter" do
@@ -720,7 +720,7 @@ describe BookFilter do
         b3 = create(:book_with_new_copy, author_name: "Something Else")
         b4 = create(:book_with_new_copy, author_name: "Bl Ah")
         b5 = create(:book_with_used_copy, author_name: "blah Gah")
-        subject.should == [b1, b2, b5]
+        subject.should =~ [b1, b2, b5]
       end
       
       it "returns books whose illustrator contains the search parameter" do
@@ -729,14 +729,14 @@ describe BookFilter do
         b3 = create(:book_with_used_copy, illustrator_name: "Something Else")
         b4 = create(:book_with_new_copy, illustrator_name: "Bl Ah")
         b5 = create(:book_with_new_copy, illustrator_name: "blah Gah")
-        subject.should == [b1, b2, b5]
+        subject.should =~ [b1, b2, b5]
       end
 
       it "returns books with multiple matches once" do
         b1 = create(:book_with_used_copy, title: "Blahahah", author_name: "Blah the Gah", illustrator_name: "Hah blah")
         b2 = create(:book_with_used_copy, title: "Blah match", author_name: "Blah", illustrator_name: "No Match")
         b3 = create(:book_with_used_copy, title: "Doesn't match", author_name: "Hmm", illustrator_name: "No Match")
-        subject.should == [b1,b2]
+        subject.should =~ [b1,b2]
       end
     end
   end

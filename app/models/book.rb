@@ -95,11 +95,6 @@ class Book < ActiveRecord::Base
     includes({:editions => [:format, :publisher]}, :copies)
   end
   
-  # Function to get a complete list of all table columns (can be used to select all columns in pure SQL)
-  def self.columns_list
-    column_names.collect { |c| "#{table_name}.#{c}" }.join(",")
-  end
-  
   def init
     self.in_stock = false if in_stock.nil?
   end
@@ -202,21 +197,22 @@ class Book < ActiveRecord::Base
   end
   
   def number_of_copies
-    new_copies.stocked.inject(0) { |num, x| num + x.stock } + used_copies.stocked.length
+    new_copies.select{|c| c.stock > 0}.inject(0){|num, x| num + x.stock} + 
+    used_copies.select{|c| c.stock > 0}.length
   end
   
   def check_stock
-    self.in_stock = copies.stocked.length > 0
+    self.in_stock = copies.select{|c| c.stock > 0}.length > 0
     save
   end
 
   def used_copy_min_price
-    price = used_copies.stocked.map{|x| x.price}.min.to_i
+    price = used_copies.select{|c| c.stock > 0}.map{|x| x.price}.min.to_i
     return price > 0 ? price : nil
   end
   
   def new_copy_min_price
-    price = new_copies.stocked.map{|x| x.price}.min.to_i
+    price = new_copies.select{|c| c.stock > 0}.map{|x| x.price}.min.to_i
     return price > 0 ? price : nil
   end
   
@@ -228,25 +224,35 @@ class Book < ActiveRecord::Base
     Book.where('"books"."created_at" < ?', created_at).order('"books"."created_at" DESC').limit(1).first || Book.limit(1).order('"books"."created_at" DESC').first
   end
   
-  # Function to return a scope sorted by a parameter
-  def self.sort_by_param(sort, sort_order)
-    sort_order = sort_order.present? ? " DESC" : ""
-    case sort
+  # Book sorting scope
+  def self.sort(by, desc = nil)
+    dir = desc.present? ? "desc" : "asc"
+    
+    case by
     when "random"
-      order("random()#{sort_order}")
+      order{random.func}
     when "title"
-      order("books.title#{sort_order}")
+      order{title.send(dir)}
     when "author"
-      order("auth.last_name#{sort_order}, auth.first_name#{sort_order}")
+      joins{author}.order{[author.last_name.send(dir), author.first_name.send(dir)]}
     when "age"
-      order("age_from#{sort_order}")
+      order{[(age_from == nil), age_from.send(dir)]}
     when "price"
-      joins("LEFT JOIN editions AS ed ON ed.product_id = products.id LEFT JOIN copies AS cop ON (cop.edition_id = ed.id AND cop.in_stock = TRUE)").group(columns_list).order("MIN(cop.price)#{sort_order}")
-    when "date"
-      sort_order = sort_order.present? ? "" : " DESC"
-      order("books.book_date#{sort_order}")
+      joins{editions.copies}.where{editions.copies.stock > 0}.group{id}.order{min(editions.copies.price).send(dir)}
     else
-      order("books.book_date#{sort_order}")
+      # Default to order by date, reverse direction for this
+      dir = desc.present? ? "asc" : "desc"
+      order{book_date.send(dir)}
     end
+  end
+
+  # Sets the seed for the database random function - val should be between 0 and 1
+  def self.set_seed(val)
+    connection.execute("select setseed(#{val.to_f})")
+  end
+
+  # Filter books, using the BookFilter class
+  def self.filter(params)
+    BookFilter.new(params).filter
   end
 end

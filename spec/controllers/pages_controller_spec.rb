@@ -49,42 +49,148 @@ describe PagesController do
       assigns(:books).length.should eq(20)
     end
 
-    describe "sorting and pagination" do
-      before do
-        #create_list(:random_book_with_used_copy, 2)
-        #create_list(:random_book_with_new_copy, 15)
+    it "deletes the price parameter if price_to is set" do
+      get :store, price: "60-70", price_to: "40"
+      controller.params[:price].should be_nil
+      controller.params[:price_to].should == "40"
+    end
+
+    it "deletes the price parameter if price_from is set" do
+      get :store, price: "60-70", price_from: "30"
+      controller.params[:price].should be_nil
+      controller.params[:price_from].should == "30"
+    end
+
+    it "keeps the price parameter if price_to and price_from are not set" do
+      get :store, price: "60-70"
+      controller.params[:price].should == "60-70"
+    end
+
+    describe "seed parameter" do
+      context "sort by is not random" do
+        it "deletes the seed parameter if sort_by is not random" do
+          get :store, seed: "156", sort_by: "date"
+          controller.params[:seed].should be_nil
+        end
       end
 
-      shared_examples_for "random sorting" do
-        it "should change with each refresh" do
-          create(:book_with_used_copy)
-          make_request
-          book_list1 = assigns(:books).all.dup
-          #p book_list1
-          create(:book_with_used_copy)
-          make_request
-
-          book_list1.should == assigns(:books).all
-          #a = create(:book)
-          #b = create(:book)
-          #[a,b].should_not == [b,a]
+      context "sort by is random" do
+        it "keeps the seed parameter if present" do
+          get :store, seed: "156", sort_by: "random"
+          controller.params[:seed].should == "156"
         end
 
+        it "sets a new seed parameter between 1 and 999 if not present" do
+          get :store, sort_by: "random"
+          seed = controller.params[:seed].to_i
+          seed.should > 0
+          seed.should < 1000
+        end
 
-      end
+        it "sets a new seed parameter if the seed is not an integer" do
+          get :store, sort_by: "random", seed: "eh"
+          seed = controller.params[:seed].to_i
+          seed.should > 0
+          seed.should < 1000
+        end
 
-      context "with no sort param specified" do
-        let!(:make_request) { get :store }
-
-        #it_behaves_like "random sorting"
-      end
-
-      context "with sort param: random" do
-        let!(:make_request) { get :store, sort_by: :random }
-
-        it_behaves_like "random sorting"
+        it "sets a new seed parameter if the seed is above 999" do
+          get :store, sort_by: "random", seed: "1000"
+          seed = controller.params[:seed].to_i
+          seed.should > 0
+          seed.should < 1000
+        end
       end
     end
+
+    describe "list of book types" do
+      it "returns only prioritised book types, ordered by priority" do
+        b1 = create(:book_with_new_copy)
+        b2 = create(:book_with_new_copy)
+        b3 = create(:book_with_new_copy)
+        b4 = create(:book_with_new_copy)
+
+        bt1 = create(:book_type, books: [b1], priority: 3)
+        bt2 = create(:book_type, books: [b2])
+        bt3 = create(:book_type, books: [b3], priority: 1)
+        bt4 = create(:book_type, books: [b4], priority: 10)
+
+        get :store
+        assigns(:book_types).should == [bt4, bt1, bt3]
+      end
+
+      it "ignores book types not attached to a stocked book" do
+        b1 = create(:book_with_used_copy)
+        b2 = create(:book)
+        b3 = create(:book_with_used_copy)
+        c = b3.used_copies.first
+        c.stock = 0
+        c.save
+        b4 = create(:book_with_used_copy)
+
+        bt1 = create(:book_type, priority: 1)
+        bt2 = create(:book_type, priority: 1, books: [b1, b4])
+        bt3 = create(:book_type, priority: 1, books: [b2])
+        bt4 = create(:book_type, priority: 1, books: [b3])
+
+        get :store
+        assigns(:book_types).should == [bt2]
+      end
+    end
+
+    describe "list of collections" do
+      it "returns only prioritised collections, ordered by priority" do
+        b1 = create(:book_with_new_copy)
+        b2 = create(:book_with_new_copy)
+        b3 = create(:book_with_new_copy)
+        b4 = create(:book_with_new_copy)
+
+        c1 = create(:collection, books: [b1], priority: 3)
+        c2 = create(:collection, books: [b2])
+        c3 = create(:collection, books: [b3], priority: 1)
+        c4 = create(:collection, books: [b4], priority: 10)
+
+        get :store
+        assigns(:collections).should == [c4, c1, c3]
+      end
+
+      it "ignores collections not attached to a stocked book" do
+        b1 = create(:book_with_used_copy)
+        b2 = create(:book)
+        b3 = create(:book_with_used_copy)
+        c = b3.used_copies.first
+        c.stock = 0
+        c.save
+        b4 = create(:book_with_used_copy)
+
+        c1 = create(:collection, priority: 1)
+        c2 = create(:collection, priority: 1, books: [b1, b4])
+        c3 = create(:collection, priority: 1, books: [b2])
+        c4 = create(:collection, priority: 1, books: [b3])
+
+        get :store
+        assigns(:collections).should == [c2]
+      end
+    end
+
+    describe "list of formats" do
+      it "ignores formats not attached to a stocked edition" do
+        (f1, f2, f3, f4, f5) = create_list(:format, 5)
+
+        b1 = create(:book)
+        create(:edition_with_used_copy, book: b1, format: f1)
+        e = create(:edition, book: b1, format: f2)
+        create(:used_copy, stock: 0, edition: e)
+        create(:edition_with_new_copy, book: create(:book), format: f3)
+        create(:edition_with_new_copy, book: create(:book), format: f5)
+        create(:edition_with_used_copy, book: create(:book), format: f5)
+
+        get :store
+        assigns(:formats).should =~ [f1,f3, f5]
+      end
+    end
+
+    it ""
   end
 
   describe "POST subscribe" do

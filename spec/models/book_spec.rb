@@ -380,4 +380,173 @@ describe Book do
       expect{ book.destroy }.to change{ Description.count }.by(-1)
     end
   end
+
+  describe "#sort" do
+    describe "by random" do
+      before do
+        create_list(:book, 5)
+      end
+
+      it "has different ordering for two subsequent calls" do
+        Book.sort("random").all.should_not == Book.sort("random").all
+      end
+
+      it "has the same ordering when the same seed is set" do
+        Book.set_seed(0.654)
+        books = Book.sort("random").all
+        Book.set_seed(0.654)
+        Book.sort("random").all.should == books
+      end
+
+      it "has different ordering with different seeds" do
+        Book.set_seed(0.654)
+        books = Book.sort("random").all
+        Book.set_seed(0.655)
+        Book.sort("random").all.should_not == books
+      end
+    end
+
+    describe "by title" do
+      before do
+        @b1 = create(:book, title: "Blah blah")
+        @b2 = create(:book, title: "Alah blah")
+        @b3 = create(:book, title: "Blah blaa")
+        @b4 = create(:book, title: "Blah bla1")
+        @b5 = create(:book, title: "Blah bla")
+      end
+
+      it "sorts titles in ascending order by default" do
+        Book.sort("title").should == [@b2,@b5,@b4,@b3,@b1]
+      end
+
+      it "sorts titles in descending order when desc is set" do
+        Book.sort("title", "desc").should == [@b1,@b3,@b4,@b5,@b2]
+      end
+    end
+
+    describe "by author" do
+      before do
+        @b1 = create(:book, author_name: "Arthur Dent")
+        @b2 = create(:book, author_name: "Arthur Bent")
+        @b3 = create(:book, author_name: "Arthu Bent")
+        @b4 = create(:book, author_name: "Dent")
+        @b5 = create(:book, author_name: "Arthur Dento")
+      end
+
+      it "sorts authors in ascending order by default" do
+        Book.sort("author").should == [@b3,@b2,@b4,@b1,@b5]
+      end
+
+      it "sorts authors in descending descending order when desc is set" do
+        Book.sort("author", "desc").should == [@b5,@b1,@b4,@b2,@b3]
+      end
+    end
+
+    describe "by age" do
+      before do
+        @b1 = create(:book, age_from: 5)
+        @b2 = create(:book, age_from: 2)
+        @b3 = create(:book)
+        @b4 = create(:book, age_from: 8)
+        @b5 = create(:book, age_from: 40)
+      end
+
+      it "sorts age_from in ascending order by default, with unset ages at the end" do
+        Book.sort("age").should == [@b2,@b1,@b4,@b5,@b3]
+      end
+
+      it "sorts age_from in descending order with desc set, with unset ages at the end" do
+        Book.sort("age", "desc").should == [@b5,@b4,@b1,@b2,@b3]
+      end
+    end
+
+    describe "by price" do
+      before do
+        # Book with copy - Rs. 100
+        @b1 = create(:book_with_used_copy, price: 100)
+
+        # Book with copy - Rs. 150, Rs. 80
+        @b2 = create(:book_with_used_copy, price: 150)
+        create(:new_copy, price:80, edition: @b2.editions.first, stock: 1)
+
+        # Book with copy - Rs. 160
+        @b3 = create(:book_with_new_copy, price: 160)
+
+        # Book with copies - Rs. 120, Rs. 50
+        @b4 = create(:book_with_used_copy, price: 120)
+        create(:edition_with_used_copy, price: 50, book: @b4)
+
+        # Book with copies - Rs. 180, Rs. 85 (unstocked)
+        @b5 = create(:book_with_used_copy, price: 180)
+        create(:used_copy, price:85, stock: 0, edition: @b5.editions.first)
+      end
+
+      context "ascending" do
+        it "sorts books by minimum stocked copy price" do
+          Book.sort("price").should == [@b4, @b2, @b1, @b3, @b5]
+        end
+      end
+
+      context "descending" do
+        it "sorts books by minimum stocked copy price" do
+          Book.sort("price", "desc").should == [@b5, @b3, @b1, @b2, @b4]
+        end
+      end
+    end
+
+    describe "by date (default)" do
+      before do
+        t = Time.now
+        @b1 = create(:book)
+        @b1.book_date = t
+        @b1.save
+        @b2 = create(:book)
+        @b2.book_date = t + 1.day
+        @b2.save
+        @b3 = create(:book)
+        @b3.book_date = t + 1.second
+        @b3.save
+        @b4 = create(:book)
+        @b4.book_date = t - 1.minute
+        @b4.save
+      end
+
+      it "sorts books by date, descending by default" do
+        Book.sort("date").should == [@b2, @b3, @b1, @b4]
+      end
+
+      it "sorts books by date, ascending with desc set" do
+        Book.sort("date", "desc").should == [@b4, @b1, @b3, @b2]
+      end
+
+      it "is the default option" do
+        Book.sort("bah").should == [@b2, @b3, @b1, @b4]
+      end
+    end
+  end
+
+  describe "#filter" do
+    it "creates a new BookFilter object, passing it the params" do
+      params = double("parameters")
+      obj = double(BookFilter)
+      obj.stub(:filter)
+      BookFilter.should_receive(:new).with(params).and_return(obj)
+      Book.filter(params)
+    end
+
+    it "calls the BookFilter filter function" do
+      obj = double(BookFilter)
+      obj.should_receive(:filter)
+      BookFilter.stub(:new).and_return(obj)
+      Book.filter([])
+    end
+
+    it "returns the result of the filter function" do
+      result = double("result")
+      obj = double(BookFilter)
+      obj.stub(:filter).and_return(result)
+      BookFilter.stub(:new).and_return(obj)
+      Book.filter([]).should == result
+    end
+  end
 end

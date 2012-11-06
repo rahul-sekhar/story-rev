@@ -19,8 +19,8 @@ class Copy < ActiveRecord::Base
     greater_than_or_equal_to: 0
   }
 
-  scope :stocked, -> { where("stock > 0") }
-  scope :unstocked, -> { where("stock <= 0") }
+  scope :stocked, -> { where{stock > 0} }
+  scope :unstocked, -> { where{stock <= 0} }
 
   def init
   end

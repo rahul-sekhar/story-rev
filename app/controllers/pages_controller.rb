@@ -7,9 +7,10 @@ class PagesController < ApplicationController
     
     check_params
     set_seed
-    @books = BookFilter.filter(params)
-      .includes(:cover_image, :copies, :illustrator)
-      .sort_by_param(params[:sort_by],params[:desc]).page(params[:page]).per(20)
+    @books = Book.filter(params)
+      .includes{[cover_image, used_copies, new_copies, illustrator]}
+      .sort(params[:sort_by],params[:desc])
+      .page(params[:page]).per(20)
 
     # Show the shopping cart if necessary
     if params[:show_cart].present?
@@ -75,27 +76,22 @@ class PagesController < ApplicationController
   def set_seed
     if params[:sort_by] == "random"
       seed = params[:seed].to_s
-      if seed.match(/\A\d+\z/) && seed.to_i > 0
+      if seed.match(/\A\d+\z/) && seed.to_i > 0 && seed.to_i < 999
         seed = seed.to_i
       else
-        seed = rand(1..99999)
+        seed = rand(1..999)
       end
       params[:seed] = seed.to_s
-      Book.connection.execute("select setseed(#{seed.to_f / 100000})")
+      Book.connection.execute("select setseed(#{seed.to_f / 1000})")
     else
       params.delete(:seed)
     end
   end
   
   def get_collection_lists
-    stocked_books = Book.unscoped.stocked
-    stocked_book_ids = stocked_books.map{ |x| x.id }
-    stocked_editions = Edition.unscoped.where( :book_id => stocked_book_ids )
-    stocked_awards = Award.unscoped.where('awards.id IN (SELECT award_id FROM books_awards WHERE book_id IN (?))', stocked_book_ids)
-    
-    @book_types = BookType.visible.prioritised.where(:id => stocked_books.map{ |x| x.book_type_id })
-    @formats = Format.where(:id => stocked_editions.map{ |x| x.format_id})
-    @collections = Collection.prioritised.visible.where('"collections"."id" IN (SELECT collection_id FROM books_collections WHERE book_id IN (?))', stocked_book_ids)
+    @book_types = BookType.joins{books}.visible.prioritised.where{books.in_stock == true}.group{id}
+    @formats = Format.joins{editions.copies}.where{editions.copies.stock > 0}.group{id}
+    @collections = Collection.prioritised.visible.joins{books}.where{books.in_stock == true}.group{id}
   end
   
   def ajax_params
