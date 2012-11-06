@@ -1,5 +1,7 @@
 class RemoveInvalidData < ActiveRecord::Migration
   def up
+    Copy.reset_column_information
+    
     a = DuplicateNames::Handler.new(Author, :books, true)
     a.merge_duplicates
 

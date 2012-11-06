@@ -152,6 +152,8 @@ module DuplicateNames
       @group.objects[1..-1].each do |x|
         objects_to_shift = x.send(@dependent_field)
         puts "\tShifting #{objects_to_shift.length} objects to it" if @verbose
+        p @group.first
+        p objects_to_shift
         @group.first.send(@dependent_field) << objects_to_shift
         x.destroy
       end
