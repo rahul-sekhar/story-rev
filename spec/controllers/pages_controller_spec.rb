@@ -190,7 +190,18 @@ describe PagesController do
       end
     end
 
-    it ""
+    it "calls the correct functions to filter, sort and paginate books" do
+      param_list = { some_param: "something", sort_by: "sort", desc: "desc", page: "page" }
+      
+      book_list = double(Book)
+      Book.should_receive(:filter).and_return(book_list)
+      book_list.should_receive(:includes).and_return(book_list)
+      book_list.should_receive(:sort).with("sort", "desc").and_return(book_list)
+      book_list.should_receive(:page).with("page").and_return(book_list)
+      book_list.should_receive(:per).and_return(book_list)
+
+      get :store, param_list
+    end
   end
 
   describe "POST subscribe" do
