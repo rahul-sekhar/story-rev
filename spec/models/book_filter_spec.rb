@@ -521,13 +521,33 @@ describe BookFilter do
           end
 
           it "does not return a book with an out of stock matching copy" do
-            b = create(:book_with_used_copy, price: 30)
+            b = create(:book_with_used_copyit, price: 30)
             e = create(:edition_with_new_copy, book: b, price: 50)
             c = e.new_copies.first
             c.stock = 0
             c.save
             subject.should be_empty
           end
+        end
+      end
+
+      context "price and price_from params set" do
+        let(:params) {{ price: "50-70", price_from: "80" }}
+
+        it "ignores the price param" do
+          b1 = create(:book_with_new_copy, price: 60)
+          b2 = create(:book_with_used_copy, price: 90)
+          subject.should == [b2]
+        end
+      end
+
+      context "price and price_to params set" do
+        let(:params) {{ price: "50-70", price_to: "40" }}
+
+        it "ignores the price param" do
+          b1 = create(:book_with_new_copy, price: 30)
+          b2 = create(:book_with_used_copy, price: 60)
+          subject.should == [b1]
         end
       end
     end
