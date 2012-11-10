@@ -377,6 +377,18 @@ describe Book do
       expect{ book.destroy }.to change{ Edition.count }.by(-1)
     end
 
+    it "should destroy child used copies" do
+      book.editions << build(:edition)
+      create(:used_copy, edition: book.editions.first)
+      expect{ book.destroy }.to change{ UsedCopy.count }.by(-1)
+    end
+
+    it "should destroy child new copies" do
+      book.editions << build(:edition)
+      create(:new_copy, edition: book.editions.first)
+      expect{ book.destroy }.to change{ NewCopy.count }.by(-1)
+    end
+
     it "should destroy awards" do
       book.book_awards << build(:book_award)
       book.save

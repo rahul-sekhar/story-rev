@@ -101,17 +101,17 @@ describe BookSearcher do
       return searcher.search
     end
 
-    it "should return a hash containing book ids and text" do
+    it "should return a hash containing book accession ids and text" do
       results = mocked_searcher(build_list(:book, 2)).formatted_results
       results.length.should == 2
       results.first.should have_key :id
       results.first.should have_key :text
     end
 
-    it "should return the correct book ID" do
+    it "should return the correct book accession id" do
       book1 = create(:book)
       results = mocked_searcher([book1]).formatted_results
-      results.first[:id].should == book1.id
+      results.first[:id].should == book1.accession_id
     end
 
     it "should return the book title as the text by default" do
@@ -139,36 +139,36 @@ describe BookSearcher do
     end
     
     it "should prioritise full title matches over word matches" do
-      book1 = build(:book, id: 1, title: "A Title With More Stuff")
-      book2 = build(:book, id: 2, title: "A Title")
+      book1 = build(:book, accession_id: 1, title: "A Title With More Stuff")
+      book2 = build(:book, accession_id: 2, title: "A Title")
       searcher = mocked_searcher([book1, book2], "a title")
       searcher.formatted_results.first[:id].should == 2
     end
 
     it "should prioritise full author matches over word matches" do
-      book1 = build(:book, id: 1, author_name: "William Tell")
-      book2 = build(:book, id: 2, author_name: "William")
+      book1 = build(:book, accession_id: 1, author_name: "William Tell")
+      book2 = build(:book, accession_id: 2, author_name: "William")
       searcher = mocked_searcher([book1, book2], "william")
       searcher.formatted_results.first[:id].should == 2
     end
 
     it "should prioritise full accession id matches over partial matches" do
-      book1 = build(:book, id: 1, accession_id: 503)
-      book2 = build(:book, id: 2, accession_id: 50)
+      book1 = build(:book, accession_id: 503)
+      book2 = build(:book, accession_id: 50)
       searcher = mocked_searcher([book1, book2], "50")
-      searcher.formatted_results.first[:id].should == 2
+      searcher.formatted_results.first[:id].should == 50
     end
 
     it "should prioritise word title matches over partial matches" do
-      book1 = build(:book, id: 1, title: "Brownish Things")
-      book2 = build(:book, id: 2, title: "The Brown Cow")
+      book1 = build(:book, accession_id: 1, title: "Brownish Things")
+      book2 = build(:book, accession_id: 2, title: "The Brown Cow")
       searcher = mocked_searcher([book1, book2], "brown")
       searcher.formatted_results.first[:id].should == 2
     end
 
     it "should prioritise word author matches over partial matches" do
-      book1 = build(:book, id: 1, author_name: "William Tell")
-      book2 = build(:book, id: 2, author_name: "Mr Will Fawkes")
+      book1 = build(:book, accession_id: 1, author_name: "William Tell")
+      book2 = build(:book, accession_id: 2, author_name: "Mr Will Fawkes")
       searcher = mocked_searcher([book1, book2], "Will")
       searcher.formatted_results.first[:id].should == 2
     end
