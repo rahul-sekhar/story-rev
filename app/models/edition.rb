@@ -5,7 +5,7 @@ class Edition < ActiveRecord::Base
   
   belongs_to :format
   belongs_to :language
-  belongs_to :book, inverse_of: :editions
+  belongs_to :book
   belongs_to :publisher
   
   has_many :new_copies, dependent: :destroy

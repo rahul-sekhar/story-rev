@@ -22,7 +22,7 @@ class Book < ActiveRecord::Base
   belongs_to :book_type
   belongs_to :country
   has_many :book_awards, :dependent => :destroy
-  has_many :editions, inverse_of: :book, :dependent => :destroy
+  has_many :editions, :dependent => :destroy
   has_many :new_copies, :through => :editions
   has_many :used_copies, :through => :editions
   has_many :copies, :through => :editions, :readonly => true

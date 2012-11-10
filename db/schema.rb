@@ -24,7 +24,7 @@ ActiveRecord::Schema.define(:version => 20121110094718) do
   create_table "admin_roles", :force => true do |t|
     t.string   "name",          :limit => 100, :null => false
     t.string   "password_hash",                :null => false
-    t.string   "password_salt"
+    t.string   "password_salt",                :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -412,5 +412,32 @@ ActiveRecord::Schema.define(:version => 20121110094718) do
   add_index "transfers", ["source_account_id"], :name => "index_transfers_on_source_account_id"
   add_index "transfers", ["target_account_id"], :name => "index_transfers_on_target_account_id"
   add_index "transfers", ["transfer_category_id"], :name => "index_transfers_on_transfer_category_id"
+
+  add_foreign_key "awards", "award_types", :name => "awards_award_type_id_fk"
+
+  add_foreign_key "books", "authors", :name => "books_author_id_fk"
+  add_foreign_key "books", "book_types", :name => "books_book_type_id_fk"
+  add_foreign_key "books", "countries", :name => "books_country_id_fk"
+  add_foreign_key "books", "illustrators", :name => "books_illustrator_id_fk"
+  add_foreign_key "books", "publishers", :name => "books_publisher_id_fk"
+
+  add_foreign_key "books_awards", "awards", :name => "books_awards_award_id_fk"
+  add_foreign_key "books_awards", "books", :name => "books_awards_book_id_fk"
+
+  add_foreign_key "books_collections", "books", :name => "books_collections_book_id_fk"
+  add_foreign_key "books_collections", "collections", :name => "books_collections_collection_id_fk"
+
+  add_foreign_key "copies", "editions", :name => "copies_edition_id_fk"
+
+  add_foreign_key "cover_images", "books", :name => "cover_images_book_id_fk"
+
+  add_foreign_key "descriptions", "books", :name => "descriptions_book_id_fk"
+
+  add_foreign_key "editions", "books", :name => "editions_book_id_fk"
+  add_foreign_key "editions", "formats", :name => "editions_format_id_fk"
+  add_foreign_key "editions", "languages", :name => "editions_language_id_fk"
+  add_foreign_key "editions", "publishers", :name => "editions_publisher_id_fk"
+
+  add_foreign_key "stock_taking", "copies", :name => "stock_taking_copy_id_fk"
 
 end

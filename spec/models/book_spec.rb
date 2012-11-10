@@ -372,19 +372,21 @@ describe Book do
 
   describe "after being destroyed" do
     it "should destroy child editions" do
-      book.editions << build(:edition)
       book.save
+      create(:edition, book: book)
       expect{ book.destroy }.to change{ Edition.count }.by(-1)
     end
 
     it "should destroy child used copies" do
-      book.editions << build(:edition)
+      book.save
+      create(:edition, book: book)
       create(:used_copy, edition: book.editions.first)
       expect{ book.destroy }.to change{ UsedCopy.count }.by(-1)
     end
 
     it "should destroy child new copies" do
-      book.editions << build(:edition)
+      book.save
+      create(:edition, book: book)
       create(:new_copy, edition: book.editions.first)
       expect{ book.destroy }.to change{ NewCopy.count }.by(-1)
     end

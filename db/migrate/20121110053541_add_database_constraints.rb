@@ -4,7 +4,7 @@ class AddDatabaseConstraints < ActiveRecord::Migration
     # Admin roles
     change_column :admin_roles, :name, :string, null: false, limit: 100
     change_column :admin_roles, :password_hash, :string, null: false
-    change_column :admin_roles, :password_hash, :string, null: false
+    change_column :admin_roles, :password_salt, :string, null: false
 
     add_index :admin_roles, :name, unique: true
     
@@ -25,6 +25,8 @@ class AddDatabaseConstraints < ActiveRecord::Migration
     remove_index :awards, :name
     add_index :awards, [:award_type_id, :name], unique: true
 
+    add_foreign_key :awards, :award_types
+
     # Book types
     change_column :book_types, :name, :string, null: false, limit: 100
 
@@ -41,13 +43,25 @@ class AddDatabaseConstraints < ActiveRecord::Migration
     remove_index :books, name: :index_products_on_accession_id
     add_index :books, :accession_id, unique: true
 
+    add_foreign_key :books, :authors
+    add_foreign_key :books, :illustrators
+    add_foreign_key :books, :publishers
+    add_foreign_key :books, :countries
+    add_foreign_key :books, :book_types
+
     # Books Awards
     change_column :books_awards, :book_id, :integer, null: false
     change_column :books_awards, :award_id, :integer, null: false
 
+    add_foreign_key :books_awards, :books
+    add_foreign_key :books_awards, :awards
+
     # Books collections
     change_column :books_collections, :book_id, :integer, null: false
     change_column :books_collections, :collection_id, :integer, null: false
+
+    add_foreign_key :books_collections, :books
+    add_foreign_key :books_collections, :collections
 
     # Collections
     change_column :collections, :name, :string, null: false, limit: 200
@@ -67,6 +81,8 @@ class AddDatabaseConstraints < ActiveRecord::Migration
     add_index :copies, :accession_id, unique: true
     add_index :copies, :price
 
+    add_foreign_key :copies, :editions
+
     # Countries
     change_column :countries, :name, :string, null: false, limit: 100
 
@@ -78,9 +94,13 @@ class AddDatabaseConstraints < ActiveRecord::Migration
 
     add_index :cover_images, :book_id, unique: true
 
+    add_foreign_key :cover_images, :books
+
     # Descriptions
     change_column :descriptions, :book_id, :integer, null: false
     change_column :descriptions, :title, :string, null: false, limit: 255
+
+    add_foreign_key :descriptions, :books
 
     # Editions
     change_column :editions, :book_id, :integer, null: false
@@ -88,6 +108,11 @@ class AddDatabaseConstraints < ActiveRecord::Migration
     change_column_default :editions, :language_id, nil
 
     add_index :editions, :language_id
+
+    add_foreign_key :editions, :books
+    add_foreign_key :editions, :formats
+    add_foreign_key :editions, :languages
+    add_foreign_key :editions, :publishers
 
     # Email subscriptions
     change_column :email_subscriptions, :email, :string, null: false
@@ -119,6 +144,8 @@ class AddDatabaseConstraints < ActiveRecord::Migration
     # Stock taking
     change_column :stock_taking, :copy_id, :integer, null: false
 
+    add_foreign_key :stock_taking, :copies
+
   end
 
   def down
@@ -126,7 +153,7 @@ class AddDatabaseConstraints < ActiveRecord::Migration
     # Admin roles
     change_column :admin_roles, :name, :string, null: true
     change_column :admin_roles, :password_hash, :string, null: true
-    change_column :admin_roles, :password_hash, :string, null: true
+    change_column :admin_roles, :password_salt, :string, null: true
 
     remove_index :admin_roles, :name
     
@@ -147,6 +174,8 @@ class AddDatabaseConstraints < ActiveRecord::Migration
     add_index :awards, :name
     remove_index :awards, [:award_type_id, :name]
 
+    remove_foreign_key :awards, :award_types
+
     # Book types
     change_column :book_types, :name, :string, null: true
 
@@ -164,13 +193,25 @@ class AddDatabaseConstraints < ActiveRecord::Migration
     remove_index :books, :accession_id
     add_index :books, :accession_id, name: :index_products_on_accession_id
 
+    remove_foreign_key :books, :authors
+    remove_foreign_key :books, :illustrators
+    remove_foreign_key :books, :publishers
+    remove_foreign_key :books, :countries
+    remove_foreign_key :books, :book_types
+
     # Books Awards
     change_column :books_awards, :book_id, :integer, null: true
     change_column :books_awards, :award_id, :integer, null: true
 
+    remove_foreign_key :books_awards, :books
+    remove_foreign_key :books_awards, :awards
+
     # Books collections
     change_column :books_collections, :book_id, :integer, null: true
     change_column :books_collections, :collection_id, :integer, null: true
+
+    remove_foreign_key :books_collections, :books
+    remove_foreign_key :books_collections, :collections
 
     # Collections
     change_column :collections, :name, :string, null: true
@@ -191,6 +232,8 @@ class AddDatabaseConstraints < ActiveRecord::Migration
     add_index :copies, :accession_id
     remove_index :copies, :price
 
+    remove_foreign_key :copies, :editions
+
     # Countries
     change_column :countries, :name, :string, null: true
 
@@ -202,9 +245,13 @@ class AddDatabaseConstraints < ActiveRecord::Migration
 
     remove_index :cover_images, :book_id
 
+    remove_foreign_key :cover_images, :books
+
     # Descriptions
     change_column :descriptions, :book_id, :integer, null: true
     change_column :descriptions, :title, :string, null: true
+
+    remove_foreign_key :descriptions, :books
 
     # Editions
     change_column :editions, :book_id, :integer, null: true
@@ -212,6 +259,11 @@ class AddDatabaseConstraints < ActiveRecord::Migration
     change_column_default :editions, :language_id, 1
 
     remove_index :editions, :language_id
+
+    remove_foreign_key :editions, :books
+    remove_foreign_key :editions, :formats
+    remove_foreign_key :editions, :languages
+    remove_foreign_key :editions, :publishers
 
     # Email subscriptions
     change_column :email_subscriptions, :email, :string, null: true
@@ -242,6 +294,8 @@ class AddDatabaseConstraints < ActiveRecord::Migration
 
     # Stock taking
     change_column :stock_taking, :copy_id, :integer, null: true
+
+    remove_foreign_key :stock_taking, :copies
 
   end
 end
