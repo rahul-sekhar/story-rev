@@ -28,9 +28,10 @@ module Person
     # Returns an ActiveRecord relation containing people with the passed name
     def scoped_name_is(name)
       name = SqlHelper::escapeWildcards(name)
-      # Add a leading space for a single worded name
-      name = " #{name}" if !name.include? ' '
-      where{first_name.op('||', ' ').op('||', last_name).like(name)}
+      where do
+        first_name.op('||', ' ').op('||', last_name).like(name) | 
+        first_name.op('||', last_name).like(name) 
+      end
     end
     
     # Returns an ActiveRecord relation containing people whos name includes the passed string

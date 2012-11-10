@@ -135,9 +135,18 @@ describe BookFilter do
         subject.should == [b]
       end
 
+      it "doesn't return an edition with a matching publisher but no copies" do
+        b = create(:book)
+        e = create(:edition, publisher: matched_pub, book: b)
+        subject.should be_empty
+      end
+
       it "doesn't return an out of stock edition with a matching publisher" do
         b = create(:book)
-        e = create(:edition, publisher: matched_pub)
+        e = create(:edition_with_used_copy, publisher: matched_pub, book: b)
+        c = e.used_copies.first
+        c.stock = 0
+        c.save
         subject.should be_empty
       end
     end
@@ -602,11 +611,11 @@ describe BookFilter do
     describe "filter by award" do
       let(:params) {{ award: "3" }}
       let(:unmatched_award) { create(:award, award_type: create(:award_type, id: 5)) }
-      let(:unmatched_ba) { create(:book_award, award: unmatched_award) }
+      let(:unmatched_ba) { build(:book_award, award: unmatched_award) }
       let(:matched_award) { create(:award, award_type: create(:award_type, id: 3)) }
-      let(:matched_ba) { create(:book_award, award: matched_award) }
+      let(:matched_ba) { build(:book_award, award: matched_award) }
       let(:matched_award2) { create(:award, award_type_id: 3) }
-      let(:matched_ba2) { create(:book_award, award: matched_award2) }
+      let(:matched_ba2) { build(:book_award, award: matched_award2) }
       
       it "is empty for a non-existant category" do
         create(:book_with_new_copy)

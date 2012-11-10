@@ -25,8 +25,8 @@ describe AwardType do
   end
 
   it "should destroy child awards on being deleted" do
-    award_type.awards << Award.new(name: "Award 1")
     award_type.save
-    expect{ award_type.destroy }.to change{ Award.count }.by(-1)
+    create(:award, award_type: award_type)
+    expect{ award_type.destroy }.to change{ Award.count }.by(-2)
   end
 end

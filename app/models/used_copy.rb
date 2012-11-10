@@ -5,17 +5,9 @@ class UsedCopy < Copy
   # Set the book date if a fresh copy has been created
   after_create :set_book_date
 
-  validates :condition_rating, 
-    numericality: { 
-      only_integer: true,
-      greater_than_or_equal_to: 0,
-      less_than_or_equal_to: 5 
-    }
-
   validates :condition_description, length: { maximum: 255 }
 
   def init
-    self.new_copy = false
     self.stock ||= 1
     self.condition_rating ||= 3
   end

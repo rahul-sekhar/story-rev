@@ -64,9 +64,14 @@ FactoryGirl.define do
   factory :book_award do
     award
     year 2000
+
+    factory :book_award_with_book do
+      book
+    end
   end
 
   factory :description do
+    book
     title "Description Title"
     content "Description Content\nMore content"
   end

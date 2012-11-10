@@ -6,9 +6,9 @@ class AwardType < ActiveRecord::Base
   after_save :create_empty_award
   
   validates :name, 
-    :length => { :maximum => 100 }, 
-    :presence => true, 
-    :uniqueness => { :case_sensitive => false }
+    length: { :maximum => 100 }, 
+    presence: true, 
+    uniqueness: { :case_sensitive => false }
 
   strip_attributes
   

@@ -81,10 +81,18 @@ shared_examples_for "a person" do
       person.errors.should have_key :name
     end
 
-    it "must be case insensitively unique for a single word name" do
+    it "must be unique for a single word name" do
       person.name = "rahul"
       person.should be_valid
-      create_person(name: "Rahul")
+      create_person(name: "rahul")
+      person.should be_invalid
+      person.errors.should have_key :name
+    end
+
+    it "must be case insensitively unique for a double worded lower case name" do
+      person.name = "rahul sekhar"
+      person.should be_valid
+      create_person(name: "rahul sekhar")
       person.should be_invalid
       person.errors.should have_key :name
     end

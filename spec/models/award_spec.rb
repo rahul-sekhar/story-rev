@@ -39,9 +39,16 @@ describe Award do
     end
   end
 
+
+  it "should require an award" do
+    award.award_type = nil
+    award.should be_invalid
+    award.errors[:award_type].should be_present
+  end
+
   it "should destroy child book awards on being deleted" do
     award.save
-    BookAward.create(award_id: award.id)
+    create(:book_award_with_book, award: award)
     expect{ award.destroy }.to change{ BookAward.count }.by(-1)
   end
 end

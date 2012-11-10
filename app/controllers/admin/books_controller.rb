@@ -26,7 +26,7 @@ class Admin::BooksController < Admin::ApplicationController
   def show
     @class = "book editions"
     @title = "Copies & Editions"
-    @book = Book.find(params[:id])    
+    @book = Book.find_by_accession_id!(params[:id])    
   end
   
   def new
@@ -51,7 +51,7 @@ class Admin::BooksController < Admin::ApplicationController
   def edit
     @class = "book form"
     @title = "Edit Book Information"
-    @book = Book.find(params[:id])
+    @book = Book.find_by_accession_id!(params[:id])
     if flash[:book_params].present?
       @book.update_attributes(flash[:book_params])
       @book.valid?
@@ -60,7 +60,7 @@ class Admin::BooksController < Admin::ApplicationController
   end
   
   def update
-    @book = Book.find(params[:id])
+    @book = Book.find_by_accession_id!(params[:id])
     if @book.update_attributes(params[:book])
       case params[:commit]
       when "Next Book"
@@ -79,7 +79,7 @@ class Admin::BooksController < Admin::ApplicationController
   end
   
   def destroy
-    @book = Book.find(params[:id])
+    @book = Book.find_by_accession_id!(params[:id])
     @book.destroy
     redirect_to search_admin_books_path, :notice => "Book #{@book.accession_id} - #{@book.title} has been deleted"
   end

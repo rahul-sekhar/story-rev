@@ -8,9 +8,9 @@ class Book < ActiveRecord::Base
   :short_description, :book_type_id, :award_attributes, 
   :description_attributes, :cover_image_id, :cover_image_url
   
-  after_initialize :init
   after_validation :validate_virtual_attributes
-  before_save :check_age_level, :set_accession_id
+  before_save :check_age_level
+  before_validation :set_accession_id
   after_create :set_book_date
   
   has_and_belongs_to_many :collections, 
@@ -22,7 +22,7 @@ class Book < ActiveRecord::Base
   belongs_to :book_type
   belongs_to :country
   has_many :book_awards, :dependent => :destroy
-  has_many :editions, :dependent => :destroy
+  has_many :editions, inverse_of: :book, :dependent => :destroy
   has_many :new_copies, :through => :editions
   has_many :used_copies, :through => :editions
   has_many :copies, :through => :editions, :readonly => true
@@ -71,9 +71,10 @@ class Book < ActiveRecord::Base
     uniqueness: true,
     numericality: {
       only_integer: true,
-      greater_than_or_equal_to: 0 
-    }, 
-    allow_blank: true
+      greater_than: 0 
+    }
+
+  validates :in_stock, inclusion: {in: [true, false]}
   
   validates_associated :author
   validates_associated :illustrator
@@ -93,10 +94,6 @@ class Book < ActiveRecord::Base
   # Scope to include copy data
   def self.includes_copies
     includes({:editions => [:format, :publisher]}, :copies)
-  end
-  
-  def init
-    self.in_stock = false if in_stock.nil?
   end
 
   def to_param

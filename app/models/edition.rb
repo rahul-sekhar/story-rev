@@ -5,7 +5,7 @@ class Edition < ActiveRecord::Base
   
   belongs_to :format
   belongs_to :language
-  belongs_to :book
+  belongs_to :book, inverse_of: :editions
   belongs_to :publisher
   
   has_many :new_copies, dependent: :destroy
@@ -16,12 +16,15 @@ class Edition < ActiveRecord::Base
   
   before_validation :convert_raw_isbn
   
+  validates :book, presence: true
   validates :format, presence: true
-  validates :isbn, length: { maximum: 50 }
+  validates :isbn, 
+    length: { maximum: 50 }, 
+    format: { with: /\A\d+(?:-?\d+)*\z/ }, 
+    allow_blank: true
   validates :raw_isbn, 
     numericality: { only_integer: true }, 
     if: "isbn.present?"
-  validates :isbn, format: { with: /\A\d+(?:-?\d+)*\z/ }, allow_blank: true
   
   validates_associated :publisher
   validates_associated :format
