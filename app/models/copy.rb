@@ -11,13 +11,21 @@ class Copy < ActiveRecord::Base
   has_many :order_copies, :dependent => :destroy
   has_one :stock_taking
 
+  validates :edition, presence: true
   validates :accession_id, presence: true, uniqueness: true
-  validates :copy_number, presence: true, numericality: { only_integer: true }
-  validates :stock, presence: true, numericality: { only_integer: true }
+  validates :copy_number, numericality: { only_integer: true }
+  validates :stock, numericality: { only_integer: true }
   validates :price, numericality: {
     only_integer: true,
     greater_than_or_equal_to: 0
   }
+  validates :new_copy, inclusion: {in: [true, false]}
+  validates :condition_rating,
+    numericality: {
+      only_integer: true,
+      greater_than_or_equal_to: 0,
+      less_than_or_equal_to: 5 
+    }
 
   scope :stocked, -> { where{stock > 0} }
   scope :unstocked, -> { where{stock <= 0} }
@@ -37,8 +45,10 @@ class Copy < ActiveRecord::Base
   end
 
   def set_accession_id
-    self.copy_number ||= find_copy_number
-    self.accession_id ||= "#{book.accession_id}-#{copy_number}"
+    unless edition.blank?
+      self.copy_number ||= find_copy_number
+      self.accession_id ||= "#{book.accession_id}-#{copy_number}"
+    end
   end
 
   def find_copy_number

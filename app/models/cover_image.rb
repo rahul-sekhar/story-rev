@@ -6,7 +6,7 @@ class CoverImage < ActiveRecord::Base
   
   belongs_to :book
   
-  validates :filename, :presence => true, :file_size => { :maximum => 4.megabytes.to_i }
+  validates :filename, presence: true, file_size: { maximum: 4.megabytes.to_i }
   
   def self.clear_old
     cleared = 0

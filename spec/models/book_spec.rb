@@ -7,6 +7,7 @@ describe Book do
   it { should be_valid }
 
   describe "title" do
+
     context "with a nil title" do
       before { subject.title = nil }
       it { should be_invalid }
@@ -137,14 +138,22 @@ describe Book do
       book.accession_id.should == 100
     end
 
-    it "should accept only non-negative integers for user set values" do
-      [-1, "a", "1a", "-", 0.56, "1.5"].each do |x|
+    it "should reset the accession_id when the user sets it to be nil" do
+      book.accession_id = 99
+      book.save
+      book.accession_id = nil
+      book.save
+      book.accession_id.should == 100
+    end
+
+    it "should accept only positiev integers for user set values" do
+      [-1, "a", "1a", "-", 0.56, "1.5", "0"].each do |x|
         book.accession_id = x
         book.should be_invalid, x
         book.errors[:accession_id].should be_present
       end
 
-      [0, 1, 1001, "1"].each do |x|
+      [1, 1001, "1"].each do |x|
         book.accession_id = x
         book.should be_valid, x
       end
@@ -175,6 +184,12 @@ describe Book do
 
   it "should initially be out of stock" do
     book.in_stock.should == false
+  end
+
+  it "should not allow a nil in_stock" do
+    book.in_stock = nil
+    book.should be_invalid
+    book.errors[:in_stock].should be_present
   end
 
   it "should return the authors full name as author name" do
@@ -242,7 +257,7 @@ describe Book do
     end
 
     it "should allow awards to be edited" do
-      book_award = create(:book_award)
+      book_award = build(:book_award)
       book.book_awards << book_award
       book.save
       award = create(:award)
@@ -253,7 +268,7 @@ describe Book do
     end
 
     it "should allow awards to be removed by removing the award id" do
-      book_award = create(:book_award)
+      book_award = build(:book_award)
       book.book_awards << book_award
       book.save
 
@@ -323,8 +338,8 @@ describe Book do
 
   describe "copies" do
     before :each do
-      book.editions << build_list(:edition, 2)
       book.save
+      create_list(:edition, 2, book: book)
     end
 
     it "should show the right number of copies" do
@@ -357,9 +372,23 @@ describe Book do
 
   describe "after being destroyed" do
     it "should destroy child editions" do
-      book.editions << build(:edition)
       book.save
+      create(:edition, book: book)
       expect{ book.destroy }.to change{ Edition.count }.by(-1)
+    end
+
+    it "should destroy child used copies" do
+      book.save
+      create(:edition, book: book)
+      create(:used_copy, edition: book.editions.first)
+      expect{ book.destroy }.to change{ UsedCopy.count }.by(-1)
+    end
+
+    it "should destroy child new copies" do
+      book.save
+      create(:edition, book: book)
+      create(:new_copy, edition: book.editions.first)
+      expect{ book.destroy }.to change{ NewCopy.count }.by(-1)
     end
 
     it "should destroy awards" do

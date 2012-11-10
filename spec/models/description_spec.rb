@@ -20,4 +20,9 @@ describe Description do
     subject.should be_invalid
     subject.errors.should have_key :title
   end
+
+  it "should raise an exception when saved without a book" do
+    subject.book = nil
+    expect { subject.save }.to raise_error(ActiveRecord::StatementInvalid)
+  end
 end

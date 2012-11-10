@@ -94,6 +94,8 @@ GEM
       railties (>= 3.0.0)
     fattr (2.2.1)
     ffi (1.0.11)
+    foreigner (1.2.1)
+      activerecord (>= 3.0.0)
     gherkin (2.11.5)
       json (>= 1.4.6)
     guard-cucumber (1.2.0)
@@ -261,6 +263,7 @@ DEPENDENCIES
   database_cleaner (= 0.9.1)
   delayed_job_active_record (= 0.3.3)
   factory_girl_rails (= 4.1.0)
+  foreigner (= 1.2.1)
   guard!
   guard-cucumber (= 1.2.0)
   guard-rspec (= 1.1.0)

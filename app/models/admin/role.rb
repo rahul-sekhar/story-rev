@@ -6,9 +6,9 @@ class Admin::Role < ActiveRecord::Base
   attr_writer :admin_password
   before_save :encrypt_password
   
-  validates :password, :presence => true, :confirmation => true
-  validates :admin_password, :admin => true
-  validates :name, :presence => true
+  validates :password, presence: true, confirmation: true
+  validates :admin_password, admin: true
+  validates :name, presence: true, length: { maximum: 100 }
   
   def self.authenticate(password)
     self.all.each do |r|

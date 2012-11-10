@@ -7,7 +7,7 @@ class BookAward < ActiveRecord::Base
   belongs_to :book
   belongs_to :award
   
-  validates :award_id, presence: true
+  validates :award, presence: true
   validates :year,
     numericality: {
       only_integer: true,

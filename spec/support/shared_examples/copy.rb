@@ -1,4 +1,10 @@
 shared_examples_for "a copy" do
+  it "should require an edition" do
+    copy.edition = nil
+    copy.should be_invalid
+    copy.errors[:edition].should be_present
+  end
+
   describe "price" do
     it "should be required" do
       copy.price = nil
@@ -52,37 +58,66 @@ shared_examples_for "a copy" do
     end
   end
 
+  describe "condition rating" do
+    it "should be required" do
+      copy.condition_rating = nil
+      copy.should be_invalid
+      copy.errors[:condition_rating].should be_present
+    end
+
+    it "should be an integer between 0 and 5" do
+      ["-1", "0.5", 0.56, 6, -2].each do |x|
+        copy.condition_rating = x
+        copy.should be_invalid, x
+        copy.errors[:condition_rating].should be_present
+      end
+
+      [0, 1, 5, "3"].each do |x|
+        copy.condition_rating = x
+        copy.should be_valid, x
+      end
+    end
+  end
+
+  describe "new_copy" do
+    it "should be required" do
+      copy.new_copy = nil
+      copy.should be_invalid
+      copy.errors[:new_copy].should be_present
+    end
+  end
+
   describe "copy number and accession id" do
     before do
-      unstubbed_copy.book.accession_id = 50
-      unstubbed_copy.book.save
+      copy.book.accession_id = 50
+      copy.book.save
     end
 
     def check_copy_number_and_accession_id(num)
-      unstubbed_copy.save
-      unstubbed_copy.copy_number.should == num
-      unstubbed_copy.accession_id.should == "50-#{num}"
+      copy.save
+      copy.copy_number.should == num
+      copy.accession_id.should == "50-#{num}"
     end
 
     def new_edition
       new_ed = build(:edition)
-      unstubbed_copy.book.editions << new_ed
-      unstubbed_copy.book.save
+      copy.book.editions << new_ed
+      copy.book.save
       return new_ed.reload
     end
 
     it "should be set to 1 for the first copy" do
-      unstubbed_copy.save
+      copy.save
       check_copy_number_and_accession_id(1)
     end
 
     it "should be set correctly with a used copy in the same edition" do
-      unstubbed_copy.edition.used_copies << build(:used_copy, copy_number: 10)
+      copy.edition.used_copies << build(:used_copy, copy_number: 10)
       check_copy_number_and_accession_id(11)
     end
 
     it "should be set correctly with a new copy in the same edition" do
-      unstubbed_copy.edition.new_copies << build(:new_copy, copy_number: 10)
+      copy.edition.new_copies << build(:new_copy, copy_number: 10)
       check_copy_number_and_accession_id(11)
     end
 

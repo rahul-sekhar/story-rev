@@ -29,7 +29,7 @@ class BookSearcher
   def formatted_results
     sorted_results.map do |x|
       {
-        id: x.id,
+        id: x.accession_id,
         text: get_result_text(x),
       }
     end

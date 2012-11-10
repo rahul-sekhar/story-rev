@@ -25,6 +25,7 @@ gem 'whenever', '0.7.3'
 gem 'aws-s3', '0.6.3'
 gem 'squeel', '1.0.13'
 gem 'bcrypt-ruby', '~> 3.0.0', :require => "bcrypt"
+gem 'foreigner', '1.2.1'
 
 group :assets do
   gem 'sass-rails', '3.2.5'

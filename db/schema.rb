@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121024075430) do
+ActiveRecord::Schema.define(:version => 20121110094718) do
 
   create_table "accounts", :force => true do |t|
     t.string   "name"
@@ -22,57 +22,59 @@ ActiveRecord::Schema.define(:version => 20121024075430) do
   add_index "accounts", ["name"], :name => "index_accounts_on_name"
 
   create_table "admin_roles", :force => true do |t|
-    t.string   "name"
-    t.string   "password_hash"
-    t.string   "password_salt"
+    t.string   "name",          :limit => 100, :null => false
+    t.string   "password_hash",                :null => false
+    t.string   "password_salt",                :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "admin_roles", ["name"], :name => "index_admin_roles_on_name", :unique => true
 
   create_table "authors", :force => true do |t|
-    t.string   "first_name"
-    t.string   "last_name"
+    t.string   "first_name", :limit => 100
+    t.string   "last_name",  :limit => 100,                :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "priority",   :default => 0
+    t.integer  "priority",                  :default => 0
   end
 
-  add_index "authors", ["last_name", "first_name"], :name => "index_authors_on_last_name_and_first_name"
+  add_index "authors", ["last_name", "first_name"], :name => "index_authors_on_last_name_and_first_name", :unique => true
   add_index "authors", ["priority"], :name => "index_authors_on_priority"
 
   create_table "award_types", :force => true do |t|
-    t.string   "name"
+    t.string   "name",       :limit => 100,                :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "priority",   :default => 0
+    t.integer  "priority",                  :default => 0
   end
 
   add_index "award_types", ["name"], :name => "index_award_types_on_name", :unique => true
   add_index "award_types", ["priority"], :name => "index_award_types_on_priority"
 
   create_table "awards", :force => true do |t|
-    t.integer  "award_type_id"
-    t.string   "name"
+    t.integer  "award_type_id",                :null => false
+    t.string   "name",          :limit => 150, :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
+  add_index "awards", ["award_type_id", "name"], :name => "index_awards_on_award_type_id_and_name", :unique => true
   add_index "awards", ["award_type_id"], :name => "index_awards_on_award_type_id"
-  add_index "awards", ["name"], :name => "index_awards_on_name"
 
   create_table "book_types", :force => true do |t|
-    t.string   "name"
+    t.string   "name",       :limit => 100,                :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "priority",   :default => 0
+    t.integer  "priority",                  :default => 0
   end
 
-  add_index "book_types", ["name"], :name => "index_product_types_on_name"
+  add_index "book_types", ["name"], :name => "index_book_types_on_name", :unique => true
   add_index "book_types", ["priority"], :name => "index_product_types_on_priority"
 
   create_table "books", :force => true do |t|
-    t.string   "title"
-    t.integer  "author_id"
+    t.string   "title",                                :null => false
+    t.integer  "author_id",                            :null => false
     t.integer  "illustrator_id"
     t.integer  "age_from"
     t.integer  "age_to"
@@ -81,15 +83,15 @@ ActiveRecord::Schema.define(:version => 20121024075430) do
     t.text     "short_description"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "in_stock"
+    t.boolean  "in_stock",          :default => false, :null => false
     t.datetime "book_date"
     t.integer  "publisher_id"
     t.integer  "country_id"
     t.integer  "book_type_id"
-    t.integer  "accession_id"
+    t.integer  "accession_id",                         :null => false
   end
 
-  add_index "books", ["accession_id"], :name => "index_products_on_accession_id"
+  add_index "books", ["accession_id"], :name => "index_books_on_accession_id", :unique => true
   add_index "books", ["age_from", "age_to"], :name => "index_products_on_age_from_and_age_to"
   add_index "books", ["author_id"], :name => "index_products_on_author_id"
   add_index "books", ["book_date"], :name => "index_products_on_book_date"
@@ -101,8 +103,8 @@ ActiveRecord::Schema.define(:version => 20121024075430) do
   add_index "books", ["title"], :name => "index_products_on_title", :unique => true
 
   create_table "books_awards", :force => true do |t|
-    t.integer  "book_id"
-    t.integer  "award_id"
+    t.integer  "book_id",    :null => false
+    t.integer  "award_id",   :null => false
     t.integer  "year"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -112,20 +114,21 @@ ActiveRecord::Schema.define(:version => 20121024075430) do
   add_index "books_awards", ["book_id"], :name => "index_products_awards_on_product_id"
 
   create_table "books_collections", :id => false, :force => true do |t|
-    t.integer "book_id"
-    t.integer "collection_id"
+    t.integer "book_id",       :null => false
+    t.integer "collection_id", :null => false
   end
 
   add_index "books_collections", ["book_id", "collection_id"], :name => "index_products_keywords_on_product_id_and_keyword_id", :unique => true
   add_index "books_collections", ["book_id"], :name => "index_products_keywords_on_product_id"
 
   create_table "collections", :force => true do |t|
-    t.string   "name"
+    t.string   "name",       :limit => 200,                :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "priority",   :default => 0
+    t.integer  "priority",                  :default => 0
   end
 
+  add_index "collections", ["name"], :name => "index_collections_on_name", :unique => true
   add_index "collections", ["name"], :name => "index_keywords_on_name", :unique => true
 
   create_table "config_data", :force => true do |t|
@@ -134,42 +137,45 @@ ActiveRecord::Schema.define(:version => 20121024075430) do
   end
 
   create_table "copies", :force => true do |t|
-    t.integer  "edition_id"
-    t.string   "accession_id"
+    t.integer  "edition_id",                                            :null => false
+    t.string   "accession_id",                                          :null => false
     t.string   "condition_description"
-    t.integer  "condition_rating",      :limit => 2
-    t.integer  "price"
-    t.boolean  "new_copy"
-    t.integer  "stock"
-    t.integer  "copy_number"
+    t.integer  "condition_rating",      :limit => 2,                    :null => false
+    t.integer  "price",                                                 :null => false
+    t.boolean  "new_copy",                           :default => false, :null => false
+    t.integer  "stock",                                                 :null => false
+    t.integer  "copy_number",                                           :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "required_stock"
   end
 
-  add_index "copies", ["accession_id"], :name => "index_copies_on_accession_id"
+  add_index "copies", ["accession_id"], :name => "index_copies_on_accession_id", :unique => true
   add_index "copies", ["condition_rating"], :name => "index_copies_on_condition_rating"
   add_index "copies", ["copy_number"], :name => "index_copies_on_copy_number"
   add_index "copies", ["edition_id"], :name => "index_copies_on_edition_id"
   add_index "copies", ["new_copy"], :name => "index_copies_on_new_copy"
+  add_index "copies", ["price"], :name => "index_copies_on_price"
   add_index "copies", ["stock"], :name => "index_copies_on_number"
 
   create_table "countries", :force => true do |t|
-    t.string   "name"
+    t.string   "name",       :limit => 100, :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "countries", ["name"], :name => "index_countries_on_name"
+  add_index "countries", ["name"], :name => "index_countries_on_name", :unique => true
 
   create_table "cover_images", :force => true do |t|
     t.integer  "book_id"
-    t.string   "filename"
+    t.string   "filename",   :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "width"
     t.integer  "height"
   end
+
+  add_index "cover_images", ["book_id"], :name => "index_cover_images_on_book_id", :unique => true
 
   create_table "delayed_jobs", :force => true do |t|
     t.integer  "priority",   :default => 0
@@ -188,8 +194,8 @@ ActiveRecord::Schema.define(:version => 20121024075430) do
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
 
   create_table "descriptions", :force => true do |t|
-    t.integer  "book_id"
-    t.string   "title"
+    t.integer  "book_id",    :null => false
+    t.string   "title",      :null => false
     t.text     "content"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -198,24 +204,25 @@ ActiveRecord::Schema.define(:version => 20121024075430) do
   add_index "descriptions", ["book_id"], :name => "index_other_fields_on_product_id"
 
   create_table "editions", :force => true do |t|
-    t.integer  "book_id"
-    t.string   "isbn"
+    t.integer  "book_id",                    :null => false
+    t.string   "isbn",         :limit => 50
     t.integer  "format_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "raw_isbn"
     t.integer  "publisher_id"
-    t.integer  "language_id",  :default => 1
+    t.integer  "language_id"
   end
 
   add_index "editions", ["book_id"], :name => "index_editions_on_product_id"
   add_index "editions", ["format_id"], :name => "index_editions_on_format_id"
   add_index "editions", ["isbn"], :name => "index_editions_on_isbn"
+  add_index "editions", ["language_id"], :name => "index_editions_on_language_id"
   add_index "editions", ["publisher_id"], :name => "index_editions_on_publisher_id"
   add_index "editions", ["raw_isbn"], :name => "index_editions_on_raw_isbn"
 
   create_table "email_subscriptions", :force => true do |t|
-    t.string   "email"
+    t.string   "email",      :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -231,7 +238,7 @@ ActiveRecord::Schema.define(:version => 20121024075430) do
   add_index "extra_costs", ["order_id"], :name => "index_extra_costs_on_order_id"
 
   create_table "formats", :force => true do |t|
-    t.string   "name"
+    t.string   "name",       :limit => 100, :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -239,23 +246,23 @@ ActiveRecord::Schema.define(:version => 20121024075430) do
   add_index "formats", ["name"], :name => "index_formats_on_name", :unique => true
 
   create_table "illustrators", :force => true do |t|
-    t.string   "first_name"
-    t.string   "last_name"
+    t.string   "first_name", :limit => 100
+    t.string   "last_name",  :limit => 100,                :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "priority",   :default => 0
+    t.integer  "priority",                  :default => 0
   end
 
-  add_index "illustrators", ["last_name", "first_name"], :name => "index_illustrators_on_last_name_and_first_name"
+  add_index "illustrators", ["last_name", "first_name"], :name => "index_illustrators_on_last_name_and_first_name", :unique => true
   add_index "illustrators", ["priority"], :name => "index_illustrators_on_priority"
 
   create_table "languages", :force => true do |t|
-    t.string   "name"
+    t.string   "name",       :limit => 100, :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "languages", ["name"], :name => "index_languages_on_name"
+  add_index "languages", ["name"], :name => "index_languages_on_name", :unique => true
 
   create_table "orders", :force => true do |t|
     t.integer  "step"
@@ -312,16 +319,18 @@ ActiveRecord::Schema.define(:version => 20121024075430) do
   add_index "payment_methods", ["name"], :name => "index_payment_methods_on_name"
 
   create_table "pickup_points", :force => true do |t|
-    t.string   "name"
+    t.string   "name",       :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
+  add_index "pickup_points", ["name"], :name => "index_pickup_points_on_name", :unique => true
+
   create_table "publishers", :force => true do |t|
-    t.string   "name"
+    t.string   "name",       :limit => 150,                :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "priority",   :default => 0
+    t.integer  "priority",                  :default => 0
   end
 
   add_index "publishers", ["name"], :name => "index_publishers_on_name", :unique => true
@@ -341,7 +350,7 @@ ActiveRecord::Schema.define(:version => 20121024075430) do
   end
 
   create_table "stock_taking", :force => true do |t|
-    t.integer  "copy_id"
+    t.integer  "copy_id",    :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -403,5 +412,32 @@ ActiveRecord::Schema.define(:version => 20121024075430) do
   add_index "transfers", ["source_account_id"], :name => "index_transfers_on_source_account_id"
   add_index "transfers", ["target_account_id"], :name => "index_transfers_on_target_account_id"
   add_index "transfers", ["transfer_category_id"], :name => "index_transfers_on_transfer_category_id"
+
+  add_foreign_key "awards", "award_types", :name => "awards_award_type_id_fk"
+
+  add_foreign_key "books", "authors", :name => "books_author_id_fk"
+  add_foreign_key "books", "book_types", :name => "books_book_type_id_fk"
+  add_foreign_key "books", "countries", :name => "books_country_id_fk"
+  add_foreign_key "books", "illustrators", :name => "books_illustrator_id_fk"
+  add_foreign_key "books", "publishers", :name => "books_publisher_id_fk"
+
+  add_foreign_key "books_awards", "awards", :name => "books_awards_award_id_fk"
+  add_foreign_key "books_awards", "books", :name => "books_awards_book_id_fk"
+
+  add_foreign_key "books_collections", "books", :name => "books_collections_book_id_fk"
+  add_foreign_key "books_collections", "collections", :name => "books_collections_collection_id_fk"
+
+  add_foreign_key "copies", "editions", :name => "copies_edition_id_fk"
+
+  add_foreign_key "cover_images", "books", :name => "cover_images_book_id_fk"
+
+  add_foreign_key "descriptions", "books", :name => "descriptions_book_id_fk"
+
+  add_foreign_key "editions", "books", :name => "editions_book_id_fk"
+  add_foreign_key "editions", "formats", :name => "editions_format_id_fk"
+  add_foreign_key "editions", "languages", :name => "editions_language_id_fk"
+  add_foreign_key "editions", "publishers", :name => "editions_publisher_id_fk"
+
+  add_foreign_key "stock_taking", "copies", :name => "stock_taking_copy_id_fk"
 
 end

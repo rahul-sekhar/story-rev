@@ -10,6 +10,8 @@ class Award < ActiveRecord::Base
     presence: true,
     uniqueness: { case_sensitive: false, scope: :award_type_id }
 
+  validates :award_type, presence: true
+
   strip_attributes
   
   def full_name
