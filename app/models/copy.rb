@@ -7,7 +7,6 @@ class Copy < ActiveRecord::Base
   after_destroy :check_book_stock
 
   belongs_to :edition
-  has_many :shopping_cart_copies, :dependent => :destroy
   has_many :order_copies, :dependent => :destroy
   has_one :stock_taking
 
@@ -19,7 +18,7 @@ class Copy < ActiveRecord::Base
     only_integer: true,
     greater_than_or_equal_to: 0
   }
-  validates :new_copy, inclusion: {in: [true, false]}
+  validates :new_copy, inclusion: { in: [true, false] }
   validates :condition_rating,
     numericality: {
       only_integer: true,

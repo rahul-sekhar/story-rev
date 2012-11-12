@@ -1,6 +1,6 @@
 <ul class="delivery">
   <li>
-    <p><strong><%= f.radio_button(:delivery_method, "1") %> Speed post (<%= RupeeHelper.to_rupee(20) %> first book, <%= RupeeHelper.to_rupee(10) %> per additional book)</strong></p>
+    <p><strong><%= f.radio_button(:delivery_method, "1") %> Speed post (<%= CurrencyMethods.to_currency(20) %> first book, <%= CurrencyMethods.to_currency(10) %> per additional book)</strong></p>
   </li>
   <li>
     <p<%= class_if @order.errors[:pickup_point_id].present?,"error" %>><strong><%= f.radio_button(:delivery_method, "2") %> Pick up point in Bangalore</strong></p>

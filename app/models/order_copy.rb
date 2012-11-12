@@ -1,28 +1,29 @@
 class OrderCopy < ActiveRecord::Base
   self.table_name = :orders_copies
+
+  default_scope -> { includes{copy} }
   
   attr_accessible :copy_id, :number
-
-  after_initialize :init
-  before_save :check_number
   
   belongs_to :order
-  belongs_to :copy
+  belongs_to :copy, readonly: true
+  belongs_to :new_copy, foreign_key: :copy_id
+  belongs_to :used_copy, foreign_key: :copy_id
+
+  validates :copy, presence: true
+  validates :number, 
+    numericality: { only_integer: true, greater_than: 0}
+  validates :ticked, inclusion: { in: [true, false] }
+
+  scope :stocked, -> { joins{copy}.where{copy.stock > 0} }
+  scope :unstocked, -> { joins{copy}.where{copy.stock <= 0} }
   
-  scope :stocked, where(:copies => { :in_stock => true })
-  scope :unstocked, where(:copies => { :in_stock => false })
-  
-  def init
-    self.number ||= 1
-    self.ticked = false if ticked.nil?
+  def number=(val)
+    write_attribute(:number, val.to_i) if copy.new_copy && val.to_i > 0
   end
-  
+
   def price
     copy.price * number
-  end
-  
-  def check_number
-    self.number = 1 unless (copy.new_copy && number > 0)
   end
   
   def get_hash
@@ -40,22 +41,5 @@ class OrderCopy < ActiveRecord::Base
       :number => copy.new_copy ? number : nil,
       :ticked => ticked
     }
-  end
-  
-  def set_number=(num)
-    self.copy.number -= (num.to_i - number)
-    self.copy.save
-    self.number = num.to_i
-  end
-  
-  def revert_copy
-    if copy.new_copy
-      copy.number += number
-      copy.save
-    else
-      copy.set_stock = true
-    end
-    
-    self.copy = nil
   end
 end

@@ -128,7 +128,7 @@ $(document).ready(function() {
             var copy_id = $this.closest('tr').data('id');
             $.post("/shopping_cart.json", {
                 _method: "PUT",
-                shopping_cart: { remove_copy: copy_id }
+                order: { remove_copy: copy_id }
             }, function(data) {
                 updateShoppingCartCount(data.item_count);
             });
@@ -184,7 +184,7 @@ $(document).ready(function() {
             url: "/shopping_cart.json",
             data: {
                 _method: "PUT",
-                shopping_cart: { add_copy: copy_id }
+                order: { add_copy: copy_id }
             },
             success: function(data) {
                 var $added = $('<span class="added" title="Added to cart">In Cart</span>');
@@ -221,7 +221,7 @@ $(document).ready(function() {
             url: "/shopping_cart.json",
             data: {
                 _method: "PUT",
-                shopping_cart: { remove_copy: copy_id }
+                order: { remove_copy: copy_id }
             },
             success: function(data) {
                 var $buyLink = $('<a href="/update_cart?shopping_cart%5Badd_copy%5D=' + copy_id + '" class="buy-link" title="Add to cart">Buy</a>')
@@ -475,7 +475,7 @@ $(document).ready(function() {
                 url: '/shopping_cart.json',
                 data: {
                     _method: "PUT",
-                    shopping_cart: {
+                    order: {
                         change_number: {
                             copy_id: copy_id,
                             number: number
@@ -512,7 +512,7 @@ $(document).ready(function() {
             url: '/shopping_cart.json',
             data: {
                 _method: "PUT",
-                shopping_cart: params,
+                order: params,
                 get_html: true
             },
             success: function(data) {

@@ -4,13 +4,13 @@ StoryRev::Application.routes.draw do
   
   resources :books
   
-  get "order" => "orders#new"
-  post "order" => "orders#create"
-  delete "order" => "orders#destroy", :as => "destroy_order"
-  
-  get "shopping_cart" => "shopping_carts#index", :as => "shopping_cart"
-  put "shopping_cart" => "shopping_carts#update"
-  get "update_cart" => "shopping_carts#update", :as => "update_cart"
+  get "shopping_cart" => "orders#view_cart"
+  put "shopping_cart" => "orders#update_cart"
+  get "update_cart" => "orders#update_cart"
+
+  get "order/step-:step" => "orders#show_step", step: /[1-4]/, as: "order_step"
+  post "order/step-:step" => "orders#submit_step", step: /[1-4]/
+  get "order/cancel" => "orders#cancel_order"
   
   get "about" => "pages#about"
   get "help" => "pages#help"

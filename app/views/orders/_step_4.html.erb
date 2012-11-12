@@ -1,8 +1,8 @@
 <div class="confirmation">
   <table>
     <% n = 0 %>
-    <% shopping_cart.shopping_cart_copies.stocked.each do |scc| %>
-      <% c = scc.copy %>
+    <% order.order_copies.stocked.each do |oc| %>
+      <% c = oc.copy %>
       <% n += 1 %>
       <tr>
         <td class="number">
@@ -30,13 +30,13 @@
         </td>
         
         <td class="number">
-          <% if scc.number > 1 %>
-            <p class="number"><%= scc.number %></p>
+          <% if oc.number > 1 %>
+            <p class="number"><%= oc.number %></p>
           <% end %>
         </td>
         
         <td class="price">
-          <p><%= RupeeHelper.to_rupee(c.price) %></p>
+          <p><%= CurrencyMethods.to_currency(c.price) %></p>
         </td>
       </tr>
     <% end %>
@@ -44,17 +44,18 @@
   
   <div class="total">
     <% if @order.postage_amount > 0 %>
-      <p class="postage"><strong>Postage:</strong> <%= RupeeHelper.to_rupee(@order.postage_amount) %></p>
+      <p class="postage"><strong>Postage:</strong> <%= CurrencyMethods.to_currency(@order.postage_amount) %></p>
     <% end %>
-    <p class="total-amount"><strong>Total: <%= RupeeHelper.to_rupee(@order.total_amount) %></strong></p>
+    <p class="total-amount"><strong>Total: <%= CurrencyMethods.to_currency(@order.total_amount) %></strong></p>
   </div>
   
 
-  <% if shopping_cart.shopping_cart_copies.unstocked.length > 0 %>
+  <% if order.order_copies.unstocked.length > 0 %>
   <div class="unavailable">
     <p class="error">The following items are no longer available:</p>
     <% n = 0 %>
-    <% shopping_cart.shopping_cart_copies.unstocked.each do |c| %>
+    <% order.order_copies.unstocked.each do |oc| %>
+      <% c = oc.copy %>
       <% n+= 1 %>
       <div class="item">
         
@@ -76,47 +77,42 @@
           <%= render "shared/rating", :rating => c.condition_rating %>
         </p>
         
-        <p class="price"><%= RupeeHelper.to_rupee(c.price) %></p>
+        <p class="price"><%= CurrencyMethods.to_currency(c.price) %></p>
         
       </div>
     <% end %>
   </div>
   <% end %>
   
+  <% present(@customer) do |c| %>
   <div class="contact">
     
-    <p class="name"><%= @order.name %></p>
+    <p class="name"><%= c.name %></p>
     
-    <% if @order.address.present? %>
-      <%= simple_format @order.address, :class => :address %>
-    <% end %>
-    
-    <% if @order.city.present? || @order.pin_code.present? %>
-      <p class="city">
-        <%= @order.city.present? ?
-          @order.pin_code.present? ? "#{@order.city} - #{@order.pin_code}" : @order.city
-          : @order.pin_code %>
-      </p>
+    <% if c.full_address.present? %>
+      <%= simple_format c.full_address, class: :address %>
     <% end %>
     
     <div class="phone-email">
-    <% if @order.phone.present? %>
-      <p>Phone: <%= @order.phone %></p>
+    <% if c.phone.present? %>
+      <p>Phone: <%= c.phone %></p>
     <% end %>
     
-    <p>Email: <%= @order.email %></p>
+    <p>Email: <%= c.email %></p>
     </div>
   </div>
   
   <div class="other">
     <p class="delivery">
-      Payment by <%= @order.payment_name %><br />
-      Delivery by <%= @order.delivery_name %>
-      <% if @order.delivery_method == 2 %>
-        <br /><span><%= @order.pickup_point.present? ? @order.pickup_point.name : @order.other_pickup %></span>
+      <%= c.payment_text %><br />
+      <%= c.delivery_text %>
+      <% if c.pickup_point_text.present? %>
+        <br />
+        <span><%= c.pickup_point_text %></span>
       <% end %>
     </p>
     
-    <%= simple_format @order.other_info, :class => :comments %>
+    <%= simple_format c.other_info, class: :comments %>
   </div>
+  <% end %>
 </div>

@@ -15,14 +15,14 @@
   
   <td class="price"><%= present(c).price %></td>
   <td class="cart">
-    <% if shopping_cart.copy_ids.include? c.id %>
+    <% if order.copy_ids.include? c.id %>
       <span class="added" title="Added to cart">In Cart</span>
-      <%= link_to "Remove", update_cart_path(:shopping_cart => { :remove_copy => c.id }),
+      <%= link_to "Remove", update_cart_path(:order => { :remove_copy => c.id }),
         :class => "remove-link",
         :title => "Remove from cart"
       %>
     <% else %>
-      <%= link_to "Buy", update_cart_path(:shopping_cart => { :add_copy => c.id}),
+      <%= link_to "Buy", update_cart_path(:order => { :add_copy => c.id}),
         :class => "buy-link",
         :title => "Add to cart"
       %>

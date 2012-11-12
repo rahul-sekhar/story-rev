@@ -57,4 +57,18 @@ describe Edition do
     edition.isbn = ""
     edition.should be_valid
   end
+
+  describe "after being destroyed" do
+    it "should destroy child used copies" do
+      edition.save
+      create(:used_copy, edition: edition)
+      expect{ edition.destroy }.to change{ UsedCopy.count }.by(-1)
+    end
+
+    it "should destroy child new copies" do
+      edition.save
+      create(:new_copy, edition: edition)
+      expect{ edition.destroy }.to change{ NewCopy.count }.by(-1)
+    end
+  end
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121110094718) do
+ActiveRecord::Schema.define(:version => 20121110054351) do
 
   create_table "accounts", :force => true do |t|
     t.string   "name"
@@ -177,6 +177,27 @@ ActiveRecord::Schema.define(:version => 20121110094718) do
 
   add_index "cover_images", ["book_id"], :name => "index_cover_images_on_book_id", :unique => true
 
+  create_table "customers", :force => true do |t|
+    t.integer  "order_id",                         :null => false
+    t.integer  "delivery_method",                  :null => false
+    t.integer  "pickup_point_id"
+    t.integer  "payment_method_id"
+    t.text     "other_pickup"
+    t.string   "name",              :limit => 150
+    t.string   "email",             :limit => 100
+    t.string   "phone",             :limit => 40
+    t.text     "address"
+    t.string   "city",              :limit => 40
+    t.string   "pin_code",          :limit => 10
+    t.text     "other_info"
+    t.text     "notes"
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
+  end
+
+  add_index "customers", ["name"], :name => "index_customers_on_name"
+  add_index "customers", ["order_id"], :name => "index_customers_on_order_id", :unique => true
+
   create_table "delayed_jobs", :force => true do |t|
     t.integer  "priority",   :default => 0
     t.integer  "attempts",   :default => 0
@@ -265,58 +286,42 @@ ActiveRecord::Schema.define(:version => 20121110094718) do
   add_index "languages", ["name"], :name => "index_languages_on_name", :unique => true
 
   create_table "orders", :force => true do |t|
-    t.integer  "step"
-    t.integer  "shopping_cart_id"
-    t.integer  "delivery_method"
-    t.integer  "pickup_point_id"
-    t.integer  "payment_method_id"
-    t.text     "other_pickup"
-    t.string   "name"
-    t.string   "email"
-    t.string   "phone"
-    t.text     "address"
-    t.string   "city"
-    t.string   "pin_code"
-    t.text     "other_info"
-    t.integer  "postage_amount"
-    t.integer  "total_amount"
+    t.integer  "postage_amount", :default => 0,     :null => false
+    t.integer  "total_amount",   :default => 0,     :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "notes"
     t.datetime "confirmed_date"
     t.datetime "paid_date"
     t.datetime "packaged_date"
     t.datetime "posted_date"
-    t.integer  "postage_transaction_id"
-    t.integer  "transaction_id"
-    t.integer  "account_id"
+    t.boolean  "final",          :default => false, :null => false
   end
 
   add_index "orders", ["confirmed_date"], :name => "index_orders_on_confirmed_date"
   add_index "orders", ["created_at"], :name => "index_orders_on_created_at"
-  add_index "orders", ["email"], :name => "index_orders_on_email"
-  add_index "orders", ["name"], :name => "index_orders_on_name"
+  add_index "orders", ["final"], :name => "index_orders_on_final"
   add_index "orders", ["paid_date"], :name => "index_orders_on_paid_date"
-  add_index "orders", ["pickup_point_id"], :name => "index_orders_on_pickup_point_id"
-  add_index "orders", ["postage_transaction_id"], :name => "index_orders_on_postage_transaction_id"
-  add_index "orders", ["shopping_cart_id"], :name => "index_orders_on_shopping_cart_id"
-  add_index "orders", ["step"], :name => "index_orders_on_step"
-  add_index "orders", ["transaction_id"], :name => "index_orders_on_transaction_id"
 
   create_table "orders_copies", :force => true do |t|
-    t.integer "order_id"
-    t.integer "copy_id"
-    t.integer "number"
-    t.boolean "ticked"
-  end
-
-  create_table "payment_methods", :force => true do |t|
-    t.string   "name"
+    t.integer  "order_id",                      :null => false
+    t.integer  "copy_id",                       :null => false
+    t.integer  "number",     :default => 1,     :null => false
+    t.boolean  "ticked",     :default => false, :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "payment_methods", ["name"], :name => "index_payment_methods_on_name"
+  add_index "orders_copies", ["copy_id"], :name => "index_orders_copies_on_copy_id"
+  add_index "orders_copies", ["order_id"], :name => "index_orders_copies_on_order_id"
+  add_index "orders_copies", ["updated_at"], :name => "index_orders_copies_on_updated_at"
+
+  create_table "payment_methods", :force => true do |t|
+    t.string   "name",       :limit => 120, :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "payment_methods", ["name"], :name => "index_payment_methods_on_name", :unique => true
 
   create_table "pickup_points", :force => true do |t|
     t.string   "name",       :null => false
@@ -335,19 +340,6 @@ ActiveRecord::Schema.define(:version => 20121110094718) do
 
   add_index "publishers", ["name"], :name => "index_publishers_on_name", :unique => true
   add_index "publishers", ["priority"], :name => "index_publishers_on_priority"
-
-  create_table "shopping_carts", :force => true do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "shopping_carts", ["updated_at"], :name => "index_shopping_carts_on_updated_at"
-
-  create_table "shopping_carts_copies", :force => true do |t|
-    t.integer "shopping_cart_id"
-    t.integer "copy_id"
-    t.integer "number"
-  end
 
   create_table "stock_taking", :force => true do |t|
     t.integer  "copy_id",    :null => false
@@ -412,32 +404,5 @@ ActiveRecord::Schema.define(:version => 20121110094718) do
   add_index "transfers", ["source_account_id"], :name => "index_transfers_on_source_account_id"
   add_index "transfers", ["target_account_id"], :name => "index_transfers_on_target_account_id"
   add_index "transfers", ["transfer_category_id"], :name => "index_transfers_on_transfer_category_id"
-
-  add_foreign_key "awards", "award_types", :name => "awards_award_type_id_fk"
-
-  add_foreign_key "books", "authors", :name => "books_author_id_fk"
-  add_foreign_key "books", "book_types", :name => "books_book_type_id_fk"
-  add_foreign_key "books", "countries", :name => "books_country_id_fk"
-  add_foreign_key "books", "illustrators", :name => "books_illustrator_id_fk"
-  add_foreign_key "books", "publishers", :name => "books_publisher_id_fk"
-
-  add_foreign_key "books_awards", "awards", :name => "books_awards_award_id_fk"
-  add_foreign_key "books_awards", "books", :name => "books_awards_book_id_fk"
-
-  add_foreign_key "books_collections", "books", :name => "books_collections_book_id_fk"
-  add_foreign_key "books_collections", "collections", :name => "books_collections_collection_id_fk"
-
-  add_foreign_key "copies", "editions", :name => "copies_edition_id_fk"
-
-  add_foreign_key "cover_images", "books", :name => "cover_images_book_id_fk"
-
-  add_foreign_key "descriptions", "books", :name => "descriptions_book_id_fk"
-
-  add_foreign_key "editions", "books", :name => "editions_book_id_fk"
-  add_foreign_key "editions", "formats", :name => "editions_format_id_fk"
-  add_foreign_key "editions", "languages", :name => "editions_language_id_fk"
-  add_foreign_key "editions", "publishers", :name => "editions_publisher_id_fk"
-
-  add_foreign_key "stock_taking", "copies", :name => "stock_taking_copy_id_fk"
 
 end

@@ -36,7 +36,6 @@ end
 # Cron jobs
 every :thursday, :at => '4:30 am' do
   runner "CoverImage.clear_old"
-  runner "ShoppingCart.clear_old"
   runner "Order.clear_old"
 end
 

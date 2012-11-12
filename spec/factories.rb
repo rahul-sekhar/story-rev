@@ -132,4 +132,16 @@ FactoryGirl.define do
   factory :pickup_point do
     sequence(:name) { |n| "Pickup Point #{n}"}
   end
+
+  factory :customer do
+    delivery_method 1
+    order
+  end
+
+  factory :order do
+  end
+
+  factory :order_copy do
+    association :copy, factory: :used_copy_with_book
+  end
 end

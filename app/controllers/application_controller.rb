@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
-  helper_method :shopping_cart
+  helper_method :order
 
   # Error handling
   if Rails.application.config.show_error_pages
@@ -14,18 +14,18 @@ class ApplicationController < ActionController::Base
     klass.new(object, view_context)
   end
   
-  def shopping_cart
-    begin
-      @shopping_cart ||= (session[:shopping_cart_id] && ShoppingCart.find(session[:shopping_cart_id])) || ShoppingCart.new
-    rescue
-      session[:shopping_cart_id] = nil
-      @shopping_cart = ShoppingCart.new
+  def order
+    @order ||= Order.find_by_id(session[:order_id])
+    if @order.nil? || @order.final
+      session[:order_id] = nil
+      @order = Order.new
     end
+    return @order
   end
   
-  def store_shopping_cart
-    shopping_cart.save
-    session[:shopping_cart_id] = shopping_cart.id
+  def store_order
+    order.save
+    session[:order_id] = order.id
   end
 
   private

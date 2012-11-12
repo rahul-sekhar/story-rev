@@ -82,4 +82,14 @@ describe BookPresenter, type: :decorator do
       subject.award_list.should == "Award 1, Award 2"
     end
   end
+
+  it "delegates #title to the object" do
+    book.should_receive(:title).and_return(:ret)
+    subject.title.should == :ret
+  end
+
+  it "delegates #short_description to the object" do
+    book.should_receive(:short_description).and_return(:ret)
+    subject.short_description.should == :ret
+  end
 end

@@ -8,9 +8,9 @@ class Edition < ActiveRecord::Base
   belongs_to :book
   belongs_to :publisher
   
-  has_many :new_copies, dependent: :destroy
-  has_many :used_copies, dependent: :destroy
-  has_many :copies, readonly: true
+  has_many :new_copies
+  has_many :used_copies
+  has_many :copies, readonly: true, dependent: :destroy
 
   name_tag :format, :language, :publisher
   
