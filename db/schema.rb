@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121110054351) do
+ActiveRecord::Schema.define(:version => 20121113093850) do
 
   create_table "accounts", :force => true do |t|
     t.string   "name"
@@ -134,6 +134,7 @@ ActiveRecord::Schema.define(:version => 20121110054351) do
   create_table "config_data", :force => true do |t|
     t.integer "default_account_id"
     t.integer "cash_account_id"
+    t.integer "default_cost_price", :default => 0, :null => false
   end
 
   create_table "copies", :force => true do |t|
@@ -148,6 +149,7 @@ ActiveRecord::Schema.define(:version => 20121110054351) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "required_stock"
+    t.integer  "cost_price",                         :default => 0,     :null => false
   end
 
   add_index "copies", ["accession_id"], :name => "index_copies_on_accession_id", :unique => true
@@ -197,6 +199,16 @@ ActiveRecord::Schema.define(:version => 20121110054351) do
 
   add_index "customers", ["name"], :name => "index_customers_on_name"
   add_index "customers", ["order_id"], :name => "index_customers_on_order_id", :unique => true
+
+  create_table "default_cost_prices", :force => true do |t|
+    t.integer  "book_type_id",                :null => false
+    t.integer  "format_id",                   :null => false
+    t.integer  "cost_price",   :default => 0, :null => false
+    t.datetime "created_at",                  :null => false
+    t.datetime "updated_at",                  :null => false
+  end
+
+  add_index "default_cost_prices", ["book_type_id", "format_id"], :name => "index_default_cost_prices_on_book_type_id_and_format_id", :unique => true
 
   create_table "delayed_jobs", :force => true do |t|
     t.integer  "priority",   :default => 0
