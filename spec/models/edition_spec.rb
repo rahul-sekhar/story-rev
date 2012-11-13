@@ -44,12 +44,12 @@ describe Edition do
   it "should check the ISBN format" do
     ["123A-1", "12 1", "A-A", "1_1", "-", "-1213", "12312-", "123--12"].each do |x|
       edition.isbn = x
-      edition.should be_invalid, x
+      edition.should be_invalid
       edition.errors[:isbn].should be_present
     end
     ["124", "12-12", "12-412-512-1", "0"].each do |x|
       edition.isbn = x
-      edition.should be_valid, x
+      edition.should be_valid
     end
   end
 

@@ -4,8 +4,8 @@ describe BooksController do
   describe "GET show" do
     context "valid id" do
       before do
-        @book = mock_model(Book)
-        @book.stub(:title).and_return("Test Title")
+        @book = create(:book)
+        @book.title = "Test Title"
         Book.should_receive(:find_by_accession_id!).with("12").and_return(@book)
         get :show, id: 12
       end

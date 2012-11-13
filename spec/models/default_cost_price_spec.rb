@@ -21,14 +21,14 @@ describe DefaultCostPrice do
     it "is valid when 0 or above" do
       [0,1,1000, "50"].each do |x|
         dcp.cost_price = x
-        dcp.should be_valid, x
+        dcp.should be_valid
       end
     end
 
     it "is invalid when below 0 or not an integer" do
       [-1,-5, "a"].each do |x|
         dcp.cost_price = x
-        dcp.should be_invalid, x
+        dcp.should be_invalid
       end
     end
   end

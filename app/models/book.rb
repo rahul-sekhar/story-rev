@@ -213,24 +213,31 @@ class Book < ActiveRecord::Base
   
   # Book sorting scope
   def self.sort(by, desc = nil)
-    dir = desc.present? ? "desc" : "asc"
+    dir = desc.present? ? " DESC" : ""
     
     case by
     when "random"
-      order{random.func}
+      order("random()#{dir}")
     when "title"
-      order{title.send(dir)}
+      order{"title#{dir}"}
     when "author"
-      joins{author}.order{[author.last_name.send(dir), author.first_name.send(dir)]}
+      joins{author}.order("authors.last_name#{dir}, authors.first_name#{dir}")
     when "age"
-      order{[(age_from == nil), age_from.send(dir)]}
+      order("age_from IS NULL, age_from#{dir}")
     when "price"
-      joins{editions.copies}.where{editions.copies.stock > 0}.group{id}.order{min(editions.copies.price).send(dir)}
+      joins{copies}
+        .where{copies.stock > 0}
+        .group{[id, authors.id]}
+        .order("MIN(copies.price)#{dir}")
     else
       # Default to order by date, reverse direction for this
-      dir = desc.present? ? "asc" : "desc"
-      order{book_date.send(dir)}
+      dir = desc.present? ? "" : " DESC"
+      order("book_date#{dir}")
     end
+  end
+
+  def self.columns_list
+    column_names.collect { |c| "#{table_name}.#{c}" }.join(",")
   end
 
   # Sets the seed for the database random function - val should be between 0 and 1

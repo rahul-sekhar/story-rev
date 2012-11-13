@@ -79,14 +79,14 @@ describe CompleteOrder do
     it "is invalid when blank or nil" do
       [nil, ""].each do |x|
         built_order.complete = x
-        built_order.should be_invalid, x
+        built_order.should be_invalid
       end
     end
 
     it "is valid when either true or false" do
       [true, false].each do |x|
         built_order.complete = x
-        built_order.should be_valid, x
+        built_order.should be_valid
       end
     end
   end

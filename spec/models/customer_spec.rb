@@ -110,7 +110,7 @@ describe Customer do
     it "is valid when set to 1" do
       [1, "1"].each do |x|
         customer.delivery_method = x
-        customer.should be_valid, x
+        customer.should be_valid
       end
     end
 
@@ -167,7 +167,7 @@ describe Customer do
     it "is invalid when set to anything but 1 or 2" do
       [3, 0, "0", "a"].each do |x|
         customer.delivery_method = x
-        customer.should be_invalid, x
+        customer.should be_invalid
       end
     end
 
@@ -185,7 +185,7 @@ describe Customer do
     it "is valid if the step is below 2" do
       [1,0,4,nil].each do |x|
         customer.payment_method_id = x
-        customer.should be_valid, x
+        customer.should be_valid
       end
     end
 
@@ -195,14 +195,14 @@ describe Customer do
       it "is valid if in [1,2,3]" do
         [1,2,3,"1"].each do |x|
           customer.payment_method_id = x
-          customer.should be_valid, x
+          customer.should be_valid
         end
       end
 
       it "is invalid if not in [1,2,3]" do
         [0,4,"a"].each do |x|
           customer.payment_method_id = x
-          customer.should be_invalid, x
+          customer.should be_invalid
         end
       end
     end
@@ -279,14 +279,14 @@ describe Customer do
       it "is invalid when not the right format" do
         ["a@a", "blah", "b.com"].each do |x|
           customer.email = x
-          customer.should be_invalid, x
+          customer.should be_invalid
         end
       end
 
       it "is valid when the right format" do
         ["a@a.b", "blah.bl@hm.in", "rahul@gmail.com" "a.b@c.i.d"].each do |x|
           customer.email = x
-          customer.should be_valid, x
+          customer.should be_valid
         end
       end
 

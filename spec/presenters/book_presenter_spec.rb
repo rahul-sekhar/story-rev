@@ -16,7 +16,7 @@ describe BookPresenter, type: :decorator do
 
     it "should be only the lower limit when the upper limit is not set" do
       book.age_from = 15
-      subject.age_level.should == "15+"
+      subject.age_level.should == "15"
     end
 
     it "should be just the age when both limits are the same" do

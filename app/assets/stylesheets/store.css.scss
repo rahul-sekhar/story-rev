@@ -195,6 +195,7 @@
     .sort {
         margin-top: e(60px, $text-size);
         margin-bottom: e(20px, $text-size);
+        clear:both;
         
         span {
             font-weight:bold;
@@ -212,12 +213,12 @@
         
         .asc {
             padding-right: 12px;
-            background: url('/images/sort-arrow-desc.png') no-repeat right center;
+            background: url('/images/sort-arrow-asc.png') no-repeat right center;
         }
         
         .desc {
             padding-right: 12px;
-            background: url('/images/sort-arrow-asc.png') no-repeat right center;
+            background: url('/images/sort-arrow-desc.png') no-repeat right center;
         }
     }
 

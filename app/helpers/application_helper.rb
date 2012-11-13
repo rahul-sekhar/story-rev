@@ -75,11 +75,11 @@ module ApplicationHelper
     end
     
     if price_from.to_i > 0 && price_to.to_i > 0
-      "Price - #{RupeeHelper.to_rupee_span(price_from)} to #{RupeeHelper.to_rupee_span(price_to)}".html_safe
+      "Price - #{CurrencyMethods.to_currency_with_span(price_from)} to #{CurrencyMethods.to_currency_with_span(price_to)}".html_safe
     elsif price_from.to_i > 0
-      "Price - more than #{RupeeHelper.to_rupee_span(price_from)}".html_safe
+      "Price - more than #{CurrencyMethods.to_currency_with_span(price_from)}".html_safe
     else
-      "Price - less than #{RupeeHelper.to_rupee_span(price_to)}".html_safe
+      "Price - less than #{CurrencyMethods.to_currency_with_span(price_to)}".html_safe
     end
   end
   

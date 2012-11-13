@@ -64,24 +64,24 @@ describe Book do
   it "should ensure that the to age is a number ranging from 0 to 99" do
     ['a', '-', '1a', -1, 100, 1.5].each do |x|
       book.age_to = x
-      book.should be_invalid, x
+      book.should be_invalid
       book.errors[:age_to].should be_present
     end
     [0,7,99].each do |x|
       book.age_to = x
-      book.should be_valid, x
+      book.should be_valid
     end
   end
 
   it "should ensure that the publication year is a number ranging from 1000 to 2099" do
     ['a', '-', '1a', 2100, 1.5, 999].each do |x|
       book.year = x
-      book.should be_invalid, x
+      book.should be_invalid
       book.errors[:year].should be_present
     end
     [1000,2000,2099].each do |x|
       book.year = x
-      book.should be_valid, x
+      book.should be_valid
     end
   end
 
@@ -149,13 +149,13 @@ describe Book do
     it "should accept only positiev integers for user set values" do
       [-1, "a", "1a", "-", 0.56, "1.5", "0"].each do |x|
         book.accession_id = x
-        book.should be_invalid, x
+        book.should be_invalid
         book.errors[:accession_id].should be_present
       end
 
       [1, 1001, "1"].each do |x|
         book.accession_id = x
-        book.should be_valid, x
+        book.should be_valid
       end
     end
   end
@@ -510,16 +510,12 @@ describe Book do
         create(:used_copy, price:85, stock: 0, edition: @b5.editions.first)
       end
 
-      context "ascending" do
-        it "sorts books by minimum stocked copy price" do
-          Book.sort("price").should == [@b4, @b2, @b1, @b3, @b5]
-        end
+      it "sorts books ascending by minimum stocked copy price" do
+        Book.sort("price").should == [@b4, @b2, @b1, @b3, @b5]
       end
 
-      context "descending" do
-        it "sorts books by minimum stocked copy price" do
-          Book.sort("price", "desc").should == [@b5, @b3, @b1, @b2, @b4]
-        end
+      it "sorts books descending by minimum stocked copy price" do
+        Book.sort("price", "desc").should == [@b5, @b3, @b1, @b2, @b4]
       end
     end
 

@@ -5,7 +5,7 @@ describe EmailSubscription do
     it "is valid" do
       %w[a@b.com blahblah@yahoo.co.in rahul@gmail.com g@blabla.tadah blah.gah@john.doe].each do |x|
         subject.email = x
-        subject.should be_valid, x
+        subject.should be_valid
       end
     end
   end
@@ -21,7 +21,7 @@ describe EmailSubscription do
     it "is invalid" do
       %w[ab.com a@blah @blah.ca blah@. 12 asd a].each do |x|
         subject.email = x
-        subject.should be_invalid, x
+        subject.should be_invalid
       end
     end
   end

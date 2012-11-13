@@ -30,13 +30,13 @@ describe NewCopy do
   it "should ensure that required stock is a positive integer" do
     [-1, "a", "1a", "1-", "-", "1_1", 0.56, "1.5"].each do |x|
       copy.required_stock = x
-      copy.should be_invalid, x
+      copy.should be_invalid
       copy.errors[:required_stock].should be_present
     end
 
     [0, 1, 1001, "1"].each do |x|
       copy.required_stock = x
-      copy.should be_valid, x
+      copy.should be_valid
     end
   end
 

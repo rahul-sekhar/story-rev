@@ -32,8 +32,10 @@ class BookFilter
     # Merge the books filtered with the editions and copies filtered
     def merge
       if @merge_required
-        @editions = @editions.where{id.in(my{@copies}.select{edition_id})}
-        @books = @books.where{id.in(my{@editions}.select{book_id})}
+        edition_ids = @copies.select{edition_id}.map{ |x| x.edition_id }
+        @editions = @editions.where{id.in(edition_ids)}
+        book_ids = @editions.select{book_id}.map{ |x| x.book_id }
+        @books = @books.where{id.in(book_ids)}
       end
 
       return @books

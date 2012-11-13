@@ -8,7 +8,7 @@ describe BookAward do
     it "should be an integer" do
       ["1a", "0", 5.5].each do |x|
         book_award.year = x
-        book_award.should be_invalid, x
+        book_award.should be_invalid
       end
     end
 

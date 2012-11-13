@@ -16,14 +16,14 @@ describe OrderCopy do
     it "is invalid when blank or nil" do
       [nil, ""].each do |x|
         order_copy.ticked = x
-        order_copy.should be_invalid, x
+        order_copy.should be_invalid
       end
     end
 
     it "is valid when either true or false" do
       [true, false].each do |x|
         order_copy.ticked = x
-        order_copy.should be_valid, x
+        order_copy.should be_valid
       end
     end
   end
@@ -32,14 +32,14 @@ describe OrderCopy do
     it "is invalid when blank or nil" do
       [nil, ""].each do |x|
         order_copy.final = x
-        order_copy.should be_invalid, x
+        order_copy.should be_invalid
       end
     end
 
     it "is valid when either true or false" do
       [true, false].each do |x|
         order_copy.final = x
-        order_copy.should be_valid, x
+        order_copy.should be_valid
       end
     end
   end

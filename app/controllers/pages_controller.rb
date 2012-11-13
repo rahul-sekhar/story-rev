@@ -8,9 +8,13 @@ class PagesController < ApplicationController
     check_params
     set_seed
     @books = Book.filter(params)
-      .includes{[cover_image, used_copies, new_copies, illustrator]}
       .sort(params[:sort_by],params[:desc])
       .page(params[:page]).per(20)
+
+    # Eager loading causes a bug with sorting by price
+    unless params[:sort_by] == "price"
+      @books = @books.includes{[cover_image, used_copies, new_copies, illustrator]} 
+    end
 
     # Show the shopping cart if necessary
     if params[:show_cart].present?
@@ -76,13 +80,13 @@ class PagesController < ApplicationController
   def set_seed
     if params[:sort_by] == "random"
       seed = params[:seed].to_s
-      if seed.match(/\A\d+\z/) && seed.to_i > 0 && seed.to_i < 999
+      if seed.match(/\A\d+\z/) && seed.to_i > 0 && seed.to_i < 9999
         seed = seed.to_i
       else
-        seed = rand(1..999)
+        seed = rand(1..9999)
       end
       params[:seed] = seed.to_s
-      Book.connection.execute("select setseed(#{seed.to_f / 1000})")
+      Book.connection.execute("select setseed(#{seed.to_f / 10000})")
     else
       params.delete(:seed)
     end

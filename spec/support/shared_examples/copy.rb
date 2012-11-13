@@ -15,13 +15,13 @@ shared_examples_for "a copy" do
     it "should be a non-negative integer" do
       [-1, "a", "1a", "1-", "-", "1_1", 0.56, "1.5"].each do |x|
         copy.price = x
-        copy.should be_invalid, x
+        copy.should be_invalid
         copy.errors[:price].should be_present
       end
 
       [0, 1, 1001, "1"].each do |x|
         copy.price = x
-        copy.should be_valid, x
+        copy.should be_valid
       end
     end
   end
@@ -36,13 +36,13 @@ shared_examples_for "a copy" do
     it "should be a non-negative integer" do
       [-1, "a", "1a", "1-", "-", "1_1", 0.56, "1.5"].each do |x|
         copy.cost_price = x
-        copy.should be_invalid, x
+        copy.should be_invalid
         copy.errors[:cost_price].should be_present
       end
 
       [0, 1, 30, "1"].each do |x|
         copy.cost_price = x
-        copy.should be_valid, x
+        copy.should be_valid
       end
     end
   end
@@ -57,25 +57,25 @@ shared_examples_for "a copy" do
     it "should be an integer" do
       ["a", "1a", "1-", "-", "1_1", 0.56, "1.5"].each do |x|
         copy.stock = x
-        copy.should be_invalid, x
+        copy.should be_invalid
         copy.errors[:stock].should be_present
       end
 
       [0, 1, 1001, "1", "-1", -65].each do |x|
         copy.stock = x
-        copy.should be_valid, x
+        copy.should be_valid
       end
     end
 
     it "should be in stock if its stock is above 0" do
-      copy.stock = 10
-      copy.should be_in_stock, 10
-      copy.stock = 1
-      copy.should be_in_stock, 1
-      copy.stock = 0
-      copy.should_not be_in_stock, 0
-      copy.stock = -1
-      copy.should_not be_in_stock, -1
+      [10, 1].each do |x|
+        copy.stock = x
+        copy.should be_in_stock
+      end
+      [0, -1].each do |x|
+        copy.stock = x
+        copy.should_not be_in_stock
+      end
     end
   end
 
@@ -89,13 +89,13 @@ shared_examples_for "a copy" do
     it "should be an integer between 0 and 5" do
       ["-1", "0.5", 0.56, 6, -2].each do |x|
         copy.condition_rating = x
-        copy.should be_invalid, x
+        copy.should be_invalid
         copy.errors[:condition_rating].should be_present
       end
 
       [0, 1, 5, "3"].each do |x|
         copy.condition_rating = x
-        copy.should be_valid, x
+        copy.should be_valid
       end
     end
   end
