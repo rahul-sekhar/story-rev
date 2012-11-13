@@ -61,6 +61,12 @@ $(document).ready(function() {
                     sourceURL: '/admin/languages',
                     default_val: 'English',
                     autocompleteSettings: { searchOnFocus: true }
+                },
+                {
+                    name: 'Default cost price',
+                    field: 'default_cost_price',
+                    type: 'read_only',
+                    class_name: 'default-cost-price'
                 }
             ]
         });
@@ -111,6 +117,12 @@ $(document).ready(function() {
                         name: 'Price',
                         field: 'formatted_price',
                         raw: 'price'
+                    },
+                    {
+                        name: 'Cost Price',
+                        field: 'formatted_cost_price',
+                        raw: 'cost_price',
+                        default_val: $editionTable.find('tr[data-id=' + id + '] .default-cost-price').data('val') 
                     }
                 ]
             });
@@ -144,6 +156,20 @@ $(document).ready(function() {
                         numeric: true,
                         default_val: "0",
                         multilineLabel: true
+                    },
+                    {
+                        name: 'Profit Percentage',
+                        field: 'profit_percentage',
+                        default_val: "60",
+                        multilineLabel: true,
+                        displayCallback: function(data) {
+                            return data + "%"
+                        }
+                    },
+                    {
+                        name: 'Cost Price',
+                        type: 'read_only',
+                        field: 'formatted_cost_price'
                     }
                 ]
             });

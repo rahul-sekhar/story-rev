@@ -167,3 +167,24 @@
         }
     }
 }
+
+.dcp {
+    h2 {
+        margin-bottom: e(10px, $heading-size);
+    }
+
+    .dcp-section {
+        clear: left;
+        margin-top: e(30px);
+        @include clearfix;
+
+        li {
+            @include smaller-text;
+            
+            a {
+                font-size: e(10px, $smaller-text-size);
+                margin-left: e(10px, 10px);
+            }
+        }
+    }
+}

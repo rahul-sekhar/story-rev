@@ -1,6 +1,6 @@
 class UsedCopy < Copy
   default_scope -> { where(new_copy: false) }
-  attr_accessible :condition_rating, :condition_description
+  attr_accessible :condition_rating, :condition_description, :cost_price
   
   # Set the book date if a fresh copy has been created
   after_create :set_book_date

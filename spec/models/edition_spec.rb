@@ -71,4 +71,37 @@ describe Edition do
       expect{ edition.destroy }.to change{ NewCopy.count }.by(-1)
     end
   end
+
+  describe "#default_cost_price" do
+    before do
+      c = ConfigData.access
+      c.default_cost_price = 40
+      c.save
+    end
+    it "returns the default when the book has no book type" do
+      create(:default_cost_price, format: edition.format)
+      edition.default_cost_price.should == 40
+    end
+
+    it "returns the default if no values exist" do
+      edition.book.book_type = create(:book_type)
+      edition.default_cost_price.should == 40
+    end
+
+    it "returns the default if the format and book type aren't matched" do
+      create(:default_cost_price, cost_price: 60)
+      create(:default_cost_price, cost_price: 30)
+      edition.default_cost_price.should == 40
+    end
+
+    it "returns the matched cost price" do
+      f = edition.format
+      b = create(:book_type)
+      create(:default_cost_price, format: f, cost_price: 20)
+      create(:default_cost_price, format: f, book_type: b, cost_price: 70)
+      create(:default_cost_price, book_type: b, cost_price: 90)
+      edition.book.book_type = b
+      edition.default_cost_price.should == 70
+    end
+  end
 end

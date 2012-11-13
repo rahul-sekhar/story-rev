@@ -38,6 +38,9 @@ class CopyPresenter < BasePresenter
       required_stock: copy.required_stock || 0,
       condition_description: condition_description,
       condition_rating: copy.condition_rating,
+      cost_price: copy.cost_price,
+      formatted_cost_price: CurrencyMethods.to_currency(copy.cost_price),
+      profit_percentage: copy.profit_percentage
     }
   end
 

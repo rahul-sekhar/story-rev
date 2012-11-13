@@ -1,10 +1,6 @@
 class BookPresenter < BasePresenter
   presents :book
-  delegate :title, to: :book
-  delegate :author_name, to: :book
-  delegate :illustrator_name, to: :book
-  delegate :short_description, to: :book
-
+  delegate :title, :author_name, :illustrator_name, :short_description, to: :book
 
   def inner_cover(link_to_image = false)
     if book.cover_image.present?

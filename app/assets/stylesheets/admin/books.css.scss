@@ -492,5 +492,11 @@
         margin-right: 2%;
         margin-top: e(20px, $heading-size);
     }
+
+    #edition-table {
+        .default-cost-price {
+            display:none;
+        }
+    }
 }
 

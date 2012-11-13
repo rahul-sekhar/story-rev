@@ -1,0 +1,48 @@
+<% content_for :top_nav do %>
+  <li>
+    <%= link_to "Collections", admin_collections_path %>
+  </li>
+  
+  <% if admin? %>
+    <li>
+      <%= link_to "Passwords", admin_roles_path %>
+    </li>
+  <% end %>
+  
+  <li>
+    <%= link_to "Priorites", admin_priorities_path %>
+  </li>
+
+  <li class="current">
+    <%= link_to "Default Cost Prices", admin_default_cost_prices_path %>
+  </li>
+<% end %>
+
+<section class="dcp-section">
+  <h2>Default base cost price</h2>
+  <%= form_tag admin_set_default_cost_price_path, method: :post do %>
+    <%= text_field_tag :default_cost_price, @default, size: 3 %>
+    <%= submit_tag "Set" %>
+  <% end %>
+</section>
+
+<section class="dcp-section">
+  <h2>Defaults set for categories and formats</h2>
+  <ul>
+    <% @dcps.each do |x| %>
+      <li>
+        <%= x.book_type_name %> &ndash; <%= x.format_name %>: <%= CurrencyMethods.to_currency(x.cost_price) %> <%= link_to "[remove]", admin_default_cost_price_path(x), method: :delete %>
+      </li>
+    <% end %>
+  </ul>
+<section>
+
+<section class="dcp-section">
+  <h2>Add</h2>
+  <%= simple_form_for [:admin, @new_dcp] do |f| %>
+    <%= f.input :book_type_id, as: :select, collection: BookType.all, include_blank: false %>
+    <%= f.input :format_id, as: :select, collection: Format.all, include_blank: false %>
+    <%= f.input :cost_price, input_html: { value: @default } %>
+    <%= f.submit "Add" %>
+  <% end %>
+</section>

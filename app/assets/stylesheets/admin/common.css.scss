@@ -140,6 +140,12 @@ a.minor-button {
     font-weight: bold;
 }
 
+.error {
+    margin-bottom: e(10px, $text-size);
+    color: $color-c1;
+    font-weight: bold;   
+}
+
 /* Labels and inputs */
 
 $label-font-size: $text-size;

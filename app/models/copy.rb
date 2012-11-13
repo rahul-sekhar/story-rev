@@ -18,6 +18,10 @@ class Copy < ActiveRecord::Base
     only_integer: true,
     greater_than_or_equal_to: 0
   }
+  validates :cost_price, numericality: {
+    only_integer: true,
+    greater_than_or_equal_to: 0
+  }
   validates :new_copy, inclusion: { in: [true, false] }
   validates :condition_rating,
     numericality: {
@@ -68,5 +72,10 @@ class Copy < ActiveRecord::Base
     copy = UsedCopy.find_by_id(copy_id) || NewCopy.find_by_id(copy_id)
     raise ActiveRecord::RecordNotFound if !copy
     return copy
+  end
+
+  def profit_percentage
+    return 0 if price.to_i == 0
+    (((price - cost_price.to_f) / price.to_f) * 100).to_i
   end
 end

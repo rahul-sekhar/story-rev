@@ -158,4 +158,10 @@ FactoryGirl.define do
   factory :order_copy do
     association :copy, factory: :used_copy_with_book
   end
+
+  factory :default_cost_price do
+    format
+    book_type
+    cost_price 30
+  end
 end

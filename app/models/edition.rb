@@ -38,13 +38,12 @@ class Edition < ActiveRecord::Base
     language ? language.name : "English"
   end
   
-  def as_hash
-    {
-      :id => id,
-      :format_name => format_name,
-      :publisher_name => publisher_name,
-      :language_name => language_name,
-      :isbn => isbn
-    }
+  def default_cost_price
+    default = DefaultCostPrice.where(format_id: format_id, book_type_id: book.book_type_id).first
+    if default.present?
+      return default.cost_price
+    else
+      return ConfigData.access.default_cost_price
+    end
   end
 end

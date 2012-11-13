@@ -92,6 +92,8 @@ StoryRev::Application.routes.draw do
       get "to_cash"
       get "to_default"
     end
+    resources :default_cost_prices
+    post "set_default_cost_price" => "default_cost_prices#set_default"
   end
 
   # 404 errors

@@ -26,6 +26,27 @@ shared_examples_for "a copy" do
     end
   end
 
+  describe "cost_price" do
+    it "should be required" do
+      copy.cost_price = nil
+      copy.should be_invalid
+      copy.errors[:cost_price].should be_present
+    end
+
+    it "should be a non-negative integer" do
+      [-1, "a", "1a", "1-", "-", "1_1", 0.56, "1.5"].each do |x|
+        copy.cost_price = x
+        copy.should be_invalid, x
+        copy.errors[:cost_price].should be_present
+      end
+
+      [0, 1, 30, "1"].each do |x|
+        copy.cost_price = x
+        copy.should be_valid, x
+      end
+    end
+  end
+
   describe "stock" do
     it "should be required" do
       copy.stock = nil

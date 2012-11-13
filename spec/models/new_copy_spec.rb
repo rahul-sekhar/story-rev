@@ -74,4 +74,88 @@ describe NewCopy do
       copy.save
     end
   end
+
+  describe "#profit_percentage" do
+    it "returns the profit percentage" do
+      copy.cost_price = 20
+      copy.price = 120
+      copy.profit_percentage.should == 83
+    end
+
+    it "returns 0 if the price is 0" do
+      copy.cost_price = 20
+      copy.price = 0
+      copy.profit_percentage.should == 0
+    end
+
+    it "does not change the cost price when not set" do
+      copy.cost_price = 30
+      copy.price = 100
+      copy.save
+      copy.cost_price.should == 30
+      copy.reload.save
+      copy.cost_price.should == 30
+    end
+
+    it "changes the cost price when set" do
+      copy.cost_price = 30
+      copy.price = 100
+      copy.save
+      copy.reload.profit_percentage = 65
+      copy.save
+      copy.cost_price.should == 35
+    end
+
+    it "changes the cost price when set to a string" do
+      copy.cost_price = 30
+      copy.price = 100
+      copy.save
+      copy.reload.profit_percentage = "40"
+      copy.save
+      copy.cost_price.should == 60
+    end
+
+    it "does not change the cost price when read, but not set" do
+      copy.cost_price = 30
+      copy.price = 100
+      copy.save
+      copy.reload
+      copy.cost_price = 20
+      copy.profit_percentage
+      copy.save
+      copy.cost_price.should == 20
+    end
+
+    it "changes the cost price to 0 when set to 0" do
+      copy.cost_price = 30
+      copy.price = 100
+      copy.save
+      copy.profit_percentage = 0
+      copy.save
+      copy.cost_price.should == 100
+    end
+
+    it "changes the cost price to the price when set to 100" do
+      copy.cost_price = 30
+      copy.price = 100
+      copy.save
+      copy.profit_percentage = 100
+      copy.save
+      copy.cost_price.should == 0
+    end
+
+    it "is valid when an integer from 0 to 100" do
+      [0, 1, 80, 100, "5"].each do |x|
+        copy.profit_percentage = x
+        copy.should be_valid
+      end
+    end
+
+    it "is invalid when not an integer from 0 to 100" do
+      [-1, 101, "a"].each do |x|
+        copy.profit_percentage = x
+        copy.should be_valid
+      end
+    end
+  end
 end
