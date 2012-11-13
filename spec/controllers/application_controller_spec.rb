@@ -36,7 +36,7 @@ describe PagesController do
     end
 
     it "returns a new order if a finalized order is stored in the session" do
-      order = create(:order, final: true)
+      order = create(:order, complete: true)
       get :store, nil, { order_id: order.id }
       subject.should be_a Order
       subject.should be_new_record

@@ -3,8 +3,15 @@ require 'spec_helper'
 describe Customer do
   let(:customer) { build(:customer) }
   
-  it "initially sets the step to 1" do
+  it "initially sets the step to 1 if the order is not final" do
     customer.step.should == 1
+  end
+
+  it "initially sets the step to 1 if the order is final" do
+    o = create(:complete_order)
+    c = create(:customer, complete_order: o)
+    c = Customer.find(c.id)
+    c.step.should == 4
   end
 
   describe "#step" do

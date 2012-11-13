@@ -1,6 +1,8 @@
 class BookPresenter < BasePresenter
   presents :book
   delegate :title, to: :book
+  delegate :author_name, to: :book
+  delegate :illustrator_name, to: :book
   delegate :short_description, to: :book
 
 
@@ -9,7 +11,7 @@ class BookPresenter < BasePresenter
       link_to (link_to_image ? book.cover_image.url : book_path(book)), class: (link_to_image ? nil : "book-link") do
           
           image_tag book.cover_image.thumb_url,
-            alt: "#{book.author_name} - #{book.title}",
+            alt: "#{author_name} \u2012 #{title}",
             width: book.cover_image.thumb_width,
             height: book.cover_image.thumb_height
 
@@ -17,16 +19,31 @@ class BookPresenter < BasePresenter
     else
       content_tag :div, class: "blank-cover" do
         if link_to_image || book.new_record?
-          content_tag(:p, book.title, class: :title) + 
-          content_tag(:p, book.author_name, class: :author)
+          content_tag(:p, title, class: :title) + 
+          content_tag(:p, author_name, class: :author)
         else
           link_to book_path(book), class: "book-link" do
-            content_tag(:p, book.title, class: :title) + 
-            content_tag(:p, book.author_name, class: :author)
+            content_tag(:p, title, class: :title) + 
+            content_tag(:p, author_name, class: :author)
           end
         end
       end
     end
+  end
+
+  def tiny_cover
+    return nil if book.cover_image.blank?
+
+    link_to book_path(book), class: "book-link" do
+      image_tag book.cover_image.tiny_url,
+        alt: "#{author_name} \u2012 #{title}",
+        width: book.cover_image.tiny_width,
+        height: book.cover_image.tiny_height
+    end
+  end
+
+  def title_link
+    link_to title, book_path(book), class: "book-link"
   end
 
   def age_level
@@ -34,7 +51,7 @@ class BookPresenter < BasePresenter
       if (book.age_from == book.age_to)
         "#{book.age_from}"
       else
-        "#{book.age_from} &ndash; #{book.age_to}".html_safe
+        "#{book.age_from} \u2012 #{book.age_to}"
       end
     elsif book.age_from
       "#{book.age_from}+"
@@ -44,10 +61,10 @@ class BookPresenter < BasePresenter
   end
   
   def creators
-    if book.illustrator.present? && book.illustrator_name != book.author_name
-      "#{book.author_name} and #{book.illustrator_name}"
+    if book.illustrator.present? && illustrator_name != author_name
+      "#{author_name} and #{illustrator_name}"
     else
-      book.author_name
+      author_name
     end
   end
   
@@ -62,14 +79,14 @@ class BookPresenter < BasePresenter
   end
   
   def award_list
-    book_awards.map {|x| x.full_name}.join(", ")
+    book.book_awards.map {|x| x.full_name}.join(", ")
   end
   
   def as_collection_hash
     {
       :id => book.id,
-      :title => book.title,
-      :author_name => book.author_name,
+      :title => title,
+      :author_name => author_name,
       :age_level => age_level,
       :stock => book.number_of_copies
     }
@@ -78,15 +95,15 @@ class BookPresenter < BasePresenter
   def as_list_hash
     {
       :id => book.id,
-      :title => book.title,
-      :author_name => book.author_name,
+      :title => title,
+      :author_name => author_name,
       :author_last_name => book.author.last_name,
-      :illustrator_name => book.illustrator_name,
+      :illustrator_name => illustrator_name,
       :illustrator_last_name => book.illustrator.present? ? book.illustrator.last_name : nil,
       :age_level => age_level,
       :age_from => book.age_from,
       :collection_list => book.collection_list,
-      :award_list => book.award_list,
+      :award_list => award_list,
       :stock => book.number_of_copies
     }
   end

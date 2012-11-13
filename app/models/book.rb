@@ -85,16 +85,6 @@ class Book < ActiveRecord::Base
   validates_associated :descriptions
   
   scope :stocked, where(in_stock: true)
-  
-  # Scope to include all book information
-  def self.includes_data
-    includes(:illustrator, :publisher, :collections, :copies, :book_type, :country, :descriptions, { :book_awards => { :award => :award_type }}, :editions => [:format, :publisher])
-  end
-  
-  # Scope to include copy data
-  def self.includes_copies
-    includes({:editions => [:format, :publisher]}, :copies)
-  end
 
   def to_param
     accession_id

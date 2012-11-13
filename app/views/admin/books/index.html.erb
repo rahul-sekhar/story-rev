@@ -22,15 +22,15 @@
   <table id="stock-table">
     <% alt = false %>
     <% @copies.each do |c| %>
-      <% stocked = c.stock.present? %>
+      <% stocked = c.stock_taking.present? %>
       <% klass = (stocked && alt) ? "alt stocked" : (alt ? "alt" : (stocked ? "stocked" : nil)) %>
       <tr data-id="<%= c.id %>"<%= class_if klass, klass %>>
-        <td class="acc" data-sort-by="<%= c.accession_id_sortable %>"><%= c.accession_id %></td>
+        <td class="acc" data-sort-by="<%= present(c).accession_id_sortable %>"><%= c.accession_id %></td>
         <td data-sort-by="<%= c.book.title %>"><%= c.book.title %></td>
         <td data-sort-by="<%= c.book.author_name %>"><%= c.book.author_name %></td>
         <td><%= c.edition.format_name %></td>
         <td class="rating" data-val="<%= c.condition_rating %>"><%= render "shared/rating", :rating => c.condition_rating %></td>
-        <td class="price"><%= RupeeHelper.to_rupee(c.price) %></td>
+        <td class="price"><%= present(c).price %></td>
         <td class="has-button"><%= link_to "", "#", :class => "zoom-link" %></td>
         <td class="has-button"><%= link_to "", "#", :class => stocked ? "ticked-link" : "grey-ticked-link" %></td>
       </tr>

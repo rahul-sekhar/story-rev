@@ -9,7 +9,8 @@ StoryRev::Application.routes.draw do
   get "update_cart" => "orders#update_cart"
 
   get "order/step-:step" => "orders#show_step", step: /[1-4]/, as: "order_step"
-  post "order/step-:step" => "orders#submit_step", step: /[1-4]/
+  post "order/step-:step" => "orders#submit_step", step: /[1-3]/
+  post "order/confirmation" => "orders#confirmation"
   get "order/cancel" => "orders#cancel_order"
   
   get "about" => "pages#about"
@@ -46,9 +47,9 @@ StoryRev::Application.routes.draw do
       end
     end
     
-    post "stocks/add_copy" => "stocks#add_copy"
-    delete "stocks/remove_copy" => "stocks#remove_copy"
-    delete "stocks" => "stocks#clear", :as => "clear_stocks"
+    post "stock_taking/add_copy" => "stock_taking#add_copy"
+    delete "stock_taking/remove_copy" => "stock_taking#remove_copy"
+    delete "stock_taking" => "stock_taking#clear", :as => "clear_stocks"
     
     resources :orders do
       resources :order_copies
@@ -57,6 +58,7 @@ StoryRev::Application.routes.draw do
         get 'pending'
       end
     end
+    resources :customers
     resources :copies
     resources :new_copies
     resources :cover_images

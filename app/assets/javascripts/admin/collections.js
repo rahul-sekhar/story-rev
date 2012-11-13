@@ -239,10 +239,10 @@ $(document).ready(function() {
         $.blockUI({
             message: $dialog,
             css: {
-                top: '10%',
-                width: '80%',
-                left: '10%',
-                height: '80%'
+                top: '3%',
+                width: '94%',
+                left: '2%',
+                height: '90%'
             },
             onBlock: function() {
                 if (!loaded) {

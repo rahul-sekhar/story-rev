@@ -109,7 +109,7 @@ $(document).ready(function() {
                 data: {
                     _method: "PUT",
                     order_copy: {
-                        set_number: number
+                        number: number
                     }
                 },
                 success: function(data) {
@@ -383,8 +383,8 @@ $(document).ready(function() {
             overlayHintText: 'Search by title, author, ISBN or accession number',
             tokenLimit: 1,
             addClass: "fill dialog",
-            additionalParams: { search_by: "all", output: "display_target" },
             allowCustom: true,
+            propertyToSearch: "text",
             addFormatter: function(query) { return "<li>Add a new book - <strong>" + escapeHTML(query) + "</strong></li>" },
             onAdd: function(item) {
                 book_id = item.id;

@@ -1,11 +1,9 @@
 class Admin::EditionsController < Admin::ApplicationController
   
   def index
-    @editions = Book.find(params[:book_id]).editions
+    @editions = Book.find_by_accession_id(params[:book_id]).editions
     
-    respond_to do |format|
-      format.json { render :json => @editions.map { |x| x.get_hash }}
-    end
+    render json: @editions.map{ |x| x.as_hash }
   end
   
   def create

@@ -42,4 +42,7 @@ StoryRev::Application.configure do
 
   # Show errors
   config.show_error_pages = false
+
+  config.default_host = "testhost"
+  config.action_mailer.default_url_options = { :host => "testhost" }
 end

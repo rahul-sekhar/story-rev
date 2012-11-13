@@ -1,7 +1,7 @@
 <div class="confirmation">
   <table>
     <% n = 0 %>
-    <% order.order_copies.stocked.each do |oc| %>
+    <% order.order_copies.finalized.each do |oc| %>
       <% c = oc.copy %>
       <% n += 1 %>
       <tr>
@@ -50,11 +50,11 @@
   </div>
   
 
-  <% if order.order_copies.unstocked.length > 0 %>
+  <% if order.order_copies.unfinalized.length > 0 %>
   <div class="unavailable">
     <p class="error">The following items are no longer available:</p>
     <% n = 0 %>
-    <% order.order_copies.unstocked.each do |oc| %>
+    <% order.order_copies.unfinalized.each do |oc| %>
       <% c = oc.copy %>
       <% n+= 1 %>
       <div class="item">

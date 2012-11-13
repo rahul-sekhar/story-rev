@@ -60,7 +60,7 @@ $(document).ready(function() {
         var copy_id = $link.closest('tr').data('id');
         $link.removeClass().addClass('loading-link');
         
-        $.post('/admin/stocks/add_copy', {copy_id: copy_id}, function(data) {
+        $.post('/admin/stock_taking/add_copy', {copy_id: copy_id}, function(data) {
             update_stock($link, data.stock);
         });
     }).on('click', '.ticked-link', function(e) {
@@ -70,7 +70,7 @@ $(document).ready(function() {
         var copy_id = $link.closest('tr').data('id');
         $link.removeClass().addClass('loading-link');
         
-        $.post('/admin/stocks/remove_copy', {_method: 'DELETE', copy_id: copy_id}, function(data) {
+        $.post('/admin/stock_taking/remove_copy', {_method: 'DELETE', copy_id: copy_id}, function(data) {
             update_stock($link, data.stock);
         });
     })

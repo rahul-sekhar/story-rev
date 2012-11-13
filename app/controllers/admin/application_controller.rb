@@ -2,6 +2,12 @@ class Admin::ApplicationController < ActionController::Base
   protect_from_forgery
   before_filter :require_login
   helper_method :admin_role, :admin?
+
+  # Access to presenters
+  def present(object, klass = nil)
+    klass ||= "#{object.class}Presenter".constantize
+    klass.new(object, view_context)
+  end
   
   def redirect_back_or(default)
     redirect_to(session[:return_to] || default)

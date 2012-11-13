@@ -2,43 +2,44 @@ class Admin::CopiesController < Admin::ApplicationController
   
   def index
     @edition = Edition.find(params[:edition_id])
-    @copies = CopyDecorator.decorate(@edition.copies)
     
     if (params[:new])
-      @copies = @copies.new_copies
+      @copies = @edition.new_copies
     elsif (params[:used])
-      @copies = @copies.used_copies.stocked
+      @copies = @edition.used_copies.stocked
     else
-      @copies = @copies.new_or_stocked
+      @copies = @edition.copies.new_or_stocked
     end
     
     respond_to do |format|
-      format.json { render :json => @copies.map { |x| x.get_hash }}
+      format.json { render json: @copies.map { |x| present(x).as_hash }}
     end
   end
   
   def create
     @edition = Edition.find(params[:edition_id])
-    @copy = @edition.copies.build(params[:copy])
-    
-    @copy.new_copy = true if (params[:new])
+    if (params[:new])
+      @copy = @edition.new_copies.build(params[:copy])
+    else
+      @copy = @edition.used_copies.build(params[:copy])
+    end
     
     respond_to do |format|
       if @copy.save
-        format.json {render :json => @copy.get_hash }
+        format.json {render json: present(@copy).as_hash }
       else
-        format.json { render :json => @copy.errors.full_messages, :status => :unprocessable_entity }
+        format.json { render json: @copy.errors.full_messages, status: :unprocessable_entity }
       end
     end
   end
   
   def update
-    @copy = Copy.find(params[:id])
+    @copy = Copy.find_used_or_new(params[:id])
     respond_to do |format|
       if @copy.update_attributes(params[:copy])
-        format.json { render :json => @copy.get_hash }
+        format.json { render json: present(@copy).as_hash }
       else
-        format.json { render :json => @copy.errors.full_messages, :status => :unprocessable_entity }
+        format.json { render json: @copy.errors.full_messages, status: :unprocessable_entity }
       end
     end
   end
@@ -47,7 +48,7 @@ class Admin::CopiesController < Admin::ApplicationController
     @copy = Copy.find(params[:id])
     @copy.destroy
     respond_to do |format|
-      format.json { render :json => { :success => true }}
+      format.json { render json: { success: true }}
     end
   end
 end

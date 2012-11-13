@@ -133,19 +133,17 @@ $(document).ready(function() {
                         raw: 'price'
                     },
                     {
-                        name: 'Number',
-                        field: 'number',
+                        name: 'Stock',
+                        field: 'stock',
                         numeric: true,
                         default_val: "0"
                     },
                     {
-                        name: 'Limited Copies',
-                        field: 'limited_copies',
-                        type: 'boolean',
-                        multilineLabel: true,
-                        displayCallback: function(data) {
-                            return data ? "Limited" : "Unlimited";
-                        }
+                        name: 'Required Stock',
+                        field: 'required_stock',
+                        numeric: true,
+                        default_val: "0",
+                        multilineLabel: true
                     }
                 ]
             });

@@ -5,6 +5,8 @@ class CustomerPresenter < BasePresenter
   delegate :phone, to: :customer
   delegate :email, to: :customer
   delegate :other_info, to: :customer
+  delegate :city, to: :customer
+  delegate :notes, to: :customer
 
   def pickup_point_text
     return "" if customer.delivery_method != 2

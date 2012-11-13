@@ -133,12 +133,26 @@ FactoryGirl.define do
     sequence(:name) { |n| "Pickup Point #{n}"}
   end
 
+  factory :payment_method do
+    sequence(:name) { |n| "Payment Method #{n}"}
+  end
+
   factory :customer do
     delivery_method 1
     order
+
+    factory :valid_customer do
+      payment_method
+      name "Test Customer"
+      email "test@email.com"
+    end
   end
 
   factory :order do
+  end
+
+  factory :complete_order do
+    association :customer, factory: :valid_customer
   end
 
   factory :order_copy do

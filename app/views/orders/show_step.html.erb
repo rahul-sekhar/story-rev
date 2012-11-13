@@ -12,9 +12,9 @@
   </ul>
   
   <%= simple_form_for @customer,
-    :url => order_step_path(step: @step, anchor: "order"),
-    :method => "post",
-    :defaults => { :required => false, :error => false } do |f|
+    url: @step == 4 ? order_confirmation_path(anchor: "order") : order_step_path(step: @step, anchor: "order"),
+    method: "post",
+    defaults: { :required => false, :error => false } do |f|
   %>
     
     <div class="form-container">

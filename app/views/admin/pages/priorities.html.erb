@@ -36,8 +36,8 @@
   <h2>Awards</h2>
   <ul class="award_types">
     <% @awards.each do |x| %>
-      <li data-id="<%= x.id %>" data-name="<%= x.full_name %>" data-priority="<%= x.priority %>">
-        <%= x.priority %> - <%= x.full_name %>  <%= link_to "[change]", "#", :class => "change-link" %>
+      <li data-id="<%= x.id %>" data-name="<%= x.name %>" data-priority="<%= x.priority %>">
+        <%= x.priority %> - <%= x.name %>  <%= link_to "[change]", "#", :class => "change-link" %>
       </li>
     <% end %>
   </ul>

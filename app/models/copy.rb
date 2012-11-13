@@ -28,6 +28,7 @@ class Copy < ActiveRecord::Base
 
   scope :stocked, -> { where{stock > 0} }
   scope :unstocked, -> { where{stock <= 0} }
+  scope :new_or_stocked, -> { where{(new_copy == true) | (stock > 0)} }
 
   def init
   end
@@ -61,5 +62,11 @@ class Copy < ActiveRecord::Base
 
   def check_book_stock
     book.check_stock
+  end
+
+  def self.find_used_or_new(copy_id)
+    copy = UsedCopy.find_by_id(copy_id) || NewCopy.find_by_id(copy_id)
+    raise ActiveRecord::RecordNotFound if !copy
+    return copy
   end
 end

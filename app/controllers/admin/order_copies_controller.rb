@@ -1,27 +1,22 @@
 class Admin::OrderCopiesController < Admin::ApplicationController
   def index
-    @order_copies = Order.find(params[:order_id]).order_copies.includes(:copy => { :edition => [:book, :format] })
+    @order_copies = OrderCopy.finalized.where(order_id: params[:order_id]).includes{[copy.edition.book, copy.edition.format]}
     
-    render :json => @order_copies.map {|x| x.get_hash}
+    render :json => @order_copies.map {|x| present(x).as_hash}
   end
   
   def update
-    @order_copy =  OrderCopy.find(params[:id])
+    @order_copy = OrderCopy.find(params[:id])
     if @order_copy.update_attributes(params[:order_copy])
-      @order_copy.order.save
-      
-      render :json => @order_copy.order.get_hash
+      render json: present(@order_copy.complete_order).as_hash
     else
-      render :json => @order_copy.errors.full_messages, :status => :unprocessable_entity
+      render json: @order_copy.errors.full_messages, status: :unprocessable_entity
     end
   end
   
   def destroy
-    @order_copy =  OrderCopy.find(params[:id])
-    @order_copy.revert_copy
+    @order_copy = OrderCopy.find(params[:id])
     @order_copy.destroy
-    @order_copy.order.save
-    
-    render :json => @order_copy.order.get_hash
+    render json: present(@order_copy.complete_order).as_hash
   end
 end

@@ -1,20 +1,22 @@
 
 <div class="table-container">
   <table id="orders-table" data-init-select="<%= params[:selected_id] %>">
-    <% @orders.each do |o| %>
-      <tr data-id="<%= o.id %>">
-        <td><%= o.id %></td>
-        <td><%= o.name %></td>
-        <td><%= o.city %></td>
-        <td><%= o.delivery_short %></td>
-        <td><%= o.number_of_copies %> books</td>
-        <td class="total"><%= o.formatted_total_amount %></td>
-        <td class="confirmed"><%= check_box_tag "confirmed", "1", o.confirmed, :id => nil, :class => :confirmed %> confirmed</td>
-        <td class="paid"><%= check_box_tag "paid", "1", o.paid, :id => nil, :class => :paid %> paid</td>
-        <td class="packaged"><%= check_box_tag "packaged", "1", o.packaged, :id => nil, :class => :packaged %> packaged</td>
-        <td class="posted"><%= check_box_tag "posted", "1", o.posted, :id => nil, :class => :posted %> posted</td>
-        <td class="has-button"><%= link_to "", edit_admin_order_path(o), :class => "edit-link" %></td>
-      </tr>
+    <% @orders.each do |order| %>
+      <% present(order) do |o| %>
+        <tr data-id="<%= o.number %>">
+          <td><%= o.number %></td>
+          <td><%= o.name %></td>
+          <td><%= o.city %></td>
+          <td><%= o.delivery_short %></td>
+          <td><%= o.number_of_copies %> books</td>
+          <td class="total"><%= o.formatted_total_amount %></td>
+          <td class="confirmed"><%= o.confirmed_check_box %></td>
+          <td class="paid"><%= o.paid_check_box %></td>
+          <td class="packaged"><%= o.packaged_check_box %></td>
+          <td class="posted"><%= o.posted_check_box %></td>
+          <td class="has-button"><%= o.edit_link("") %></td>
+        </tr>
+      <% end %>
     <% end %>
   </table>
 </div>
@@ -25,12 +27,6 @@
   <div class="amount">
     <p class="postage">Postage: <span></span></p>
     <p class="total">Total: <span></span></p>
-    <p class="account">Account paid to: <select>
-        <% Account.default_order.each do |x| %>
-          <option value="<%= x.id %>"><%= x.name %></option>
-        <% end %>
-      </select>
-    </p>
     <p class="postage-expenditure">Postage expenditure: <span></span><a href="#" class="edit-link"></a>
     </p>
   </div>

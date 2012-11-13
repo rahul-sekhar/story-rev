@@ -3,12 +3,7 @@ class Admin::BooksController < Admin::ApplicationController
     @class = "book stock-taking"
     @title = "Stock Taking"
     
-    @copies = Copy.stocked.includes({ :edition => :book }, :stock)
-    
-    respond_to do |format|
-      format.html
-      format.json { render :json => Book.includes_data.all.map{|x| x.as_list_hash} }
-    end
+    @copies = Copy.stocked.includes{[edition.book, edition.format, stock_taking]}
   end
   
   def search

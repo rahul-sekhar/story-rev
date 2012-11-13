@@ -294,12 +294,12 @@ ActiveRecord::Schema.define(:version => 20121110054351) do
     t.datetime "paid_date"
     t.datetime "packaged_date"
     t.datetime "posted_date"
-    t.boolean  "final",          :default => false, :null => false
+    t.boolean  "complete",       :default => false, :null => false
   end
 
+  add_index "orders", ["complete"], :name => "index_orders_on_complete"
   add_index "orders", ["confirmed_date"], :name => "index_orders_on_confirmed_date"
   add_index "orders", ["created_at"], :name => "index_orders_on_created_at"
-  add_index "orders", ["final"], :name => "index_orders_on_final"
   add_index "orders", ["paid_date"], :name => "index_orders_on_paid_date"
 
   create_table "orders_copies", :force => true do |t|
@@ -307,11 +307,13 @@ ActiveRecord::Schema.define(:version => 20121110054351) do
     t.integer  "copy_id",                       :null => false
     t.integer  "number",     :default => 1,     :null => false
     t.boolean  "ticked",     :default => false, :null => false
+    t.boolean  "final",      :default => false, :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "orders_copies", ["copy_id"], :name => "index_orders_copies_on_copy_id"
+  add_index "orders_copies", ["final"], :name => "index_orders_copies_on_final"
   add_index "orders_copies", ["order_id"], :name => "index_orders_copies_on_order_id"
   add_index "orders_copies", ["updated_at"], :name => "index_orders_copies_on_updated_at"
 

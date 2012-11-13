@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe BookPresenter, type: :decorator do
-  let(:book) { Book.new }
+  let(:book) { build(:book) }
   subject {BookPresenter.new(book, view)}
 
   describe "#age_level" do
@@ -11,7 +11,7 @@ describe BookPresenter, type: :decorator do
 
     it "should be a range with both age limits set" do
       book.age_from, book.age_to = 10, 50
-      subject.age_level.should == "10 &ndash; 50"
+      subject.age_level.should == "10 \u2012 50"
     end
 
     it "should be only the lower limit when the upper limit is not set" do
@@ -77,19 +77,19 @@ describe BookPresenter, type: :decorator do
       book_award2 = double("book_award")
       book_award2.stub(:full_name).and_return("Award 2")
 
-      subject.stub(:book_awards).and_return([book_award1, book_award2])
+      book.stub(:book_awards).and_return([book_award1, book_award2])
 
       subject.award_list.should == "Award 1, Award 2"
     end
   end
 
-  it "delegates #title to the object" do
-    book.should_receive(:title).and_return(:ret)
-    subject.title.should == :ret
+  it "gives a valid collection hash form" do
+    subject.as_collection_hash.should be_present
+    subject.as_collection_hash.should be_a Hash
   end
 
-  it "delegates #short_description to the object" do
-    book.should_receive(:short_description).and_return(:ret)
-    subject.short_description.should == :ret
+  it "gives a valid list hash form" do
+    subject.as_list_hash.should be_present
+    subject.as_list_hash.should be_a Hash
   end
 end

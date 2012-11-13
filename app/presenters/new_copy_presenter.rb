@@ -1,0 +1,2 @@
+class NewCopyPresenter < CopyPresenter
+end

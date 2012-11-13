@@ -5,11 +5,10 @@ class Customer < ActiveRecord::Base
   before_save :remove_unecessary_fields
 
   belongs_to :order
+  belongs_to :complete_order, foreign_key: :order_id
   belongs_to :pickup_point
   belongs_to :shopping_cart
   belongs_to :payment_method
-
-  validates :order, presence: true
 
   # Delivery method (step 1)
   # 1 - Speed Post
@@ -40,7 +39,7 @@ class Customer < ActiveRecord::Base
   validates :pin_code, length: { maximum: 10 }
 
   def init
-    @step = 1
+    @step = (complete_order.present?) ? 4 : 1
   end
 
   def step=(val)

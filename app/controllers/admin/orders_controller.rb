@@ -3,78 +3,35 @@ class Admin::OrdersController < Admin::ApplicationController
     @title = "Pending Orders"
     @class = "orders pending"
     
-    @orders = Order.includes(:order_copies).where("step = 5 AND (confirmed_date IS NULL OR paid_date IS NULL OR packaged_date IS NULL OR posted_date IS NULL)").order("confirmed_date DESC")
+    @orders = CompleteOrder.includes{[order_copies, customer]}.unfinalized.order_by_confirmed
   end
   
   def index
     @title = "Old Orders"
     @class = "orders old"
     
-    @orders = Order.includes(:order_copies).where("step = 5 AND confirmed_date IS NOT NULL AND paid_date IS NOT NULL AND packaged_date IS NOT NULL AND posted_date IS NOT NULL").order("confirmed_date DESC")
+    @orders = CompleteOrder.includes{[order_copies, customer]}.finalized.order_by_confirmed
   end
   
   def show
-    @order = Order.find(params[:id])
+    @order = CompleteOrder.find(params[:id])
     
-    render :json => @order.get_hash
-  end
-  
-  def new
-    @title = "Add Order"
-    @class = "orders new"
-    @order = Order.new(:step => 5)
-  end
-  
-  def create
-    @order = Order.new(params[:order], :as => :admin)
-    @order.step = 5
-    @order.pickup_point_id ||= 0
-    
-    if @order.save
-      redirect_to @order.get_url, :notice => "Order created - it's order number is #{@order.id}"
-    else
-      @class = "orders new"
-      @title = "Add Order"
-      render "new"
-    end
-  end
-  
-  def edit
-    @title = "Add Order"
-    @class = "orders new"
-    @order = Order.find(params[:id])
+    render json: present(@order).as_hash
   end
   
   def update
-    @order = Order.find(params[:id])
-    @order.pickup_point_id ||= 0
+    @order = CompleteOrder.find(params[:id])
     
-    if params[:order][:add_copy].present?
-      @order.add_copy(params[:order][:add_copy])
-      params[:order].delete(:add_copy)
-    end
-    
-    if @order.update_attributes(params[:order], :as => :admin)
-      respond_to do |f|
-        f.html { redirect_to @order.get_url, :notice => "Order saved - it's order number is #{@order.id}" }
-        f.json { render :json => @order.get_hash }
-      end
+    if @order.update_attributes(params[:order])
+      f.json { render json: present(@order).as_hash }
     else
-      respond_to do |f|
-        f.html do
-          @title = "Add Order"
-          @class = "orders new"
-          render "edit"
-        end
-        f.json { render :json => @order.errors.full_messages, :status => :unprocessable_entity }
-      end
+      f.json { render json: @order.errors.full_messages, status: :unprocessable_entity }
     end
   end
   
   def destroy
-    @order = Order.find(params[:id])
-    @order.revert_copies
+    @order = CompleteOrder.find(params[:id])
     @order.destroy
-    render :json => { :success => true }
+    render json: { success: true }
   end
 end

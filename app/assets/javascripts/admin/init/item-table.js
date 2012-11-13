@@ -239,6 +239,7 @@ $.ItemTable = function(table, settings) {
     if (settings.removable) {
         // Remove button handling
         $table.on("click", ".remove-link", function(e) {
+            e.preventDefault();
             var $tr = $(this).closest('tr');
             
             if (settings.confirmRemove) {

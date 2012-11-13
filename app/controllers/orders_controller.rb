@@ -1,4 +1,6 @@
 class OrdersController < ApplicationController
+
+  before_filter :check_order, only: [:show_step, :submit_step, :confirmation]
   
   def view_cart
     @class = "store shopping-cart"
@@ -34,6 +36,12 @@ class OrdersController < ApplicationController
   def show_step
     return unless get_customer_and_set_step
     @customer.set_defaults
+
+    # Calculate the order amounts and check unstocked copies if we're on the final step
+    if @step == 4
+      order.check_unstocked
+      order.calculate_amounts
+    end
     
     render layout: "ajax" if request.xhr?
   end
@@ -48,6 +56,17 @@ class OrdersController < ApplicationController
     end
   end
 
+  def confirmation
+    @confirmed_order = order
+    session.delete(:order_id)
+    @confirmed_order.finalize
+    
+    OrderMailer.delay.confirmation(@confirmed_order)
+    OrderMailer.delay.notify_owner(@confirmed_order)
+
+    render layout: "ajax" if request.xhr?
+  end
+
   def cancel_order
     order.customer.destroy if order.customer.present?
     if request.xhr?
@@ -57,42 +76,13 @@ class OrdersController < ApplicationController
     end
   end
   
-  
-  def create
-    @class = "store order"
-    @title = "Order"
-    
-    if shopping_cart.order
-      @order = shopping_cart.order
-      @order.update_attributes(params[:order])
-    else
-      @order = shopping_cart.build_order(params[:order])
-      @order.save
-    end
-    
-    if (@order.complete?)
-      @order.finalise
-      OrderMailer.delay.confirmation(@order)
-      OrderMailer.delay.notify_owner(@order)
-      render "confirmation", :layout => request.xhr? ? "ajax" : true
-    else
-      render "new", :layout => request.xhr? ? "ajax" : true
-    end
-  end
-  
-  def destroy
-    shopping_cart.order && shopping_cart.order.destroy
-    if request.xhr?
-      render :json => { :success => true }
-    else
-      redirect_to root_path( show_cart: true)
-    end
-  end
-  
-  def check_shopping_cart
-    if shopping_cart.shopping_cart_copies.stocked.length == 0
-      if shopping_cart.items > 0
-        message = "We're very sorry, but someone else has ordered the item(s) in your shopping cart, and they are now unavailable."
+  private
+
+  def check_order
+    if order.order_copies.stocked.length == 0
+      num = order.number_of_items
+      if num > 0
+        message = "We're very sorry, but someone else has ordered the #{num > 1 ? 'items' : 'item'} in your shopping cart, and #{num > 1 ? 'they are' : 'it is'} now unavailable."
       else
         message = "Your shopping cart is empty, so an order cannot be placed."
       end
@@ -100,12 +90,10 @@ class OrdersController < ApplicationController
       if request.xhr?
         render :text => message, :status => 400
       else
-        redirect_to shopping_cart_url, :notice => message
+        redirect_to shopping_cart_path, :notice => message
       end
     end
   end
-
-  private
 
   def get_customer_and_set_step
     @step = params[:step].to_i
@@ -114,8 +102,6 @@ class OrdersController < ApplicationController
 
     # If the step was invalid redirect to the last valid step
     if @customer.step == @step
-      # Calculate the order amounts if we're on the final step
-      order.calculate_amounts if @step == 4
       return true
     else
       redirect_to order_step_path(step: @customer.step)

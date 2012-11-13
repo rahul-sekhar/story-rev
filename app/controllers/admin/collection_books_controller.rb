@@ -5,10 +5,10 @@ class Admin::CollectionBooksController < Admin::ApplicationController
     @collection = Collection.find(params[:collection_id])
     if params[:all_books].present?
       collection_book_ids = @collection.book_ids
-      books = BookDecorator.decorate(Book.includes_data.all)
-      render :json => books.map {|x| x.as_list_hash.merge ({ :in_collection => collection_book_ids.include?(x.id) }) }
+      books = Book.includes{[used_copies, new_copies, collections, book_awards, illustrator]}.all
+      render :json => books.map {|x| present(x).as_list_hash.merge({in_collection: collection_book_ids.include?(x.id) }) }
     else
-      render :json => BookDecorator.decorate(@collection.books.includes_copies).map { |x| x.as_collection_hash }
+      render :json => @collection.books.includes{[new_copies, used_copies]}.map { |x| present(x).as_collection_hash }
     end
   end
   
