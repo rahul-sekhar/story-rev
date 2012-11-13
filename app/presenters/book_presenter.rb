@@ -2,39 +2,48 @@ class BookPresenter < BasePresenter
   presents :book
   delegate :title, :author_name, :illustrator_name, :short_description, to: :book
 
+  def has_cover_image?
+    book.cover_image.present?
+  end
+
+  def cover_image(type)
+    raise "Invalid book cover image type" if !%w[tiny thumb medium].include?(type)
+    image_tag book.cover_image.send("#{type}_url"),
+      alt: "#{author_name} \u2012 #{title}",
+      width: book.cover_image.send("#{type}_width"),
+      height: book.cover_image.send("#{type}_height")
+  end
+
+  def title_and_author_p
+    content_tag(:p, title, class: :title) + 
+    content_tag(:p, author_name, class: :author)
+  end
+
   def inner_cover(link_to_image = false)
     if book.cover_image.present?
-      link_to (link_to_image ? book.cover_image.url : book_path(book)), class: (link_to_image ? nil : "book-link") do
-          
-          image_tag book.cover_image.thumb_url,
-            alt: "#{author_name} \u2012 #{title}",
-            width: book.cover_image.thumb_width,
-            height: book.cover_image.thumb_height
-
-      end
+      link_to cover_image("thumb"), 
+        link_to_image ? book.cover_image.url : book_path(book),
+        class: (link_to_image ? nil : "book-link")
     else
       content_tag :div, class: "blank-cover" do
         if link_to_image || book.new_record?
-          content_tag(:p, title, class: :title) + 
-          content_tag(:p, author_name, class: :author)
+          title_and_author_p
         else
-          link_to book_path(book), class: "book-link" do
-            content_tag(:p, title, class: :title) + 
-            content_tag(:p, author_name, class: :author)
-          end
+          link_to title_and_author_p, book_path(book), class: "book-link"
         end
       end
     end
   end
 
   def tiny_cover
-    return nil if book.cover_image.blank?
+    link_to cover_image("tiny"), book_path(book), class: "book-link" if has_cover_image?
+  end
 
-    link_to book_path(book), class: "book-link" do
-      image_tag book.cover_image.tiny_url,
-        alt: "#{author_name} \u2012 #{title}",
-        width: book.cover_image.tiny_width,
-        height: book.cover_image.tiny_height
+  def amazon_link
+    if book.amazon_url.present?
+      content_tag :p, class: "amazon-link" do
+        link_to "View reviews on amazon", book.amazon_url, class: "ext"
+      end
     end
   end
 
@@ -42,17 +51,41 @@ class BookPresenter < BasePresenter
     link_to title, book_path(book), class: "book-link"
   end
 
-  def age_level
-    if (book.age_from && book.age_to)
-      if (book.age_from == book.age_to)
-        "#{book.age_from}"
-      else
-        "#{book.age_from} \u2012 #{book.age_to}"
-      end
-    elsif book.age_from
-      "#{book.age_from}+"
-    else
+  def age_level(add_age = false)
+    if book.age_from.blank?
       ""
+    elsif book.age_to.present? && (book.age_from != book.age_to)
+      "#{"ages " if add_age}#{book.age_from} \u2012 #{book.age_to}"
+    else
+      "#{"age " if add_age}#{book.age_from}"
+    end
+  end
+
+  def age_message
+    if book.age_from.present?
+      content_tag :p, class: :age do
+        "May be appropriate for ".html_safe +
+        content_tag(:span, age_level(true)) +
+        content_tag(:span, '(and up)', class: "sidenote")
+      end
+    end
+  end
+
+  def publisher_message
+    if book.publisher.present?
+      content_tag :p, class: :publisher do
+        "Publisher: ".html_safe +
+        content_tag(:span, book.publisher_name)
+      end
+    end
+  end
+
+  def year_message
+    if book.year.present?
+      content_tag :p, class: :year do
+        "First published in: ".html_safe +
+        content_tag(:span, book.year)
+      end
     end
   end
   
@@ -103,6 +136,4 @@ class BookPresenter < BasePresenter
       :stock => book.number_of_copies
     }
   end
-  
-  
 end

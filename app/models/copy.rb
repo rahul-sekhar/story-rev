@@ -33,6 +33,7 @@ class Copy < ActiveRecord::Base
   scope :stocked, -> { where{stock > 0} }
   scope :unstocked, -> { where{stock <= 0} }
   scope :new_or_stocked, -> { where{(new_copy == true) | (stock > 0)} }
+  scope :includes_edition, -> { includes{[edition.publisher, edition.format]} }
 
   def init
   end

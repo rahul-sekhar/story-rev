@@ -1,108 +1,93 @@
 <section id="book-info">
-
-  <% if @book.cover_image.present? %>
-    <div class="cover-section">
-      <div class="large-cover">
-        <img src="<%= @book.cover_image.medium_url %>" alt="" width="<%= @book.cover_image.medium_width %>" height="<%= @book.cover_image.medium_height %>" />
+  <% present(@book) do |b| %>
+    <% if b.has_cover_image? %>
+      <div class="cover-section">
+        <div class="large-cover">
+          <%= b.cover_image("medium") %>
+        </div>
+        <%= b.amazon_link %>
       </div>
-      <% if @book.amazon_url.present? %>
-        <p class="amazon-link"><%= link_to "View reviews on amazon", @book.amazon_url, :class => :ext %></p>
-      <% end %>
-    </div>
-  <% end %>
-  
-  <div class="base-info">
-    <h2><%= @book.title %></h2>
-    
-    <div class="creators">
-      <p class="author">by <%= link_to @book.author_name, collection_path(:author, @book.author_id) %></p>
-      
-      <% if @book.illustrator.present? && @book.illustrator_name != @book.author_name %>
-        <p class="illustrator">illustrated by <%= link_to @book.illustrator_name, collection_path(:illustrator, @book.illustrator_id) %></p>
-      <% end %>
-    </div>
-    
-    <div class="age_year">
-      <% if @book.age_from.present? %>
-        <p class="age">May be appropriate for
-        <span><%=raw @book.age_to.present? && (@book.age_to != @book.age_from) ? "ages #{@book.age_from} &ndash; #{@book.age_to}" : "age #{@book.age_from}" %></span>
-        <span class="sidenote">(and up)</span>
-      <% end %>
-      
-      <% if @book.publisher.present? %>
-      <p class="publisher">Publisher: <span><%= @book.publisher_name %></span></p>
     <% end %>
+    
+    <div class="base-info">
+      <h2><%= b.title %></h2>
       
-      <% if @book.year.present? %>
-        <p class="year">First published in <span><%= @book.year %></span>
+      <div class="creators">
+        <p class="author">by <%= link_to @book.author_name, collection_path(:author, @book.author_id) %></p>
+        
+        <% if @book.illustrator.present? && @book.illustrator_name != @book.author_name %>
+          <p class="illustrator">illustrated by <%= link_to @book.illustrator_name, collection_path(:illustrator, @book.illustrator_id) %></p>
+        <% end %>
+      </div>
+      
+      <div class="age_year">
+        <%= b.age_message %>
+        <%= b.publisher_message %>
+        <%= b.year_message %>
+      </div>
+      
+      <% if !b.has_cover_image? %>
+        <%= b.amazon_link %>
       <% end %>
     </div>
     
-    <% if @book.cover_image.blank? %>
-      <% if @book.amazon_url.present? %>
-        <div class="amazon-links">
-          <p class="amazon-link"><%= link_to "View reviews on amazon", @book.amazon_url, :class => :ext %></p>
+    <% if @new_copies.present? %>
+      <table class="copies new-copies">
+        <tr>
+          <th colspan="3"><h3>Buy New Copies</h3></th>
+        </tr>
+        <% @new_copies.each do |c| %>
+          <%= render "copy_row", :c => c %>
+        <% end %>
+      </table>
+    <% end %>
+
+    <% if @used_copies.present? %>
+      <table class="copies used-copies<%= @new_copies.present? ? " second" : "" %>">
+        <tr>
+          <th colspan="3"><h3>Buy Used Copies</h3></th>
+        </tr>
+        <% UsedCopy.filter_unique(@used_copies).each do |c| %>
+          <%= render "copy_row", :c => c %>
+        <% end %>
+      </table>  
+    <% end %>
+
+    <% if !(@book.copies.stocked.length > 0) %>
+      <div class="no-stock">
+        <h3>Available Copies</h3>
+        <p>There are no copies in stock at the moment.</p>
+      </div>
+    <% end %>
+    
+    <div class="details">
+      <% if @book.book_awards.length > 0 %>
+        <div class="awards">
+          <h3>Awards</h3>
+          <p><%=raw @book.book_awards.map{|x| link_to(x.full_name, collection_path(:award, x.award.award_type_id)) }.join(', ') %></p>
         </div>
       <% end %>
-    <% end %>
-  </div>
-  
-  <% if @book.new_copies.stocked.length > 0 %>
-    <table class="copies new-copies">
-      <tr>
-        <th colspan="3"><h3>Buy New Copies</h3></th>
-      </tr>
-      <% @book.new_copies.stocked.each do |c| %>
-        <%= render "copy_row", :c => c %>
-      <% end %>
-    </table>
-  <% end %>
-
-  <% if @book.used_copies.stocked.length > 0 %>
-    <table class="copies used-copies<%= @book.new_copies.stocked.length > 0 ? " second" : "" %>">
-      <tr>
-        <th colspan="3"><h3>Buy Used Copies</h3></th>
-      </tr>
-      <% UsedCopy.filter_unique(@book.used_copies.stocked).each do |c| %>
-        <%= render "copy_row", :c => c %>
-      <% end %>
-    </table>  
-  <% end %>
-
-  <% if !(@book.copies.stocked.length > 0) %>
-    <div class="no-stock">
-      <h3>Available Copies</h3>
-      <p>There are no copies in stock at the moment.</p>
-    </div>
-  <% end %>
-  
-  <div class="details">
-    <% if @book.book_awards.length > 0 %>
-      <div class="awards">
-        <h3>Awards</h3>
-        <p><%=raw @book.book_awards.map{|x| link_to(x.full_name, collection_path(:award, x.award.award_type_id)) }.join(', ') %></p>
-      </div>
-    <% end %>
-    
-    <% if @book.collections.length > 0 %>
-      <div class="collections<%= @book.book_awards.length > 0 ? "" : " first" %>">
-        <h3>Collections</h3>
-        <p><%=raw @book.collections.map{|x| link_to(x.name, collection_path(:collection, x.id)) }.join(', ') %></p>
-      </div>
-    <% end %>
-    
-    <div class="description">
-      <% if @book.short_description.present? %>
-        <h3>The Book, in Brief</h3>
-        <p><%= @book.short_description %></p>
+      
+      <% if @book.collections.length > 0 %>
+        <div class="collections<%= @book.book_awards.length > 0 ? "" : " first" %>">
+          <h3>Collections</h3>
+          <p><%=raw @book.collections.map{|x| link_to(x.name, collection_path(:collection, x.id)) }.join(', ') %></p>
+        </div>
       <% end %>
       
-      <% @book.descriptions.each do |desc| %>
-        <h3><%= desc.title %></h3>
-        <p><%= desc.content %></p>
-      <% end %>
+      <div class="description">
+        <% if @book.short_description.present? %>
+          <h3>The Book, in Brief</h3>
+          <p><%= @book.short_description %></p>
+        <% end %>
+        
+        <% @book.descriptions.each do |desc| %>
+          <h3><%= desc.title %></h3>
+          <p><%= desc.content %></p>
+        <% end %>
+      </div>
     </div>
-  </div>
-  
-  <%= link_to "Back", :back, :class => "back-button" %>
+    
+    <%= link_to "Back", :back, :class => "back-button" %>
+  <% end %>
 </section>

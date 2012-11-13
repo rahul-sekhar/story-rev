@@ -15,7 +15,7 @@ class ApplicationController < ActionController::Base
   end
   
   def order
-    @order ||= Order.find_by_id(session[:order_id])
+    @order ||= Order.find_by_id(session[:order_id]) if session[:order_id].present?
     if @order.nil?
       session.delete(:order_id)
       @order = Order.new

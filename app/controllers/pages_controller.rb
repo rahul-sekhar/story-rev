@@ -19,7 +19,7 @@ class PagesController < ApplicationController
     end
     
     if request.xhr?
-      render :json => ajax_params
+      render json: ajax_params
     else
       get_collection_lists
     end

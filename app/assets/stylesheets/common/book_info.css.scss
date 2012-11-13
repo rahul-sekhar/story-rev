@@ -23,6 +23,10 @@
                 display:block;
             }
         }
+
+        .amazon-link {
+            margin-top: 0;
+        }
     }
 
     .base-info {
@@ -32,6 +36,7 @@
     .amazon-link {
         @include small-text;
         margin-bottom:e(10px, $small-text-size);
+        margin-top: e(20px);
     }
     
     h3 {
@@ -138,10 +143,6 @@
             float:left;
             @include image-replacement(420px);
         }
-    }
-    
-    .amazon-links {
-        margin-top: e(20px);
     }
     
     .awards, .collections {
