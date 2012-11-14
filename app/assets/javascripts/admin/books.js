@@ -67,6 +67,12 @@ $(document).ready(function() {
                     field: 'default_cost_price',
                     type: 'read_only',
                     class_name: 'default-cost-price'
+                },
+                {
+                    name: 'Default Percentage',
+                    field: 'default_percentage',
+                    type: 'read_only',
+                    class_name: 'default-percentage'
                 }
             ]
         });
@@ -163,7 +169,7 @@ $(document).ready(function() {
                     {
                         name: 'Profit Percentage',
                         field: 'profit_percentage',
-                        default_val: "25",
+                        default_val: $editionTable.find('tr[data-id=' + id + '] .default-percentage').data('val'),
                         multilineLabel: true,
                         displayCallback: function(data) {
                             return data + "%"

@@ -18,7 +18,6 @@ describe CompleteOrderPresenter, type: :decorator do
       order.confirmed = true
       order.paid = true
       order. posted = true
-      order.packaged = true
       subject.get_url.should == admin_orders_url(host: "testhost", selected_id: order.id)
     end
   end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121114103702) do
+ActiveRecord::Schema.define(:version => 20121114164817) do
 
   create_table "account_profit_shares", :force => true do |t|
     t.integer  "account_id", :null => false
@@ -148,6 +148,7 @@ ActiveRecord::Schema.define(:version => 20121114103702) do
 
   create_table "config_data", :force => true do |t|
     t.integer "default_cost_price", :default => 0, :null => false
+    t.integer "default_percentage", :default => 0, :null => false
   end
 
   create_table "copies", :force => true do |t|
@@ -222,6 +223,13 @@ ActiveRecord::Schema.define(:version => 20121114103702) do
   end
 
   add_index "default_cost_prices", ["book_type_id", "format_id"], :name => "index_default_cost_prices_on_book_type_id_and_format_id", :unique => true
+
+  create_table "default_percentages", :force => true do |t|
+    t.integer "publisher_id",                :null => false
+    t.integer "percentage",   :default => 0, :null => false
+  end
+
+  add_index "default_percentages", ["publisher_id"], :name => "index_default_percentages_on_publisher_id", :unique => true
 
   create_table "delayed_jobs", :force => true do |t|
     t.integer  "priority",   :default => 0

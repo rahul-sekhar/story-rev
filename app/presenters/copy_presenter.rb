@@ -11,7 +11,7 @@ class CopyPresenter < BasePresenter
   delegate :condition_rating, to: :copy
 
   def accession_id_sortable
-    "#{copy.accession_id.to_i}.#{"%04d" % copy.copy_number}".to_f
+    "#{copy.accession_id.to_i}.#{"%04d" % copy.copy_number.to_i}".to_f
   end
 
   def condition_description

@@ -104,4 +104,55 @@ describe Edition do
       edition.default_cost_price.should == 70
     end
   end
+
+  describe "#default_percentage" do
+    before do
+      c = ConfigData.access
+      c.default_percentage = 20
+      c.save
+      @p1 = create(:publisher)
+      create(:default_percentage, publisher: @p1, percentage: 30)
+      @p2 = create(:publisher)
+    end
+
+    context "with no publisher" do
+      it "returns the default" do
+        edition.default_percentage.should == 20
+      end
+    end
+
+    context "with a edition publisher" do
+      it "returns the default if the publisher isn't matched" do
+        edition.publisher = @p2
+        edition.default_percentage.should == 20
+      end
+
+      it "returns the matched value if the publisher is matched" do
+        edition.publisher = @p1
+        edition.default_percentage.should == 30
+      end
+    end
+
+    context "with a book publisher" do
+      it "returns the default if the publisher isn't matched" do
+        edition.book.publisher = @p2
+        edition.default_percentage.should == 20
+      end
+
+      it "returns the matched value if the publisher is matched" do
+        edition.book.publisher = @p1
+        edition.default_percentage.should == 30
+      end
+    end
+
+    context "with both a book and edition publisher" do
+      it "checks the edition publisher" do
+        @p3 = create(:publisher)
+        create(:default_percentage, publisher: @p3, percentage: 25)
+        edition.book.publisher = @p1
+        edition.publisher = @p3
+        edition.default_percentage.should == 25
+      end
+    end
+  end
 end

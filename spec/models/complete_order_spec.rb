@@ -321,11 +321,11 @@ describe CompleteOrder do
   describe "scopes" do
     before do
       @o1 = create(:complete_order)
-      @o2 = create(:complete_order_with_customer, packaged_date: 1.minute.ago, confirmed_date: Time.now - 2.days, posted_date: Time.now + 2.days)
+      @o2 = create(:complete_order_with_customer, posted_date: 1.minute.ago, confirmed_date: Time.now - 2.days, posted_date: Time.now + 2.days)
       @o2.paid_date = 1.day.ago
       @o2.save
       @o3 = create(:complete_order, confirmed_date: 1.day.ago)
-      @o4 = create(:complete_order_with_customer, packaged_date: 1.minute.ago, confirmed_date: Time.now - 2.days)
+      @o4 = create(:complete_order_with_customer, confirmed_date: Time.now - 2.days)
       @o4.paid_date = 1.day.ago
       @o4.save
     end

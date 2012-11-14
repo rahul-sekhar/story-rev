@@ -3,8 +3,11 @@ class Admin::DefaultCostPricesController < Admin::ApplicationController
     @title = "Configure Default Cost Prices"
     @class = "others dcp"
     @default = ConfigData.access.default_cost_price
+    @default_percentage = ConfigData.access.default_percentage
     @dcps = DefaultCostPrice.all
+    @dps = DefaultPercentage.all
     @new_dcp = DefaultCostPrice.new(book_type_id: flash[:book_type_id])
+    @new_dp = DefaultPercentage.new
   end
 
   def create

@@ -47,4 +47,14 @@ class Edition < ActiveRecord::Base
       return ConfigData.access.default_cost_price
     end
   end
+
+  def default_percentage
+    pub_id = publisher.present? ? self.publisher_id : book.publisher_id
+    default = DefaultPercentage.where(publisher_id: pub_id).first
+    if default.present?
+      return default.percentage
+    else
+      return ConfigData.access.default_percentage
+    end
+  end
 end

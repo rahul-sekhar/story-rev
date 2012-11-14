@@ -31,18 +31,42 @@
   <ul>
     <% @dcps.each do |x| %>
       <li>
-        <%= x.book_type_name %> &ndash; <%= x.format_name %>: <%= CurrencyMethods.to_currency(x.cost_price) %> <%= link_to "[remove]", admin_default_cost_price_path(x), method: :delete %>
+        <strong>[<%= CurrencyMethods.to_currency(x.cost_price) %>]</strong>
+        <%= x.book_type_name %> &ndash; <%= x.format_name %>
+        <%= link_to "[remove]", admin_default_cost_price_path(x), method: :delete %>
       </li>
     <% end %>
   </ul>
-<section>
-
-<section class="dcp-section">
-  <h2>Add</h2>
   <%= simple_form_for [:admin, @new_dcp] do |f| %>
     <%= f.input :book_type_id, as: :select, collection: BookType.all, include_blank: false %>
     <%= f.input :format_id, as: :select, collection: Format.all, include_blank: false %>
     <%= f.input :cost_price, input_html: { value: @default } %>
+    <%= f.submit "Add" %>
+  <% end %>
+</section>
+
+<section class="dcp-section" id="percentages-section">
+  <h2>Default percentage</h2>
+  <%= form_tag admin_set_default_percentage_path, method: :post do %>
+    <%= text_field_tag :default_percentage, @default_percentage, size: 2 %>
+    <%= submit_tag "Set" %>
+  <% end %>
+</section>
+
+<section class="dcp-section">
+  <h2>Defaults for publishers</h2>
+  <ul>
+    <% @dps.each do |x| %>
+      <li>
+        <strong>[<%= x.percentage %>%]</strong>
+        <%= x.publisher_name %>
+        <%= link_to "[remove]", admin_default_percentage_path(x), method: :delete %>
+      </li>
+    <% end %>
+  </ul>
+  <%= simple_form_for [:admin, @new_dp] do |f| %>
+    <%= f.input :publisher_id, as: :select, collection: Publisher.all, include_blank: false %>
+    <%= f.input :percentage, input_html: { value: @default_percentage } %>
     <%= f.submit "Add" %>
   <% end %>
 </section>

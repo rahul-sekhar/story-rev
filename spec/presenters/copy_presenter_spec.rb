@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe BookPresenter, type: :decorator do
+describe CopyPresenter, type: :decorator do
   let(:copy) { build(:used_copy_with_book) }
   subject {CopyPresenter.new(copy, view)}
 

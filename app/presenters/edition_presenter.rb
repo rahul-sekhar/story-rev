@@ -10,7 +10,8 @@ class EditionPresenter < BasePresenter
       publisher_name: publisher_name,
       language_name: language_name,
       isbn: isbn,
-      default_cost_price: edition.default_cost_price
+      default_cost_price: edition.default_cost_price,
+      default_percentage: edition.default_percentage
     }
   end
 end

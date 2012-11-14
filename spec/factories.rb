@@ -170,6 +170,11 @@ FactoryGirl.define do
     cost_price 30
   end
 
+  factory :default_percentage do
+    publisher
+    percentage 20
+  end
+
   factory :extra_cost do
     sequence(:name) { |n| "Extra Cost #{n}"}
     amount 40

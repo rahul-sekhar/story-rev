@@ -1,6 +1,7 @@
 class BookType < ActiveRecord::Base
   attr_accessible :name, :priority
-  has_many :books
+  has_many :books, dependent: :restrict
+  has_many :default_cost_prices, dependent: :destroy
   
   validates :name, 
     length: { maximum: 100 },

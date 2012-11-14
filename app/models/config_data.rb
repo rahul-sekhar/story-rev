@@ -7,6 +7,12 @@ class ConfigData < ActiveRecord::Base
     only_integer: true,
     greater_than_or_equal_to: 0
   }
+
+  validates :default_percentage, numericality: {
+    only_integer: true,
+    greater_than_or_equal_to: 0,
+    less_than_or_equal_to: 100
+  }
   
   def check_number
     return false if self.class.count > 0 && new_record?

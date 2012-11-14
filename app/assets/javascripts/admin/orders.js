@@ -11,6 +11,9 @@ $(document).ready(function() {
         addable: false,
         columns: [
             {
+                name: 'Confirmed Date'
+            },
+            {
                 name: 'Order ID'
             },
             {

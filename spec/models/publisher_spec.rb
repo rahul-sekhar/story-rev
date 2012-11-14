@@ -12,4 +12,6 @@ describe Publisher do
 
   it_should_behave_like "an object with a unique name"
   it_should_behave_like "an object findable by name"
+
+  
 end

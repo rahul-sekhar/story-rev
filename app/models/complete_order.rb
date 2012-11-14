@@ -24,8 +24,8 @@ class CompleteOrder < ActiveRecord::Base
   validates :postage_expenditure, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :complete, inclusion: { in: [true, false] }
 
-  scope :finalized, -> { where{(confirmed_date != nil) & (paid_date != nil) & (posted_date != nil) & (packaged_date != nil)} }
-  scope :unfinalized, -> { where{(confirmed_date == nil) | (paid_date == nil) | (posted_date == nil) | (packaged_date == nil)} }
+  scope :finalized, -> { where{(confirmed_date != nil) & (paid_date != nil) & (posted_date != nil)} }
+  scope :unfinalized, -> { where{(confirmed_date == nil) | (paid_date == nil) | (posted_date == nil)} }
   scope :order_by_confirmed, order{ confirmed_date.desc }
 
   def add_copy=(copy_id)

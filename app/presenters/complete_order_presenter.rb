@@ -21,6 +21,14 @@ class CompleteOrderPresenter < OrderPresenter
     link_to text, edit_admin_customer_path(order.customer), class: "edit-link"
   end
 
+  def formatted_date
+    order.confirmed_date.strftime("%b %e, %Y")
+  end
+
+  def timestamp
+    order.confirmed_date.to_i
+  end
+
   def formatted_postage_expenditure
     CurrencyMethods.to_currency(order.postage_expenditure || 0)
   end
@@ -40,12 +48,14 @@ class CompleteOrderPresenter < OrderPresenter
       postage_expenditure_val: order.postage_expenditure,
       total_amount: formatted_total_amount,
       notes: customer.notes || "",
+      formatted_date: formatted_date,
+      timestamp: timestamp
     }
   end
 
   def get_url
     # Check to see if the order is pending or completed
-    if (order.confirmed && order.paid && order.packaged && order.posted)
+    if (order.confirmed && order.paid && order.posted)
       return admin_orders_url(host: Rails.application.config.default_host, selected_id: order.id)
     else
       return pending_admin_orders_url(host: Rails.application.config.default_host, selected_id: order.id)
