@@ -175,4 +175,12 @@
             margin-top: e(20px);
         }
     }
+
+    table {
+        width: auto;
+
+        tr:hover {
+            background-color: none;
+        }
+    }
 }

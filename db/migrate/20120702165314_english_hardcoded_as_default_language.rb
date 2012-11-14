@@ -1,6 +1,6 @@
 class EnglishHardcodedAsDefaultLanguage < ActiveRecord::Migration
   def up
-    change_column :editions, :language_id, nil
+    change_column_default :editions, :language_id, nil
 
     Edition.where(language_id: 1).each do |x|
       x.language_id = nil
@@ -21,6 +21,6 @@ class EnglishHardcodedAsDefaultLanguage < ActiveRecord::Migration
       x.save
     end
 
-    change_column :editions, :language_id, default: 1
+    change_column_default :editions, :language_id, 1
   end
 end

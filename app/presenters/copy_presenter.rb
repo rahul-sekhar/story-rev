@@ -22,6 +22,10 @@ class CopyPresenter < BasePresenter
     CurrencyMethods.to_currency(copy.price)
   end
 
+  def cost_price
+    CurrencyMethods.to_currency(copy.cost_price)
+  end
+
   def tiny_book_cover
     book.tiny_cover
   end
@@ -32,14 +36,14 @@ class CopyPresenter < BasePresenter
       accession_id: copy.accession_id,
       accession_id_sortable: accession_id_sortable,
       price: copy.price,
-      formatted_price: CurrencyMethods.to_currency(copy.price),
+      formatted_price: price,
       new_copy: copy.new_copy,
       stock: copy.stock,
       required_stock: copy.required_stock || 0,
       condition_description: condition_description,
       condition_rating: copy.condition_rating,
       cost_price: copy.cost_price,
-      formatted_cost_price: CurrencyMethods.to_currency(copy.cost_price),
+      formatted_cost_price: cost_price,
       profit_percentage: copy.profit_percentage
     }
   end

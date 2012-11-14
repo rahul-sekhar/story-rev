@@ -23,6 +23,23 @@ module AdminHelper
     end
     return nil
   end
+
+  def self.set_copy_cost_prices
+    NewCopy.includes{[edition.book]}.each do |x|
+      x.profit_percentage = 25
+      x.save!
+    end
+
+    UsedCopy.includes{[edition.book]}.stocked.each do |x|
+      dcp = DefaultCostPrice.where{(format_id == x.edition.format_id) & (book_type_id == x.book.book_type_id)}.first
+      if dcp
+        x.cost_price = dcp.cost_price
+      else
+        x.cost_price = (40 * x.price) / 100
+      end
+      x.save!
+    end
+  end
   
   def self.reset_and_display_accession_ids
     self.reset_book_accession_ids

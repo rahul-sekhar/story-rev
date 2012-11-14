@@ -39,11 +39,20 @@ $(document).ready(function() {
                 type: 'rating'
             },
             {
+                name: 'Cost Price',
+                field: 'cost_price',
+            },
+            {
                 name: 'Price',
                 field: 'price',
             },
             {
                 name: 'More Information',
+                class_name: 'has-button',
+                noHeading:true
+            },
+            {
+                name: 'Edit',
                 class_name: 'has-button',
                 noHeading:true
             },

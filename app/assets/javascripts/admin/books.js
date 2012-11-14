@@ -160,7 +160,7 @@ $(document).ready(function() {
                     {
                         name: 'Profit Percentage',
                         field: 'profit_percentage',
-                        default_val: "60",
+                        default_val: "25",
                         multilineLabel: true,
                         displayCallback: function(data) {
                             return data + "%"

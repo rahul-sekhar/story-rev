@@ -1,9 +1,10 @@
 module DuplicateNames
   
   class Handler
-    def initialize(klass, dependent_field, verbose = false)
+    def initialize(klass, dependent_field, reverse_field, verbose = false)
       @klass = klass
       @dependent_field = dependent_field
+      @reverse_field = reverse_field
       @verbose = verbose
     end
 
@@ -26,7 +27,7 @@ module DuplicateNames
 
       groups.each do |g|
         puts "From group #{g.name}:"
-        GroupMerger.new(g, @dependent_field, @verbose).merge
+        GroupMerger.new(g, @dependent_field, @reverse_field, @verbose).merge
         puts "\n"
       end
 
@@ -121,10 +122,11 @@ module DuplicateNames
 
 
   class GroupMerger
-    def initialize(group, dependent_field, verbose = false)
+    def initialize(group, dependent_field, reverse_field, verbose = false)
       raise Exception.new("Excepted type Group") unless group.is_a? Group
       @group = group
       @dependent_field = dependent_field
+      @reverse_field = reverse_field
       @verbose = verbose
     end
 
@@ -142,25 +144,17 @@ module DuplicateNames
 
       # Change the name of the first goup element till it is valid
       puts "\tKeeping first object with name '#{@group.first.name}'" if @verbose
-      tmp_name = @group.first.name
-      while @group.first.invalid? do
-        @group.first.name = @group.first.name + "x"
-      end
-      @group.first.save
 
       # Move all dependent fields to the first element of the group
       @group.objects[1..-1].each do |x|
         objects_to_shift = x.send(@dependent_field)
-        puts "\tShifting #{objects_to_shift.length} objects to it" if @verbose
-        p @group.first
-        p objects_to_shift
-        @group.first.send(@dependent_field) << objects_to_shift
-        x.destroy
+        puts "*** \tShifting #{objects_to_shift.length} objects to it ***" if @verbose
+        objects_to_shift.each do |y|
+          y.update_attribute(@reverse_field, @group.first.id)
+        end
+        x.delete
+        puts "*** Done ****"
       end
-
-      # Change back the name
-      @group.first.name = tmp_name
-      @group.first.save
     end
   end
 end

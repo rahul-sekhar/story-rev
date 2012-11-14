@@ -44,17 +44,17 @@
     <tbody>
       <tr class="income">
         <td>Income</td>
-        <td class="amount"><%= CurrencyMethods.to_currency(@income) %></td>
+        <td class="amount"><%= CurrencyMethods.formatted_currency(@income) %></td>
       </tr>
       
       <tr class="expenditure">
         <td>Expenditure</td>
-        <td class="amount"><%= CurrencyMethods.to_currency(@expenditure) %></td>
+        <td class="amount"><%= CurrencyMethods.formatted_currency(@expenditure) %></td>
       </tr>
       
       <tr class="profit">
         <td>Profit</td>
-        <td class="amount"><%= CurrencyMethods.to_currency(@profit) %></td>
+        <td class="amount"><%= CurrencyMethods.formatted_currency(@profit) %></td>
       </tr>
     </tbody>
   </table>

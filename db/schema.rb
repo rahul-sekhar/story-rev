@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121113131011) do
+ActiveRecord::Schema.define(:version => 20121114103702) do
 
   create_table "account_profit_shares", :force => true do |t|
     t.integer  "account_id", :null => false
@@ -331,8 +331,8 @@ ActiveRecord::Schema.define(:version => 20121113131011) do
     t.datetime "paid_date"
     t.datetime "packaged_date"
     t.datetime "posted_date"
-    t.integer  "postage_expenditure", :default => 0,     :null => false
     t.boolean  "complete",            :default => false, :null => false
+    t.integer  "postage_expenditure", :default => 0,     :null => false
   end
 
   add_index "orders", ["complete"], :name => "index_orders_on_complete"

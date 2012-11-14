@@ -57,10 +57,6 @@ class RefactorOrders < ActiveRecord::Migration
 
     Order.all.each do |x|
       if x.step < 5
-        OrderCopy.where(order_id: x.id).each do |y|
-          y.destroy
-          p "[Destroyed order copy ##{y.id}]"  
-        end
         x.destroy
         p "Destroyed order ##{x.id} with step ##{x.step}"
       else
@@ -69,14 +65,14 @@ class RefactorOrders < ActiveRecord::Migration
           delivery_method: x.delivery_method,
           pickup_point_id: x.pickup_point_id,
           payment_method_id: x.payment_method_id,
-          other_pickup: x.other_pickup
+          other_pickup: x.other_pickup,
           name: x.name,
           email: x.email,
           phone: x.phone,
           address: x.address,
           city: x.city,
           pin_code: x.pin_code,
-          other:info: x.other_info
+          other_info: x.other_info,
           notes: x.notes
         )
         
@@ -84,12 +80,18 @@ class RefactorOrders < ActiveRecord::Migration
         if x.paid_date.present?
           pt = Transaction.find_by_id(x.postage_transaction_id)
           t = Transaction.find(x.transaction_id)
-          t.debit = pt.debit if pt
+          if pt
+            t.debit = pt.debit 
+            pt.destroy
+          end
           t.order_id = x.id
           t.save!
         else
-          if x.postage_transaction_id.present? || x.transaction_id.present?
-            raise "Transaction without payment for order ##{x.id}" 
+          p "Check order: #{x.id}" if x.transaction_id.present?
+          if x.postage_transaction_id.present?
+            pt = Transaction.find_by_id(x.postage_transaction_id)
+            x.postage_expenditure = pt.debit
+            pt.destroy
           end
         end
         x.save!
