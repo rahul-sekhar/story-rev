@@ -107,7 +107,7 @@ class RefactorOrders < ActiveRecord::Migration
       t.remove :delivery_method, :pickup_point_id, :payment_method_id, :other_pickup, :name, :email, :phone, :address, :city, :other_info, :pin_code, :notes
 
       # Removed columns
-      t.remove :step, :shopping_cart_id, :account_id, :postage_transaction_id
+      t.remove :step, :shopping_cart_id, :account_id, :postage_transaction_id, :transaction_id
     end
 
     change_column :orders, :postage_amount, :integer, null: false, default: 0
