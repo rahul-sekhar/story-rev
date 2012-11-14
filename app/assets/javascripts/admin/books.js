@@ -74,7 +74,10 @@ $(document).ready(function() {
         // Auto add a used copy after an edition is added
         $editionTable.on("addRow", function(e, data) {
             $copyTable.one("tableLoad", function() {
-                $copyTable.closest('.table-wrapper').find('.add-link').click();
+                if(data.isbn)
+                    $newCopyTable.closest('.table-wrapper').find('.add-link').click();
+                else
+                    $copyTable.closest('.table-wrapper').find('.add-link').click();
             });
         });
         
