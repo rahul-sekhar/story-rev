@@ -11,6 +11,7 @@ class CompleteOrder < ActiveRecord::Base
   has_many :used_copies, through: :order_copies
   has_many :new_copies, through: :order_copies
   has_one :customer, dependent: :destroy, foreign_key: :order_id
+  has_many :extra_costs, dependent: :destroy, foreign_key: :order_id
 
   validates :total_amount, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :postage_amount, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
@@ -28,19 +29,9 @@ class CompleteOrder < ActiveRecord::Base
     self.order_copies.where(copy_id: copy_id).each { |oc| oc.destroy }
   end
 
-  def calculate_amounts
-    if customer.delivery_method == 1
-      self.postage_amount = order_copies.inject(0){ |s, x| s + 10 * x.number }
-      self.postage_amount += 10 if postage_amount > 0
-    else
-      self.postage_amount = 0
-    end
-
-    self.total_amount = order_copies.inject(0){ |s, x| s + x.price } + postage_amount
-  end
-
   def recalculate
     order_copies.reload
+    extra_costs.reload
     calculate_amounts
     save
   end
@@ -86,5 +77,19 @@ class CompleteOrder < ActiveRecord::Base
   
   def packaged
     packaged_date.present?
+  end
+
+  private
+
+  def calculate_amounts
+    if customer.delivery_method == 1
+      self.postage_amount = order_copies.inject(0){ |s, x| s + 10 * x.number }
+      self.postage_amount += 10 if postage_amount > 0
+    else
+      self.postage_amount = 0
+    end
+
+    self.total_amount = order_copies.inject(0){ |s, x| s + x.price } + postage_amount
+    self.total_amount += extra_costs.inject(0){ |s, x| s + x.amount }
   end
 end

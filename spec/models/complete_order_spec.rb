@@ -227,6 +227,12 @@ describe CompleteOrder do
       c3.reload.stock.should == 5
       c4.reload.stock.should == 1
     end
+
+    it "destroys any extra costs" do
+      create(:extra_cost_with_order)
+      create_list(:extra_cost, 3, complete_order: order)
+      expect{ order.destroy }.to change{ExtraCost.count}.by(-3)
+    end
   end
 
   describe "#order_copies" do
@@ -245,9 +251,9 @@ describe CompleteOrder do
     end
   end
 
-  describe "#calculate_amount" do
+  describe "#recalculate" do
     before do
-      order.customer = create(:customer)
+      order.customer = create(:valid_customer, delivery_method: 1)
       create(:order_copy, copy: create(:used_copy_with_book, price: 50), complete_order: order, final: true)
       create(:order_copy, copy: create(:used_copy_with_book, price: 100), complete_order: order, final: false)
       create(:order_copy, copy: create(:new_copy_with_book, stock: 5, price: 120), complete_order: order, number: 3, final: true)
@@ -259,19 +265,9 @@ describe CompleteOrder do
       before{ order.customer.delivery_method = 2 }
 
       it "gives the correct totals" do
-        order.calculate_amounts
+        order.recalculate
         order.postage_amount.should == 0
         order.total_amount.should == 500
-      end
-    end
-
-    describe "with postage" do
-      before{ order.customer.delivery_method = 1 }
-
-      it "gives the correct totals" do
-        order.calculate_amounts
-        order.postage_amount.should == 60
-        order.total_amount.should == 560
       end
     end
 
@@ -282,8 +278,22 @@ describe CompleteOrder do
       end
 
       it "raises an exception" do
-        expect { order.calculate_amounts }.to raise_exception
+        expect { order.recalculate }.to raise_exception
       end
+    end
+
+    it "gives the correct total of order copies with postage" do
+        order.recalculate
+        order.postage_amount.should == 60
+        order.total_amount.should == 560
+      end
+
+    it "takes extra costs into account" do
+      create(:extra_cost, complete_order: order, amount: 40, expenditure: 10)
+      create(:extra_cost, complete_order: order, amount: 20, expenditure: 20)
+      order.recalculate
+      order.postage_amount.should == 60
+      order.total_amount.should == 620
     end
   end
 

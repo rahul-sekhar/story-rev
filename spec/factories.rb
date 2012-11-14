@@ -160,8 +160,17 @@ FactoryGirl.define do
   end
 
   factory :default_cost_price do
-    format
+    format 
     book_type
     cost_price 30
+  end
+
+  factory :extra_cost do
+    sequence(:name) { |n| "Extra Cost #{n}"}
+    amount 40
+
+    factory :extra_cost_with_order do
+      complete_order
+    end
   end
 end

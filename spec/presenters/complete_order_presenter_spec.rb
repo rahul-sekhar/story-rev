@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe OrderPresenter, type: :decorator do
+describe CompleteOrderPresenter, type: :decorator do
   let(:order) { create(:complete_order) }
   subject {CompleteOrderPresenter.new(order, view)}
 
