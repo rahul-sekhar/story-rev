@@ -93,9 +93,9 @@ class PagesController < ApplicationController
   end
   
   def get_collection_lists
-    @book_types = BookType.joins{books}.visible.prioritised.where{books.in_stock == true}.group{id}
-    @formats = Format.joins{editions.copies}.where{editions.copies.stock > 0}.group{id}
-    @collections = Collection.prioritised.visible.joins{books}.where{books.in_stock == true}.group{id}
+    @book_types = BookType.joins{books}.visible.prioritised.where{books.in_stock == true}.group(BookType.columns_list)
+    @formats = Format.joins{editions.copies}.where{editions.copies.stock > 0}.group(Format.columns_list)
+    @collections = Collection.prioritised.visible.joins{books}.where{books.in_stock == true}.group(Collection.columns_list)
   end
   
   def ajax_params

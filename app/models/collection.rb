@@ -22,4 +22,8 @@ class Collection< ActiveRecord::Base
       :priority => priority
     }
   end
+
+  def self.columns_list
+    column_names.collect { |c| "#{table_name}.#{c}" }.join(",")
+  end
 end

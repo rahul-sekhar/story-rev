@@ -227,7 +227,7 @@ class Book < ActiveRecord::Base
     when "price"
       joins{copies}
         .where{copies.stock > 0}
-        .group{[id, authors.id]}
+        .group(Book.columns_list + ", authors.id")
         .order("MIN(copies.price)#{dir}")
     else
       # Default to order by date, reverse direction for this

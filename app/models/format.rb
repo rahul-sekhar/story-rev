@@ -11,4 +11,8 @@ class Format < ActiveRecord::Base
     uniqueness: { case_sensitive: false }
   
   strip_attributes
+
+  def self.columns_list
+    column_names.collect { |c| "#{table_name}.#{c}" }.join(",")
+  end
 end

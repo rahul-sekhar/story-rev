@@ -11,4 +11,8 @@ class BookType < ActiveRecord::Base
   
   scope :prioritised, order("priority DESC, name")
   scope :visible, where("priority > 0")
+
+  def self.columns_list
+    column_names.collect { |c| "#{table_name}.#{c}" }.join(",")
+  end
 end
