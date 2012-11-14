@@ -24,7 +24,7 @@
     <% @copies.each do |c| %>
       <% stocked = c.stock_taking.present? %>
       <% klass = (stocked && alt) ? "alt stocked" : (alt ? "alt" : (stocked ? "stocked" : nil)) %>
-      <tr data-id="<%= c.accession_id %>"<%= class_if klass, klass %>>
+      <tr data-id="<%= c.id %>"<%= class_if klass, klass %>>
         <td class="acc" data-sort-by="<%= present(c).accession_id_sortable %>"><%= c.accession_id %></td>
         <td data-sort-by="<%= c.book.title %>"><%= c.book.title %></td>
         <td data-sort-by="<%= c.book.author_name %>"><%= c.book.author_name %></td>
