@@ -30,6 +30,7 @@ class ApplicationController < ActionController::Base
 
   private
   def render_error(status, exception)
+    logger.fatal "ERROR #{status}:\n#{exception.to_yaml}"
     respond_to do |format|
       @class = "error-page"
       @title = nil
