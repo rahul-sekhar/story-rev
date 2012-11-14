@@ -77,6 +77,6 @@ class Copy < ActiveRecord::Base
 
   def profit_percentage
     return 0 if price.to_i == 0
-    (((price - cost_price.to_f) / price.to_f) * 100).to_i
+    (((price.to_f - cost_price.to_f) / price.to_f) * 100).round
   end
 end

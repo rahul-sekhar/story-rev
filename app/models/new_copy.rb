@@ -35,6 +35,6 @@ class NewCopy < Copy
   end
 
   def calculate_cost_price
-    self.cost_price = (price - (price * @profit_percentage.to_i / 100)) if @profit_percentage.present?
+    self.cost_price = (price - (price.to_f * @profit_percentage.to_f / 100.0).round) if @profit_percentage.present?
   end
 end

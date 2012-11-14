@@ -75,7 +75,7 @@ describe NewCopy do
     end
   end
 
-  describe "#profit_percentage" do
+  describe "#profit_percentage", :focus do
     it "returns the profit percentage" do
       copy.cost_price = 20
       copy.price = 120
@@ -104,6 +104,22 @@ describe NewCopy do
       copy.reload.profit_percentage = 65
       copy.save
       copy.cost_price.should == 35
+    end
+
+    it "should round off properly" do
+      copy.price = 99
+      copy.profit_percentage = 25
+      copy.save
+      copy.cost_price.should == 74
+      copy.profit_percentage.should == 25
+    end
+
+    it "should round off properly - test two" do
+      copy.price = 97
+      copy.profit_percentage = 25
+      copy.save
+      copy.cost_price.should == 73
+      copy.profit_percentage.should == 25
     end
 
     it "changes the cost price when set to a string" do
