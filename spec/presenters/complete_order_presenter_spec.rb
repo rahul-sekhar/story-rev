@@ -3,6 +3,9 @@ require 'spec_helper'
 describe CompleteOrderPresenter, type: :decorator do
   let(:order) { create(:complete_order) }
   subject {CompleteOrderPresenter.new(order, view)}
+  before do
+    create(:valid_customer, complete_order: order)
+  end
 
   describe "#get_url" do
     it "should return the pending order path for a pending order" do

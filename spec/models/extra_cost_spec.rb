@@ -1,7 +1,8 @@
 require 'spec_helper'
 
-describe ExtraCost, :focus do
-  let(:extra_cost){ build(:extra_cost_with_order) }
+describe ExtraCost do
+  let(:order){ create(:complete_order_with_customer) }
+  let(:extra_cost){ build(:extra_cost, complete_order: order) }
 
   it "is valid" do
     extra_cost.should be_valid
@@ -80,22 +81,53 @@ describe ExtraCost, :focus do
   end
 
   it "updates its orders total when created" do
-    o = create(:complete_order)
-    ec = create(:extra_cost, complete_order: o, amount: 50, expenditure: 10)
+    ec = create(:extra_cost, complete_order: order, amount: 50, expenditure: 10)
     ec.order.total_amount.should == 50
   end
 
   it "updates its orders total when saved" do
-    ec = create(:extra_cost_with_order, amount: 50, expenditure: 10)
+    ec = create(:extra_cost, complete_order: order, amount: 50, expenditure: 10)
     ec.order.total_amount.should == 50
     ec.update_attributes(amount: 40)
     ec.order.total_amount.should == 40
   end
 
   it "updates its orders total when destroyed" do
-    ec = create(:extra_cost_with_order, amount: 50, expenditure: 10)
+    ec = create(:extra_cost, complete_order: order, amount: 50, expenditure: 10)
     ec.order.total_amount.should == 50
     ec.destroy
     ec.order.total_amount.should == 0
-  end  
+  end
+
+  context "with an order transaction" do
+    before do
+      order.paid = true
+      order.save
+      @t = order.transaction
+    end
+
+    it "updates the transaction when created" do
+      ec = create(:extra_cost, complete_order: order, amount: 50, expenditure: 10)
+      @t.reload.credit.should == 50
+      @t.debit.should == 10
+    end
+
+    it "updates the transaction when saved" do
+      ec = create(:extra_cost, complete_order: order, amount: 50, expenditure: 10)
+      @t.reload.credit.should == 50
+      @t.debit.should == 10
+      ec.update_attributes(amount: 40, expenditure: 20)
+      @t.reload.credit.should == 40
+      @t.debit.should == 20
+    end
+
+    it "updates the transaction when destroyed" do
+      ec = create(:extra_cost, complete_order: order, amount: 50, expenditure: 10)
+      @t.reload.credit.should == 50
+      @t.debit.should == 10
+      ec.destroy
+      @t.reload.credit.should == 0
+      @t.debit.should == 0
+    end
+  end
 end

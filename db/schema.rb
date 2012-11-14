@@ -323,21 +323,24 @@ ActiveRecord::Schema.define(:version => 20121113131011) do
   add_index "loans", ["name"], :name => "index_loans_on_name"
 
   create_table "orders", :force => true do |t|
-    t.integer  "postage_amount", :default => 0,     :null => false
-    t.integer  "total_amount",   :default => 0,     :null => false
+    t.integer  "postage_amount",      :default => 0,     :null => false
+    t.integer  "total_amount",        :default => 0,     :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "confirmed_date"
     t.datetime "paid_date"
     t.datetime "packaged_date"
     t.datetime "posted_date"
-    t.boolean  "complete",       :default => false, :null => false
+    t.integer  "transaction_id"
+    t.boolean  "complete",            :default => false, :null => false
+    t.integer  "postage_expenditure", :default => 0,     :null => false
   end
 
   add_index "orders", ["complete"], :name => "index_orders_on_complete"
   add_index "orders", ["confirmed_date"], :name => "index_orders_on_confirmed_date"
   add_index "orders", ["created_at"], :name => "index_orders_on_created_at"
   add_index "orders", ["paid_date"], :name => "index_orders_on_paid_date"
+  add_index "orders", ["transaction_id"], :name => "index_orders_on_transaction_id", :unique => true
 
   create_table "orders_copies", :force => true do |t|
     t.integer  "order_id",                      :null => false

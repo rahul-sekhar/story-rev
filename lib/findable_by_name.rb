@@ -1,10 +1,10 @@
 module FindableByName
   def name_is(data)
-    where("LOWER(name) = ?", data.downcase).first
+    where{name.like(data)}.first
   end
   
   def name_like(data)
-    where("LOWER(name) LIKE ?", 
-      "%#{SqlHelper::escapeWildcards(data.downcase)}%")
+    data = "%#{SqlHelper::escapeWildcards(data)}%"
+    where{name.like(data)}
   end
 end

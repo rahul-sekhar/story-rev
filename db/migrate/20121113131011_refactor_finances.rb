@@ -76,5 +76,85 @@ class RefactorFinances < ActiveRecord::Migration
   end
 
   def down
+    # Transfers tables
+    create_table :transfer_categories do |t|
+      t.string   :name
+      t.timestamps
+    end
+
+    add_index :transfer_categories, :name
+
+    create_table :transfers do |t|
+      t.integer  :amount
+      t.integer  :source_account_id
+      t.integer  :target_account_id
+      t.integer  :transfer_category_id
+      t.integer  :payment_method_id
+      t.text     :notes
+      t.datetime :date
+      t.timestamps
+    end
+
+    add_index :transfers, :date
+    add_index :transfers, :payment_method_id
+    add_index :transfers, :source_account_id
+    add_index :transfers, :target_account_id
+    add_index :transfers, :transfer_category_id
+
+    # Accounts table
+    change_table :accounts do |t|
+      t.change :name, :string, null: true
+
+      t.remove :share
+    end
+
+    remove_index :accounts, :name
+    add_index :accounts, :name
+
+    # Account profit shares table
+    drop_table :account_profit_shares
+
+    # Loans table
+    drop_table :loans
+
+    # Config data
+    change_table :config_data do |t|
+      t.integer :default_account_id
+      t.integer :cash_account_id
+    end
+
+    # Extra costs
+    change_table :extra_costs do |t|
+      t.change :order_id, :integer, null: true
+      t.change :amount, :integer, null: true
+      t.change :name, :string, null: true
+
+      t.remove :expenditure
+    end
+
+    # Transaction categories
+    change_table :transaction_categories do |t|
+      t.change :name, :string, null: true
+      
+      t.boolean :off_record, default: false
+    end
+
+    remove_index :transaction_categories, :name
+    add_index :transaction_categories, :name
+
+    # Transactions
+    change_table :transactions do |t|
+      t.change :credit, :integer, null: true
+      t.change :debit, :integer, null: true
+      t.change :other_party, :string
+      t.change :transaction_category_id, :integer, null: true
+      t.change :date, :datetime, null: true
+
+      t.integer :account_id
+      t.boolean :off_record, default: false
+    end
+
+    change_column_default :transactions, :credit, nil
+    change_column_default :transactions, :debit, nil
   end
 end

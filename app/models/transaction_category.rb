@@ -3,7 +3,13 @@ class TransactionCategory < ActiveRecord::Base
   
   attr_accessible :name
   
-  has_many :transactions, dependent: :nullify
+  has_many :transactions, dependent: :restrict
   
-  validates :name, length: maximum: 120, presence: true, uniqueness: { case_sensitive: false }
+  validates :name, length: { maximum: 120 }, presence: true, uniqueness: { case_sensitive: false }
+
+  strip_attributes
+
+  def self.find_or_create(name)
+    name_is(name) || create(name: name)
+  end
 end

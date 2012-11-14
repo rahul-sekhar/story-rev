@@ -17,36 +17,18 @@
 <div class="table-wrapper">
   <div class="table-container">
     <table id="transactions-table" data-init-select="<%= params[:selected_id] %>">
-      <% @transactions.each do |x| %>
-        <tr data-id="<%= x.id %>" <% if x.order_url %>data-order-url="<%= x.order_url %>"<% end %>>
-          <td data-val="<%= x.short_date %>" class="date" data-sort-by="<%= x.timestamp %>"><%= x.formatted_date %></td>
-          <td data-val="<%= x.transaction_category_id %>" data-sort-by="<%= x.transaction_category_name %>"><%= x.transaction_category_name %></td>
-          <td data-val="<%= x.other_party %>" data-sort-by="<%= x.other_party %>"><%= x.other_party %></td>
-          <td data-val="<%= x.payment_method_id %>" data-sort-by="<%= x.payment_method_name %>"><%= x.payment_method_name %></td>
-          <td data-val="<%= x.account_id %>" data-sort-by="<%= x.account_name %>"><%= x.account_name %></td>
-          <td data-val="<%= x.notes %>"><%= x.notes %></td>
-          <td data-val="<%= x.credit %>" class="amount" data-sort-by="<%= x.credit %>"><%= x.formatted_credit %></td>
-          <td data-val="<%= x.debit %>" class="amount" data-sort-by="<%= x.debit%>"><%= x.formatted_debit %></td>
-        </tr>
-      <% end %>
-    </table>
-  </div>
-</div>
-
-
-<div class="table-wrapper">
-  <div class="table-container">
-    <table id="transfers-table">
-      <% @transfers.each do |x| %>
-        <tr data-id="<%= x.id %>">
-          <td data-val="<%= x.short_date %>" class="date" data-sort-by="<%= x.timestamp %>"><%= x.formatted_date %></td>
-          <td data-val="<%= x.transfer_category_id %>" data-sort-by="<%= x.transfer_category_name %>"><%= x.transfer_category_name %></td>
-          <td data-val="<%= x.payment_method_id %>" data-sort-by="<%= x.payment_method_name %>"><%= x.payment_method_name %></td>
-          <td data-val="<%= x.source_account_id %>" data-sort-by="<%= x.source_account_name %>"><%= x.source_account_name %></td>
-          <td data-val="<%= x.target_account_id %>" data-sort-by="<%= x.target_account_name %>"><%= x.target_account_name %></td>
-          <td data-val="<%= x.notes %>"><%= x.notes %></td>
-          <td data-val="<%= x.amount %>" class="amount" data-sort-by="<%= x.amount %>"><%= x.formatted_amount %></td>
-        </tr>
+      <% @transactions.each do |transaction| %>
+        <% present(transaction) do |x|  %>
+          <tr data-id="<%= x.id %>" <% if x.order_url %>data-order-url="<%= x.order_url %>"<% end %>>
+            <td data-val="<%= x.short_date %>" class="date" data-sort-by="<%= x.timestamp %>"><%= x.formatted_date %></td>
+            <td data-val="<%= x.transaction_category_id %>" data-sort-by="<%= x.transaction_category_name %>"><%= x.transaction_category_name %></td>
+            <td data-val="<%= x.other_party %>" data-sort-by="<%= x.other_party %>"><%= x.other_party %></td>
+            <td data-val="<%= x.payment_method_id %>" data-sort-by="<%= x.payment_method_name %>"><%= x.payment_method_name %></td>
+            <td data-val="<%= x.notes %>"><%= x.notes %></td>
+            <td data-val="<%= x.credit %>" class="amount" data-sort-by="<%= x.credit %>"><%= x.formatted_credit %></td>
+            <td data-val="<%= x.debit %>" class="amount" data-sort-by="<%= x.debit%>"><%= x.formatted_debit %></td>
+          </tr>
+        <% end %>
       <% end %>
     </table>
   </div>
