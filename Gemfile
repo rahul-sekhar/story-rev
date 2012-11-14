@@ -21,7 +21,7 @@ gem 'terminator', '0.4.4'
 gem 'valid_email', '0.0.4', :require => 'valid_email/email_validator'
 gem 'delayed_job_active_record', '0.3.3'
 gem 'daemons', '1.1.9'
-gem 'whenever', '0.8.0'
+gem 'whenever', '0.7.3'
 gem 'aws-s3', '0.6.3'
 gem 'squeel', '1.0.13'
 gem 'bcrypt-ruby', '~> 3.0.0', :require => "bcrypt"
