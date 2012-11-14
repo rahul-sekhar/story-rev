@@ -75,7 +75,7 @@ describe NewCopy do
     end
   end
 
-  describe "#profit_percentage", :focus do
+  describe "#profit_percentage" do
     it "returns the profit percentage" do
       copy.cost_price = 20
       copy.price = 120

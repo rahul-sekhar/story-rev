@@ -1,6 +1,6 @@
 class BasePresenter
   
-  def initialize(object, template)
+  def initialize(object, template = nil)
     @object = object
     @template = template
   end

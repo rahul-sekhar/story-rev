@@ -1,12 +1,15 @@
 class CustomerPresenter < BasePresenter
   presents :customer
 
-  delegate :name, to: :customer
-  delegate :phone, to: :customer
-  delegate :email, to: :customer
-  delegate :other_info, to: :customer
-  delegate :city, to: :customer
-  delegate :notes, to: :customer
+  delegate :name,
+    :phone,
+    :email,
+    :other_info,
+    :city,
+    :notes,
+    :payment_method_id,
+    :delivery_method,
+    to: :customer
 
   def pickup_point_text
     return "" if customer.delivery_method != 2

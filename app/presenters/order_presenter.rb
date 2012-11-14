@@ -1,16 +1,18 @@
 class OrderPresenter < BasePresenter
   presents :order
 
-  delegate :name, to: :customer
-  delegate :city, to: :customer
-  delegate :delivery_short, to: :customer
+  delegate :name, 
+    :city, 
+    :delivery_short,
+    :delivery_text,
+    :pickup_point_text,
+    :delivery_method,
+    :payment_method_id,
+    :pickup_point_short_text,
+    to: :customer
 
   def number
     order.id
-  end
-
-  def delivery_method
-    order.customer.delivery_method
   end
 
   def formatted_postage_amount

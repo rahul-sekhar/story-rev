@@ -8,7 +8,7 @@ describe BookPresenter, type: :decorator do
     it "returns the accession number as a decimal" do
       copy.stub(:accession_id).and_return("123-14")
       copy.stub(:copy_number).and_return(14)
-      subject.accession_id_sortable.should == 123.14
+      subject.accession_id_sortable.should == 123.0014
     end
   end
 
