@@ -3,13 +3,16 @@ class OrderMailer < ActionMailer::Base
   
   def confirmation(order, email_to = nil)
     @order = order
+    @customer = @order.customer
 
-    email_to = "\"#{@order.name}\" <#{@order.email}>" unless email_to
-    mail(:to => email_to, :subject => "Order confirmation")
+    email_to = "\"#{@customer.name}\" <#{@customer.email}>" unless email_to
+    mail(to: email_to, subject: "Order confirmation")
   end
   
   def notify_owner(order)
     @order = order
-    mail(:from => "\"#{@order.name}\" <#{@order.email}>", :to => "\"Story Revolution\" <contact@storyrevolution.in>", :subject => "Story Revolution Order")
+    @customer = @order.customer
+    
+    mail(from: "\"#{@customer.name}\" <#{@customer.email}>", to: "contact@storyrevolution.in", subject: "Story Revolution Order")
   end
 end

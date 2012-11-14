@@ -1,10 +1,11 @@
+
 <!DOCTYPE html>
 <html>
   <head>
     <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
   </head>
   <body>
-    <p>Dear <%= @order.name %></p>
+    <p>Dear <%= @customer.name %></p>
 
     <p>Thank you for ordering books from Story Revolution. Here is the summary of your order
     (#<%= @order.id %>). We will deliver your books soon after we receive your payment. If you have questions,
@@ -14,38 +15,44 @@
       <tfoot>
         <tr>
           <td colspan="2"></td>
-          <td style="padding:0 2em; text-align:right;"><p><strong>Postage:</strong> <%= RupeeHelper.to_rupee(@order.postage_amount) %></td>
+          <td style="padding:0 2em; text-align:right;"><p><strong>Postage:</strong> Rs. <%= @order.postage_amount %></td>
         </tr>
         <tr>
           <td colspan="2"></td>
-          <td style="padding:0 2em; text-align:right;"><p><strong>Total:</strong> <%= RupeeHelper.to_rupee(@order.total_amount) %></td>
+          <td style="padding:0 2em; text-align:right;"><p><strong>Total:</strong> Rs. <%= @order.total_amount %></td>
         </tr>
       </tfoot>
       <tbody>
         <% @order.order_copies.each do |oc| %>
+        <% c = oc.copy %>
+        <% b = c.book %>
         <tr>
           <td style="padding:0 2em; min-width: 10em;">
-            <p><strong><%= oc.copy.book.title %></strong></p>
-            <p style="font-style:italic"><%= oc.copy.book.creators %></p>
+            <p><strong><%= b.title %></strong></p>
+            <p style="font-style:italic">
+              <%= "#{b.author_name}#{" and #{b.illustrator_name}" if b.illustrator.present? && b.illustrator_name != b.author_name}" %>
+            </p>
           </td>
           <td style="padding:0 2em;">
             <p><%= pluralize(oc.number, 'copy') %></p>
           </td>
           <td style="padding:0 2em; text-align:right;">
-            <p><%= RupeeHelper.to_rupee(oc.copy.price) %></p>
+            <p>Rs. <%= c.price %></p>
           </td>
         </tr>
         <% end %>
       </tbody>
     </table>
-    
-    <p><%= @order.delivery_text %></p>
-    <% if @order.delivery_method == 2 %>
-      <p><%= @order.pickup_point_text %></p>
+      
+    <% if @customer.delivery_method == 1 %>  
+    <p>Delivery by speed post</p>
+    <% else %>
+      <p><Delivery by pickup</p>
+      <p>Pickup point: <%= @customer.pickup_point_short_text %></p>
     <% end %>
     
-    <% if @order.payment_method_id == 3 %>
-      <p>You have chosen to pay by cash when you collect your books from our pick-up point at <%= @order.pickup_point_short_text %></p>
+    <% if @customer.payment_method_id == 3 %>
+      <p>You have chosen to pay by cash when you collect your books from our pick-up point.</p>
       
       <p>You can also pay by bank transfer or cheque:</p>
     <% end %>
@@ -61,7 +68,7 @@
     Banashankari 2nd stage<br />
     Bangalore - 560070</p>
     
-    <p>We will <%= @order.delivery_method == 1 ? "post your books" : "get in touch with you about delivery" %> once we
+    <p>We will <%= @customer.delivery_method == 1 ? "post your books" : "get in touch with you about delivery" %> once we
     receive your payment. For help or follow up, please reply to this mail.</p>
   </body>
 </html>

@@ -77,4 +77,8 @@ class Customer < ActiveRecord::Base
   def check_order_transaction
     complete_order.check_transaction if complete_order.present?
   end
+
+  def pickup_point_short_text
+    pickup_point.present? ? pickup_point.name : "#{other_pickup} (other)"
+  end
 end

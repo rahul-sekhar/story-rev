@@ -1,4 +1,4 @@
-Dear <%= @order.name %>
+Dear <%= @customer.name %>
 
 Thank you for ordering books from Story Revolution. Here is the summary of your order
 (#<%= @order.id %>). We will deliver your books soon after we receive your payment. If you have questions,
@@ -24,7 +24,8 @@ Cheques should be addressed to Shalini Sekhar, NOT Story Revolution. The address
 Banashankari 2nd stage
 Bangalore - 560070
 
-<%= @order.delivery_text %>
-<% if @order.delivery_method == 2 %><%= @order.pickup_point_text %><% end %>
-
-We will <%= @order.delivery_method == 1 ? "post your books" : "get in touch with you about delivery" %> once we receive your payment. For help or follow up, please reply to this mail.
+<% if @customer.delivery_method == 1 %>Delivery by speed post
+<% else %>Delivery by pickup
+Pickup point: <%= @customer.pickup_point_short_text %>
+<% end %>
+We will <%= @customer.delivery_method == 1 ? "post your books" : "get in touch with you about delivery" %> once we receive your payment. For help or follow up, please reply to this mail.

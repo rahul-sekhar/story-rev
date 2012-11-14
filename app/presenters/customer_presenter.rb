@@ -9,16 +9,13 @@ class CustomerPresenter < BasePresenter
     :notes,
     :payment_method_id,
     :delivery_method,
+    :pickup_point_short_text,
     to: :customer
 
   def pickup_point_text
     return "" if customer.delivery_method != 2
     
     "Pickup point: #{pickup_point_short_text}"
-  end
-  
-  def pickup_point_short_text
-    customer.pickup_point.present? ? customer.pickup_point.name : "#{customer.other_pickup} (other)"
   end
   
   def payment_text

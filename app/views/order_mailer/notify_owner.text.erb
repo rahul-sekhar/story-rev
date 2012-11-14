@@ -1,3 +1,3 @@
 An order has been made (Order #<%= @order.id %>).
     
-<%= @order.get_url %>
+<%= pending_admin_orders_url(selected_id: @order.id) %>
