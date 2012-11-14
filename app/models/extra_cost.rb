@@ -1,29 +1,22 @@
 class ExtraCost < ActiveRecord::Base
-  after_initialize :init
+  belongs_to :complete_order, foreign_key: :order_id
 
-  belongs_to :order
-
-  attr_accessible :name, :amount
-  
+  attr_accessible :name, :amount, :expenditure
+  after_save :recalculate_order
+  after_destroy :recalculate_order
+ 
   validates :name, presence: true, length: { maximum: 255 }
-  validates :amount, presence: true, numericality: { only_integer: true }
+  validates :amount, presence: true,
+    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :order, presence: true
+  validates :expenditure, presence: true, 
+    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
-  def init
-    amount ||= 0
+  def order
+    complete_order
   end
 
-  def formatted_amount
-    RupeeHelper.to_rupee(amount || 0)
-  end
-
-  def get_hash
-    {
-      id: id,
-      name: name,
-      amount: amount,
-      formatted_amount: formatted_amount,
-      total_amount: order.formatted_total_amount,
-      postage_amount: order.formatted_postage_amount
-    }
+  def recalculate_order
+    order.recalculate
   end
 end

@@ -32,6 +32,7 @@ class Edition < ActiveRecord::Base
   
   def convert_raw_isbn
     self.raw_isbn = isbn.to_s.gsub("-", "")
+    return nil
   end
 
   def language_name

@@ -29,16 +29,18 @@ class RefactorOrders < ActiveRecord::Migration
       t.remove :delivery_method, :pickup_point_id, :payment_method_id, :other_pickup, :name, :email, :phone, :address, :city, :other_info, :pin_code, :notes
 
       # Removed columns
-      t.remove :step, :shopping_cart_id, :postage_transaction_id, :transaction_id, :account_id
+      t.remove :step, :shopping_cart_id, :postage_transaction_id, :account_id
 
       t.boolean :complete, null: false, default: false
+      t.integer :postage_expenditure, null: false, default: 0
     end
 
     change_column :orders, :postage_amount, :integer, null: false, default: 0
     change_column :orders, :total_amount, :integer, null: false, default: 0
 
     add_index :orders, :complete
-
+    remove_index :orders, :transaction_id
+    add_index :orders, :transaction_id, unique: true
 
     # Orders-copies table
     change_table :orders_copies do |t|
@@ -87,7 +89,6 @@ class RefactorOrders < ActiveRecord::Migration
       t.integer :step
       t.integer :shopping_cart_id
       t.integer :postage_transaction_id
-      t.integer :transaction_id
       t.integer :account_id
       t.text :notes
 
@@ -99,6 +100,14 @@ class RefactorOrders < ActiveRecord::Migration
     change_column :orders, :total_amount, :integer, null: true, default: 0
     change_column_default :orders, :total_amount, nil
 
+    add_index :orders, :email
+    add_index :orders, :name
+    add_index :orders, :pickup_point_id
+    add_index :orders, :postage_transaction_id
+    add_index :orders, :shopping_cart_id
+    add_index :orders, :step
+    remove_index :orders, :transaction_id
+    add_index :orders, :transaction_id
 
     # Orders-copies table
     change_table :orders_copies do |t|

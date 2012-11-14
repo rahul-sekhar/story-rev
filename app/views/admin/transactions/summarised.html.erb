@@ -44,17 +44,17 @@
     <tbody>
       <tr class="income">
         <td>Income</td>
-        <td class="amount"><%= RupeeHelper.format_rupee(@income) %></td>
+        <td class="amount"><%= CurrencyMethods.to_currency(@income) %></td>
       </tr>
       
       <tr class="expenditure">
         <td>Expenditure</td>
-        <td class="amount"><%= RupeeHelper.format_rupee(@expenditure) %></td>
+        <td class="amount"><%= CurrencyMethods.to_currency(@expenditure) %></td>
       </tr>
       
       <tr class="profit">
         <td>Profit</td>
-        <td class="amount"><%= RupeeHelper.format_rupee(@profit) %></td>
+        <td class="amount"><%= CurrencyMethods.to_currency(@profit) %></td>
       </tr>
     </tbody>
   </table>
@@ -72,7 +72,7 @@
     <% @accounts.each do |x| %>
     <tr>
       <td><%= x.name %></td>
-      <td class="amount"><%= RupeeHelper.format_rupee(x.balance) %></td>
+      <td class="amount"><%= CurrencyMethods.to_currency(x.balance) %></td>
     </tr>
   <% end %>
     </tbody>

@@ -71,6 +71,32 @@ describe CompleteOrder do
     end
   end
 
+  describe "#postage_expenditure" do
+    it "defaults to 0" do
+      built_order.postage_expenditure.should == 0
+    end
+
+    it "cannot be nil" do
+      built_order.postage_expenditure = nil
+      built_order.should be_invalid
+    end
+
+    it "cannot be negative" do
+      built_order.postage_expenditure = -1
+      built_order.should be_invalid
+    end
+
+    it "can be zero" do
+      built_order.postage_expenditure = 0
+      built_order.should be_valid
+    end
+    
+    it "can be a positive integer" do
+      built_order.postage_expenditure = 40
+      built_order.should be_valid
+    end
+  end
+
   describe "#complete" do
     it "defaults to true" do
       built_order.complete.should == true
@@ -227,10 +253,16 @@ describe CompleteOrder do
       c3.reload.stock.should == 5
       c4.reload.stock.should == 1
     end
+
+    it "destroys any extra costs" do
+      create_list(:extra_cost, 3, complete_order: order)
+      expect{ order.destroy }.to change{ExtraCost.count}.by(-3)
+    end
   end
 
   describe "#order_copies" do
     it "contains only finalized order_copies" do
+      create(:valid_customer, complete_order: order)
       oc1 = create(:order_copy, complete_order: order, copy: create(:used_copy_with_book))
       oc2 = create(:order_copy, complete_order: order, copy: create(:new_copy_with_book), final: true)
       order.order_copies.should == [oc2]
@@ -239,15 +271,16 @@ describe CompleteOrder do
 
   describe "#unfinalized_order_copies" do
     it "contains only unfinalized order_copies" do
+      create(:valid_customer, complete_order: order)
       oc1 = create(:order_copy, complete_order: order, copy: create(:used_copy_with_book))
       oc2 = create(:order_copy, complete_order: order, copy: create(:new_copy_with_book), final: true)
       order.unfinalized_order_copies.should == [oc1]
     end
   end
 
-  describe "#calculate_amount" do
+  describe "#recalculate" do
     before do
-      order.customer = create(:customer)
+      create(:valid_customer, delivery_method: 1, complete_order: order)
       create(:order_copy, copy: create(:used_copy_with_book, price: 50), complete_order: order, final: true)
       create(:order_copy, copy: create(:used_copy_with_book, price: 100), complete_order: order, final: false)
       create(:order_copy, copy: create(:new_copy_with_book, stock: 5, price: 120), complete_order: order, number: 3, final: true)
@@ -259,40 +292,37 @@ describe CompleteOrder do
       before{ order.customer.delivery_method = 2 }
 
       it "gives the correct totals" do
-        order.calculate_amounts
+        order.recalculate
         order.postage_amount.should == 0
         order.total_amount.should == 500
       end
     end
 
-    describe "with postage" do
-      before{ order.customer.delivery_method = 1 }
-
-      it "gives the correct totals" do
-        order.calculate_amounts
+    it "gives the correct total of order copies with postage" do
+        order.recalculate
         order.postage_amount.should == 60
         order.total_amount.should == 560
       end
-    end
 
-    describe "without a customer" do
-      before do
-        order.customer.destroy
-        order.reload
-      end
-
-      it "raises an exception" do
-        expect { order.calculate_amounts }.to raise_exception
-      end
+    it "takes extra costs into account" do
+      create(:extra_cost, complete_order: order, amount: 40, expenditure: 10)
+      create(:extra_cost, complete_order: order, amount: 20, expenditure: 20)
+      order.recalculate
+      order.postage_amount.should == 60
+      order.total_amount.should == 620
     end
   end
 
   describe "scopes" do
     before do
       @o1 = create(:complete_order)
-      @o2 = create(:complete_order, paid_date: 1.day.ago, packaged_date: 1.minute.ago, confirmed_date: Time.now - 2.days, posted_date: Time.now + 2.days)
+      @o2 = create(:complete_order_with_customer, packaged_date: 1.minute.ago, confirmed_date: Time.now - 2.days, posted_date: Time.now + 2.days)
+      @o2.paid_date = 1.day.ago
+      @o2.save
       @o3 = create(:complete_order, confirmed_date: 1.day.ago)
-      @o4 = create(:complete_order, paid_date: 1.day.ago, confirmed_date: Time.now - 2.days, posted_date: Time.now + 2.days)
+      @o4 = create(:complete_order_with_customer, packaged_date: 1.minute.ago, confirmed_date: Time.now - 2.days)
+      @o4.paid_date = 1.day.ago
+      @o4.save
     end
 
     specify "finalized gets orders that have been confirmed, paid, packaged and posted" do
@@ -310,6 +340,7 @@ describe CompleteOrder do
     end
 
     it "totals up the number of copies for finalized order copies" do
+      create(:valid_customer, complete_order: order)
       create(:order_copy, complete_order: order, final: true)
       create(:order_copy, complete_order: order, final: false)
       create(:order_copy, copy: create(:new_copy_with_book, stock: 5), complete_order: order, number: 3, final: true)
@@ -410,5 +441,114 @@ describe CompleteOrder do
     let(:attrib){ "posted" }
       
     it_behaves_like "a date attribute that is accessible as a boolean"
+  end
+
+  describe "when saved" do
+    before do
+      @date = 1.day.ago
+      create(:valid_customer, complete_order: order)
+      order.reload.customer.name = "Test"
+      order.customer.payment_method = create(:payment_method, id: 1)
+      order.customer.notes = "Some notes"
+      order.customer.save
+      order.postage_expenditure = 20
+      create(:extra_cost, complete_order: order, amount: 60, expenditure: 30)
+    end
+
+    context "with paid date set" do
+      before { order.paid_date = @date }
+
+      context "with an existing transaction" do
+        before { @t = create(:transaction, complete_order: order, credit: 20, debit: 0) }
+
+        it "causes does not create a transaction" do
+          expect{ order.save }.to change{Transaction.count}.by(0)
+        end
+
+        describe "the updated transaction" do
+          subject{ @t.reload }
+          before{ order.save }
+          
+          it "has the right date" do
+            subject.date.should == @date
+          end
+          
+          it "has the right other_party" do
+            subject.other_party.should == "Test"
+          end
+
+          it "has the right payment_method_id" do
+            subject.payment_method_id.should == 1
+          end
+
+          it "has the right notes" do
+            subject.notes.should == "Some notes"
+          end
+
+          it "has the right credit" do
+            subject.credit.should == 60
+          end
+
+          it "has the right debit" do
+            subject.debit.should == 50
+          end
+        end
+      end
+
+      context "without an existing transaction" do
+        it "causes a transaction to be created" do
+          expect{ order.save }.to change{Transaction.count}.by(1)
+        end
+
+        describe "the created transaction" do
+          subject{ order.transaction }
+          before{ order.save }
+          
+          it "has the right date" do
+            subject.date.should == @date
+          end
+          
+          it "has the right other_party" do
+            subject.other_party.should == "Test"
+          end
+
+          it "has the right payment_method_id" do
+            subject.payment_method_id.should == 1
+          end
+
+          it "has the right notes" do
+            subject.notes.should == "Some notes"
+          end
+
+          it "has the right credit" do
+            subject.credit.should == 60
+          end
+
+          it "has the right debit" do
+            subject.debit.should == 50
+          end
+        end
+      end
+    end
+
+    context "without paid date set" do
+      context "with an existing transaction" do
+        before do 
+          order.paid = true
+          order.save
+          order.paid = false
+        end
+
+        it "destroys the transaction" do
+          expect{ order.save }.to change{Transaction.count}.by(-1)
+        end
+      end
+
+      context "without an existing transaction" do
+        it "does nothing" do
+          expect{ order.save }.to change{Transaction.count}.by(0)
+        end
+      end
+    end
   end
 end

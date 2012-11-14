@@ -11,15 +11,30 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121113093850) do
+ActiveRecord::Schema.define(:version => 20121113131011) do
 
-  create_table "accounts", :force => true do |t|
-    t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+  create_table "account_profit_shares", :force => true do |t|
+    t.integer  "account_id", :null => false
+    t.integer  "order_id",   :null => false
+    t.integer  "amount",     :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
-  add_index "accounts", ["name"], :name => "index_accounts_on_name"
+  add_index "account_profit_shares", ["account_id"], :name => "index_account_profit_shares_on_account_id"
+  add_index "account_profit_shares", ["created_at"], :name => "index_account_profit_shares_on_created_at"
+  add_index "account_profit_shares", ["order_id", "account_id"], :name => "index_account_profit_shares_on_order_id_and_account_id"
+  add_index "account_profit_shares", ["order_id"], :name => "index_account_profit_shares_on_order_id"
+
+  create_table "accounts", :force => true do |t|
+    t.string   "name",       :limit => 120,                :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "share",                     :default => 0, :null => false
+  end
+
+  add_index "accounts", ["name"], :name => "index_accounts_on_name", :unique => true
+  add_index "accounts", ["share"], :name => "index_accounts_on_share"
 
   create_table "admin_roles", :force => true do |t|
     t.string   "name",          :limit => 100, :null => false
@@ -132,8 +147,6 @@ ActiveRecord::Schema.define(:version => 20121113093850) do
   add_index "collections", ["name"], :name => "index_keywords_on_name", :unique => true
 
   create_table "config_data", :force => true do |t|
-    t.integer "default_account_id"
-    t.integer "cash_account_id"
     t.integer "default_cost_price", :default => 0, :null => false
   end
 
@@ -261,11 +274,12 @@ ActiveRecord::Schema.define(:version => 20121113093850) do
   end
 
   create_table "extra_costs", :force => true do |t|
-    t.integer  "order_id"
-    t.integer  "amount"
-    t.string   "name"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.integer  "order_id",                   :null => false
+    t.integer  "amount",                     :null => false
+    t.string   "name",                       :null => false
+    t.datetime "created_at",                 :null => false
+    t.datetime "updated_at",                 :null => false
+    t.integer  "expenditure", :default => 0, :null => false
   end
 
   add_index "extra_costs", ["order_id"], :name => "index_extra_costs_on_order_id"
@@ -297,22 +311,36 @@ ActiveRecord::Schema.define(:version => 20121113093850) do
 
   add_index "languages", ["name"], :name => "index_languages_on_name", :unique => true
 
+  create_table "loans", :force => true do |t|
+    t.integer  "amount",                    :null => false
+    t.string   "name",       :limit => 200
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
+  end
+
+  add_index "loans", ["amount"], :name => "index_loans_on_amount"
+  add_index "loans", ["created_at"], :name => "index_loans_on_created_at"
+  add_index "loans", ["name"], :name => "index_loans_on_name"
+
   create_table "orders", :force => true do |t|
-    t.integer  "postage_amount", :default => 0,     :null => false
-    t.integer  "total_amount",   :default => 0,     :null => false
+    t.integer  "postage_amount",      :default => 0,     :null => false
+    t.integer  "total_amount",        :default => 0,     :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "confirmed_date"
     t.datetime "paid_date"
     t.datetime "packaged_date"
     t.datetime "posted_date"
-    t.boolean  "complete",       :default => false, :null => false
+    t.integer  "transaction_id"
+    t.boolean  "complete",            :default => false, :null => false
+    t.integer  "postage_expenditure", :default => 0,     :null => false
   end
 
   add_index "orders", ["complete"], :name => "index_orders_on_complete"
   add_index "orders", ["confirmed_date"], :name => "index_orders_on_confirmed_date"
   add_index "orders", ["created_at"], :name => "index_orders_on_created_at"
   add_index "orders", ["paid_date"], :name => "index_orders_on_paid_date"
+  add_index "orders", ["transaction_id"], :name => "index_orders_on_transaction_id", :unique => true
 
   create_table "orders_copies", :force => true do |t|
     t.integer  "order_id",                      :null => false
@@ -364,59 +392,28 @@ ActiveRecord::Schema.define(:version => 20121113093850) do
   add_index "stock_taking", ["copy_id"], :name => "index_stock_taking_on_copy_id"
 
   create_table "transaction_categories", :force => true do |t|
-    t.string   "name"
-    t.boolean  "off_record", :default => false
+    t.string   "name",       :limit => 120, :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "transaction_categories", ["name"], :name => "index_transaction_categories_on_name"
+  add_index "transaction_categories", ["name"], :name => "index_transaction_categories_on_name", :unique => true
 
   create_table "transactions", :force => true do |t|
-    t.integer  "credit"
-    t.integer  "debit"
-    t.string   "other_party"
+    t.integer  "credit",                                 :default => 0, :null => false
+    t.integer  "debit",                                  :default => 0, :null => false
+    t.string   "other_party",             :limit => 200
     t.integer  "payment_method_id"
-    t.integer  "transaction_category_id"
-    t.integer  "account_id"
-    t.boolean  "off_record",              :default => false
-    t.datetime "date"
+    t.integer  "transaction_category_id",                               :null => false
+    t.datetime "date",                                                  :null => false
     t.text     "notes"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "transactions", ["account_id"], :name => "index_transactions_on_account_id"
   add_index "transactions", ["date"], :name => "index_transactions_on_date"
-  add_index "transactions", ["off_record"], :name => "index_transactions_on_off_record"
   add_index "transactions", ["other_party"], :name => "index_transactions_on_other_party"
   add_index "transactions", ["payment_method_id"], :name => "index_transactions_on_payment_method_id"
   add_index "transactions", ["transaction_category_id"], :name => "index_transactions_on_transaction_category_id"
-
-  create_table "transfer_categories", :force => true do |t|
-    t.string   "name"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-  end
-
-  add_index "transfer_categories", ["name"], :name => "index_transfer_categories_on_name"
-
-  create_table "transfers", :force => true do |t|
-    t.integer  "amount"
-    t.integer  "source_account_id"
-    t.integer  "target_account_id"
-    t.integer  "transfer_category_id"
-    t.integer  "payment_method_id"
-    t.text     "notes"
-    t.datetime "date"
-    t.datetime "created_at",           :null => false
-    t.datetime "updated_at",           :null => false
-  end
-
-  add_index "transfers", ["date"], :name => "index_transfers_on_date"
-  add_index "transfers", ["payment_method_id"], :name => "index_transfers_on_payment_method_id"
-  add_index "transfers", ["source_account_id"], :name => "index_transfers_on_source_account_id"
-  add_index "transfers", ["target_account_id"], :name => "index_transfers_on_target_account_id"
-  add_index "transfers", ["transfer_category_id"], :name => "index_transfers_on_transfer_category_id"
 
 end

@@ -9,7 +9,7 @@ module NameTags
 
       define_method("#{attr}_name=") do |name|
         self.send("#{attr}=", name.present? ?
-          (klass.name_is(name) || klass.new(:name => name))
+          (klass.name_is(name) || klass.new(name: name))
           : nil)
       end
     end

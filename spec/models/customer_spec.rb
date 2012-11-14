@@ -338,4 +338,24 @@ describe Customer do
       end
     end
   end
+
+  describe "when saved with a complete order" do
+    before do
+      @o = create(:complete_order)
+      @c = create(:valid_customer, complete_order: @o)
+      @o.reload.paid = true
+      @o.save
+      @t = @o.transaction
+    end
+
+    it "updates the order transaction" do
+      @c.name = "Diff Name"
+      @c.notes = "Blah blah"
+      @c.payment_method = create(:payment_method, id: 3)
+      @c.save
+      @t.reload.other_party.should == "Diff Name"
+      @t.notes.should == "Blah blah"
+      @t.payment_method_id.should == 3
+    end
+  end
 end

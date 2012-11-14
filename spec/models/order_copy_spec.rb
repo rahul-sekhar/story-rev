@@ -157,7 +157,7 @@ describe OrderCopy do
 
     it "does nothing with an complete parent order, when not finalized" do
       c = create(:used_copy_with_book, stock: 0)
-      oc = create(:order_copy, complete_order: create(:complete_order), copy: c)
+      oc = create(:order_copy, complete_order: create(:complete_order_with_customer), copy: c)
       order_copy.destroy
       c.stock.should == 0
     end
@@ -165,7 +165,7 @@ describe OrderCopy do
     context "with a complete parent order and when finalized" do
       it "reverts used copy stocks" do
         c = create(:used_copy_with_book, stock: 1)
-        oc = create(:order_copy, complete_order: create(:complete_order), copy: c, final: true)
+        oc = create(:order_copy, complete_order: create(:complete_order_with_customer), copy: c, final: true)
         c.reload.stock.should == 0
         oc.destroy
         c.reload.stock.should == 1
@@ -173,7 +173,7 @@ describe OrderCopy do
 
       it "reverts new copy stocks" do
         c = create(:new_copy_with_book, stock: 5)
-        oc = create(:order_copy, complete_order: create(:complete_order), copy: c, final: true, number: 7)
+        oc = create(:order_copy, complete_order: create(:complete_order_with_customer), copy: c, final: true, number: 7)
         c.reload.stock.should == -2
         oc.destroy
         c.reload.stock.should == 5
@@ -181,7 +181,7 @@ describe OrderCopy do
 
       it "recalculates the orders totals" do
         c = create(:used_copy_with_book, stock: 0)
-        o = create(:complete_order)
+        o = create(:complete_order_with_customer)
         oc = create(:order_copy, complete_order: o, copy: c, final: true)
         oc.destroy
         o.reload.total_amount.should == 0
@@ -199,31 +199,31 @@ describe OrderCopy do
 
     it "does nothing with an complete parent order, when not finalized" do
       c = create(:new_copy_with_book, stock: 5)
-      create(:order_copy, complete_order: create(:complete_order), copy: c, final: false, number: 3)
+      create(:order_copy, complete_order: create(:complete_order_with_customer), copy: c, final: false, number: 3)
       c.reload.stock.should == 5
     end
 
     context "with a complete parent order and when finalized" do
       it "changes a new copies stock" do
         c = create(:new_copy_with_book, stock: 5)
-        create(:order_copy, complete_order: create(:complete_order), copy: c, final: true, number: 3)
+        create(:order_copy, complete_order: create(:complete_order_with_customer), copy: c, final: true, number: 3)
         c.reload.stock.should == 2
       end
 
       it "changes a used copies stock" do
         c = create(:used_copy_with_book)
-        create(:order_copy, complete_order: create(:complete_order), copy: c, final: true)
+        create(:order_copy, complete_order: create(:complete_order_with_customer), copy: c, final: true)
         c.reload.stock.should == 0
       end
 
       it "correctly changes a used copies stock even with an incorrect number" do
         c = create(:used_copy_with_book)
-        create(:order_copy, complete_order: create(:complete_order), copy: c, final: true, number: 3)
+        create(:order_copy, complete_order: create(:complete_order_with_customer), copy: c, final: true, number: 3)
         c.reload.stock.should == 0
       end
 
       it "recalculates the orders totals" do
-        o = create(:complete_order)
+        o = create(:complete_order_with_customer)
         c = create(:used_copy_with_book)
         create(:order_copy, complete_order: o, copy: c, final: true)
         o.reload.postage_amount.should == 20
@@ -235,7 +235,7 @@ describe OrderCopy do
   describe "when updated" do
     before do
       @c = create(:new_copy_with_book, stock: 6)
-      @o = create(:complete_order)
+      @o = create(:complete_order_with_customer)
       @oc = create(:order_copy, complete_order: @o, copy: @c, final: true, number: 2)
     end
 

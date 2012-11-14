@@ -251,11 +251,18 @@ $(document).ready(function() {
                         field: 'name'
                     },
                     {
-                        name: 'Amount',
+                        name: 'Total Amount',
                         field: 'formatted_amount',
                         raw: 'amount',
                         default_val: '0',
-                        numberic: true
+                        numeric: true
+                    },
+                    {
+                        name: 'Expenditure',
+                        field: 'formatted_expenditure',
+                        raw: 'expenditure',
+                        default_val: '0',
+                        numeric: true
                     }
                 ]
             });

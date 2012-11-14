@@ -19,7 +19,7 @@
         <li><%= link_to "Orders", pending_admin_orders_path %></li>
         <li><%= link_to "Others", admin_collections_path %></li>
         <% if admin? %>
-          <li><%= link_to "Finances", admin_transactions_path %></li>
+          <li><%= link_to "Finances", summarised_admin_transactions_path %></li>
         <% end %>
         <li><%= link_to "Logout", admin_logout_path %></li>
       </ul>

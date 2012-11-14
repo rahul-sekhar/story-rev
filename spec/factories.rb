@@ -152,7 +152,12 @@ FactoryGirl.define do
   end
 
   factory :complete_order do
-    association :customer, factory: :valid_customer
+    
+    factory :complete_order_with_customer do
+      after(:create) do |order|
+        create(:valid_customer, complete_order: order)
+      end
+    end
   end
 
   factory :order_copy do
@@ -160,8 +165,26 @@ FactoryGirl.define do
   end
 
   factory :default_cost_price do
-    format
+    format 
     book_type
     cost_price 30
+  end
+
+  factory :extra_cost do
+    sequence(:name) { |n| "Extra Cost #{n}"}
+    amount 40
+  end
+
+  factory :transaction_category do
+    sequence(:name) { |n| "Transaction Category #{n}"}
+  end
+
+  factory :transaction do
+    transaction_category
+
+    factory :transaction_with_assoc do
+      payment_method
+      complete_order
+    end
   end
 end

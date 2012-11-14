@@ -17,8 +17,6 @@ class Account < ActiveRecord::Base
   scope :default_order, -> { order("id=#{ConfigData.access.cash_account_id} DESC, id=#{ConfigData.access.default_account_id} DESC") }
   
   def balance
-    transactions.inject(0){|balance,x| balance + x.credit - x.debit } +
-    transfers_to.inject(0){|balance,x| balance + x.amount } -
-    transfers_from.inject(0){|balance,x| balance + x.amount }
+    
   end
 end

@@ -12,8 +12,8 @@ class Admin::TransactionsController < Admin::ApplicationController
     @transactions = Transaction.between(@date_from, @date_to)
     
     respond_to do |format|
-      format.html { @transfers = Transfer.between(@date_from, @date_to) }
-      format.json { render :json => @transactions.map { |x| x.get_hash }}
+      format.html
+      format.json { render json: @transactions.map { |x| present(x).as_hash }}
     end
   end
   
@@ -23,28 +23,26 @@ class Admin::TransactionsController < Admin::ApplicationController
     
     get_dates(1.year)
     
-    @transactions = Transaction.on_record.between(@date_from, @date_to)
+    @transactions = Transaction.between(@date_from, @date_to)
     
     @income = @transactions.inject(0){|total, x| total + x.credit}
     @expenditure = @transactions.inject(0){|total, x| total + x.debit}
     @profit = @income - @expenditure
     
     respond_to do |format|
-      format.html {
-        @accounts = Account.all
-      }
+      format.html { @accounts = Account.all }
       format.json {
-        render :json => {
-          :income => RupeeHelper.format_rupee(@income),
-          :expenditure => RupeeHelper.format_rupee(@expenditure),
-          :profit => RupeeHelper.format_rupee(@profit)
+        render json: {
+          income: CurrencyMethods.to_currency(@income),
+          expenditure: CurrencyMethods.to_currency(@expenditure),
+          profit: CurrencyMethods.to_currency(@profit)
         }
       }
     end
   end
   
   def graph_data
-    render :json => Transaction.graph_data(params[:period], params[:type], params[:from], params[:to])
+    render json: Transaction.graph_data(params[:period], params[:type], params[:from], params[:to])
   end
   
   def create
@@ -52,9 +50,9 @@ class Admin::TransactionsController < Admin::ApplicationController
     
     respond_to do |format|
       if @transaction.save
-        format.json {render :json => @transaction.get_hash }
+        format.json {render json: present(@transaction).as_hash }
       else
-        format.json { render :json => @transaction.errors.full_messages, :status => :unprocessable_entity }
+        format.json { render json: @transaction.errors.full_messages, status: :unprocessable_entity }
       end
     end
   end
@@ -63,9 +61,9 @@ class Admin::TransactionsController < Admin::ApplicationController
     @transaction = Transaction.find(params[:id])
     respond_to do |format|
       if @transaction.update_attributes(params[:transaction])
-        format.json { render :json => @transaction.get_hash }
+        format.json { render json: present(@transaction).as_hash }
       else
-        format.json { render :json => @transaction.errors.full_messages, :status => :unprocessable_entity }
+        format.json { render json: @transaction.errors.full_messages, status: :unprocessable_entity }
       end
     end
   end
@@ -74,7 +72,7 @@ class Admin::TransactionsController < Admin::ApplicationController
     @transaction = Transaction.find(params[:id])
     @transaction.destroy
     respond_to do |format|
-      format.json { render :json => { :success => true }}
+      format.json { render json: { success: true }}
     end
   end
 end

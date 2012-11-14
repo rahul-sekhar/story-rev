@@ -3,6 +3,7 @@ class Customer < ActiveRecord::Base
 
   after_initialize :init
   before_save :remove_unecessary_fields
+  after_save :check_order_transaction
 
   belongs_to :order
   belongs_to :complete_order, foreign_key: :order_id
@@ -71,5 +72,9 @@ class Customer < ActiveRecord::Base
     
     # Remove other pickup text if it is unrequired
     self.other_pickup = nil if (delivery_method != 2 || pickup_point_id != 0)
+  end
+
+  def check_order_transaction
+    complete_order.check_transaction if complete_order.present?
   end
 end
