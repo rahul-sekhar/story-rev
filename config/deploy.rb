@@ -56,35 +56,35 @@ after "deploy:assets:symlink", "sensitive_data:update_symlinks"
 namespace :db do
   desc "Import the database from the remote server to the local machine"
   task :import_from_remote, :roles => :app do
-    run "cd #{current_path} && RAILS_ENV=production rake db:data:dump"
+    run "cd #{current_path} && RAILS_ENV=production bundle exec rake db:data:dump"
     get "#{current_path}/db/data.yml", "db/data.yml"
     puts "* importing the database"
-    system "rake db:data:load"
+    system "bundle exec rake db:data:load"
     puts "* done!"
   end
   
   desc "Export the database from the local machine to the remote server"
   task :export_to_remote, :roles => :app do
     puts "* creating a backup of the remote system database"
-    run "cd #{current_path} && RAILS_ENV=production rake db:data:dump"
+    run "cd #{current_path} && RAILS_ENV=production bundle exec rake db:data:dump"
     run "mv -f #{current_path}/db/data.yml #{current_path}/db/data.yml.bak"
     puts "* copying the local database to the remote system"
-    system "rake db:data:dump"
+    system "bundle exec rake db:data:dump"
     upload "db/data.yml", "#{current_path}/db/data.yml"
     puts "* loading the database to the remote system"
-    run "cd #{current_path} && RAILS_ENV=production rake db:data:load"
+    run "cd #{current_path} && RAILS_ENV=production bundle exec rake db:data:load"
     puts "* done!"
   end
   
   desc "Seed the database"
   task :seed, :roles => :app do
-    run "cd #{current_path} && RAILS_ENV=production rake db:seed"
+    run "cd #{current_path} && RAILS_ENV=production bundle exec rake db:seed"
     puts "* done!"
   end
   
   desc "Load the schema"
   task :schema_load, :roles => :app do
-    run "cd #{current_path} && RAILS_ENV=production rake db:schema:load"
+    run "cd #{current_path} && RAILS_ENV=production bundle exec rake db:schema:load"
     puts "* done!"
   end
 end
@@ -141,23 +141,23 @@ namespace :backups do
   namespace :create do
     desc "Create a daily local and remote backup"
     task :default, :roles => :app do
-      run "cd #{current_path} && RAILS_ENV=production rake backups:create:remote:daily"
+      run "cd #{current_path} && RAILS_ENV=production bundle exec rake backups:create:remote:daily"
     end
     
     desc "Create a forced remote backup"
     task :remote, :roles => :app do
-      run "cd #{current_path} && RAILS_ENV=production rake backups:create:remote:forced"
+      run "cd #{current_path} && RAILS_ENV=production bundle exec rake backups:create:remote:forced"
     end
     
     desc "Create a local backup"
     task :local, :roles => :app do
-      run "cd #{current_path} && RAILS_ENV=production rake backups:create:local"
+      run "cd #{current_path} && RAILS_ENV=production bundle exec rake backups:create:local"
     end
   end
   
   desc "Clean up old local backups"
   task :cleanup, :roles => :app do
-    run "cd #{current_path} && RAILS_ENV=production rake backups:cleanup"
+    run "cd #{current_path} && RAILS_ENV=production bundle exec rake backups:cleanup"
   end
   
   desc "Import backups to the local machine"
