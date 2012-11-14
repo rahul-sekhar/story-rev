@@ -71,8 +71,12 @@ class RefactorFinances < ActiveRecord::Migration
       t.change :transaction_category_id, :integer, null: false
       t.change :date, :datetime, null: false
 
+      t.integer :order_id
+
       t.remove :account_id, :off_record
     end
+
+    add_index :transactions, :order_id, unique: true
   end
 
   def down
@@ -152,6 +156,8 @@ class RefactorFinances < ActiveRecord::Migration
 
       t.integer :account_id
       t.boolean :off_record, default: false
+
+      t.remove :order_id
     end
 
     change_column_default :transactions, :credit, nil

@@ -80,25 +80,25 @@ describe PagesController do
           controller.params[:seed].should == "156"
         end
 
-        it "sets a new seed parameter between 1 and 999 if not present" do
+        it "sets a new seed parameter between 1 and 9999 if not present" do
           get :store, sort_by: "random"
           seed = controller.params[:seed].to_i
           seed.should > 0
-          seed.should < 1000
+          seed.should < 10000
         end
 
         it "sets a new seed parameter if the seed is not an integer" do
           get :store, sort_by: "random", seed: "eh"
           seed = controller.params[:seed].to_i
           seed.should > 0
-          seed.should < 1000
+          seed.should < 10000
         end
 
-        it "sets a new seed parameter if the seed is above 999" do
-          get :store, sort_by: "random", seed: "1000"
+        it "sets a new seed parameter if the seed is above 9999" do
+          get :store, sort_by: "random", seed: "10000"
           seed = controller.params[:seed].to_i
           seed.should > 0
-          seed.should < 1000
+          seed.should < 10000
         end
       end
     end

@@ -1,5 +1,7 @@
 class CompleteOrder < ActiveRecord::Base
   self.table_name = :orders
+
+  attr_accessible :add_copy, :remove_copy, :postage_expenditure, :other_info, :notes, :paid, :packaged, :confirmed, :posted
   
   default_scope -> { where(complete: true) }
 
@@ -13,7 +15,9 @@ class CompleteOrder < ActiveRecord::Base
   has_many :new_copies, through: :order_copies
   has_one :customer, dependent: :destroy, foreign_key: :order_id
   has_many :extra_costs, dependent: :destroy, foreign_key: :order_id
-  belongs_to :transaction, dependent: :destroy
+  has_one :transaction, dependent: :destroy, foreign_key: :order_id
+
+  delegate :other_info, :notes, to: :customer
 
   validates :total_amount, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :postage_amount, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
@@ -30,6 +34,16 @@ class CompleteOrder < ActiveRecord::Base
 
   def remove_copy=(copy_id)
     self.order_copies.where(copy_id: copy_id).each { |oc| oc.destroy }
+  end
+
+  def other_info=(val)
+    customer.other_info = val
+    customer.save
+  end
+
+  def notes=(val)
+    customer.notes = val
+    customer.save
   end
 
   def recalculate
@@ -84,7 +98,8 @@ class CompleteOrder < ActiveRecord::Base
 
   def check_transaction
     if paid && customer.present?
-      self.transaction = Transaction.new unless transaction.present?
+      reload
+      build_transaction unless transaction.present?
       customer.reload
       update_transaction
     else
@@ -118,7 +133,6 @@ class CompleteOrder < ActiveRecord::Base
     transaction.payment_method = customer.payment_method
     transaction.transaction_category = TransactionCategory.find_or_create("Online order")
     transaction.notes = customer.notes
-
     transaction.save
   end
 end

@@ -258,6 +258,11 @@ describe CompleteOrder do
       create_list(:extra_cost, 3, complete_order: order)
       expect{ order.destroy }.to change{ExtraCost.count}.by(-3)
     end
+
+    it "destroys any transactions" do
+      order.update_attributes(paid: true)
+      expect{ order.destroy }.to change{Transaction.count}.by(-1)
+    end
   end
 
   describe "#order_copies" do
@@ -492,6 +497,10 @@ describe CompleteOrder do
           it "has the right debit" do
             subject.debit.should == 50
           end
+
+          it "has the right order" do
+            subject.complete_order.should == order
+          end
         end
       end
 
@@ -526,6 +535,10 @@ describe CompleteOrder do
 
           it "has the right debit" do
             subject.debit.should == 50
+          end
+
+          it "has the right order" do
+            subject.complete_order.should == order
           end
         end
       end

@@ -27,20 +27,6 @@
     <li class="add"><%= link_to "Add", new_admin_transaction_category_path %></li>
 </ul>
 
-<h2>Transfer Categories</h2>
-<ul class="data-list">
-  <% @transfer_categories.each do |x| %>
-    <li>
-      <%= x.name %>
-      <%= link_to "Rename", edit_admin_transfer_category_path(x), :class=>"manage-link" %>
-      <% unless @transfer_categories.length == 1 %>
-        <%= link_to "Remove", admin_transfer_category_path(x), :confirm => "Are you sure you want to delete this item?", :method => "Delete", :class=>"manage-link" %>
-      <% end %>
-    </li>
-  <% end %>
-    <li class="add"><%= link_to "Add", new_admin_transfer_category_path %></li>
-</ul>
-
 <h2>Payment Methods</h2>
 <ul class="data-list">
   <% @payment_methods.each do |x| %>
@@ -57,18 +43,6 @@
 
 <h2>Accounts</h2>
 <ul class="data-list">
-  <% @accounts.each do |x| %>
-    <li>
-      <%= x.name %>
-      <% if (x.id == @config_data.default_account_id) %><em>(default)</em><% end %>
-      <% if (x.id == @config_data.cash_account_id) %><em>(cash)</em><% end %>
-      <%= link_to "Rename", edit_admin_account_path(x), :class=>"manage-link" %>
-      <% unless (x.id == @config_data.cash_account_id || x.id == @config_data.default_account_id) %>
-        <%= link_to "Remove", admin_account_path(x), :confirm => "Are you sure you want to delete this item?", :method => "Delete", :class=>"manage-link" %>
-        <%= link_to "Set to default", admin_account_to_default_path(x), :confirm => "Note that this change will only affect transactions made after this", :class=>"manage-link" %>
-        <%= link_to "Set to cash", admin_account_to_cash_path(x), :confirm => "Note that this change will only affect transactions made after this", :class=>"manage-link" %>
-      <% end %>
-    </li>
-  <% end %>
+  
     <li class="add"><%= link_to "Add", new_admin_account_path %></li>
 </ul>

@@ -48,4 +48,14 @@ class CustomerPresenter < BasePresenter
     x += customer.pin_code if customer.pin_code.present?
     return x
   end
+
+  def formatted_other_info
+    simple_format h(other_info), class: :comments
+  end
+
+  def formatted_full_address
+    if full_address.present?
+      simple_format h(full_address), class: :address
+    end
+  end
 end

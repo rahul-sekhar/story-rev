@@ -21,6 +21,10 @@ class CompleteOrderPresenter < OrderPresenter
     link_to text, edit_admin_customer_path(order.customer), class: "edit-link"
   end
 
+  def formatted_postage_expenditure
+    CurrencyMethods.to_currency(order.postage_expenditure || 0)
+  end
+
   def as_hash
     {
       name: name,
@@ -32,6 +36,8 @@ class CompleteOrderPresenter < OrderPresenter
       delivery_text: customer.delivery_text,
       pickup_point_text: customer.pickup_point_text || "",
       postage_amount: formatted_postage_amount,
+      postage_expenditure: formatted_postage_expenditure,
+      postage_expenditure_val: order.postage_expenditure,
       total_amount: formatted_total_amount,
       notes: customer.notes || "",
     }

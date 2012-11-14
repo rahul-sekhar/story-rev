@@ -1,4 +1,19 @@
 class RefactorOrders < ActiveRecord::Migration
+  class Order < ActiveRecord::Base
+  end
+
+  class Customer < ActiveRecord::Base
+  end
+
+  class Transaction < ActiveRecord::Base
+  end
+
+  class OrderCopy < ActiveRecord::Base
+  end
+
+  class Account < ActiveRecord::Base
+  end
+
   def up
     # Customers table
     create_table :customers do |t|
@@ -22,31 +37,93 @@ class RefactorOrders < ActiveRecord::Migration
     add_index :customers, :order_id, unique: true
     add_index :customers, :name
 
+    change_table :orders do |t|
+      t.boolean :complete, null: false, default: false
+      t.integer :postage_expenditure, null: false, default: 0
+    end
 
-    # Orders table
+    change_table :transactions do |t|
+      t.integer :order_id
+    end
+
+    add_index :transactions, :order_id, unique: true
+
+    # Update order and customer data
+    Order.reset_column_information
+    Customer.reset_column_information
+    Transaction.reset_column_information
+    OrderCopy.reset_column_information
+    Account.reset_column_information
+
+    Order.all.each do |x|
+      if x.step < 5
+        OrderCopy.where(order_id: x.id).each do |y|
+          y.destroy
+          p "[Destroyed order copy ##{y.id}]"  
+        end
+        x.destroy
+        p "Destroyed order ##{x.id} with step ##{x.step}"
+      else
+        Customer.create!(
+          order_id: x.id,
+          delivery_method: x.delivery_method,
+          pickup_point_id: x.pickup_point_id,
+          payment_method_id: x.payment_method_id,
+          other_pickup: x.other_pickup
+          name: x.name,
+          email: x.email,
+          phone: x.phone,
+          address: x.address,
+          city: x.city,
+          pin_code: x.pin_code,
+          other:info: x.other_info
+          notes: x.notes
+        )
+        
+        x.complete = true
+        if x.paid_date.present?
+          pt = Transaction.find_by_id(x.postage_transaction_id)
+          t = Transaction.find(x.transaction_id)
+          t.debit = pt.debit if pt
+          t.order_id = x.id
+          t.save!
+        else
+          if x.postage_transaction_id.present? || x.transaction_id.present?
+            raise "Transaction without payment for order ##{x.id}" 
+          end
+        end
+        x.save!
+      end
+    end
+
+    Account.all.each do |x|
+      x.destroy
+      p "Destroyed account ##{x.id}"
+    end
+
+    # Orders table column removal
     change_table :orders do |t|
       # Columns moved to the customers table
       t.remove :delivery_method, :pickup_point_id, :payment_method_id, :other_pickup, :name, :email, :phone, :address, :city, :other_info, :pin_code, :notes
 
       # Removed columns
-      t.remove :step, :shopping_cart_id, :postage_transaction_id, :account_id
-
-      t.boolean :complete, null: false, default: false
-      t.integer :postage_expenditure, null: false, default: 0
+      t.remove :step, :shopping_cart_id, :account_id, :postage_transaction_id
     end
 
     change_column :orders, :postage_amount, :integer, null: false, default: 0
     change_column :orders, :total_amount, :integer, null: false, default: 0
 
     add_index :orders, :complete
-    remove_index :orders, :transaction_id
-    add_index :orders, :transaction_id, unique: true
 
     # Orders-copies table
     change_table :orders_copies do |t|
-      t.boolean :final, null: false, default: false
+      # Set existing rows to finalized
+      t.boolean :final, null: false, default: true
       t.timestamps
     end
+
+    # Change the finalized default back to false
+    change_column_default :orders_copies, :final, false
 
     change_column :orders_copies, :order_id, :integer, null: false
     change_column :orders_copies, :copy_id, :integer, null: false
@@ -88,11 +165,12 @@ class RefactorOrders < ActiveRecord::Migration
       t.text :other_info
       t.integer :step
       t.integer :shopping_cart_id
+      t.integer :transaction_id
       t.integer :postage_transaction_id
       t.integer :account_id
       t.text :notes
 
-      t.remove :complete
+      t.remove :complete, :postage_expenditure
     end
 
     change_column :orders, :postage_amount, :integer, null: true
@@ -106,7 +184,6 @@ class RefactorOrders < ActiveRecord::Migration
     add_index :orders, :postage_transaction_id
     add_index :orders, :shopping_cart_id
     add_index :orders, :step
-    remove_index :orders, :transaction_id
     add_index :orders, :transaction_id
 
     # Orders-copies table

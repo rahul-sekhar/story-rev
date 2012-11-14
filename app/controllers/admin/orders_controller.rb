@@ -23,9 +23,9 @@ class Admin::OrdersController < Admin::ApplicationController
     @order = CompleteOrder.find(params[:id])
     
     if @order.update_attributes(params[:order])
-      f.json { render json: present(@order).as_hash }
+      render json: present(@order).as_hash
     else
-      f.json { render json: @order.errors.full_messages, status: :unprocessable_entity }
+      render json: @order.errors.full_messages, status: :unprocessable_entity
     end
   end
   

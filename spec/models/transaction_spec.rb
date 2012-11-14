@@ -12,21 +12,6 @@ describe Transaction do
     transaction.should be_invalid
   end
 
-  describe "when destroyed" do
-    it "gets deleted with no orders" do
-      transaction.save
-      expect{ transaction.destroy }.to change{Transaction.count}.by(-1)
-    end
-
-    it "nullifies the transaction_id for an order when present"  do
-      o = create(:complete_order_with_customer)
-      o.update_attributes(paid: true)
-      tr = o.transaction
-      tr.destroy
-      o.reload.transaction_id.should == nil
-    end
-  end
-
   describe "#date" do
     it "allows the date to be set" do
       @date = 1.day.ago

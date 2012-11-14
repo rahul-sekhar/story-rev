@@ -82,16 +82,9 @@ StoryRev::Application.routes.draw do
         get 'graph_data'
       end
     end
-    resources :transaction_categories do
-      get "toggle_record"
-    end
-    resources :transfers
-    resources :transfer_categories
+    resources :transaction_categories
     resources :payment_methods
-    resources :accounts do
-      get "to_cash"
-      get "to_default"
-    end
+    resources :accounts
     resources :default_cost_prices
     post "set_default_cost_price" => "default_cost_prices#set_default"
   end

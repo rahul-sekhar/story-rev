@@ -18,8 +18,6 @@ class Admin::PagesController < Admin::ApplicationController
     
     @payment_methods = PaymentMethod.all
     @transaction_categories = TransactionCategory.all
-    @transfer_categories = TransferCategory.all
     @accounts = Account.all
-    @config_data = ConfigData.access
   end
 end

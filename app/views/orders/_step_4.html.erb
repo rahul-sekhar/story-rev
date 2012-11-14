@@ -89,9 +89,7 @@
     
     <p class="name"><%= c.name %></p>
     
-    <% if c.full_address.present? %>
-      <%= simple_format c.full_address, class: :address %>
-    <% end %>
+    <%= c.formatted_full_address %>
     
     <div class="phone-email">
     <% if c.phone.present? %>
@@ -112,7 +110,7 @@
       <% end %>
     </p>
     
-    <%= simple_format c.other_info, class: :comments %>
+    <%= c.formatted_other_info %>
   </div>
   <% end %>
 </div>

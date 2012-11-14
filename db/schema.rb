@@ -331,16 +331,14 @@ ActiveRecord::Schema.define(:version => 20121113131011) do
     t.datetime "paid_date"
     t.datetime "packaged_date"
     t.datetime "posted_date"
-    t.integer  "transaction_id"
-    t.boolean  "complete",            :default => false, :null => false
     t.integer  "postage_expenditure", :default => 0,     :null => false
+    t.boolean  "complete",            :default => false, :null => false
   end
 
   add_index "orders", ["complete"], :name => "index_orders_on_complete"
   add_index "orders", ["confirmed_date"], :name => "index_orders_on_confirmed_date"
   add_index "orders", ["created_at"], :name => "index_orders_on_created_at"
   add_index "orders", ["paid_date"], :name => "index_orders_on_paid_date"
-  add_index "orders", ["transaction_id"], :name => "index_orders_on_transaction_id", :unique => true
 
   create_table "orders_copies", :force => true do |t|
     t.integer  "order_id",                      :null => false
@@ -409,9 +407,11 @@ ActiveRecord::Schema.define(:version => 20121113131011) do
     t.text     "notes"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "order_id"
   end
 
   add_index "transactions", ["date"], :name => "index_transactions_on_date"
+  add_index "transactions", ["order_id"], :name => "index_transactions_on_order_id", :unique => true
   add_index "transactions", ["other_party"], :name => "index_transactions_on_other_party"
   add_index "transactions", ["payment_method_id"], :name => "index_transactions_on_payment_method_id"
   add_index "transactions", ["transaction_category_id"], :name => "index_transactions_on_transaction_category_id"
