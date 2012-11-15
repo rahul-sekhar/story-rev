@@ -9,28 +9,51 @@ $(document).ready(function() {
         selectable: true,
         editable: false,
         addable: false,
+        headings: true,
+        sortable: true,
         columns: [
             {
-                name: 'Confirmed Date'
+                name: 'Date',
+                sort_by: 'date',
+                default_sort: 'desc'
             },
             {
-                name: 'Order ID'
+                name: 'ID',
+                sort_by: 'id'
             },
             {
-                name: 'Name'
+                name: 'Name',
+                sort_by: 'name'
             },
             {
-                name: 'City'
+                name: 'City',
+                sort_by: 'city'
             },
             {
-                name: 'Delivery Method'
+                name: 'Delivery',
+                sort_by: 'delivery'
             },
             {
-                name: 'Number of copies'
+                name: 'Number',
+                sort_by: 'number'
             },
             {
-                name: 'Total amount'
+                name: 'Amount',
+                sort_by: 'amount'
+            },
+            {
+                name: 'Paid',
+                noHeading: true
+            },
+            {
+                name: 'Posted',
+                noHeading: true
+            },
+            {
+                name: 'Edit',
+                noHeading: true
             }
+
         ]
     });
     

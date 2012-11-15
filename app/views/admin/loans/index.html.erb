@@ -1,0 +1,33 @@
+<% content_for :top_nav do %>
+  <li>
+    <%= link_to "Summary", summarised_admin_transactions_path %>
+  </li>
+  
+  <li>
+    <%= link_to "Details", admin_transactions_path %>
+  </li>
+
+  <li class="current">
+    <%= link_to "Loans", admin_loans_path %>
+  </li>
+  
+  <li>
+    <%= link_to "Configure", admin_finances_config_path %>
+  </li>
+<% end %>
+
+<div class="table-wrapper">
+  <div class="table-container">
+    <table id="loans-table">
+      <% @loans.each do |loan| %>
+        <% present(loan) do |x|  %>
+          <tr data-id="<%= x.id %>">
+            <td class="date" data-sort-by="<%= x.timestamp %>"><%= x.formatted_date %></td>
+            <td data-val="<%= x.name %>" data-sort-by="<%= x.name %>"><%= x.name %></td>
+            <td data-val="<%= x.amount %>" data-sort-by="<%= x.amount %>"><%= x.formatted_amount %></td>
+          </tr>
+        <% end %>
+      <% end %>
+    </table>
+  </div>
+</div>

@@ -273,3 +273,113 @@ function initGraph() {
     });
 }
 
+$(document).ready(function() {
+    var $body = $('body');
+    if (!$body.hasClass('finances loans')) return;
+    
+    // Table settings for the list of loans
+    var $loansTable = $('#loans-table');
+    
+    
+    $loansTable.itemTable({
+        url: '/admin/loans',
+        objectName: 'loan',
+        headings: true,
+        sortable: true,
+        addLinkText: 'New Loan',
+        columns: [
+            {
+                name: 'Date',
+                field: 'formatted_date',
+                type:'read_only',
+                sort_by: 'timestamp',
+                default_sort: 'desc',
+                class_name: 'date'
+            },
+            {
+                name: 'Name',
+                field: 'name',
+                sort_by: 'name'
+            },
+            {
+                name: 'Amount',
+                field: 'formatted_amount',
+                raw: 'amount',
+                sort_by: 'amount',
+                numeric: true
+            },
+            {
+                name: 'Pay',
+                class_name: 'pay-link',
+                html_content: '<a href="#">make payment</a>',
+                noHeading: true,
+                type: 'fixed'
+            }
+        ]
+    });
+
+    // Prepare payment dialog
+    var $paymentDialog = $('<section class="dialog"></section>').hide().appendTo('body');
+    var $paymentDialogForm = $('<form method="POST" action=""></form>').appendTo($paymentDialog);
+    $('<input type="hidden" name="_method" value="PUT" />').appendTo($paymentDialogForm);
+    var $paymentSubmit = $('<input type="submit" class="minor-button" value="Make Payment" />');
+    var $paymentCancel = $('<a href="#" class="minor-button">Cancel</a>');
+    var $paymentDiv = $('<div class="input"></div>').appendTo($paymentDialogForm);
+    $paymentDiv.append('<label for="payment" class="multi-line">Payment Amount</label>')
+    $paymentDiv.append('<input id="payment" name="loan[payment]" value="0" />')
+    
+    // Add submit and cancel buttons
+    var $paymentButtonContainer = $('<div class="button-container"></div>').appendTo($paymentDialogForm);
+    $paymentSubmit.appendTo($paymentButtonContainer);
+    $paymentCancel.click(function(e) {
+        $.unblockUI();
+        e.preventDefault();
+    }).appendTo($paymentButtonContainer);
+    
+    // Add a binding for the Escape key
+    $paymentDialog.keyup(function(e) {
+        if (e.keyCode == KEYCODE_ESC) $paymentCancel.click();
+    });
+    
+    // A list to display errors
+    var $paymentErrs = $('<ul class="errors"></ul>');
+    
+    // Handle the dialog submission
+    $paymentSubmit.click(function(e) {
+        $.blockUI({
+            message: $.blockUI.loadingMessage,
+            css: $.blockUI.loadingCss
+        });
+        $.ajax($paymentDialogForm.attr('action'), {
+            type: "POST",
+            dataType: "json",
+            data: $paymentDialogForm.serializeObject(),
+            success: function(data) {
+                var $td = $loansTable.find('tr[data-id=' + data.id + '] td:eq(2)');
+                $td.attr('data-val', data.amount)
+                $td.text(data.formatted_amount)
+                $.unblockUI();
+            },
+            error: function(data) {
+                $paymentErrs.empty().prependTo($paymentDialog);
+                $.each($.parseJSON(data.responseText), function(index, value) {
+                    $paymentErrs.append('<li>' + value + '</li>');
+                });
+                
+                $.blockUI({message:$paymentDialog});
+            }
+        });
+        e.preventDefault();
+    });
+
+    $loansTable.on('click', '.pay-link', function(e) {
+        e.preventDefault();
+        $.blockUI({ message: $paymentDialog });
+        var $tr = $(this).closest('tr')
+        $paymentDialogForm.attr('action', '/admin/loans/' + $tr.data('id'))
+        console.log($tr.find('td:eq(3)'))
+        $paymentDialogForm.find('#payment').val($tr.find('td:eq(2)').data('val'))
+        $paymentErrs.remove()
+        $.blockUI({ message: $paymentDialog });
+    })
+});

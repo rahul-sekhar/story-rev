@@ -4,13 +4,13 @@
     <% @orders.each do |order| %>
       <% present(order) do |o| %>
         <tr data-id="<%= o.number %>">
-          <td><%= o.formatted_date %>
-          <td><%= o.number %></td>
-          <td><%= o.name %></td>
-          <td><%= o.city %></td>
-          <td><%= o.delivery_short %></td>
-          <td><%= o.number_of_copies %> books</td>
-          <td class="total"><%= o.formatted_total_amount %></td>
+          <td class="date" data-sort-by="<%= o.timestamp %>"><%= o.formatted_date %>
+          <td data-sort-by="<%= o.number %>"><%= o.number %></td>
+          <td data-sort-by="<%= o.name %>"><%= o.name %></td>
+          <td data-sort-by="<%= o.city %>"><%= o.city %></td>
+          <td data-sort-by="<%= o.delivery_short %>"><%= o.delivery_short %></td>
+          <td data-sort-by="<%= o.number_of_copies %>"><%= o.number_of_copies %> books</td>
+          <td class="total" data-sort-by="<%= o.total_amount %>"><%= o.formatted_total_amount %></td>
           <td class="paid"><%= o.paid_check_box %></td>
           <td class="posted"><%= o.posted_check_box %></td>
           <td class="has-button"><%= o.edit_link("") %></td>

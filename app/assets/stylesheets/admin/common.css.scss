@@ -233,12 +233,12 @@ table {
     float:left;
     @include rounded-corners(5px);
     border:1px solid $color-e1;
-    height: e(100px);
     @include clearfix;
     margin-bottom:e(5px);
     min-width: e(250px);
     overflow-y:auto;
-    overflow-x:hidden;
+    overflow-x:auto;
+    height: e(100px);
 }
 
 td, th {

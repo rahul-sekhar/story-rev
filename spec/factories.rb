@@ -192,4 +192,9 @@ FactoryGirl.define do
       complete_order
     end
   end
+
+  factory :loan do
+    sequence(:name) { |n| "Loan #{n}"}
+    amount 1000
+  end
 end

@@ -11,6 +11,8 @@ class OrderPresenter < BasePresenter
     :pickup_point_short_text,
     to: :customer
 
+  delegate :total_amount, to: :order
+  
   def number
     order.id
   end

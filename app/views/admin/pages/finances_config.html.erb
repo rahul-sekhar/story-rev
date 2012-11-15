@@ -6,6 +6,10 @@
   <li>
     <%= link_to "Details", admin_transactions_path %>
   </li>
+
+  <li>
+    <%= link_to "Loans", admin_loans_path %>
+  </li>
   
   <li class="current">
     <%= link_to "Configure", admin_finances_config_path %>
@@ -16,12 +20,9 @@
 <ul class="data-list">
   <% @transaction_categories.each do |x| %>
     <li>
-      <%= x.name %><%= x.off_record ? " <em>(off record)</em>".html_safe : nil %>
+      <%= x.name %>
       <%= link_to "Rename", edit_admin_transaction_category_path(x), :class=>"manage-link" %>
-      <% unless (x.id <= 2) %>
-        <%= link_to "Remove", admin_transaction_category_path(x), :confirm => "Are you sure you want to delete this item?", :method => "Delete", :class=>"manage-link" %>
-      <% end %>
-      <%= link_to "Toggle off record", admin_transaction_category_toggle_record_path(x), :class=>"manage-link" %>
+      <%= link_to "Remove", admin_transaction_category_path(x), :confirm => "Are you sure you want to delete this item?", :method => "Delete", :class=>"manage-link" %>
     </li>
   <% end %>
     <li class="add"><%= link_to "Add", new_admin_transaction_category_path %></li>

@@ -7,6 +7,11 @@
     .table-container {
         height: e(120px);
     }
+
+    td.date {
+        width: e(70px, $small-text-size);
+        padding-right: 0;
+    }
     
     td.confirmed, td.packaged {
         width: e(75px, $small-text-size);

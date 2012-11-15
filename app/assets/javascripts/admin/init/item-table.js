@@ -187,8 +187,8 @@ $.ItemTable = function(table, settings) {
                     // Select the added/edited row
                     if (settings.selectable) select_item($newTr);
 		    
-		    // Re sort the table
-		    if (settings.sortable) re_sort();
+    		    // Re sort the table
+    		    if (settings.sortable) re_sort();
                     
                     // Restripe the table
                     restripe();

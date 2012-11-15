@@ -89,6 +89,7 @@ StoryRev::Application.routes.draw do
     post "set_default_cost_price" => "default_cost_prices#set_default"
     resources :default_percentages
     post "set_default_percentage" => "default_percentages#set_default"
+    resources :loans
   end
 
   # 404 errors

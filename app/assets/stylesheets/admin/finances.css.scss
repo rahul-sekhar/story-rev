@@ -203,4 +203,10 @@
             margin-left: e(20px, $heading-size);
         }
     }
+
+    &.loans {
+        td.pay-link {
+            width: e(100px, $small-text-size);
+        }
+    }
 }
