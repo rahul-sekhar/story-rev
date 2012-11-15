@@ -27,9 +27,11 @@
               <p class="format" title="<%= c.publisher_name %>">
                 <%= c.format_name %>
               </p>
+              <% unless c.new_copy %>
               <div class="rating" title="<%= c.condition_description %>">
-                <%= c.rating_as_stars %>
+                <%= render "shared/rating", rating: c.condition_rating %>
               </p>
+              <% end %>
             </td>
             
             <td class="price">

@@ -3,12 +3,18 @@
   
   <% if order.number_of_items > 0 %>
     <a href="<%= order_step_path(step: 1, anchor: "order") %>" class="major button order-button">Check Out</a>
-    
+  <% end %>
+
+  <% if notice %>
+    <p class="error"><%= notice %></p>
+  <% end %>
+  
+  <% if order.number_of_items > 0 %>
     <p class="info">Books are only removed from the store after you finish
     ordering, so books in your cart may occasionally become unavailable while
     you are shopping.</p>
   <% end %>
-  
+
   <div class="container" data-count="<%= order.number_of_items %>">
   <% if order.number_of_items > 0 %>
     <table>

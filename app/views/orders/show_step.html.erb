@@ -26,13 +26,13 @@
       <%= render "step_#{@step}", :f => f %>
     </div>
 
-    <%= link_to "Cancel", order_cancel_path, class: "cancel button" %>
+    <%= f.submit (@step == 4 ? "Confirm" : "Next"), :class => "next button" %>
 
     <% unless @step == 1 %>
       <%= link_to "Back", order_step_path(step: @step - 1, anchor: "order"), class: "back button" %>
     <% end %>
-    
-    <%= f.submit (@step == 4 ? "Confirm" : "Next"), :class => "next button" %>
+
+    <%= link_to "Cancel", order_cancel_path, class: "cancel button" %>
   <% end %>
   
   

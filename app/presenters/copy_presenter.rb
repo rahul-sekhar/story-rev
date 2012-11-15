@@ -9,6 +9,7 @@ class CopyPresenter < BasePresenter
   delegate :accession_id, to: :copy
   delegate :new_copy, to: :copy
   delegate :condition_rating, to: :copy
+  delegate :new_copy, to: :copy
 
   def accession_id_sortable
     "#{copy.accession_id.to_i}.#{"%04d" % copy.copy_number.to_i}".to_f
@@ -46,19 +47,6 @@ class CopyPresenter < BasePresenter
       formatted_cost_price: cost_price,
       profit_percentage: copy.profit_percentage
     }
-  end
-
-  def rating_as_stars(show_all_stars = true)
-    rating = ""
-    copy.condition_rating.times do
-      rating += content_tag(:span, "*", class: "star")
-    end
-
-    if show_all_stars
-      (5 - copy.condition_rating).times do
-        rating += content_tag(:span, "", class: "empty star")
-      end
-    end
   end
 
   private

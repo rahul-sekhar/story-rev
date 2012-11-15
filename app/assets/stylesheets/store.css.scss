@@ -365,6 +365,10 @@
             @include small-text;
             color: $color-a6;
         }
+
+        p.error {
+            clear: both;
+        }
         
         table {
             border-top: 1px solid $color-a5;
