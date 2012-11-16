@@ -20,11 +20,11 @@ class CopyPresenter < BasePresenter
   end
 
   def price
-    CurrencyMethods.to_currency(copy.price)
+    CurrencyMethods.formatted_currency(copy.price)
   end
 
   def cost_price
-    CurrencyMethods.to_currency(copy.cost_price)
+    CurrencyMethods.formatted_currency(copy.cost_price)
   end
 
   def tiny_book_cover

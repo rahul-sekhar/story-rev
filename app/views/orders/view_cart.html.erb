@@ -54,7 +54,7 @@
           </td>
           
           <td class="price">
-            <p><%= CurrencyMethods.to_currency(c.price) %></p>
+            <p><%= CurrencyMethods.formatted_currency(c.price) %></p>
             <% unless c.in_stock? %>
               <p class="error">Now unavailable</p>
               <% if c.book.copies.stocked.length > 0 %>
@@ -74,7 +74,7 @@
     </table>
     
     <div class="total">
-      <p>Total: <span class="amount"><%= CurrencyMethods.to_currency(order.cart_amount) %></span> <span class="sidenote">(excluding postage)</span></p>
+      <p>Total: <span class="amount"><%= CurrencyMethods.formatted_currency(order.cart_amount) %></span> <span class="sidenote">(excluding postage)</span></p>
     </div>
   <% else %>
     <p class="empty-msg">Your shopping cart is empty</p>

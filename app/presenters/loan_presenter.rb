@@ -7,7 +7,7 @@ class LoanPresenter < BasePresenter
     to: :loan
 
   def formatted_amount
-    CurrencyMethods.to_currency(amount)
+    CurrencyMethods.formatted_currency(amount)
   end
 
   def formatted_date

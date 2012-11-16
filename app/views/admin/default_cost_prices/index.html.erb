@@ -31,7 +31,7 @@
   <ul>
     <% @dcps.each do |x| %>
       <li>
-        <strong>[<%= CurrencyMethods.to_currency(x.cost_price) %>]</strong>
+        <strong>[<%= CurrencyMethods.formatted_currency(x.cost_price) %>]</strong>
         <%= x.book_type_name %> &ndash; <%= x.format_name %>
         <%= link_to "[remove]", admin_default_cost_price_path(x), method: :delete %>
       </li>

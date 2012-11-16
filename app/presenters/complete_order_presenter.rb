@@ -30,7 +30,7 @@ class CompleteOrderPresenter < OrderPresenter
   end
 
   def formatted_postage_expenditure
-    CurrencyMethods.to_currency(order.postage_expenditure || 0)
+    CurrencyMethods.formatted_currency(order.postage_expenditure || 0)
   end
 
   def as_hash

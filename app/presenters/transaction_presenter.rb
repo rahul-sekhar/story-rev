@@ -14,11 +14,11 @@ class TransactionPresenter < BasePresenter
     to: :transaction
 
   def formatted_credit
-    credit > 0 ? CurrencyMethods.to_currency(credit) : '-'
+    credit > 0 ? CurrencyMethods.formatted_currency(credit) : '-'
   end
   
   def formatted_debit
-    debit > 0 ? CurrencyMethods.to_currency(debit) : '-'
+    debit > 0 ? CurrencyMethods.formatted_currency(debit) : '-'
   end
 
   # Format date as in 'Nov 19, 2012'

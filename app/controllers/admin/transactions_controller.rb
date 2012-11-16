@@ -33,9 +33,9 @@ class Admin::TransactionsController < Admin::ApplicationController
       format.html { @accounts = Account.all }
       format.json {
         render json: {
-          income: CurrencyMethods.to_currency(@income),
-          expenditure: CurrencyMethods.to_currency(@expenditure),
-          profit: CurrencyMethods.to_currency(@profit)
+          income: CurrencyMethods.formatted_currency(@income),
+          expenditure: CurrencyMethods.formatted_currency(@expenditure),
+          profit: CurrencyMethods.formatted_currency(@profit)
         }
       }
     end

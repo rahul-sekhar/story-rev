@@ -36,7 +36,7 @@
         </td>
         
         <td class="price">
-          <p><%= CurrencyMethods.to_currency(c.price) %></p>
+          <p><%= CurrencyMethods.formatted_currency(c.price) %></p>
         </td>
       </tr>
     <% end %>
@@ -44,9 +44,9 @@
   
   <div class="total">
     <% if @order.postage_amount > 0 %>
-      <p class="postage"><strong>Postage:</strong> <%= CurrencyMethods.to_currency(@order.postage_amount) %></p>
+      <p class="postage"><strong>Postage:</strong> <%= CurrencyMethods.formatted_currency(@order.postage_amount) %></p>
     <% end %>
-    <p class="total-amount"><strong>Total: <%= CurrencyMethods.to_currency(@order.total_amount) %></strong></p>
+    <p class="total-amount"><strong>Total: <%= CurrencyMethods.formatted_currency(@order.total_amount) %></strong></p>
   </div>
   
 
@@ -77,7 +77,7 @@
           <%= render "shared/rating", :rating => c.condition_rating %>
         </p>
         
-        <p class="price"><%= CurrencyMethods.to_currency(c.price) %></p>
+        <p class="price"><%= CurrencyMethods.formatted_currency(c.price) %></p>
         
       </div>
     <% end %>

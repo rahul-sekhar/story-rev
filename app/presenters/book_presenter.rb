@@ -99,12 +99,12 @@ class BookPresenter < BasePresenter
   
   def used_copy_min_price
     min = book.used_copy_min_price
-    CurrencyMethods.to_currency(min) unless min.nil?
+    CurrencyMethods.formatted_currency(min) unless min.nil?
   end
   
   def new_copy_min_price
     min = book.new_copy_min_price
-    CurrencyMethods.to_currency(min) unless min.nil?
+    CurrencyMethods.formatted_currency(min) unless min.nil?
   end
   
   def award_list
