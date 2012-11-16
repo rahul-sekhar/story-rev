@@ -5,7 +5,7 @@
   <li>
     <p<%= class_if @order.errors[:pickup_point_id].present?,"error" %>><strong><%= f.radio_button(:delivery_method, "2") %> Pick up point in Chennai</strong></p>
     <ul class="pickup">
-      <% PickupPoint.all.each do |p| %>
+      <% PickupPoint.visible.each do |p| %>
         <li><p><%= f.radio_button(:pickup_point_id, p.id) %> <%= p.name %></p></li>
       <% end %>
     </ul>

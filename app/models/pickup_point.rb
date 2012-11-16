@@ -8,6 +8,9 @@ class PickupPoint < ActiveRecord::Base
     presence: true,
     uniqueness: { case_sensitive: false }
 
+  validates :visible, inclusion: { in: [true, false] }
+
   strip_attributes
   
+  scope :visible, where(visible: true)
 end

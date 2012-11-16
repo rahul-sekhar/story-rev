@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121114164817) do
+ActiveRecord::Schema.define(:version => 20121116085008) do
 
   create_table "account_profit_shares", :force => true do |t|
     t.integer  "account_id", :null => false
@@ -372,12 +372,14 @@ ActiveRecord::Schema.define(:version => 20121114164817) do
   add_index "payment_methods", ["name"], :name => "index_payment_methods_on_name", :unique => true
 
   create_table "pickup_points", :force => true do |t|
-    t.string   "name",       :null => false
+    t.string   "name",                         :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "visible",    :default => true, :null => false
   end
 
   add_index "pickup_points", ["name"], :name => "index_pickup_points_on_name", :unique => true
+  add_index "pickup_points", ["visible"], :name => "index_pickup_points_on_visible"
 
   create_table "publishers", :force => true do |t|
     t.string   "name",       :limit => 150,                :null => false
