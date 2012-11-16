@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe PickupPoint, :focus do
+describe PickupPoint do
   let(:pickup_point) { build(:pickup_point) }
   let(:max_length) { 255 }
 

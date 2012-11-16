@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Loan do
+describe Loan, :focus do
   let(:loan){ build(:loan) }
 
   it "is valid" do
@@ -104,6 +104,62 @@ describe Loan do
     it "is deducted from the amount" do
       loan.payment = 200
       loan.amount.should == 800
+    end
+
+    it "accepts a string" do
+      loan.payment = '200'
+      loan.amount.should == 800
+    end
+
+    it "creates a transaction" do
+      loan.payment = 200
+      expect{ loan.save }.to change{Transaction.count}.by(1)
+    end
+
+    it "does not create a Transaction for a payment of 0" do
+      loan.payment = 0
+      expect{ loan.save }.to change{Transaction.count}.by(0)
+    end
+
+    it "does not create a Transaction unless a payment is made" do
+      expect{ loan.save }.to change{Transaction.count}.by(0)
+    end
+
+    describe "the transaction created" do
+      before do
+        loan.name = "Loanee"
+        loan.payment = 200
+      end
+
+      let(:transaction){ Transaction.last }
+
+      it "has an other party of the loan name" do
+        loan.save
+        transaction.other_party.should == "Loanee"
+      end
+
+      it "has the current date" do
+        @time = 1.day.ago
+        DateTime.stub(:now).and_return(@time)
+        loan.save
+        transaction.date.should == @time
+      end
+
+      it "has a debit amount equal to the payment" do
+        loan.save
+        transaction.debit.should == 200
+      end
+
+      it "has a transaction category of 'Loan repayment'" do
+        loan.save
+        transaction.transaction_category_name.should == "Loan repayment"
+      end
+
+      it "uses an existing transaction category if one with the required name exists" do
+        category = create(:transaction_category, name: "Loan repayment")
+        loan.save
+        transaction.transaction_category_id.should == category.id
+      end
     end
   end
 end
