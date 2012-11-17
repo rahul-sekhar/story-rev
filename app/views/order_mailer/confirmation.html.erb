@@ -7,9 +7,7 @@
   <body>
     <p>Dear <%= @customer.name %></p>
 
-    <p>Thank you for ordering books from Story Revolution. Here is the summary of your order
-    (#<%= @order.id %>). We will deliver your books soon after we receive your payment. If you have questions,
-    please reply to this email.</p>
+    <p>Thank you for ordering books from Story Revolution. Here is the summary of your order (#<%= @order.id %>). You can expect your books to be delivered 4-7 days after your payment has been credited to our account. If you have questions, please reply to this email.</p>
     
     <table>
       <tfoot>
@@ -45,7 +43,7 @@
     </table>
       
     <% if @customer.delivery_method == 1 %>  
-    <p>Delivery by speed post</p>
+    <p>Delivery by courier</p>
     <% else %>
       <p><Delivery by pickup</p>
       <p>Pickup point: <%= @customer.pickup_point_short_text %></p>

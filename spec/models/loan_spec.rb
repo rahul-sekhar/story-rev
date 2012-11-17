@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Loan, :focus do
+describe Loan do
   let(:loan){ build(:loan) }
 
   it "is valid" do

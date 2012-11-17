@@ -5,9 +5,9 @@ describe CustomerPresenter, type: :decorator do
   subject {CustomerPresenter.new(customer, view)}
 
   describe "#delivery_text" do
-    it "is 'speed post' when delivery_method is 1" do
+    it "is 'courier' when delivery_method is 1" do
       customer.delivery_method = 1
-      subject.delivery_text.should == "Delivery by speed post"
+      subject.delivery_text.should == "Delivery by courier"
     end
 
     it "is 'pickup' when delivery_method is 2" do

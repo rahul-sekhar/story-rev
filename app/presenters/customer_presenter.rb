@@ -25,7 +25,7 @@ class CustomerPresenter < BasePresenter
   def delivery_text
     case customer.delivery_method.to_i
     when 1
-      "Delivery by speed post"
+      "Delivery by courier"
     when 2
       "Delivery by pickup"
     end
