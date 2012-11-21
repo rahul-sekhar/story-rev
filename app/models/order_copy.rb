@@ -37,6 +37,10 @@ class OrderCopy < ActiveRecord::Base
     copy.price * number
   end
 
+  def cost_price
+    copy.cost_price * number
+  end
+
   def finalize
     raise "Attempting to finalize an order copy with an unstocked copy" if copy.stock <= 0
     raise "Attempting to finalize an order copy with final set to false" if final != true

@@ -16,7 +16,9 @@
   </li>
 <% end %>
 
-<%= simple_form_for [:admin, @item], :defaults => { :required => false, :error => false } do |f| %>
+<%= simple_form_for [:admin, @account], :defaults => { :required => false, :error => false } do |f| %>
   <%= f.input :name %>
+  <%= f.input :share %>
+  <p class="note"><em>Total share of other accounts: <%= @account.sum_of_other_shares %>%</em></p>
   <%= f.submit "Save", :class => "submit" %>
 <% end %>

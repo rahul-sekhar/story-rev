@@ -1,22 +1,32 @@
 class Account < ActiveRecord::Base
   extend FindableByName
   
-  attr_accessible :name
+  attr_accessible :name, :share
 
-  has_many :transactions, :dependent => :nullify
-  has_many :transfers_from, 
-    class_name: "Transfer", 
-    foreign_key: "source_account_id"
-  has_many :transfers_to, 
-    class_name: "Transfer", 
-    foreign_key: "target_account_id"
-  has_many :orders
-  
-  validates :name, :length => { :maximum => 120 }, :presence => true, :uniqueness => { :case_sensitive => false }
+  validate :check_sum_of_shares
 
-  scope :default_order, -> { order("id=#{ConfigData.access.cash_account_id} DESC, id=#{ConfigData.access.default_account_id} DESC") }
-  
-  def balance
-    
+  has_many :account_profit_shares, dependent: :destroy
+
+  validates :name, length: { maximum: 120 }, presence: true, uniqueness: { case_sensitive: false }
+  validates :share, numericality: { 
+    only_integer: true, 
+    greater_than_or_equal_to: 0,
+    less_than_or_equal_to: 100
+  }
+
+  strip_attributes
+
+  def amount_due
+    account_profit_shares.inject(0){ |s, x| s + x.amount }
+  end
+
+  def check_sum_of_shares
+    if sum_of_other_shares + share.to_i > 100
+      errors.add(:share, "cannot exceed 100% in total") 
+    end
+  end
+
+  def sum_of_other_shares
+    Account.where{id != my{self.id}}.inject(0){ |s, x| s + x.share }
   end
 end

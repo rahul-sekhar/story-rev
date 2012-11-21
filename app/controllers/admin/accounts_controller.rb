@@ -14,56 +14,41 @@ class Admin::AccountsController < Admin::ApplicationController
   def new
     @title = "Add account"
     @class = "finances config"
-    @item = Account.new
-    render "admin/pages/name_form"
+    @account = Account.new
   end
   
   def create
-    @item = Account.new(params[:account])
-    if @item.save
+    @account = Account.new(params[:account])
+    if @account.save
       redirect_to admin_finances_config_path
     else
       @title = "Add account"
       @class = "finances config"
-      render "admin/pages/name_form"
+      render "new"
     end
   end
   
   def edit
     @title = "Edit account"
     @class = "finances config"
-    @item = Account.find(params[:id])
-    render "admin/pages/name_form"
+    @account = Account.find(params[:id])
+    render "new"
   end
   
   def update
-    @item = Account.find(params[:id])
-    if @item.update_attributes(params[:account])
+    @account = Account.find(params[:id])
+    if @account.update_attributes(params[:account])
       redirect_to admin_finances_config_path
     else
       @title = "Edit account"
       @class = "finances config"
-      render "admin/pages/name_form"
+      render "new"
     end
   end
   
-  def to_default
-    config = ConfigData.access
-    config.default_account = Account.find(params[:account_id])
-    config.save
-    redirect_to admin_finances_config_path
-  end
-  
-  def to_cash
-    config = ConfigData.access
-    config.cash_account = Account.find(params[:account_id])
-    config.save
-    redirect_to admin_finances_config_path
-  end
-  
   def destroy
-    @item = Account.find(params[:id])
-    @item.destroy
+    @account = Account.find(params[:id])
+    @account.destroy
     redirect_to admin_finances_config_path
   end
 end

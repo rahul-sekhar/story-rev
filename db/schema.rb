@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121116085008) do
+ActiveRecord::Schema.define(:version => 20121117090800) do
 
   create_table "account_profit_shares", :force => true do |t|
     t.integer  "account_id", :null => false
@@ -147,8 +147,9 @@ ActiveRecord::Schema.define(:version => 20121116085008) do
   add_index "collections", ["name"], :name => "index_keywords_on_name", :unique => true
 
   create_table "config_data", :force => true do |t|
-    t.integer "default_cost_price", :default => 0, :null => false
-    t.integer "default_percentage", :default => 0, :null => false
+    t.integer  "default_cost_price", :default => 0,                     :null => false
+    t.integer  "default_percentage", :default => 0,                     :null => false
+    t.datetime "profit_share_date",  :default => '2012-11-19 10:08:10', :null => false
   end
 
   create_table "copies", :force => true do |t|

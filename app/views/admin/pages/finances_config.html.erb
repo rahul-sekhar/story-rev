@@ -44,6 +44,12 @@
 
 <h2>Accounts</h2>
 <ul class="data-list">
-  
-    <li class="add"><%= link_to "Add", new_admin_account_path %></li>
+  <% @accounts.each do |x| %>
+    <li>
+      <%= x.name %> &ndash; <em><%= x.share %>% profit share</em>
+      <%= link_to "Rename", edit_admin_account_path(x), :class=>"manage-link" %>
+      <%= link_to "Remove", admin_account_path(x), :confirm => "Are you sure you want to delete this item?", :method => "Delete", :class=>"manage-link" %>
+    <li>
+  <% end %>
+  <li class="add"><%= link_to "Add", new_admin_account_path %></li>
 </ul>

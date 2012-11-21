@@ -76,7 +76,7 @@
     <% @accounts.each do |x| %>
     <tr>
       <td><%= x.name %></td>
-      <td class="amount"><%= CurrencyMethods.to_currency(x.balance) %></td>
+      <td class="amount"><%= CurrencyMethods.formatted_currency(x.amount_due) %></td>
     </tr>
   <% end %>
     </tbody>

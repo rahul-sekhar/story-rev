@@ -13,7 +13,7 @@ describe OrderPresenter, type: :decorator do
 
     it "returns 0, formatted to a currency when nil" do
       order.should_receive(:postage_amount).and_return(nil)
-      CurrencyMethods.should_receive(:to_currency).with(0)
+      CurrencyMethods.should_receive(:formatted_currency).with(0)
       subject.formatted_postage_amount
     end
   end
@@ -27,7 +27,7 @@ describe OrderPresenter, type: :decorator do
 
     it "returns 0, formatted to a currency when nil" do
       order.should_receive(:total_amount).and_return(nil)
-      CurrencyMethods.should_receive(:to_currency).with(0)
+      CurrencyMethods.should_receive(:formatted_currency).with(0)
       subject.formatted_total_amount
     end
   end

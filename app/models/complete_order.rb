@@ -6,7 +6,7 @@ class CompleteOrder < ActiveRecord::Base
   default_scope -> { where(complete: true) }
 
   before_create :set_confirmed_date
-  after_save :check_transaction
+  after_save :check_transaction_and_profit_shares
 
   has_many :order_copies, dependent: :destroy, validate: true, conditions: { final: true }, foreign_key: :order_id
   has_many :unfinalized_order_copies, dependent: :destroy, validate: true, conditions: { final: false }, foreign_key: :order_id, class_name: OrderCopy
@@ -16,6 +16,7 @@ class CompleteOrder < ActiveRecord::Base
   has_one :customer, dependent: :destroy, foreign_key: :order_id
   has_many :extra_costs, dependent: :destroy, foreign_key: :order_id
   has_one :transaction, dependent: :destroy, foreign_key: :order_id
+  has_many :account_profit_shares, dependent: :destroy, foreign_key: :order_id
 
   delegate :other_info, :notes, to: :customer
 
@@ -96,14 +97,20 @@ class CompleteOrder < ActiveRecord::Base
     packaged_date.present?
   end
 
-  def check_transaction
+  def check_transaction_and_profit_shares
     if paid && customer.present?
       reload
       build_transaction unless transaction.present?
       customer.reload
       update_transaction
+      if confirmed_date > ConfigData.access.profit_share_date
+        update_profit_shares
+      else
+        self.account_profit_shares.reload.clear
+      end
     else
       self.transaction.destroy if transaction.present?
+      self.account_profit_shares.reload.clear
     end
   end
 
@@ -134,5 +141,26 @@ class CompleteOrder < ActiveRecord::Base
     transaction.transaction_category = TransactionCategory.find_or_create("Online order")
     transaction.notes = customer.notes
     transaction.save
+  end
+
+  def book_costs
+    order_copies.inject(0){ |s, x| s + x.cost_price }
+  end
+
+  def profit
+    total_amount - calculate_expenditure - book_costs
+  end
+
+  def update_profit_shares
+    Account.all.each do |x|
+      profit_share = account_profit_shares.find_by_account_id(x.id)
+      if x.share > 0
+        profit_share = account_profit_shares.build(account_id: x.id) if !profit_share
+        profit_share.amount = ((profit.to_f * x.share.to_f) / 100.0).round
+        profit_share.save
+      else
+        profit_share.destroy if profit_share
+      end
+    end
   end
 end

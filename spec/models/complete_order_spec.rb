@@ -263,6 +263,11 @@ describe CompleteOrder do
       order.update_attributes(paid: true)
       expect{ order.destroy }.to change{Transaction.count}.by(-1)
     end
+
+    it "destroys any account profit shares" do
+      create_list(:account_profit_share, 2, complete_order: order)
+      expect{ order.reload.destroy }.to change{AccountProfitShare.count}.by(-2)
+    end
   end
 
   describe "#order_copies" do
@@ -449,117 +454,224 @@ describe CompleteOrder do
   end
 
   describe "when saved" do
-    before do
-      @date = 1.day.ago
-      create(:valid_customer, complete_order: order)
-      order.reload.customer.name = "Test"
-      order.customer.payment_method = create(:payment_method, id: 1)
-      order.customer.notes = "Some notes"
-      order.customer.save
-      order.postage_expenditure = 20
-      create(:extra_cost, complete_order: order, amount: 60, expenditure: 30)
+    describe "effect on profit shares" do
+      before do
+        create(:valid_customer, complete_order: order)
+        order.add_copy = create(:used_copy_with_book, price: 70, cost_price: 20).id
+        order.add_copy = create(:new_copy_with_book, price: 120, cost_price: 50).id
+        order.postage_expenditure = 30
+        order.confirmed_date = DateTime.now
+        config = ConfigData.access
+        config.profit_share_date = 1.day.ago
+        config.save
+        create(:extra_cost, complete_order: order, amount: 80, expenditure: 0)
+        create(:extra_cost, complete_order: order, amount: 100, expenditure: 40)
+        # Profit: 400 - 140 = 260
+        @a1 = create(:account, share: 20) # Share: 52
+        @a2 = create(:account, share: 52) # Share: 135  
+        @a3 = create(:account, share: 0)  # No share
+        @a4 = create(:account, share: 28) # Share: 73
+      end
+
+      let(:share1){ AccountProfitShare.where(order_id: order.id, account_id: @a1.id).first }
+      let(:share2){ AccountProfitShare.where(order_id: order.id, account_id: @a2.id).first }
+      let(:share3){ AccountProfitShare.where(order_id: order.id, account_id: @a3.id).first }
+      let(:share4){ AccountProfitShare.where(order_id: order.id, account_id: @a4.id).first }
+
+      context "with paid date set" do
+        before { order.paid = true }
+
+        context "with no existing profit shares" do
+          it "creates profit shares" do
+            expect{ order.save }.to change{AccountProfitShare.count}.by(3)
+          end
+
+          it "splits the profits according to the shares" do
+            order.save
+            share1.amount.should == 52
+            share2.amount.should == 135
+            share3.should be_nil
+            share4.amount.should == 73
+          end
+
+          context "with a confirmed date before the configured date" do
+            before{ order.confirmed_date = 2.days.ago }
+
+            it "does not create profit shares" do
+              expect{ order.save }.to change{AccountProfitShare.count}.by(0)
+            end
+          end
+        end
+
+        context "with existing profit shares" do
+          before do
+            @ps1 = create(:account_profit_share, complete_order: order, account: @a1, amount: 10)
+            @ps2 = create(:account_profit_share, complete_order: order, account: @a2, amount: 78)
+            @ps3 = create(:account_profit_share, complete_order: order, account: @a3, amount: 102)
+            @ps4 = create(:account_profit_share, complete_order: order, account: @a4, amount: 54)
+          end
+
+          it "edits existing profit shares and removes unnecessary ones" do
+            expect{ order.save }.to change{AccountProfitShare.count}.by(-1)
+          end
+
+          it "splits the profits according to the shares" do
+            order.save
+            @ps1.reload.amount.should == 52
+            @ps2.reload.amount.should == 135
+            AccountProfitShare.exists?(@ps3).should be_false
+            @ps4.reload.amount.should == 73
+          end
+
+          context "with a confirmed date before the configured date" do
+            before{ order.confirmed_date = 2.days.ago }
+
+            it "removes all profit shares" do
+              expect{ order.save }.to change{AccountProfitShare.count}.by(-4)
+            end
+          end
+        end
+      end
+
+      context "without paid date set" do
+        context "with no existing profit shares" do
+          it "creates no profit shares" do
+            expect{ order.save }.to change{AccountProfitShare.count}.by(0)
+          end
+        end
+
+        context "with existing profit shares" do
+          before do
+            @ps1 = create(:account_profit_share, complete_order: order, account: @a1, amount: 10)
+            @ps2 = create(:account_profit_share, complete_order: order, account: @a2, amount: 78)
+            @ps3 = create(:account_profit_share, complete_order: order, account: @a3, amount: 102)
+            @ps4 = create(:account_profit_share, complete_order: order, account: @a4, amount: 54)
+          end
+
+          it "removes profit shares" do
+            expect{ order.save }.to change{AccountProfitShare.count}.by(-4)
+            AccountProfitShare.exists?(@ps1).should be_false
+            AccountProfitShare.exists?(@ps2).should be_false
+            AccountProfitShare.exists?(@ps3).should be_false
+            AccountProfitShare.exists?(@ps4).should be_false
+          end
+        end
+      end
     end
 
-    context "with paid date set" do
-      before { order.paid_date = @date }
+    describe "effect on transaction" do
+      before do
+        @date = 1.day.ago
+        create(:valid_customer, complete_order: order)
+        order.reload.customer.name = "Test"
+        order.customer.payment_method = create(:payment_method, id: 1)
+        order.customer.notes = "Some notes"
+        order.customer.save
+        order.postage_expenditure = 20
+        create(:extra_cost, complete_order: order, amount: 60, expenditure: 30)
+      end
 
-      context "with an existing transaction" do
-        before { @t = create(:transaction, complete_order: order, credit: 20, debit: 0) }
+      context "with paid date set" do
+        before { order.paid_date = @date }
 
-        it "causes does not create a transaction" do
-          expect{ order.save }.to change{Transaction.count}.by(0)
+        context "with an existing transaction" do
+          before { @t = create(:transaction, complete_order: order, credit: 20, debit: 0) }
+
+          it "causes does not create a transaction" do
+            expect{ order.save }.to change{Transaction.count}.by(0)
+          end
+
+          describe "the updated transaction" do
+            subject{ @t.reload }
+            before{ order.save }
+            
+            it "has the right date" do
+              subject.date.should == @date
+            end
+            
+            it "has the right other_party" do
+              subject.other_party.should == "Test"
+            end
+
+            it "has the right payment_method_id" do
+              subject.payment_method_id.should == 1
+            end
+
+            it "has the right notes" do
+              subject.notes.should == "Some notes"
+            end
+
+            it "has the right credit" do
+              subject.credit.should == 60
+            end
+
+            it "has the right debit" do
+              subject.debit.should == 50
+            end
+
+            it "has the right order" do
+              subject.complete_order.should == order
+            end
+          end
         end
 
-        describe "the updated transaction" do
-          subject{ @t.reload }
-          before{ order.save }
-          
-          it "has the right date" do
-            subject.date.should == @date
-          end
-          
-          it "has the right other_party" do
-            subject.other_party.should == "Test"
+        context "without an existing transaction" do
+          it "causes a transaction to be created" do
+            expect{ order.save }.to change{Transaction.count}.by(1)
           end
 
-          it "has the right payment_method_id" do
-            subject.payment_method_id.should == 1
-          end
+          describe "the created transaction" do
+            subject{ order.transaction }
+            before{ order.save }
+            
+            it "has the right date" do
+              subject.date.should == @date
+            end
+            
+            it "has the right other_party" do
+              subject.other_party.should == "Test"
+            end
 
-          it "has the right notes" do
-            subject.notes.should == "Some notes"
-          end
+            it "has the right payment_method_id" do
+              subject.payment_method_id.should == 1
+            end
 
-          it "has the right credit" do
-            subject.credit.should == 60
-          end
+            it "has the right notes" do
+              subject.notes.should == "Some notes"
+            end
 
-          it "has the right debit" do
-            subject.debit.should == 50
-          end
+            it "has the right credit" do
+              subject.credit.should == 60
+            end
 
-          it "has the right order" do
-            subject.complete_order.should == order
+            it "has the right debit" do
+              subject.debit.should == 50
+            end
+
+            it "has the right order" do
+              subject.complete_order.should == order
+            end
           end
         end
       end
 
-      context "without an existing transaction" do
-        it "causes a transaction to be created" do
-          expect{ order.save }.to change{Transaction.count}.by(1)
-        end
-
-        describe "the created transaction" do
-          subject{ order.transaction }
-          before{ order.save }
-          
-          it "has the right date" do
-            subject.date.should == @date
-          end
-          
-          it "has the right other_party" do
-            subject.other_party.should == "Test"
+      context "without paid date set" do
+        context "with an existing transaction" do
+          before do 
+            order.paid = true
+            order.save
+            order.paid = false
           end
 
-          it "has the right payment_method_id" do
-            subject.payment_method_id.should == 1
-          end
-
-          it "has the right notes" do
-            subject.notes.should == "Some notes"
-          end
-
-          it "has the right credit" do
-            subject.credit.should == 60
-          end
-
-          it "has the right debit" do
-            subject.debit.should == 50
-          end
-
-          it "has the right order" do
-            subject.complete_order.should == order
+          it "destroys the transaction" do
+            expect{ order.save }.to change{Transaction.count}.by(-1)
           end
         end
-      end
-    end
 
-    context "without paid date set" do
-      context "with an existing transaction" do
-        before do 
-          order.paid = true
-          order.save
-          order.paid = false
-        end
-
-        it "destroys the transaction" do
-          expect{ order.save }.to change{Transaction.count}.by(-1)
-        end
-      end
-
-      context "without an existing transaction" do
-        it "does nothing" do
-          expect{ order.save }.to change{Transaction.count}.by(0)
+        context "without an existing transaction" do
+          it "does nothing" do
+            expect{ order.save }.to change{Transaction.count}.by(0)
+          end
         end
       end
     end

@@ -194,8 +194,13 @@
             }
         }
         
-        .input.string{
+        .input.string, .input.integer{
+            clear: left;
             float:left;
+        }
+
+        .note {
+            clear:left;
         }
         
         .submit {

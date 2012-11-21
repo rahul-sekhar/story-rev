@@ -97,7 +97,7 @@ describe "Static Pages" do
     end
 
     it "has various help titles" do
-      page.should have_content "Postage"
+      page.should have_content "Delivery"
       page.should have_content "Payment"
       page.should have_content "Condition"
       page.should have_content "Return"

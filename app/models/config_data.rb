@@ -13,6 +13,8 @@ class ConfigData < ActiveRecord::Base
     greater_than_or_equal_to: 0,
     less_than_or_equal_to: 100
   }
+
+  validates :profit_share_date, presence: true
   
   def check_number
     return false if self.class.count > 0 && new_record?

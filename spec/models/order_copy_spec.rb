@@ -75,6 +75,14 @@ describe OrderCopy do
       end
     end
 
+    describe "#cost_price" do
+      it "is the copy cost price multipled by the number for multiple copies" do
+        order_copy.copy = create(:new_copy_with_book, cost_price: 20)
+        order_copy.number = 4
+        order_copy.cost_price.should == 80
+      end
+    end
+
     context "with a new copy" do
       before do
         order_copy.copy = create(:new_copy_with_book)

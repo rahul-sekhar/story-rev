@@ -197,4 +197,14 @@ FactoryGirl.define do
     sequence(:name) { |n| "Loan #{n}"}
     amount 1000
   end
+
+  factory :account do
+    sequence(:name) { |n| "Account #{n}"}
+  end
+
+  factory :account_profit_share do
+    complete_order
+    account
+    amount 20
+  end
 end

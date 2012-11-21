@@ -21,9 +21,3 @@ Cheques should be addressed to Shalini Sekhar, NOT Story Revolution. The address
 #93, 30th cross road
 Banashankari 2nd stage
 Bangalore - 560070
-
-<% if @customer.delivery_method == 1 %>Delivery by courier
-<% else %>Delivery by pickup
-Pickup point: <%= @customer.pickup_point_short_text %>
-<% end %>
-We will <%= @customer.delivery_method == 1 ? "post your books" : "get in touch with you about delivery" %> once we receive your payment. For help or follow up, please reply to this mail.
