@@ -156,7 +156,13 @@
                 &.amount {
                     text-align:left;
                     color: $color-a1;
-                    min-width: e(100px, $text-size)
+                    min-width: auto;
+                }
+
+                &.pay {
+                    text-align: left;
+                    min-width: auto;
+                    @include small-text;
                 }
             }
         

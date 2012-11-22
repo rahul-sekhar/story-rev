@@ -68,15 +68,16 @@
   <table>
     <thead>
       <tr>
-        <th>Account Balance</th>
+        <th>Amount Due</th>
         <th></th>
       </tr>
     </thead>
     <tbody>
     <% @accounts.each do |x| %>
-    <tr>
+    <tr data-id="<%= x.id %>">
       <td><%= x.name %></td>
-      <td class="amount"><%= CurrencyMethods.formatted_currency(x.amount_due) %></td>
+      <td class="amount" data-amount="<%= x.amount_due %>"><%= present(x).formatted_amount_due %></td>
+      <td class="pay"><%= link_to '[pay]', '#', class: 'pay-link' %>
     </tr>
   <% end %>
     </tbody>

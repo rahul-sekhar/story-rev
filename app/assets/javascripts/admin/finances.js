@@ -275,6 +275,77 @@ function initGraph() {
 
 $(document).ready(function() {
     var $body = $('body');
+    if (!$body.hasClass('finances summary')) return;
+
+    // Prepare payment dialog
+    var $paymentDialog = $('<section class="dialog"></section>').hide().appendTo('body');
+    var $paymentDialogForm = $('<form method="POST" action=""></form>').appendTo($paymentDialog);
+    $('<input type="hidden" name="_method" value="PUT" />').appendTo($paymentDialogForm);
+    var $paymentSubmit = $('<input type="submit" class="minor-button" value="Make Payment" />');
+    var $paymentCancel = $('<a href="#" class="minor-button">Cancel</a>');
+    var $paymentDiv = $('<div class="input"></div>').appendTo($paymentDialogForm);
+    $paymentDiv.append('<label for="payment" class="multi-line">Payment Amount</label>')
+    $paymentDiv.append('<input id="payment" name="account[payment]" value="0" />')
+    
+    // Add submit and cancel buttons
+    var $paymentButtonContainer = $('<div class="button-container"></div>').appendTo($paymentDialogForm);
+    $paymentSubmit.appendTo($paymentButtonContainer);
+    $paymentCancel.click(function(e) {
+        $.unblockUI();
+        e.preventDefault();
+    }).appendTo($paymentButtonContainer);
+    
+    // Add a binding for the Escape key
+    $paymentDialog.keyup(function(e) {
+        if (e.keyCode == KEYCODE_ESC) $paymentCancel.click();
+    });
+    
+    // A list to display errors
+    var $paymentErrs = $('<ul class="errors"></ul>');
+    
+    var $accountsTable = $('.accounts table')
+
+    // Handle the dialog submission
+    $paymentSubmit.click(function(e) {
+        $.blockUI({
+            message: $.blockUI.loadingMessage,
+            css: $.blockUI.loadingCss
+        });
+        $.ajax($paymentDialogForm.attr('action'), {
+            type: "POST",
+            dataType: "json",
+            data: $paymentDialogForm.serializeObject(),
+            success: function(data) {
+                var $td = $accountsTable.find('tr[data-id=' + data.id + '] td.amount');
+                $td.attr('data-amount', data.amount_due)
+                $td.text(data.formatted_amount_due)
+                $.unblockUI();
+            },
+            error: function(data) {
+                $paymentErrs.empty().prependTo($paymentDialog);
+                $.each($.parseJSON(data.responseText), function(index, value) {
+                    $paymentErrs.append('<li>' + value + '</li>');
+                });
+                
+                $.blockUI({message:$paymentDialog});
+            }
+        });
+        e.preventDefault();
+    });
+
+    $accountsTable.on('click', '.pay-link', function(e) {
+        e.preventDefault();
+        var $tr = $(this).closest('tr')
+        $paymentDialogForm.attr('action', '/admin/accounts/' + $tr.data('id'))
+        $paymentDialogForm.find('#payment').val($tr.find('td.amount').data('amount'))
+        $paymentErrs.remove()
+        $.blockUI({ message: $paymentDialog });
+    })
+});
+
+
+$(document).ready(function() {
+    var $body = $('body');
     if (!$body.hasClass('finances loans')) return;
     
     // Table settings for the list of loans
@@ -374,10 +445,8 @@ $(document).ready(function() {
 
     $loansTable.on('click', '.pay-link', function(e) {
         e.preventDefault();
-        $.blockUI({ message: $paymentDialog });
         var $tr = $(this).closest('tr')
         $paymentDialogForm.attr('action', '/admin/loans/' + $tr.data('id'))
-        console.log($tr.find('td:eq(3)'))
         $paymentDialogForm.find('#payment').val($tr.find('td:eq(2)').data('val'))
         $paymentErrs.remove()
         $.blockUI({ message: $paymentDialog });

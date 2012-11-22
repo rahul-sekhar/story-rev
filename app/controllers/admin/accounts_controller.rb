@@ -38,11 +38,19 @@ class Admin::AccountsController < Admin::ApplicationController
   def update
     @account = Account.find(params[:id])
     if @account.update_attributes(params[:account])
-      redirect_to admin_finances_config_path
+      respond_to do |format|
+        format.html{ redirect_to admin_finances_config_path }
+        format.json{ render json: present(@account).as_hash }
+      end
     else
-      @title = "Edit account"
-      @class = "finances config"
-      render "new"
+      respond_to do |format|
+        format.html do
+          @title = "Edit account"
+          @class = "finances config"
+          render "new"
+        end
+        format.json{ render json: @account.errors.full_messages, :status => :unprocessable_entity }
+      end
     end
   end
   

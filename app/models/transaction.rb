@@ -6,6 +6,7 @@ class Transaction < ActiveRecord::Base
   belongs_to :payment_method
   belongs_to :transaction_category
   belongs_to :complete_order, foreign_key: :order_id
+  belongs_to :account
   
   validates :transaction_category, presence: true
   validates :other_party, length: { maximum: 200 }

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121117090800) do
+ActiveRecord::Schema.define(:version => 20121122072541) do
 
   create_table "account_profit_shares", :force => true do |t|
     t.integer  "account_id", :null => false
@@ -419,8 +419,10 @@ ActiveRecord::Schema.define(:version => 20121117090800) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "order_id"
+    t.integer  "account_id"
   end
 
+  add_index "transactions", ["account_id"], :name => "index_transactions_on_account_id"
   add_index "transactions", ["date"], :name => "index_transactions_on_date"
   add_index "transactions", ["order_id"], :name => "index_transactions_on_order_id", :unique => true
   add_index "transactions", ["other_party"], :name => "index_transactions_on_other_party"
