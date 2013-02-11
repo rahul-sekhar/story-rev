@@ -2,28 +2,28 @@
 development:
   adapter: postgresql
   encoding: unicode
-  database: story-rev_development
+  database: <%= Rails.configuration.sensitive['db_name'] %>_development
   host: localhost
   pool: 5
-  username: story-rev
+  username: <%= Rails.configuration.sensitive['db_username'] %>
   password: <%= Rails.configuration.sensitive['db_pass'] %>
 
 test: &test
   adapter: postgresql
   encoding: unicode
-  database: story-rev_test
+  database: <%= Rails.configuration.sensitive['db_name'] %>_test
   host: localhost
   pool: 5
-  username: story-rev
+  username: <%= Rails.configuration.sensitive['db_username'] %>
   password: <%= Rails.configuration.sensitive['db_pass'] %>
 
 production:
   adapter: postgresql
   encoding: unicode
-  database: story-rev_production
+  database: <%= Rails.configuration.sensitive['db_name'] %>_production
   host: localhost
   pool: 5
-  username: story-rev
+  username: <%= Rails.configuration.sensitive['db_username'] %>
   password: <%= Rails.configuration.sensitive['db_pass'] %>
 
 cucumber:

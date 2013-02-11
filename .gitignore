@@ -17,7 +17,9 @@ rerun.txt
 # Ignore backups
 /backups
 /db/data.yml
-/db/data*.yml.bak
+/db/data*.yml
+/db/data.sql
+/db/data*.sql
 
 # Ignore all logfiles and tempfiles.
 /log/*.log

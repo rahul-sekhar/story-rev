@@ -1,6 +1,6 @@
 # RVM
 require "rvm/capistrano"
-set :rvm_ruby_string, '1.9.3-p194@story-rev'
+set :rvm_ruby_string, '1.9.3@story-rev'
 set :rvm_type, :system
 
 # Bundler

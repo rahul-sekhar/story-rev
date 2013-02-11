@@ -57,10 +57,10 @@ namespace :backups do
     
     def create_local_backup
       print_msg "Creating a database copy"
-      Rake::Task['db:data:dump'].invoke
+      sh "pg_dump -h localhost -U #{sensitive_settings['db_username']} #{sensitive_settings['db_name']}_#{Rails.env} > db/data.sql"
       print_msg "Storing the database and shared assets in the backups folder"
       filename = "bak.#{Time.now.to_i}.tar.gz"
-      sh "tar czhf backups/#{filename} db/data.yml #{app_settings['shared_assets'].join(" ")}"
+      sh "tar czhf backups/#{filename} db/data.sql #{app_settings['shared_assets'].join(" ")}"
       return filename
     end
   end
