@@ -59,7 +59,8 @@ describe "Static Pages" do
     end
     
     it "has the right title" do
-      page.find(:css, 'title').text.should eq("Story Revolution - Store")
+
+      page.find('title').native.text.should eq("Story Revolution - Store")
     end
 
     it "has a filters section" do
@@ -81,7 +82,7 @@ describe "Static Pages" do
     end
 
     it "has the right title" do
-      page.find(:css, 'title').text.should eq("Story Revolution - About")
+      page.find('title').native.text.should eq("Story Revolution - About")
     end
 
     it_behaves_like("page with header and footer")
@@ -93,7 +94,7 @@ describe "Static Pages" do
     end
 
     it "has the right title" do
-      page.find(:css, 'title').text.should eq("Story Revolution - Help")
+      page.find('title').native.text.should eq("Story Revolution - Help")
     end
 
     it "has various help titles" do

@@ -49,7 +49,9 @@ describe "View book" do
         current_path.should eq("/books/#{@book.accession_id}")
       end
 
-      it { should have_css('title', text: 'Story Revolution - Test Book') }
+      it "has the correct title" do
+        page.find('title').native.text.should eq("Story Revolution - Test Book")
+      end
 
       it { should have_css('h2', text: 'Test Book') }
 

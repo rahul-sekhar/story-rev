@@ -11,7 +11,7 @@ set :application, "story-rev"
 default_run_options[:pty] = true
 set :repository,  "git@github.com:rahul-sekhar/story-rev.git"
 set :scm, :git
-set :scm_passphrase, YAML::load_file("config/sensitive.yml")['scm_pass']
+set :ssh_options, { forward_agent: true }
 
 set :user, "rahul"
 set :use_sudo, false

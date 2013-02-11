@@ -3,6 +3,7 @@ development:
   adapter: postgresql
   encoding: unicode
   database: story-rev_development
+  host: localhost
   pool: 5
   username: story-rev
   password: <%= Rails.configuration.sensitive['db_pass'] %>
@@ -11,6 +12,7 @@ test: &test
   adapter: postgresql
   encoding: unicode
   database: story-rev_test
+  host: localhost
   pool: 5
   username: story-rev
   password: <%= Rails.configuration.sensitive['db_pass'] %>
@@ -19,6 +21,7 @@ production:
   adapter: postgresql
   encoding: unicode
   database: story-rev_production
+  host: localhost
   pool: 5
   username: story-rev
   password: <%= Rails.configuration.sensitive['db_pass'] %>
