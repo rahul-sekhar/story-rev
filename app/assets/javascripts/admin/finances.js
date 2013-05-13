@@ -1,16 +1,16 @@
 $(document).ready(function() {
     var $body = $('body');
     if (!$body.hasClass('finances details')) return;
-    
+
     // Table settings for the list of transactions
     var $transactionsTable = $('#transactions-table');
-    
+
     function setOrderTransactionSettings() {
         $transactionsTable.find('tr:not(.headings)[data-order-url]')
             .find('.remove-link').remove().end()
             .find('.edit-link').removeClass('edit-link').addClass('edit-order-link').attr('title', 'Edit Order');
     }
-    
+
     $transactionsTable.on("tableLoad", function(e, data) {
         $.each(data, function(i, val) {
             if (val.order_url) $transactionsTable.find('tr[data-id=' + val.id + ']').attr('data-order-url', val.order_url);
@@ -97,11 +97,11 @@ function initDateControls (dateChangeCallback) {
     var $dateControls = $('#date-controls');
     var $fromDate = $dateControls.find('.from');
     var $toDate = $dateControls.find('.to');
-    
+
     var first_date = $.datepicker.parseDate("dd-mm-yy", $dateControls.data("first-date"));
     var from_date = $.datepicker.parseDate("dd-mm-yy", $fromDate.data("date"));
     var to_date = $.datepicker.parseDate("dd-mm-yy", $toDate.data("date"));
-    
+
     $dateControls.find('.datepicker').datepicker({
         dateFormat:"M d, yy",
         gotoCurrent: true,
@@ -120,12 +120,12 @@ function initDateControls (dateChangeCallback) {
             $parent.siblings('.from, .to').find('.datepicker').datepicker("option", option, date);
             $parent.find('.date-link').text(dateText);
             $this.fadeOut('fast');
-            
+
             // Call the date change callback function
             dateChangeCallback(from_date, to_date);
         }
     });
-    
+
     // Set max in min ranges for datepickers
     $dateControls.find('.from .datepicker')
         .datepicker("setDate", from_date)
@@ -133,14 +133,14 @@ function initDateControls (dateChangeCallback) {
             minDate: first_date,
             maxDate: to_date
         });
-    
+
     $toDate.find('.datepicker')
         .datepicker("setDate", to_date)
         .datepicker("option", {
             minDate: from_date,
             maxDate: new Date()
         });
-    
+
     // Handle showing and hiding datepickers
     $dateControls.on("click", ".date-link", function(e) {
         e.preventDefault();
@@ -148,7 +148,7 @@ function initDateControls (dateChangeCallback) {
         $this.closest('.from, .to').siblings('.from, .to').find('.datepicker').fadeOut('fast');
         $this.siblings('.datepicker').fadeToggle();
     });
-    
+
     // Hide datepickers when someone clicks outside them
     $(document).mouseup(function(e) {
         if ($dateControls.has(e.target).length === 0) {
@@ -195,13 +195,13 @@ function initGraph() {
                 height:"70%"
             }
         };
-        
+
         var $graphControls = $('#graph-controls');
         var graph_type = $graphControls.data("type");
         var graph_period = $graphControls.data("period");
         var from = $graphControls.data("from");
         var to = $graphControls.data("from");
-        
+
         // Function to redraw the graph
         function redrawGraph() {
             $.ajaxCall('/admin/transactions/graph_data', {
@@ -223,39 +223,39 @@ function initGraph() {
                         period: graph_period,
                         type: graph_type
                     })
-                    
+
                     history.replaceState(null, null, target_url);
                     graph_data.addRows(data.rows);
                     chart.draw(graph_data, options);
                 }
             });
         }
-        
+
         // Change the graph when the user changes control options
         $graphControls.find('.period, .data-type').on('click', 'a', function(e) {
             e.preventDefault();
-            
+
             var $li = $(this).closest('li');
             if ($li.hasClass("current")) return;
             var $ul = $li.closest('ul');
-            
+
             if ($ul.hasClass('period'))
                 graph_period = $li.data('val');
             else
                 graph_type = $li.data('val');
-            
+
             $ul.find('.current').removeClass('current');
             $li.addClass('current');
-            
+
             redrawGraph();
         });
-        
+
         var $summary = $('.summary:first');
         // Initialise the date controls and change the page each time they're changed
         initDateControls(function(from_date, to_date) {
             from = $.datepicker.formatDate("dd-mm-yy", from_date);
             to = $.datepicker.formatDate("dd-mm-yy", to_date);
-            
+
             $.get('/admin/transactions/summarised', {
                     from: from,
                     to: to
@@ -264,10 +264,10 @@ function initGraph() {
                         $summary.find('.' + key + ' .amount').text(val);
                     })
                 }, 'json');
-            
+
             redrawGraph();
         });
-        
+
         // Draw the inital graph
         redrawGraph();
     });
@@ -286,7 +286,7 @@ $(document).ready(function() {
     var $paymentDiv = $('<div class="input"></div>').appendTo($paymentDialogForm);
     $paymentDiv.append('<label for="payment" class="multi-line">Payment Amount</label>')
     $paymentDiv.append('<input id="payment" name="account[payment]" value="0" />')
-    
+
     // Add submit and cancel buttons
     var $paymentButtonContainer = $('<div class="button-container"></div>').appendTo($paymentDialogForm);
     $paymentSubmit.appendTo($paymentButtonContainer);
@@ -294,15 +294,15 @@ $(document).ready(function() {
         $.unblockUI();
         e.preventDefault();
     }).appendTo($paymentButtonContainer);
-    
+
     // Add a binding for the Escape key
     $paymentDialog.keyup(function(e) {
         if (e.keyCode == KEYCODE_ESC) $paymentCancel.click();
     });
-    
+
     // A list to display errors
     var $paymentErrs = $('<ul class="errors"></ul>');
-    
+
     var $accountsTable = $('.accounts table')
 
     // Handle the dialog submission
@@ -326,7 +326,7 @@ $(document).ready(function() {
                 $.each($.parseJSON(data.responseText), function(index, value) {
                     $paymentErrs.append('<li>' + value + '</li>');
                 });
-                
+
                 $.blockUI({message:$paymentDialog});
             }
         });
@@ -347,11 +347,11 @@ $(document).ready(function() {
 $(document).ready(function() {
     var $body = $('body');
     if (!$body.hasClass('finances loans')) return;
-    
+
     // Table settings for the list of loans
     var $loansTable = $('#loans-table');
-    
-    
+
+
     $loansTable.itemTable({
         url: '/admin/loans',
         objectName: 'loan',
@@ -398,7 +398,7 @@ $(document).ready(function() {
     var $paymentDiv = $('<div class="input"></div>').appendTo($paymentDialogForm);
     $paymentDiv.append('<label for="payment" class="multi-line">Payment Amount</label>')
     $paymentDiv.append('<input id="payment" name="loan[payment]" value="0" />')
-    
+
     // Add submit and cancel buttons
     var $paymentButtonContainer = $('<div class="button-container"></div>').appendTo($paymentDialogForm);
     $paymentSubmit.appendTo($paymentButtonContainer);
@@ -406,15 +406,15 @@ $(document).ready(function() {
         $.unblockUI();
         e.preventDefault();
     }).appendTo($paymentButtonContainer);
-    
+
     // Add a binding for the Escape key
     $paymentDialog.keyup(function(e) {
         if (e.keyCode == KEYCODE_ESC) $paymentCancel.click();
     });
-    
+
     // A list to display errors
     var $paymentErrs = $('<ul class="errors"></ul>');
-    
+
     // Handle the dialog submission
     $paymentSubmit.click(function(e) {
         $.blockUI({
@@ -436,7 +436,7 @@ $(document).ready(function() {
                 $.each($.parseJSON(data.responseText), function(index, value) {
                     $paymentErrs.append('<li>' + value + '</li>');
                 });
-                
+
                 $.blockUI({message:$paymentDialog});
             }
         });

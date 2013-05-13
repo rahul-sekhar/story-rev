@@ -23,42 +23,42 @@ var DEFAULTS = {
     removeNameCol: 'auto',          // The column that contains the name of the object to be shown in the confirmation message on removal
                                     // If set to auto, this picks the column that has the name "Name" or "Title"
     extraParams: {},
-    
+
     columns: [{
         name: "Column 1",
         field: "column_1",
-        
+
         multilineLabel: false,      // If set to true, the label is given a multi-line class
-        
+
         type: null,                 // If left empty, this defaults to 'text'.
                                     // other options are: autocomplete, read_only, image,
                                     // rating, fixed, html, boolean, dropdown, date
-        
+
         sourceURL: null,            // Source URL for autocomplete or dropdown data
-        
+
         autocompleteSettings: {},   // Options for an autocomplete field
-        
+
         raw: null,                  // If the field has a different display format,
                                     // this is the raw value field name
-        
+
         image_id_field: null,       // This is the field that the image id can be sent/received from
-        
+
         image_url: "",              // The URL to which the image should be uploaded
-        
+
         default_val: null,          // The default value
-        
+
         class_name: null,           // The column class
-        
+
         html_content: null,         // The HTML content for a fixed column
-        
+
         noHeading: false,           // Whether the column heading is hidden (if headings are enabled)
-        
+
         sort_by: null,              // What attribute to sort the column by - if null, the column cannot be sorted
-        
+
         default_sort: null,         // Whether the column is initially sorted - set to "asc" or "desc" for the order
-        
+
         numeric: false,             // Whether the column has numeric value (So that zeroes are not converted to empty cells)
-        
+
         displayCallback: function(data) { return data; }
     }]
 }
@@ -67,20 +67,20 @@ var DEFAULTS = {
 var methods = {
     init: function(options) {
         var settings = $.extend({}, DEFAULTS, options || {});
-        
+
         return this.each(function () {
             if ($(this).data("itemTableObject")) {
                 $(this).data("itemTableObject").destroy();
             }
-            
+
             $(this).data("itemTableObject", new $.ItemTable(this, settings));
         });
     },
-    
+
     getSelected: function() {
     	return this.data("itemTableObject").getSelected();
     },
-    
+
     reload: function(params) {
 	this.data("itemTableObject").reloadData(params);
     }
@@ -96,21 +96,21 @@ $.fn.itemTable = function (method) {
 };
 
 $.ItemTable = function(table, settings) {
-    
+
     var $table = $(table);
     var $tableContainer = $table.parent('.table-container').length ? $table.parent('.table-container') : $table;
-    
+
     if (!settings.url) {
         settings.url = $table.data("url");
     }
-    
+
     // Handle row selection
     if (settings.selectable) {
         $table.on("click", "tr", function(e) {
             select_item($(this));
         });
     }
-    
+
     // Find removeNameCol if it is set to auto
     if (settings.removeNameCol == 'auto') {
         settings.removeNameCol = false;
@@ -121,16 +121,16 @@ $.ItemTable = function(table, settings) {
             }
         });
     }
-    
+
     // Construct edit/add dialog
     if (settings.addable || settings.editable) {
         var $dialog = $('<section class="dialog"></section>').hide().appendTo('body');
         var $dialogForm = $('<form method="POST" action="' + settings.url + '"></form>').appendTo($dialog);
-        
+
 	// Prepare submit and cancel buttons
 	var $submit = $('<input type="submit" class="minor-button" value="Save" />');
 	var $cancel = $('<a href="#" class="minor-button">Cancel</a>');
-	
+
         // Add inputs for each column
         $.each(settings.columns, function(index, column) {
             if ($.inArray(column.type, ["read_only", "fixed", "custom"]) > -1) return;
@@ -138,7 +138,7 @@ $.ItemTable = function(table, settings) {
             $div.append('<label for="' + field_id(column) + '"' + (column.multilineLabel ? ' class="multi-line"' : '') + '>' + column.name + '</label>');
             constructInput($div, column);
         });
-        
+
         // Add submit and cancel buttons
         var $buttonContainer = $('<div class="button-container"></div>').appendTo($dialogForm);
         $submit.appendTo($buttonContainer);
@@ -146,18 +146,18 @@ $.ItemTable = function(table, settings) {
             $.unblockUI();
             e.preventDefault();
         }).appendTo($buttonContainer);
-        
+
         // Add a binding for the Escape key
         $dialog.keyup(function(e) {
             if (e.keyCode == KEYCODE_ESC) $cancel.click();
         });
-        
+
         // A 'PUT' method parameter to be added to the form for edits
         var $putParam = $('<input type="hidden" name="_method" value="PUT" />');
-        
+
         // A list to display errors
         var $errs = $('<ul class="errors"></ul>');
-        
+
         // Handle the dialog submission
         $submit.click(function(e) {
             $.blockUI({
@@ -171,7 +171,7 @@ $.ItemTable = function(table, settings) {
                 success: function(data) {
                     var $tr = $table.find('tr[data-id=' + data.id + ']');
                     $newTr = createRow(data);
-                    
+
                     // Replace row or add a new row
                     if ($tr.length) {
                         $tr.replaceWith($newTr);
@@ -183,16 +183,16 @@ $.ItemTable = function(table, settings) {
                         // Trigger an add item event
                         $table.trigger("addRow", data);
                     }
-                    
+
                     // Select the added/edited row
                     if (settings.selectable) select_item($newTr);
-		    
+
     		    // Re sort the table
     		    if (settings.sortable) re_sort();
-                    
+
                     // Restripe the table
                     restripe();
-                    
+
                     // Hide the dialog
                     $.unblockUI({
                         onUnblock: function() {
@@ -205,14 +205,14 @@ $.ItemTable = function(table, settings) {
                     $.each($.parseJSON(data.responseText), function(index, value) {
                         $errs.append('<li>' + value + '</li>');
                     });
-                    
+
                     $.blockUI({message:$dialog});
                 }
             });
             e.preventDefault();
         });
     }
-    
+
     if (settings.editable) {
         // Edit button handling
         $table.on("click", ".edit-link", function(e) {
@@ -235,13 +235,13 @@ $.ItemTable = function(table, settings) {
             return false;
         });
     }
-    
+
     if (settings.removable) {
         // Remove button handling
         $table.on("click", ".remove-link", function(e) {
             e.preventDefault();
             var $tr = $(this).closest('tr');
-            
+
             if (settings.confirmRemove) {
                 var message = "Are you sure you want to remove this " + settings.objectName + "?"
                 if (settings.removeNameCol) {
@@ -249,12 +249,12 @@ $.ItemTable = function(table, settings) {
                 }
                 if (!confirm(message)) return;
             }
-            
+
             $.blockUI({
                 message: $.blockUI.loadingMessage,
                 css: $.blockUI.loadingCss
             });
-            
+
             $.ajax(settings.url + '/' + $tr.data("id"), {
                 type:'POST',
                 data: $.extend({_method: "DELETE"}, settings.extraParams),
@@ -273,16 +273,16 @@ $.ItemTable = function(table, settings) {
             return false;
         });
     }
-    
+
     // Add column headings
     if (settings.headings) {
         var $headings = $('<tr class="headings"></tr>');
         $.each(settings.columns, function(index, column) {
             var $th = $('<th></th>');
-            
+
             if (!column.noHeading)
                 $th.text(column.name);
-            
+
             // Handle sorting
             if (settings.sortable && column.sort_by) {
                 $th.click(function(e) {
@@ -292,50 +292,48 @@ $.ItemTable = function(table, settings) {
                 }).addClass('sortable')
                 .wrapInner('<span></span>');
             }
-            
+
             if (column.class_name)
                 $th.addClass(column.class_name);
-            
+
             $th.appendTo($headings);
-            
+
             $th.wrapInner('<div class="container"></div>');
         });
-	
+
 	if (settings.editable) {
 	    $('<th><div class="container"></div></th>').appendTo($headings);
 	}
 	if (settings.removable) {
 	    $('<th><div class="container"></div></th>').appendTo($headings);
 	}
-        
+
         $headings.prependTo($table);
     }
-    
+
     // Add edit and delete buttons to exisiting items
     addManageLinks($table.find('tr:not(.headings)'), settings)
     $table.trigger("addedManageLinks");
-    
+
     // Add fixed colums to existing rows
     $.each(settings.columns, function(index, column) {
         if (column.type == "fixed") {
             var $td = $('<td></td>')
                 .html(column.html_content);
-                
+
             if(settings.containCells)
                 $td.wrapInner('<div class="container"></div>');
-            
+
             if (column.class_name)
                 $td.addClass(column.class_name);
-            
+
             if (settings.tooltips)
                 setTooltip($td, column);
-            
-            $table.find("tr td:eq(" + cell_number(index) + ")").before(
-                $td.clone()
-            )
+
+            $table.find("tr:not(.headings)").find("td:eq(" + cell_number(index) + ")").before($td.clone());
         }
     });
-    
+
     if (settings.addable) {
         // Add an add button
         var $addLink = $('<a href="#" class="add-link">' + settings.addLinkText + '</a>')
@@ -355,7 +353,7 @@ $.ItemTable = function(table, settings) {
             .insertAfter($tableContainer)
             .wrap('<p class="add-container"></div>');
     }
-    
+
     // Initialize tooltips
     if (settings.tooltips) {
         $table.find('tr').each(function() {
@@ -365,9 +363,9 @@ $.ItemTable = function(table, settings) {
             });
         });
     }
-    
+
     var $sortArrow = $('<div class="sort-arrow"></div>');
-    
+
     // Load initial items
     if (settings.initialLoad) {
         reload_data({}, true);
@@ -375,29 +373,29 @@ $.ItemTable = function(table, settings) {
     else if (settings.sortable) {
         sort_by_default_column();
     }
-    
+
     // Restripe the table
     restripe();
-    
-    
+
+
     // Public functions
-    
+
     this.destroy = function() {
         $table.empty();
         if (settings.addable) {
             $addLink.remove();
         }
     }
-    
+
     this.getSelected = function() {
         return get_selected();
     }
-    
+
     this.reloadData = function(data) {
 	reload_data(data);
     }
-    
-    
+
+
     // Private functions
 
     function cell_number(column_index) {
@@ -406,14 +404,14 @@ $.ItemTable = function(table, settings) {
         else
             return column_index
     }
-    
+
     function restripe() {
         $table.find('tr:not(.headings)').removeClass('alt').filter(':odd').addClass('alt');
         if (settings.numbered) {
             renumber();
         }
     }
-    
+
     function renumber() {
         $table.find('tr').each(function(index, row) {
             var $row = $(row);
@@ -424,12 +422,12 @@ $.ItemTable = function(table, settings) {
                 $number.wrapInner('<div class="container"></div>');
         });
     }
-    
+
     function createRow(data) {
         var $tr = $('<tr></tr>').attr("data-id", data.id);
         $.each(settings.columns, function(index, column) {
             var $td = $('<td></td>');
-            
+
             if (column.type == "image") {
                 if (data[column.field]) {
                     $td.html('<img src="' + data[column.field] + '" alt="" />');
@@ -460,39 +458,39 @@ $.ItemTable = function(table, settings) {
             }
             else {
                 var text = column.displayCallback ? column.displayCallback(data[column.field]) : data[column.field];
-                
+
                 if (!column.numeric)
                     text = text || "";
-                
+
                 if (column.type == "html")
                     $td.html(text);
                 else {
                     $td.text(text);
                 }
             }
-            
+
             if (settings.sortable && column.sort_by) {
                 $td.data("sortBy", data[column.sort_by]);
             }
-            
+
             if (column.class_name)
                 $td.addClass(column.class_name);
-            
+
             $td.data("val", data[column.raw || column.field] || "")
                 .appendTo($tr);
-            
+
             if(settings.containCells)
                 $td.wrapInner('<div class="container"></div>');
-            
+
             if (settings.tooltips)
                 setTooltip($td, column);
         });
         return addManageLinks($tr, settings);
     }
-    
+
     function setTooltip($td, column) {
         var tooltip = "[" + column.name + "]";
-        
+
         if (column.tooltipCallback) {
             tooltip = column.tooltipCallback($td.data('val'));
         }
@@ -507,24 +505,24 @@ $.ItemTable = function(table, settings) {
             var cellText = settings.containCells ? $td.children('.container').text() : $td.text();
             tooltip += " " + cellText;
         }
-        
+
         $td.attr("title", tooltip);
     };
-    
+
     function field_id(column) {
         return settings.objectName + '_' + (column.raw || column.field);
     }
-    
+
     function field_name(column) {
         if (column.type == 'image') {
             return settings.objectName + '[' + column.image_id_field + ']';
         }
         return settings.objectName + '[' + (column.raw || column.field) + ']';
     }
-    
-    
+
+
     function constructInput($container, column) {
-        
+
         // Handle images
         if (column.type == "image") {
             var $inputDiv = $('<div class="image dialog-input" id="' + field_id(column) + '"></div>').appendTo($container);
@@ -563,7 +561,7 @@ $.ItemTable = function(table, settings) {
                     $imgId.val(jsonData.id);
                 }
             }).appendTo($inputDiv);
-            
+
             $inputDiv
                 .on("fill", function(e, val) {
                     $img.attr('src', val.url);
@@ -577,30 +575,30 @@ $.ItemTable = function(table, settings) {
                     $progressText.hide();
                     $inputDiv.find('.image-uploader').show();
                 });
-            
+
             return;
         }
-        
+
         // Handle ratings
         if (column.type == "rating") {
             var $input = $('<input class="dialog-input" type="text" id="' + field_id(column) + '" name="' + field_name(column) + '" />')
                 .attr('autocomplete', 'off')
                 .appendTo($container)
                 .hide();
-            
+
             var $ratingDiv = $('<div class="rating"></div').appendTo($container);
             for (var i = 1; i<=5; i++) {
                 $('<div class="star"></div>').data('number', i).appendTo($ratingDiv);
             }
-            
+
             var setRating = function(rating) {
                 rating = parseInt(rating, 10);
-                
+
                 $ratingDiv
                     .find(".star:lt(" + rating + ")").removeClass("empty").end()
                     .find(".star:gt(" + (rating - 1) + ")").addClass("empty");
             }
-            
+
             $ratingDiv
                 .on("click", "div", function() {
                     var rating = $(this).data("number");
@@ -613,7 +611,7 @@ $.ItemTable = function(table, settings) {
                 .on("mouseleave", "div", function() {
                     setRating($input.val());
                 });
-            
+
             $input
                 .on("fill", function(e, val) {
                     setRating(val);
@@ -623,17 +621,17 @@ $.ItemTable = function(table, settings) {
                     setRating(column.default_val || 3);
                     $input.val(column.default_val || 3);
                 });
-            
+
             return;
         }
-        
+
         // Handle boolean inputs
         if (column.type == "boolean") {
             var $input = $('<select class="dialog-input" name="' + field_name(column) + '" id="' + field_id(column) + '" />')
                 .appendOption('1', 'Yes')
                 .appendOption('0', 'No')
                 .appendTo($container);
-            
+
             $input
                 .on("fill", function(e, val) {
                     $input.val(val ? '1' : '0')
@@ -641,19 +639,19 @@ $.ItemTable = function(table, settings) {
                 .on("clear", function(e) {
                     $input.val(column.default_val ? '1' : '0')
                 });
-            
+
             return;
         }
-	
+
 	// Handle dropdowns
 	if (column.type == "dropdown") {
 	    var $input = $('<select class="dialog-input" name="' + field_name(column) + '" id="' + field_id(column) + '" />')
 		.on("reset", function() {
 		    $input.empty().appendOption('dropdown-loading', 'Loading...');
-	    
+
 		    // Disable the submit button till the data loads
 		    $submit.prop("disabled", true);
-		    
+
 		    $.ajaxCall(column.sourceURL, {
 			purr: false,
 			success: function(data) {
@@ -675,15 +673,15 @@ $.ItemTable = function(table, settings) {
 		    $input.data('fill', column.default_val);
 		})
 		.appendTo($container);
-	    
+
 	    return;
 	}
-        
+
         // Handle other types
         var $input = $('<input class="dialog-input" type="text" id="' + field_id(column) + '" name="' + field_name(column) + '" />')
             .attr('autocomplete', 'off')
             .appendTo($container);
-	
+
 	// Handle date inputs
 	if (column.type == "date") {
 	    $input.datepicker({
@@ -693,14 +691,14 @@ $.ItemTable = function(table, settings) {
                 $input.val(val);
             })
             .on("clear", function(e) {
-		if (column.default_val == "now") 
+		if (column.default_val == "now")
 		    $input.val($.datepicker.formatDate('dd-mm-yy', new Date()));
 		else
 		    $input.val(column.default_val);
             });
 	    return;
 	}
-        
+
         // Handle autocomplete inputs
         if (column.type == "autocomplete") {
             var autocompleteDefaults = {
@@ -710,17 +708,17 @@ $.ItemTable = function(table, settings) {
                 textPrePopulate: true,
                 allowCustom: true
             }
-            
+
             $input.tokenInput(column.sourceURL, $.extend({}, autocompleteDefaults, column.autocompleteSettings))
                 .on("reset", function() {
                     var val = $input.val();
                     $input.tokenInput("reset");
-                    
+
                     if (val)
                         $input.tokenInput("add", {name: val})
                 });
         }
-        
+
         // Events for fill and clear triggers
         $input
             .on("fill", function(e, val) {
@@ -730,20 +728,20 @@ $.ItemTable = function(table, settings) {
                 $input.val(column.default_val || (column.numeric ? "0" : ""))
             });
     }
-    
+
     function addManageLinks($tr, settings) {
         if ($tr) {
             if (settings.editable) {
                 var $editLink = $('<td class="has-button" title="Edit"><a class="edit-link" href="#">' + settings.editLinkText + '</a></td>')
                     .appendTo($tr);
-                
+
                 if(settings.containCells)
                     $editLink.wrapInner('<div class="container"></div>');
             }
             if (settings.removable) {
                 var $removeLink = $('<td class="has-button last" title="Remove"><a class="remove-link" href="#">' + settings.removeLinkText + '</a></td>')
                     .appendTo($tr);
-                
+
                 if(settings.containCells)
                     $removeLink.wrapInner('<div class="container"></div>');
             }
@@ -753,73 +751,73 @@ $.ItemTable = function(table, settings) {
             return null;
         }
     }
-    
+
     // Selection functions
     function select_item($item) {
         var old_selected = get_selected();
         deselect_all();
         if ($item) set_selected($item);
-        
+
         // Check if the selection has changed and trigger an event if so
         var new_selected = get_selected();
         if (new_selected === null || new_selected != old_selected) {
             $table.trigger("selectionChange", new_selected);
         }
     }
-    
+
     function set_selected($item) {
         deselect_all();
         $item.addClass('selected');
     }
-    
+
     function get_selected() {
         return $table.find('tr.selected:first').data("id") || null;
     }
-    
+
     function deselect_all() {
         $table.find('tr.selected').removeClass('selected');
     }
-    
+
     // Reload or load table data initially
     function reload_data(params, initial) {
 	if (!initial) {
 	    $table.find('tr:not(.headings)').remove();
 	}
-	
+
 	if (settings.blockOnLoad) {
 	    $tableContainer.block({
 		message: $.blockUI.loadingMessage,
 		css: $.blockUI.loadingCss,
-		overlayCSS: { 
-		    backgroundColor: 'transparent', 
+		overlayCSS: {
+		    backgroundColor: 'transparent',
 		    opacity: 1
 		}
 	    });
 	}
-	
+
 	params = params || {};
 	$.extend(params, settings.extraParams);
 	$.get(settings.url, params, function(data) {
 	    $.each(data, function(index, value) {
 		$table.append(createRow(value));
 	    });
-	    
+
 	    restripe();
-	    
+
 	    if (settings.blockOnLoad)
 		$tableContainer.unblock();
-	    
+
 	    if (settings.sortable) {
 		if (initial)
 		    sort_by_default_column();
 		else
 		    re_sort();
 	    }
-	    
+
 	    $table.trigger('tableLoad', [data]);
 	});
     };
-    
+
     // Sorting functions
     function sort_by_column(column, index, order) {
         $table.find('td').filter(function() {
@@ -827,7 +825,7 @@ $.ItemTable = function(table, settings) {
         }).sortElements(function(a,b) {
             var $a = $(a);
             var $b = $(b);
-            
+
             if ($a.data('sortBy') == null)
                 return order == "asc" ? 1 : -1;
             if ($b.data('sortBy') == null)
@@ -836,12 +834,12 @@ $.ItemTable = function(table, settings) {
                 order == "asc" ? 1 : -1
                 : order == "asc" ? -1 : 1;
         }, function() {
-           return this.parentNode; 
+           return this.parentNode;
         });
-        
+
         restripe();
     }
-    
+
     function sort_by_default_column() {
         $.each(settings.columns, function(index, column) {
             if (column.default_sort) {
@@ -849,19 +847,19 @@ $.ItemTable = function(table, settings) {
                 var $th = $table.find('tr.headings th:eq(' + index + ')')
                     .addClass('sorting')
                     .data('sortOrder', column.default_sort);
-                
+
                 $sortArrow
                     .removeClass("asc")
                     .removeClass("desc")
                     .addClass(column.default_sort);
-                
+
                 $th.children('.container').append($sortArrow);
-                
+
                 return false;
             }
         });
     }
-    
+
     // Re-sort
     function re_sort() {
 	var $th = $table.find('th.sorting');
@@ -869,11 +867,11 @@ $.ItemTable = function(table, settings) {
 	var index = $th.index();
 	sort_by_column(settings.columns[index], index, $th.data('sortOrder'));
     }
-    
+
     // Returns the order to sort by
     function sort_switch($th) {
         var sort_order;
-        
+
         if ($th.hasClass('sorting')) {
             sort_order = $th.data('sortOrder') == "desc" ? "asc" : "desc";
         }
@@ -881,18 +879,18 @@ $.ItemTable = function(table, settings) {
             $table.find('th.sorting')
                 .data('sortOrder', null)
                 .removeClass('sorting');
-            
+
             $th.addClass('sorting');
             sort_order = "asc";
         }
-        
+
         $sortArrow.removeClass('asc')
             .removeClass('desc')
             .addClass(sort_order);
-        
+
         $th.data('sortOrder', sort_order);
         $th.children('.container').append($sortArrow);
-        
+
         return sort_order;
     }
 }
