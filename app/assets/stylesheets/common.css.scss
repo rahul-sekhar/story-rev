@@ -438,19 +438,13 @@ table {
 }
 
 // Error messages
-.ie {
-    margin-bottom: 7px;
-    @include smaller-text;
-}
-
-.closed {
-    margin-bottom: 7px;
-    @include smaller-text;
-}
 
 .error {
+    @include smaller-text;
+    margin-bottom: 7px;
     color: $error-color;
     font-weight:bold;
+    margin-left:e(10px, $smaller-text-size);
 }
 
 
