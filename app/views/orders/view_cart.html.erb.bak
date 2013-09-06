@@ -1,0 +1,92 @@
+<section id="shopping-cart">
+  <h2>Shopping Cart</h2>
+  
+  <% if order.number_of_items > 0 %>
+    <a href="<%= order_step_path(step: 1, anchor: "order") %>" class="major button order-button">Check Out</a>
+  <% end %>
+
+  <% if notice %>
+    <p class="error"><%= notice %></p>
+  <% end %>
+  
+  <% if order.number_of_items > 0 %>
+    <p class="info">Books are only removed from the store after you finish
+    ordering, so books in your cart may occasionally become unavailable while
+    you are shopping.</p>
+  <% end %>
+
+  <div class="container" data-count="<%= order.number_of_items %>">
+  <% if order.number_of_items > 0 %>
+    <table>
+      <% @order_copies.each do |sc| %>
+      <% c = sc.copy %>
+        <tr data-id="<%= c.id %>"<%= class_if !c.in_stock?, "unavailable" %>>
+          <td class="tiny-cover">
+            <% if c.book.cover_image.present? %>
+              <a href="<%= book_path(c.book) %>" class="book-link">
+                <img src="<%= c.book.cover_image.tiny_url %>" alt="" width="<%= c.book.cover_image.tiny_width %>" height="<%= c.book.cover_image.tiny_height %>" />
+              </a>
+            <% end %>
+          </td>
+          
+          <td class="copy">
+            <% if c.new_copy %>
+              <div class="number">
+                <p class="number"><%= sc.number %></p>
+                <%= link_to "Change", "#", :class => "edit-link" %>
+                <p class="sidenote">No. of<br /> copies</p>
+              </div>
+            <% end %>
+            <p class="title">
+              <%= link_to c.book.title, book_path(c.book), :class => "book-link" %>
+            </p>
+            <p class="creators">
+              <%= c.book.author_name + (c.book.illustrator.present? ? ' ' + c.book.illustrator_name : '') %>
+            </p>
+            <p class="format" title="<%= c.edition.publisher_name %>">
+              <%= c.edition.format_name %>
+            </p>
+            <% if !c.new_copy %>
+              <div class="rating" title="<%= c.condition_description %>">
+                <%= render "shared/rating", :rating => c.condition_rating %>
+              </div>
+            <% end %>
+          </td>
+          
+          <td class="price">
+            <p><%= CurrencyMethods.formatted_currency(c.price) %></p>
+            <% unless c.in_stock? %>
+              <p class="error">Now unavailable</p>
+              <% if c.book.copies.stocked.length > 0 %>
+                <%= link_to "Pick another copy", book_path(c.book), :class => "book-link unavailable-copy" %>
+              <% end %>
+            <% end %>
+          </td>
+          
+          <td class="remove">
+            <%= link_to "Remove", update_cart_path(:order => { :remove_copy => c.id }),
+              :class => "remove-link",
+              :title => "Remove from cart"
+            %>
+          </td>
+        </tr>
+      <% end %>
+    </table>
+    
+    <div class="total">
+      <p>Total: <span class="amount"><%= CurrencyMethods.formatted_currency(order.cart_amount) %></span> <span class="sidenote">(excluding postage)</span></p>
+    </div>
+  <% else %>
+    <p class="empty-msg">Your shopping cart is empty</p>
+  <% end %>
+  </div>
+  
+  <% if order.number_of_items > 0 %>
+    <a href="<%= order_step_path(step: 1, anchor: "order") %>" class="major button order-button">Check Out</a>
+    <a href="<%= update_cart_path(:order => { :empty => true }) %>" class="button" id="empty-button">Empty Cart</a>
+    <%= link_to "Back", :back, :class => "back-button left" %>
+  <% else %>
+    <%= link_to "Back", :back, :class => "back-button left" %>
+  <% end %>
+  
+</section>

@@ -19,7 +19,7 @@
     height: e(275px);
     margin-bottom: e(20px);
     position:relative;
-    
+
     .layer {
         position:absolute;
         @include box-shadow(0 0 5px 1px #333);
@@ -29,7 +29,7 @@
         left:0;
         background: $color-e2 url('/images/purple-texture.jpg');
     }
-    
+
     .container {
         margin:0 auto;
         width: e(960px);
@@ -37,7 +37,7 @@
         position:relative;
         z-index: 1;
     }
-    
+
     h1 {
         width: 788px;
         height: 209px;
@@ -47,7 +47,7 @@
         color: transparent;
         margin-left: 10px;
     }
-    
+
     hgroup h3 {
         @include image-replacement (0, 322px, 26px, '/images/caption.png');
         position:absolute;
@@ -56,12 +56,12 @@
         margin:0;
         left: e(75px, $heading-size);
     }
-    
+
     .navigation ul{
         position:absolute;
         right:0;
         bottom:e(5px);
-        
+
         li {
             @include heading;
             font-size: e(16px);
@@ -77,22 +77,23 @@
                 border:none;
             }
         }
-        
+
         .about-link a{
             background-position: left -70px;
         }
-        
+
         .help-link a{
             background-position: left -140px;
         }
     }
-    
+
     #shopping-cart-link {
         position:absolute;
         display:block;
-        height: 126px;
+        height: 106px;
         width: 53px;
         padding: 5px 16px;
+        padding-top: 25px;
         text-align: center;
         background: url('/images/cart-button.png') no-repeat 0 0;
         border:none;
@@ -100,15 +101,15 @@
         right:e(40px);
         @include text;
         font-size: 15px;
-        text-transform:lowercase;
+        // text-transform:lowercase;
         color: $color-a4;
-        
+
         span {
             margin-top: e(8px, 18px);
             display:block;
             font-size: e(18px, 15px);
         }
-        
+
         &:hover {
             background-position: -83px 0;
         }
@@ -132,53 +133,53 @@
     background: $color-e2 url('/images/purple-texture.jpg');
     @include clearfix;
     text-transform:lowercase;
-    
+
     .container {
         margin: 0 auto;
         width: e(960px);
         padding-top: e(30px);
         @include clearfix;
     }
-    
+
     #contact, #subscribe {
         float:left;
         width: e(350px);
         margin-left: e(90px);
     }
-    
+
     h3 {
         color: $color-b2;
         float:left;
     }
-    
+
     p {
         margin-left: e(130px, $text-size);
         color: $color-a4;
     }
-    
+
     a {
         @include link($color-f2, lighten($color-f2, 20));
         border-bottom: none;
     }
-    
+
     #contact {
         .email, .phone, .facebook {
             line-height: e(20px, $text-size);
             background: url('/images/icons.png') no-repeat left -780px;
             padding-left: e(35px, $text-size);
         }
-        
+
         .phone {background-position:left -840px}
         .facebook {background-position:left -900px}
     }
-    
+
     #subscribe {
         p {
             margin-left: e(110px, $text-size);
             width: e(180px, $text-size);
         }
     }
-    
+
     #subscribe-email {
         @include small-text;
         border:1px solid $color-a5;
@@ -193,24 +194,24 @@
             @include placeholder-color($color-c1)
         }
     }
-    
+
     #subscribe-email-submit {
         float:left;
         margin-left: e(10px);
     }
-    
+
     #email-subscribed {
         float:left;
         margin-left: e(10px);
     }
-    
+
     #credit {
         clear:both;
         width:100%;
         background-color: #fff;
         padding-top: e(5px);
         padding-bottom: e(20px);
-        
+
         p {
             @include smaller-text;
             margin:0 auto;
@@ -219,7 +220,7 @@
             color: $text-color;
             letter-spacing: 1px;
         }
-        
+
         a {
             @include link ($color-f1, lighten($color-f1, 20));
             border-bottom: 1px dotted;
@@ -277,18 +278,18 @@ table {
     max-height:150px;
     // background-color or border
 
-    
+
     img {
         border:none;
         display:block;
         margin:0;
     }
-    
+
     .blank-cover {
         width:100px;
         height:150px;
         background-color: $color-a6;
-        
+
         a {
             width:100%;
             height:100%;
@@ -296,7 +297,7 @@ table {
             border-bottom:none;
             position:relative;
         }
-        
+
         p {
             @include smaller-text;
             text-align:center;
@@ -310,13 +311,13 @@ table {
             overflow:hidden;
             text-overflow: ellipsis;
             whitespace: nowrap;
-            
+
             &.title {
                 top:15px;
                 max-height:88px;
                 font-weight:bold;
             }
-            
+
             &.author {
                 bottom:15px;
                 max-height:32px;
@@ -329,8 +330,8 @@ table {
 .cover {
     @include box-shadow(3px -1px 5px $color-a2);
     border:1px solid $color-a5;
-    
-    
+
+
     img {
         max-width:100px;
         max-height:150px;
@@ -346,18 +347,18 @@ table {
     width:16px;
     height:16px;
     overflow:hidden;
-    
+
     &:before {
         content:url('/images/stars.png');
         @include inline-block;
         font-size:0;
         line-height:0;
     }
-    
+
     &.empty:before {
         margin-top: -16px;
     }
-    
+
     &.grey:before {
         margin-top: -32px;
     }
@@ -376,7 +377,7 @@ table {
     top: 5px;
     right: 2px;
     z-index:10;
-    
+
     &:focus {
         outline:none;
     }
@@ -395,7 +396,7 @@ table {
     @include transition (background-color 200ms ease);
     background-color: $color-a1;
     &:hover {background-color: lighten($color-a1,10)};
-    
+
     &.major {
         background-color: $color-e1;
         &:hover {background-color: lighten($color-e1,10)};
@@ -425,7 +426,7 @@ table {
 #notice-dialog {
     text-align: center;
     padding: e(20px);
-    
+
     .message {
         margin-top: e(20px);
     }
@@ -438,6 +439,11 @@ table {
 
 // Error messages
 .ie {
+    margin-bottom: 7px;
+    @include smaller-text;
+}
+
+.closed {
     margin-bottom: 7px;
     @include smaller-text;
 }

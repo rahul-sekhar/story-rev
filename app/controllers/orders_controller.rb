@@ -1,13 +1,13 @@
 class OrdersController < ApplicationController
 
   before_filter :check_order, only: [:show_step, :submit_step, :confirmation]
-  
+
   def view_cart
     @class = "store shopping-cart"
     @title = "Shopping Cart"
 
     @order_copies = order.order_copies.order{[(copy.stock < 1), updated_at.desc]}
-    
+
     respond_to do |format|
       format.html { render layout: "ajax" if request.xhr? }
       format.json do
@@ -22,7 +22,14 @@ class OrdersController < ApplicationController
 
   def update_cart
     store_order if order.new_record?
-    
+
+    # Skip updating the order since the store is closed
+    respond_to do |format|
+      format.html { redirect_to shopping_cart_path }
+      format.json { redirect_to action: :view_cart, get_html: params[:get_html], format: :json }
+    end
+    return
+
     if order.update_attributes(params[:order])
       respond_to do |format|
         format.html { redirect_to shopping_cart_path }
@@ -34,6 +41,10 @@ class OrdersController < ApplicationController
   end
 
   def show_step
+    # Show shopping cart since the store is closed
+    redirect_to shopping_cart_path
+    return
+
     return unless get_customer_and_set_step
     @customer.set_defaults
 
@@ -42,13 +53,13 @@ class OrdersController < ApplicationController
       order.check_unstocked
       order.calculate_amounts
     end
-    
+
     render layout: "ajax" if request.xhr?
   end
 
   def submit_step
     return unless get_customer_and_set_step
-    
+
     if @customer.update_attributes(params[:customer])
       redirect_to order_step_path(step: @step + 1)
     else
@@ -60,7 +71,7 @@ class OrdersController < ApplicationController
     @confirmed_order = order
     session.delete(:order_id)
     @confirmed_order.finalize
-    
+
     OrderMailer.delay.confirmation(@confirmed_order)
     OrderMailer.delay.notify_owner(@confirmed_order)
 
@@ -75,7 +86,7 @@ class OrdersController < ApplicationController
       redirect_to root_path(show_cart: true)
     end
   end
-  
+
   private
 
   def check_order
@@ -86,7 +97,7 @@ class OrdersController < ApplicationController
       else
         message = "Your shopping cart is empty, so an order cannot be placed."
       end
-      
+
       if request.xhr?
         render :text => message, :status => 400
       else
