@@ -1,7 +1,6 @@
 # RVM
 require "rvm/capistrano"
-set :rvm_ruby_string, '1.9.3@story-rev'
-set :rvm_type, :system
+set :rvm_ruby_string, '1.9.3'
 
 # Bundler
 require "bundler/capistrano"
@@ -13,7 +12,7 @@ set :repository,  "git@github.com:rahul-sekhar/story-rev.git"
 set :scm, :git
 set :ssh_options, { forward_agent: true }
 
-set :user, "rahul"
+set :user, "storyrev"
 set :use_sudo, false
 set :deploy_to, "/home/#{user}/#{application}"
 set :host_name, "storyrevolution.in"
@@ -36,13 +35,13 @@ require "whenever/capistrano"
 
 # Sensitive data
 namespace :sensitive_data do
-  
+
   desc "Copies the sensitive.yml file to the server"
   task :setup, :roles => [:app, :web] do
     run "mkdir -p #{shared_path}/config"
     upload("config/sensitive.yml", "#{shared_path}/config/sensitive.yml")
   end
-  
+
   desc "Updates symlinks for the sensitive.yml file"
   task :update_symlinks, :roles => [:app, :web] do
     run "ln -nfs #{shared_path}/config/sensitive.yml #{release_path}/config/sensitive.yml"
@@ -62,7 +61,7 @@ namespace :db do
     system "bundle exec rake db:data:load"
     puts "* done!"
   end
-  
+
   desc "Export the database from the local machine to the remote server"
   task :export_to_remote, :roles => :app do
     puts "* creating a backup of the remote system database"
@@ -75,13 +74,13 @@ namespace :db do
     run "cd #{current_path} && RAILS_ENV=production bundle exec rake db:data:load"
     puts "* done!"
   end
-  
+
   desc "Seed the database"
   task :seed, :roles => :app do
     run "cd #{current_path} && RAILS_ENV=production bundle exec rake db:seed"
     puts "* done!"
   end
-  
+
   desc "Load the schema"
   task :schema_load, :roles => :app do
     run "cd #{current_path} && RAILS_ENV=production bundle exec rake db:schema:load"
@@ -105,14 +104,14 @@ namespace :shared_assets  do
       shared_asset_paths.each { |link| run "ln -nfs #{shared_path}/#{link} #{release_path}/#{link}" }
     end
   end
-  
+
   desc "Import shared objects from the remote server to the local machine"
   task :import_from_remote, :roles => :app do
     shared_asset_paths.each do |link|
       system "rsync -rP #{user}@#{host_name}:#{shared_path}/#{link} #{link}/.."
     end
   end
-  
+
   desc "Export shared objects from the local machine to the remote server"
   task :export_to_remote, :roles => :app do
     shared_asset_paths.each do |link|
@@ -132,34 +131,34 @@ namespace :backups do
   task :setup, :roles => :app do
     run "mkdir -p #{backup_path}"
   end
-  
+
   desc "Update backup symlink"
   task :update_symlink, :roles => :app do
     run "ln -nfs #{backup_path} #{release_path}/backups"
   end
-  
+
   namespace :create do
     desc "Create a daily local and remote backup"
     task :default, :roles => :app do
       run "cd #{current_path} && RAILS_ENV=production bundle exec rake backups:create:remote:daily"
     end
-    
+
     desc "Create a forced remote backup"
     task :remote, :roles => :app do
       run "cd #{current_path} && RAILS_ENV=production bundle exec rake backups:create:remote:forced"
     end
-    
+
     desc "Create a local backup"
     task :local, :roles => :app do
       run "cd #{current_path} && RAILS_ENV=production bundle exec rake backups:create:local"
     end
   end
-  
+
   desc "Clean up old local backups"
   task :cleanup, :roles => :app do
     run "cd #{current_path} && RAILS_ENV=production bundle exec rake backups:cleanup"
   end
-  
+
   desc "Import backups to the local machine"
   task :sync, :roles => :app do
     system "rsync -rP #{user}@#{host_name}:#{backup_path} ."
@@ -182,15 +181,15 @@ namespace :logs do
       run "touch #{shared_path}/log/#{log_name}.log"
     end
   end
-  
+
   namespace :tail do
     log_names.each do |log_name|
-      desc "Tail #{log_name} log files" 
+      desc "Tail #{log_name} log files"
       task log_name, :roles => :app do
         run "tail -f #{shared_path}/log/#{log_name}.log" do |channel, stream, data|
-          trap("INT") { puts 'Interupted'; exit 0; } 
+          trap("INT") { puts 'Interupted'; exit 0; }
           puts  # for an extra line break before the host name
-          puts "#{channel[:host]}: #{data}" 
+          puts "#{channel[:host]}: #{data}"
           break if stream == :err
         end
       end
