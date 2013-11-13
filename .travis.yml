@@ -1,2 +1,14 @@
 language: ruby
 rvm: 1.9.3
+bundler_args: --without development
+branches:
+  only:
+    - master
+
+script:
+  - RAILS_ENV=test bundle exec rake db:schema:load > /dev/null 2>&1
+  - CUCUMBER_FORMAT=progress bundle exec rake
+
+before_script:
+  - cp config/sensitive.travis.yml config/sensitive.yml
+  - psql -c 'create database storyrev_test' -U postgres

@@ -1,0 +1,9 @@
+default_admin_pass: -
+default_team_pass: -
+aws_access_key_id: -
+aws_secret_access_key: -
+email_pass: -
+db_name: storyrev
+db_username: postgres
+db_pass:
+secret_token: travistoken
