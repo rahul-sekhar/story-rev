@@ -6,4 +6,4 @@ email_pass: -
 db_name: storyrev
 db_username: postgres
 db_pass:
-secret_token: travistoken
+secret_token: 5fff5d8359b53884b1a30d0a4a43f19461b3eb20815394d48f39d3917a49b9a54bdf0ae5f6f082f69d280cc84d9395db1224e9a30b3b8554f6ee37c4e7715992
