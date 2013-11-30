@@ -11,7 +11,9 @@
         <li class="help-link"><%= link_to "Help", help_path %></li>
       </ul>
 
-      <%= link_to "We are closed".html_safe, shopping_cart_path,
+      <%= # STOREOPEN
+      # link_to "We are closed".html_safe, shopping_cart_path,
+      link_to "Your Cart <span class=\"number\">#{order.number_of_items}</span>".html_safe, shopping_cart_path,
         :id => "shopping-cart-link",
         "data-show" => @show_shopping_cart
       %>

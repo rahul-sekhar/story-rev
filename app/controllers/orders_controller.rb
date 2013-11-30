@@ -23,12 +23,13 @@ class OrdersController < ApplicationController
   def update_cart
     store_order if order.new_record?
 
+    # STOREOPEN
     # Skip updating the order since the store is closed
-    respond_to do |format|
-      format.html { redirect_to shopping_cart_path }
-      format.json { redirect_to action: :view_cart, get_html: params[:get_html], format: :json }
-    end
-    return
+    # respond_to do |format|
+    #   format.html { redirect_to shopping_cart_path }
+    #   format.json { redirect_to action: :view_cart, get_html: params[:get_html], format: :json }
+    # end
+    # return
 
     if order.update_attributes(params[:order])
       respond_to do |format|
@@ -41,9 +42,10 @@ class OrdersController < ApplicationController
   end
 
   def show_step
+    # STOREOPEN
     # Show shopping cart since the store is closed
-    redirect_to shopping_cart_path
-    return
+    # redirect_to shopping_cart_path
+    # return
 
     return unless get_customer_and_set_step
     @customer.set_defaults
