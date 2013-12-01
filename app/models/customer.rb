@@ -15,22 +15,22 @@ class Customer < ActiveRecord::Base
   # 1 - Speed Post
   # 2 - Pickup Point
   validates :delivery_method, inclusion: { in: [1,2], message: "must be chosen" }
-  validates :pickup_point, presence: true, if: "delivery_method == 2 && pickup_point_id != 0"
+  # validates :pickup_point, presence: true, if: "delivery_method == 2 && pickup_point_id != 0"
 
   # Payment method (step 2)
   # 1 - Online bank transfer
   # 2 - Cheque
   # 3 - Cash
-  validates :payment_method_id, 
+  validates :payment_method_id,
     inclusion: { in: [1,2,3], message: "must be chosen" },
     unless: "step < 2"
 
   # Details (step 3)
-  validates :name, presence: true, 
+  validates :name, presence: true,
     length: { maximum: 150 },
     unless: "step < 3"
 
-  validates :email, presence: true, 
+  validates :email, presence: true,
     length: { maximum: 100 },
     format: { with: /.+@.+\..+/ },
     unless: "step < 3"
@@ -65,11 +65,11 @@ class Customer < ActiveRecord::Base
     self.delivery_method ||= 1 if @step == 1
     self.payment_method_id ||= 1 if @step == 2
   end
-  
+
   def remove_unecessary_fields
     # Remove pickup point if it is unrequired
     self.pickup_point_id = nil if delivery_method != 2
-    
+
     # Remove other pickup text if it is unrequired
     self.other_pickup = nil if (delivery_method != 2 || pickup_point_id != 0)
   end
