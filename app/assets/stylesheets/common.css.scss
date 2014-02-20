@@ -88,12 +88,19 @@
     }
 
     #shopping-cart-link {
+        // STOREOPEN
+        //height: 106px;
+        // padding: 5px 16px;
+        // padding-top: 25px;
+
+        height: 126px;
+        padding: 5px 16px;
+        text-transform:lowercase;
+        // END STOREOPEN
+
         position:absolute;
         display:block;
-        height: 106px;
         width: 53px;
-        padding: 5px 16px;
-        padding-top: 25px;
         text-align: center;
         background: url('/images/cart-button.png') no-repeat 0 0;
         border:none;
@@ -101,7 +108,6 @@
         right:e(40px);
         @include text;
         font-size: 15px;
-        // text-transform:lowercase;
         color: $color-a4;
 
         span {

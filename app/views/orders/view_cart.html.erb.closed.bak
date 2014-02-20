@@ -1,0 +1,7 @@
+<section id="shopping-cart">
+  <h2>We are closed</h2>
+
+  <div class="container" data-count="0">
+    <p>Story Revolution is closed for the moment. Do subscribe to our mailing list if you wish to receive updates.</p>
+  </div>
+</section>

@@ -530,7 +530,8 @@ $(document).ready(function() {
 
     // Function to update the shopping cart item count
     function updateShoppingCartCount(count) {
-        return;
+        // STOREOPEN
+        // return;
         $shoppingCartLink.html('Your Cart <span class="number">' + count + '</span>');
     }
 
