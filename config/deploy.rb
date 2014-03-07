@@ -12,6 +12,8 @@ set :repository,  "git@github.com:rahul-sekhar/story-rev.git"
 set :scm, :git
 set :ssh_options, { forward_agent: true }
 
+set :branch, "store-closed"
+
 set :user, "storyrev"
 set :use_sudo, false
 set :deploy_to, "/home/#{user}/#{application}"
