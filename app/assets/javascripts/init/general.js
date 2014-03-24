@@ -73,43 +73,43 @@ function isIE8() {
 
 // Resize a dialog to its contents height by sliding (check again after resizing)
 function resizeDialog($dialog, $content, resize_overlay, center_dialog, callbackFunction) {
-    
+
     // Handle IE seperately for now
     if ($.browser.msie  && parseInt($.browser.version, 10) <= 8) {
          if (center_dialog) {
             var page_top = $(window).scrollTop();
             var target_top =  page_top + $(window).height() / 2 - $content.outerHeight() / 2 - ($dialog.outerHeight() - $dialog.height()) / 2;
-            
+
             if (target_top < (page_top + 10)) target_top = page_top + 10
-            
+
             $dialog.closest('.ui-dialog').css({top: target_top + 'px'}, 500);
         }
         $dialog.height($content.outerHeight());
-        
+
         if ($dialog.is(':visible')) {
             setTimeout(function() {
                 resizeDialog($dialog, $content, resize_overlay, center_dialog, callbackFunction);
             }, 2000);
         }
-        
+
         return;
     }
 
-    if ($dialog.height() != $content.outerHeight()) {
-        
+    if (Math.floor($dialog.height()) != Math.floor($content.outerHeight())) {
+
         if (center_dialog) {
             var page_top = $(window).scrollTop();
             var target_top =  page_top + $(window).height() / 2 - $content.outerHeight() / 2 - ($dialog.outerHeight() - $dialog.height()) / 2;
-            
+
             if (target_top < (page_top + 10)) target_top = page_top + 10
-            
+
             $dialog.closest('.ui-dialog').animate({top: target_top + 'px'}, 500);
         }
-        
+
         $dialog.animate({ height: $content.outerHeight() }, 500, function() {
             if (resize_overlay)
                 resizeOverlay();
-            
+
             resizeDialog($dialog, $content, resize_overlay, center_dialog, callbackFunction);
         });
     }
@@ -123,13 +123,13 @@ function resizeDialog($dialog, $content, resize_overlay, center_dialog, callback
 $(document).ready(function() {
     var $body = $('body');
     if (isOldIE()) return;
-    
+
     // Handle external links
     $body.on('click', 'a.ext', function(e) {
         window.open(this.href);
         e.preventDefault();
     });
-    
+
     // Email obfuscation [delay for a second in case that helps to prevent spam]
     var $emailLinks = $('.email.obf');
     if ($emailLinks.length) {
@@ -147,16 +147,16 @@ $(document).ready(function() {
                     ltr = coded.charAt(i)
                     link += (ltr)
                 }
-                else {     
+                else {
                 ltr = (key.indexOf(coded.charAt(i))-shift+key.length) % key.length
                 link += (key.charAt(ltr))
                 }
             }
-            
+
             $emailLinks.html('<a href="mailto:' + link + '">' + link + '</a>');
         }, 1000);
     }
-    
+
     // Notice dialog
     var $noticeDialog = $('<section id="notice-dialog" class="dialog"></section>');
     $noticeDialog.dialog({
@@ -164,33 +164,33 @@ $(document).ready(function() {
         width: 400,
         autoOpen:false
     });
-    
+
     var $message = $('<p class="message"></p>').appendTo($noticeDialog);
     var $okButton = $('<a href="#" class="button">Okay</a>').click(function(e) {
         e.preventDefault();
         $noticeDialog.dialog("close");
     }).appendTo($noticeDialog).wrap('<div class="button-holder"></div>');
-    
+
     // Global function to handle errors
     displayError = function(xhr, callback) {
         var message = (xhr.responseText && xhr.responseText.length < 500) ? xhr.responseText : "The server cannot be reached";
         displayNotice(message, callback)
     };
-    
+
     // Global function for notices
     displayNotice = function(message, buttonText, callback) {
-        
+
         buttonText = buttonText || "Okay";
-        
+
         $message.text(message);
         $okButton.text(buttonText);
         $noticeDialog.dialog("open");
-        
+
         if (callback)
             $noticeDialog.dialog('option', 'hide', null)
         else
             $noticeDialog.dialog('option', 'hide', 'fade')
-        
+
         $noticeDialog.one("dialogclose", callback);
     }
 });
