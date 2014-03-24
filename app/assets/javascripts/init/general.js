@@ -75,25 +75,27 @@ function isIE8() {
 function resizeDialog($dialog, $content, resize_overlay, center_dialog, callbackFunction) {
 
     // Handle IE seperately for now
-    if ($.browser.msie  && parseInt($.browser.version, 10) <= 8) {
-         if (center_dialog) {
-            var page_top = $(window).scrollTop();
-            var target_top =  page_top + $(window).height() / 2 - $content.outerHeight() / 2 - ($dialog.outerHeight() - $dialog.height()) / 2;
+    // if ($.browser.msie  && parseInt($.browser.version, 10) <= 8) {
+    //      if (center_dialog) {
+    //         var page_top = $(window).scrollTop();
+    //         var target_top =  page_top + $(window).height() / 2 - $content.outerHeight() / 2 - ($dialog.outerHeight() - $dialog.height()) / 2;
 
-            if (target_top < (page_top + 10)) target_top = page_top + 10
+    //         if (target_top < (page_top + 10)) target_top = page_top + 10
 
-            $dialog.closest('.ui-dialog').css({top: target_top + 'px'}, 500);
-        }
-        $dialog.height($content.outerHeight());
+    //         $dialog.closest('.ui-dialog').css({top: target_top + 'px'}, 500);
+    //     }
+    //     $dialog.height($content.outerHeight());
 
-        if ($dialog.is(':visible')) {
-            setTimeout(function() {
-                resizeDialog($dialog, $content, resize_overlay, center_dialog, callbackFunction);
-            }, 2000);
-        }
+    //     if ($dialog.is(':visible')) {
+    //         setTimeout(function() {
+    //             resizeDialog($dialog, $content, resize_overlay, center_dialog, callbackFunction);
+    //         }, 2000);
+    //     }
 
-        return;
-    }
+    //     return;
+    // }
+
+    console.log(Math.floor($dialog.height()) + 'should equal ' + Math.floor($content.outerHeight()));
 
     if (Math.floor($dialog.height()) != Math.floor($content.outerHeight())) {
 
