@@ -95,8 +95,6 @@ function resizeDialog($dialog, $content, resize_overlay, center_dialog, callback
     //     return;
     // }
 
-    console.log(Math.floor($dialog.height()) + 'should equal ' + Math.floor($content.outerHeight()));
-
     if (Math.floor($dialog.height()) != Math.floor($content.outerHeight())) {
 
         if (center_dialog) {
