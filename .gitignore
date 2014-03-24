@@ -38,3 +38,7 @@ config/environments/*.local.yml
 
 # Ignore bundler stubs
 /bundler_stubs
+
+# Sublime text project files
+*.sublime-project
+*.sublime-workspace
