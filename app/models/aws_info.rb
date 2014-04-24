@@ -1,12 +1,12 @@
 class AWSInfo
   require 'amazon/ecs'
   require 'timeout'
-  
+
   def self.search(title)
-    
+
     init
     objects = []
-    
+
     begin
       res = Timeout.timeout(5) {
         get_xml(title)
@@ -14,13 +14,13 @@ class AWSInfo
     rescue Timeout::Error
       return objects
     end
-    
+
     res.items.each do |x|
       attrs = x.get_element('ItemAttributes')
       item_title = attrs.get('Title')
-      
+
       next if !filter(item_title)
-      
+
       objects << {
         :isbn => attrs.get('ISBN'),
         :author => attrs.get('Author'),
@@ -40,20 +40,20 @@ class AWSInfo
         :thumbHeight => x.get('SmallImage/Height')
       }
     end
-    
+
     return objects
   end
-  
+
   private
-  
+
   def self.init
     Amazon::Ecs.options = {
       :associate_tag => '5167',
-      :AWS_access_key_id => 'AKIAIMMG6WABQLP65PYQ',       
-      :AWS_secret_key => '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'
+      :AWS_access_key_id => Rails.configuration.sensitive['aws_access_key_id']
+      :AWS_secret_key => Rails.configuration.sensitive['aws_secret_access_key']
     }
   end
-  
+
   def self.get_xml(title)
     return Amazon::Ecs.item_search(
       title,
@@ -61,17 +61,17 @@ class AWSInfo
       :search_index => 'Books'
     )
   end
-  
+
   def self.filter(title)
     word_filter = %w[Digest Collection Guide]
-    
+
     word_filter.each do |w|
       return false if (title.downcase.index(w.downcase))
     end
-    
+
     return true
   end
-  
+
   def self.get_illustrator(item_attrs)
     creators = item_attrs.get_elements('Creator')
     if !creators
