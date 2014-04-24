@@ -1,5 +1,6 @@
 default_admin_pass: PASS
 default_team_pass: PASS
+aws_associate_tag: ...
 aws_access_key_id: KEY
 aws_secret_access_key: KEY
 email_pass: PASS
