@@ -47,10 +47,15 @@ class AWSInfo
   private
 
   def self.init
+    ActiveRecord::Base.logger.debug ({
+      :associate_tag => Rails.configuration.sensitive['aws_associate_tag'],
+      :AWS_access_key_id => Rails.configuration.sensitive['aws_access_key_id'],
+      :AWS_secret_key => Rails.configuration.sensitive['aws_secret_access_key']
+    })
     Amazon::Ecs.options = {
       :associate_tag => Rails.configuration.sensitive['aws_associate_tag'],
       :AWS_access_key_id => Rails.configuration.sensitive['aws_access_key_id'],
-      :AWS_secret_key => Rails.configuration.sensitive['aws_secret_access_key'],
+      :AWS_secret_key => Rails.configuration.sensitive['aws_secret_access_key']
     }
   end
 
