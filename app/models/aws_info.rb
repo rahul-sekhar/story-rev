@@ -48,9 +48,9 @@ class AWSInfo
 
   def self.init
     Amazon::Ecs.options = {
-      :associate_tag => Rails.configuration.sensitive['aws_associate_tag']
-      :AWS_access_key_id => Rails.configuration.sensitive['aws_access_key_id']
-      :AWS_secret_key => Rails.configuration.sensitive['aws_secret_access_key']
+      :associate_tag => Rails.configuration.sensitive['aws_associate_tag'],
+      :AWS_access_key_id => Rails.configuration.sensitive['aws_access_key_id'],
+      :AWS_secret_key => Rails.configuration.sensitive['aws_secret_access_key'],
     }
   end
 
