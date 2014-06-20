@@ -8,7 +8,7 @@
     <p>Dear <%= @customer.name %></p>
 
     <p>Thank you for ordering books from Story Revolution. Here is the summary of your order (#<%= @order.id %>). You can expect your books to be delivered 4-7 days after your payment has been credited to our account. If you have questions, please reply to this email.</p>
-    
+
     <table>
       <tfoot>
         <tr>
@@ -41,25 +41,25 @@
         <% end %>
       </tbody>
     </table>
-      
-    <% if @customer.delivery_method == 1 %>  
+
+    <% if @customer.delivery_method == 1 %>
     <p>Delivery by courier</p>
     <% else %>
       <p><Delivery by pickup</p>
       <p>Pickup point: <%= @customer.pickup_point_short_text %></p>
     <% end %>
-    
+
     <% if @customer.payment_method_id == 3 %>
       <p>You have chosen to pay by cash when you collect your books from our pick-up point.</p>
-      
+
       <p>You can also pay by bank transfer or cheque:</p>
     <% end %>
-    
+
     <p>Our bank account details are:</p>
     <p>SHALINI SEKHAR<br />
-    Indian Overseas Bank Banashankari 2nd Stage, Bangalore<br />
-    Account number: 129801000006584<br />
-    IFSC Code: IOBA0001298<p>
+    Axis Bank, Banashankari, Bangalore<br />
+    Account number: 912010025848541<br />
+    IFSC Code: UTIB0000102<p>
 
     <p>Cheques should be addressed to Shalini Sekhar, <strong>NOT</strong> Story Revolution. The address to send a cheque to is,</p>
     <p>#93, 30th cross road<br />

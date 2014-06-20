@@ -18,7 +18,7 @@ class Order < ActiveRecord::Base
       x.destroy
       cleared += 1
     end
-    
+
     puts "Cleared #{cleared} orders" unless silent
   end
 
@@ -49,7 +49,7 @@ class Order < ActiveRecord::Base
 
   def calculate_amounts
     if customer.delivery_method == 1
-      self.postage_amount = order_copies.finalized.inject(10){ |s, x| s + 10 * x.number }
+      self.postage_amount = order_copies.finalized.inject(30){ |s, x| s + 10 * x.number }
     else
       self.postage_amount = 0
     end

@@ -1,14 +1,14 @@
 <section id="order">
   <div class="final-confirmation">
   <h2>Order</h2>
-  
+
   <p>Your order has been confirmed!<br />
   Thank you for ordering from Story Revolution.</p>
-  
+
   <% if @confirmed_order.order_copies.unfinalized.length > 0 %>
     <p class="error">This rarely happens, but in the few seconds you took to confirm your
     order, the following books have become unavailable! We're very sorry.</p>
-    
+
     <table>
       <% @confirmed_order.order_copies.unfinalized.each do |oc| %>
         <% present(oc.copy) do |c| %>
@@ -16,7 +16,7 @@
             <td class="tiny-cover">
               <%= c.tiny_book_cover %>
             </td>
-            
+
             <td class="copy">
               <p class="title">
                 <%= c.title_link %>
@@ -33,32 +33,32 @@
               </p>
               <% end %>
             </td>
-            
+
             <td class="price">
               <p><%= c.price %></p>
             </td>
-            
+
           </tr>
         <% end %>
       <% end %>
     </table>
   <% end %>
-  
+
   <% present(@confirmed_order) do |o| %>
 
     <p>The total amount payable is <strong><%= o.formatted_total_amount %></strong></p>
-    
+
     <p>Our bank account details are:</p>
     <p>SHALINI SEKHAR<br />
-    Indian Overseas Bank Banashankari 2nd Stage, Bangalore<br />
-    Account number: 129801000006584<br />
-    IFSC Code: IOBA0001298<p>
-    
+    Axis Bank, Banashankari, Bangalore<br />
+    Account number: 912010025848541<br />
+    IFSC Code: UTIB0000102<p>
+
     <p>Cheques should be addressed to Shalini Sekhar, <strong>NOT</strong> Story Revolution. The address to send a cheque to is,</p>
     <p>#93, 30th cross road<br />
     Banashankari 2nd stage<br />
     Bangalore - 560070</p>
-    
+
     <p>
     <% if o.delivery_method == 1 %>
     You can expect your books to be delivered 4-7 days after your payment has been credited to our account.
@@ -68,7 +68,7 @@
     For help or follow up, please mail us at<a href="mailto:contact@storyrevolution.in">contact@storyrevolution.in</a>. Your order number is #<%= o.number %>.</p>
 
   <% end %>
-  
+
   <%= link_to "Okay", root_path, :class => "ok-button button" %>
   </div>
 </section>
