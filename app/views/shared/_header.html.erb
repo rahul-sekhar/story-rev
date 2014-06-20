@@ -11,11 +11,18 @@
         <li class="help-link"><%= link_to "Help", help_path %></li>
       </ul>
 
-      <%= # STOREOPEN
-      # link_to "We are closed".html_safe, shopping_cart_path,
-      link_to "Your Cart <span class=\"number\">#{order.number_of_items}</span>".html_safe, shopping_cart_path,
-        :id => "shopping-cart-link",
-        "data-show" => @show_shopping_cart
+      <%=
+      if ConfigData.access.store_open
+        link_to "Your Cart <span class=\"number\">#{order.number_of_items}</span>".html_safe, shopping_cart_path,
+          :id => "shopping-cart-link",
+          "data-show" => @show_shopping_cart
+      else
+        link_to "We are closed".html_safe,
+          shopping_cart_path,
+          :id => "shopping-cart-link",
+          "data-show" => @show_shopping_cart,
+          :class => 'store-closed'
+      end
       %>
     </nav>
   </div>

@@ -2,108 +2,108 @@
     .table {
         float:left;
     }
-    
+
     .table-container {
         height: e(200px);
     }
-    
+
     $collection-table-width: 220px;
     #collection-table-wrapper {
         .table-container {
             width: e($collection-table-width);
             min-width:0;
         }
-        
+
         table {
             width:100%;
         }
-        
+
         tr {
             height:e(50px);
             border-bottom:1px solid $color-e1;
-            
+
             &.alt {
                 background-color:transparent;
             }
-            
+
             &.selected {
                 background-color:$color-b2;
-                
+
                 &:hover {
                     background-color:$color-b2;
                 }
             }
-            
+
             &:hover {
                 background-color: $color-b3;
             }
         }
-        
+
         td {
             padding: e(5px, $small-text-size);
         }
-        
+
         .icon {
             width: e(50px, $small-text-size);
         }
-        
+
         .name {
             max-width: e(250px - 50px - (32px * 2));
             overflow:hidden;
             @include word-wrap;
         }
-        
+
         .has-button {
             width: e(22px, $small-text-size);
         }
     }
-    
+
     #collection-book-table-wrapper {
         margin-left: 20px;
         .table-container {
             width: e($content-width - $collection-table-width - 20px - 4px);
             min-width:0;
         }
-        
+
         table {
             width:100%;
         }
-        
+
         .age, .copies {
             padding: 0 e(5px, $small-text-size);
         }
     }
-    
+
     // Dialog box
-    
+
     #select-collection-books {
         @include clearfix;
         height:100%;
         width:100%;
-        
+
         .table-wrapper {
             height: 95%;
             width:100%;
         }
-        
+
         .table-container {
             height:100%;
             width:100%;
             overflow-x: auto;
         }
-        
+
         table {
             width:100%;
         }
-        
+
         .awards .container, .collections .container {
             max-width: e(150px, $small-text-size);
         }
-        
+
         td {
             color: $light-text-color;
         }
-        
+
         .in_collection td{
             color: $text-color;
             font-weight:bold;
@@ -116,50 +116,58 @@
         float:left;
         clear:left;
     }
-    
+
     .roles {
         float:left;
-        
+
         li {
             float:left;
             @include text;
             margin-left: e(20px, $text-size);
         }
     }
-    
+
     .role-form {
         display:none;
         clear:left;
         margin-top: e(20px);
         float:left;
     }
-    
+
     .submit {
         float:right;
     }
-    
+
     label {
         width: e(200px, $label-font-size);
+    }
+
+    .store-open {
+        margin-bottom: e(20px);
+
+        p {
+            float: none;
+        }
     }
 }
 
 .priorities {
-    
+
     h2 {
         margin-bottom: e(10px, $heading-size);
     }
-    
+
     .column {
         float:left;
         width: 50%;
-        
+
         ul {
             margin-bottom: e(30px);
         }
-        
+
         li {
             @include smaller-text;
-            
+
             a {
                 font-size: e(10px, $smaller-text-size);
                 margin-left: e(10px, 10px);
@@ -180,7 +188,7 @@
 
         li {
             @include smaller-text;
-            
+
             a {
                 font-size: e(10px, $smaller-text-size);
                 margin-left: e(10px, 10px);

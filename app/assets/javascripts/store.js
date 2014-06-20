@@ -530,8 +530,10 @@ $(document).ready(function() {
 
     // Function to update the shopping cart item count
     function updateShoppingCartCount(count) {
-        // STOREOPEN
-        // return;
+        if($('#shopping-cart-link').hasClass('store-closed')) {
+            return;
+        }
+
         $shoppingCartLink.html('Your Cart <span class="number">' + count + '</span>');
     }
 

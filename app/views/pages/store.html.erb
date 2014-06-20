@@ -5,7 +5,8 @@
 
 <!--[if lte IE 8]><p class="error ie">While this website is functional on Internet Explorer, it may not work optimally.
 For free options, check out Firefox or Chrome.</p><![endif]-->
-<!-- STOREOPEN -->
-<!-- <p class="error closed">Story Revolution is closed for the moment. Do subscribe to our mailing list if you wish to receive updates.</p> -->
+<% unless ConfigData.access.store_open %>
+  <p class="error closed">Story Revolution is closed for the moment. Do subscribe to our mailing list if you wish to receive updates.</p>
+<% end %>
 
 <%= render "store_books" %>

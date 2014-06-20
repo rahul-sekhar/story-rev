@@ -2,13 +2,13 @@
   <li>
     <%= link_to "Collections", admin_collections_path %>
   </li>
-  
+
   <% if admin? %>
     <li>
-      <%= link_to "Passwords", admin_roles_path %>
+      <%= link_to "Configure", admin_roles_path %>
     </li>
   <% end %>
-  
+
   <li class="current">
     <%= link_to "Priorites", admin_priorities_path %>
   </li>
@@ -27,7 +27,7 @@
       </li>
     <% end %>
   </ul>
-  
+
   <h2>Categories</h2>
   <ul class="book_types">
     <% @book_types.each do |x| %>
@@ -36,7 +36,7 @@
       </li>
     <% end %>
   </ul>
-  
+
   <h2>Awards</h2>
   <ul class="award_types">
     <% @awards.each do |x| %>
@@ -45,7 +45,7 @@
       </li>
     <% end %>
   </ul>
-  
+
   <h2>Illustrators</h2>
   <ul class="illustrators">
     <% @illustrators.each do |x| %>
@@ -54,7 +54,7 @@
       </li>
     <% end %>
   </ul>
-  
+
   <h2>Publishers</h2>
   <ul class="publishers">
     <% @publishers.each do |x| %>

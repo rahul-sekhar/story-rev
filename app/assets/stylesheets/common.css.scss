@@ -88,15 +88,17 @@
     }
 
     #shopping-cart-link {
-        // STOREOPEN
-        //height: 106px;
-        // padding: 5px 16px;
-        // padding-top: 25px;
 
         height: 126px;
         padding: 5px 16px;
         text-transform:lowercase;
-        // END STOREOPEN
+
+        &.store-closed {
+            height: 106px;
+            padding: 5px 16px;
+            padding-top: 25px;
+            text-transform: none;
+        }
 
         position:absolute;
         display:block;

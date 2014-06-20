@@ -1,9 +1,9 @@
 StoryRev::Application.routes.draw do
-  
+
   root :to => "pages#store"
-  
+
   resources :books
-  
+
   get "shopping_cart" => "orders#view_cart"
   put "shopping_cart" => "orders#update_cart"
   get "update_cart" => "orders#update_cart"
@@ -12,10 +12,10 @@ StoryRev::Application.routes.draw do
   post "order/step-:step" => "orders#submit_step", step: /[1-3]/
   post "order/confirmation" => "orders#confirmation"
   get "order/cancel" => "orders#cancel_order"
-  
+
   get "about" => "pages#about"
   get "help" => "pages#help"
-  
+
   post "subscribe" => "pages#subscribe"
 
   # Story hour routes
@@ -25,18 +25,20 @@ StoryRev::Application.routes.draw do
     get "old" => "pages#old"
     get "about" => "pages#about"
   end
-  
-  # Admin routes  
+
+  # Admin routes
   namespace :admin do
     root :to => "books#search"
-    
+
     get "logout" => "sessions#destroy", :as => "logout"
     get "login" => "sessions#new", :as => "login"
     post "login" => "sessions#create"
-    
+
     get "priorities" => "pages#priorities", :as => "priorities"
     get "finances_config" => "pages#finances_config", :as => "finances_config"
-    
+
+    post "toggle_store_open" => "store_open#toggle"
+
     resources :books do
       resources :editions do
         resources :copies
@@ -46,11 +48,11 @@ StoryRev::Application.routes.draw do
         get 'search'
       end
     end
-    
+
     post "stock_taking/add_copy" => "stock_taking#add_copy"
     delete "stock_taking/remove_copy" => "stock_taking#remove_copy"
     delete "stock_taking" => "stock_taking#clear", :as => "clear_stocks"
-    
+
     resources :orders do
       resources :order_copies
       resources :extra_costs

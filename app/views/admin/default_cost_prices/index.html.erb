@@ -2,13 +2,13 @@
   <li>
     <%= link_to "Collections", admin_collections_path %>
   </li>
-  
+
   <% if admin? %>
     <li>
-      <%= link_to "Passwords", admin_roles_path %>
+      <%= link_to "Configure", admin_roles_path %>
     </li>
   <% end %>
-  
+
   <li>
     <%= link_to "Priorites", admin_priorities_path %>
   </li>

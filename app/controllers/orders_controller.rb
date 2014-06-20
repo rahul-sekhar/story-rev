@@ -9,7 +9,13 @@ class OrdersController < ApplicationController
     @order_copies = order.order_copies.order{[(copy.stock < 1), updated_at.desc]}
 
     respond_to do |format|
-      format.html { render layout: "ajax" if request.xhr? }
+      format.html do
+        if ConfigData.access.store_open
+          render layout: "ajax" if request.xhr?
+        else
+          render 'view_cart_closed'
+        end
+      end
       format.json do
        render json: {
           item_count: order.number_of_items,
@@ -23,13 +29,14 @@ class OrdersController < ApplicationController
   def update_cart
     store_order if order.new_record?
 
-    # STOREOPEN
-    # Skip updating the order since the store is closed
-    # respond_to do |format|
-    #   format.html { redirect_to shopping_cart_path }
-    #   format.json { redirect_to action: :view_cart, get_html: params[:get_html], format: :json }
-    # end
-    # return
+    unless ConfigData.access.store_open
+      # Skip updating the order since the store is closed
+      respond_to do |format|
+        format.html { redirect_to shopping_cart_path }
+        format.json { redirect_to action: :view_cart, get_html: params[:get_html], format: :json }
+      end
+      return
+    end
 
     if order.update_attributes(params[:order])
       respond_to do |format|
@@ -42,10 +49,11 @@ class OrdersController < ApplicationController
   end
 
   def show_step
-    # STOREOPEN
-    # Show shopping cart since the store is closed
-    # redirect_to shopping_cart_path
-    # return
+    unless ConfigData.access.store_open
+      # Show shopping cart since the store is closed
+      redirect_to shopping_cart_path
+      return
+    end
 
     return unless get_customer_and_set_step
     @customer.set_defaults
