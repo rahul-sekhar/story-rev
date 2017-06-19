@@ -1,7 +1,8 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.12'
-gem 'pg', '0.14.1'
+gem 'rails', '~> 3.2.12'
+gem 'pg', '~> 0.20.0'
+gem 'rake', '< 11.0'
 
 group :development do
   gem 'thin'
@@ -25,6 +26,8 @@ gem 'whenever'
 gem 'aws-s3'
 gem 'squeel'
 gem 'bcrypt-ruby', '~> 3.0.0', :require => "bcrypt"
+gem 'json', '>=1.8.3'
+gem 'test-unit', '~> 3.0'
 
 group :assets do
   gem 'sass-rails'
