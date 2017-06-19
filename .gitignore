@@ -44,3 +44,6 @@ config/environments/*.local.yml
 # Sublime text project files
 *.sublime-project
 *.sublime-workspace
+
+# Ignore precompiled assets
+/public/assets
