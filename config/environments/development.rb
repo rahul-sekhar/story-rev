@@ -36,11 +36,11 @@ StoryRev::Application.configure do
   
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-    :address              => "smtp.gmail.com",
+    :address              => 'email-smtp.us-east-1.amazonaws.com',
     :port                 => 587,
-    :user_name            => 'storyrevolution@gmail.com',
+    :user_name            => Rails.configuration.sensitive['email_username'],,
     :password             => Rails.configuration.sensitive['email_pass'],
-    :authentication       => 'plain',
+    :authentication       => :login,
     :enable_starttls_auto => true
   }
 end
