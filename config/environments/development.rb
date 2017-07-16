@@ -38,7 +38,7 @@ StoryRev::Application.configure do
   config.action_mailer.smtp_settings = {
     :address              => 'email-smtp.us-east-1.amazonaws.com',
     :port                 => 587,
-    :user_name            => Rails.configuration.sensitive['email_username'],,
+    :user_name            => Rails.configuration.sensitive['email_username'],
     :password             => Rails.configuration.sensitive['email_pass'],
     :authentication       => :login,
     :enable_starttls_auto => true
