@@ -38,8 +38,7 @@ StoryRev::Application.configure do
   config.action_mailer.smtp_settings = {
     :address              => "smtp.gmail.com",
     :port                 => 587,
-    :domain               => 'storyrevolution.in',
-    :user_name            => 'contact@storyrevolution.in',
+    :user_name            => 'storyrevolution@gmail.com',
     :password             => Rails.configuration.sensitive['email_pass'],
     :authentication       => 'plain',
     :enable_starttls_auto => true
