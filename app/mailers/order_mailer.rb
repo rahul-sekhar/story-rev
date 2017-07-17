@@ -13,6 +13,6 @@ class OrderMailer < ActionMailer::Base
     @order = order
     @customer = @order.customer
     
-    mail(from: "\"#{@customer.name}\" <#{@customer.email}>", to: "contact@storyrevolution.in", subject: "Story Revolution Order")
+    mail(to: "contact@storyrevolution.in", subject: "Order from #{@customer.name} (#{@customer.email})")
   end
 end

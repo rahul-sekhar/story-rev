@@ -7,6 +7,6 @@ class UpdateMailer < ActionMailer::Base
   
   def notify_owner(email)
     @email = email
-    mail(:from => email, :to => "\"Story Revolution\" <contact@storyrevolution.in>", :subject => "Story Revolution Subscription")
+    mail(:to => "\"Story Revolution\" <contact@storyrevolution.in>", :subject => "Subscription from #{email}")
   end
 end
