@@ -10,8 +10,8 @@ module ExportBooks
           copy.price,
           copy.new_copy,
           copy.condition_rating,
-          copy.book.age_from
-          copy.book.age_to
+          copy.book.age_from,
+          copy.book.age_to,
           copy.stock
         ];
       end
