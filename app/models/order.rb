@@ -79,6 +79,9 @@ class Order < ActiveRecord::Base
     # Set the stocks for the finalized copies
     self.order_copies.finalized.each{ |x| x.finalize }
 
+    # Set the discount on the order
+    self.discount_percentage = ConfigData.access.discount_percentage
+
     calculate_amounts
 
     self.complete = true

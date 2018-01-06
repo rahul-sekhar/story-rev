@@ -54,7 +54,15 @@
           </td>
           
           <td class="price">
-            <p><%= CurrencyMethods.formatted_currency(c.price) %></p>
+            <p>
+              <% if present(c).has_discount? %>
+                <span class="actual-price"><%= present(c).price %></span>
+                <span class="discounted-price"><%= present(c).discounted_price %></span>
+              <% else %>
+                <%= present(c).price %>
+              <% end %>
+            </p>
+
             <% unless c.in_stock? %>
               <p class="error">Now unavailable</p>
               <% if c.book.copies.stocked.length > 0 %>

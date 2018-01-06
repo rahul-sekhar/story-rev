@@ -79,4 +79,12 @@ class Copy < ActiveRecord::Base
     return 0 if price.to_i == 0
     (((price.to_f - cost_price.to_f) / price.to_f) * 100).round
   end
+
+  def has_discount?
+    ConfigData.access.has_discount?
+  end
+
+  def discounted_price
+    (price * (100 - ConfigData.access.discount_percentage) / 100).to_i
+  end
 end

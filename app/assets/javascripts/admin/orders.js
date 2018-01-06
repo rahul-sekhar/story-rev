@@ -178,6 +178,7 @@ $(document).ready(function() {
                 .find(".delivery").text(data.delivery_text).end()
                 .find(".pickup").text(data.pickup_point_text).end()
                 .find(".total span").text(data.total_amount).end()
+                .find(".discount span").text(data.discount_percentage).end()
                 .find(".postage span").text(data.postage_amount).end()
                 .find(".postage-expenditure")
                     .data("value", data.postage_expenditure_val)

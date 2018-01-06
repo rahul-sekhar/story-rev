@@ -13,7 +13,15 @@
     </td>
   <% end %>
   
-  <td class="price"><%= present(c).price %></td>
+  <td class="price">
+    <% if present(c).has_discount? %>
+      <span class="actual-price"><%= present(c).price %></span>
+      <span class="discounted-price"><%= present(c).discounted_price %></span>
+    <% else %>
+      <%= present(c).price %>
+    <% end %>
+  </td>
+
   <td class="cart">
     <% if order.copy_ids.include? c.id %>
       <span class="added" title="Added to cart">In Cart</span>

@@ -124,8 +124,12 @@ class CompleteOrder < ActiveRecord::Base
       self.postage_amount = 0
     end
 
-    self.total_amount = order_copies.inject(0){ |s, x| s + x.price } + postage_amount
+    self.total_amount = order_copies.inject(0){ |s, x| s + discounted_price(x.price) } + postage_amount
     self.total_amount += extra_costs.inject(0){ |s, x| s + x.amount }
+  end
+
+  def discounted_price(price)
+    price * (100 - self.discount_percentage) / 100
   end
 
   def calculate_expenditure

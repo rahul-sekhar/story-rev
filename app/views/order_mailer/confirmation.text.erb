@@ -5,7 +5,7 @@ Thank you for ordering books from Story Revolution. Here is the summary of your 
 Items:
 ======
 <% @order.order_copies.each do |oc| %>
-<%= oc.copy.book.title %> (by <%= oc.copy.book.author_name %>) - <%= pluralize(oc.number, 'copy') %> - Rs. <%= oc.copy.price %>
+<%= oc.copy.book.title %> (by <%= oc.copy.book.author_name %>) - <%= pluralize(oc.number, 'copy') %> - Rs. <%= oc.copy.discounted_price %>
 <% end %>
 
 Postage: Rs. <%= @order.postage_amount %>

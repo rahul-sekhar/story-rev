@@ -18,6 +18,14 @@
   </li>
 <% end %>
 
+<div class="discount-percentage">
+  <h2>Store-wide discount percentage</h2>
+  <%= form_tag admin_set_discount_percentage_path, method: :post do %>
+    <%= text_field_tag :discount_percentage, @discount_percentage, size: 2 %>
+    <%= submit_tag "Set" %>
+  <% end %>
+</div>
+
 <div class="store-open">
   <p><strong>The store is currently <%= ConfigData.access.store_open ? 'open' : 'closed' %></strong></p>
 

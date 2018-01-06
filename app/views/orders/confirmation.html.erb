@@ -34,9 +34,14 @@
               <% end %>
             </td>
 
-            <td class="price">
-              <p><%= c.price %></p>
-            </td>
+            <td class="price"><p>
+              <% if present(c).has_discount? %>
+                <span class="actual-price"><%= present(c).price %></span>
+                <span class="discounted-price"><%= present(c).discounted_price %></span>
+              <% else %>
+                <%= present(c).price %>
+              <% end %>
+            </p></td>
 
           </tr>
         <% end %>

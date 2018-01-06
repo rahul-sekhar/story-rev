@@ -10,6 +10,7 @@ class CopyPresenter < BasePresenter
   delegate :new_copy, to: :copy
   delegate :condition_rating, to: :copy
   delegate :new_copy, to: :copy
+  delegate :has_discount?, to: :copy
 
   def accession_id_sortable
     "#{copy.accession_id.to_i}.#{"%04d" % copy.copy_number.to_i}".to_f
@@ -21,6 +22,10 @@ class CopyPresenter < BasePresenter
 
   def price
     CurrencyMethods.formatted_currency(copy.price)
+  end
+
+  def discounted_price
+    CurrencyMethods.formatted_currency(copy.discounted_price)
   end
 
   def cost_price

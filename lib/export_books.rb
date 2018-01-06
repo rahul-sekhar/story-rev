@@ -1,3 +1,5 @@
+require 'csv'
+
 module ExportBooks
   def self.to_csv(copies)
     CSV.generate(headers: true) do |csv|

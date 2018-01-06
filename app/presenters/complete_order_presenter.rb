@@ -33,6 +33,10 @@ class CompleteOrderPresenter < OrderPresenter
     CurrencyMethods.formatted_currency(order.postage_expenditure || 0)
   end
 
+  def formatted_discount_percentage
+    order.discount_percentage.to_s + "%"
+  end
+
   def as_hash
     {
       name: name,
@@ -47,6 +51,7 @@ class CompleteOrderPresenter < OrderPresenter
       postage_expenditure: formatted_postage_expenditure,
       postage_expenditure_val: order.postage_expenditure,
       total_amount: formatted_total_amount,
+      discount_percentage: formatted_discount_percentage,
       notes: customer.notes || "",
       formatted_date: formatted_date,
       timestamp: timestamp

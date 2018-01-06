@@ -78,6 +78,7 @@ StoryRev::Application.routes.draw do
       resources :awards
     end
     resources :roles
+    post "set_discount_percentage" => "roles#set_discount_percentage"
     resources :transactions do
       collection do
         get 'summarised'

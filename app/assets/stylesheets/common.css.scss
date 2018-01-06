@@ -460,3 +460,10 @@ table {
 .rs {
     text-transform:none;
 }
+
+// Discount
+.actual-price {
+    text-decoration: line-through;
+    opacity: 0.5;
+    display: block;
+}

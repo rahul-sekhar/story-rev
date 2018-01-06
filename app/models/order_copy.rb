@@ -34,7 +34,7 @@ class OrderCopy < ActiveRecord::Base
   end
 
   def price
-    copy.price * number
+    copy.discounted_price * number
   end
 
   def cost_price

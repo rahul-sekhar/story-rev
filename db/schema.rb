@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140620064715) do
+ActiveRecord::Schema.define(:version => 20180106130042) do
 
   create_table "account_profit_shares", :force => true do |t|
     t.integer  "account_id", :null => false
@@ -147,10 +147,11 @@ ActiveRecord::Schema.define(:version => 20140620064715) do
   add_index "collections", ["name"], :name => "index_keywords_on_name", :unique => true
 
   create_table "config_data", :force => true do |t|
-    t.integer  "default_cost_price", :default => 0,                     :null => false
-    t.integer  "default_percentage", :default => 0,                     :null => false
-    t.datetime "profit_share_date",  :default => '2012-11-19 10:08:10', :null => false
-    t.boolean  "store_open",         :default => false,                 :null => false
+    t.integer  "default_cost_price",  :default => 0,                     :null => false
+    t.integer  "default_percentage",  :default => 0,                     :null => false
+    t.datetime "profit_share_date",   :default => '2012-11-21 10:45:10', :null => false
+    t.boolean  "store_open",          :default => true,                  :null => false
+    t.integer  "discount_percentage", :default => 0,                     :null => false
   end
 
   create_table "copies", :force => true do |t|
@@ -158,12 +159,12 @@ ActiveRecord::Schema.define(:version => 20140620064715) do
     t.string   "accession_id",                                          :null => false
     t.string   "condition_description"
     t.integer  "condition_rating",      :limit => 2,                    :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "price",                                                 :null => false
     t.boolean  "new_copy",                           :default => false, :null => false
     t.integer  "stock",                                                 :null => false
     t.integer  "copy_number",                                           :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
     t.integer  "required_stock"
     t.integer  "cost_price",                         :default => 0,     :null => false
   end
@@ -287,8 +288,8 @@ ActiveRecord::Schema.define(:version => 20140620064715) do
     t.integer  "order_id",                   :null => false
     t.integer  "amount",                     :null => false
     t.string   "name",                       :null => false
-    t.datetime "created_at",                 :null => false
-    t.datetime "updated_at",                 :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "expenditure", :default => 0, :null => false
   end
 
@@ -343,6 +344,7 @@ ActiveRecord::Schema.define(:version => 20140620064715) do
     t.datetime "posted_date"
     t.boolean  "complete",            :default => false, :null => false
     t.integer  "postage_expenditure", :default => 0,     :null => false
+    t.integer  "discount_percentage", :default => 0,     :null => false
   end
 
   add_index "orders", ["complete"], :name => "index_orders_on_complete"

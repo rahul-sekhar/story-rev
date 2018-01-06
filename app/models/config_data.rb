@@ -15,6 +15,12 @@ class ConfigData < ActiveRecord::Base
   }
 
   validates :profit_share_date, presence: true
+
+  validates :discount_percentage, numericality: {
+    only_integer: true,
+    greater_than_or_equal_to: 0,
+    less_than_or_equal_to: 100
+  }
   
   def check_number
     return false if self.class.count > 0 && new_record?
@@ -22,5 +28,9 @@ class ConfigData < ActiveRecord::Base
   
   def self.access
     self.first || self.create
+  end
+
+  def has_discount?
+    discount_percentage > 0
   end
 end

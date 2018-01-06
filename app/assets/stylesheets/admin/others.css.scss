@@ -149,6 +149,13 @@
             float: none;
         }
     }
+
+    .discount-percentage {
+        margin-bottom: e(20px);
+        @include clearfix;
+
+        clear:left;
+    }
 }
 
 .priorities {
