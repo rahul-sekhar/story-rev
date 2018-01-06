@@ -35,11 +35,11 @@
             <p><%= pluralize(oc.number, 'copy') %></p>
           </td>
           <td style="padding:0 2em; text-align:right;">
-            <% if present(c).has_discount? %>
-              <span style="text-decoration:line-through"><%= present(c).price %></span>
-              <span><%= present(c).discounted_price %></span>
+            <% if c.has_discount? %>
+              <span style="text-decoration:line-through">Rs. <%= c.price %></span>
+              <span>Rs. <%= c.discounted_price %></span>
             <% else %>
-              <%= present(c).price %>
+              Rs. <%= c.price %>
             <% end %>
           </td>
         </tr>
